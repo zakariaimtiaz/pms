@@ -1,28 +1,43 @@
-package actions.pmActions
+package actions.userDepartment
 
-import com.model.ListPmActionsActionServiceModel
+import com.model.ListUserDepartmentActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 
 @Transactional
-class ListPmActionsActionService extends BaseService implements ActionServiceIntf {
+class ListUserDepartmentActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
+    /**
+     * No pre conditions required for searching project domains
+     *
+     * @param params - Request parameters
+     * @return - same map of input-parameter containing isError(true/false)
+     */
     public Map executePreCondition(Map params) {
         return params
     }
 
+    /**
+     * 1. initialize params for pagination of list
+     *
+     * 2. pull all appUser list from database (if no criteria)
+     *
+     * 3. pull filtered result from database (if given criteria)
+     *
+     * @param result - parameter from pre-condition
+     * @return - same map of input-parameter containing isError(true/false)
+     */
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            List<Long> lst = currentUserDepartmentList()
-            Closure additionalParam = {
-                'in'('serviceId', lst)
+            Closure params = {
+                'eq' ('userId', Long.parseLong(result.userId))
             }
-            Map resultMap = super.getSearchResult(result, ListPmActionsActionServiceModel.class,additionalParam)
+            Map resultMap = super.getSearchResult(result, ListUserDepartmentActionServiceModel.class, params)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

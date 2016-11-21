@@ -6,8 +6,10 @@ class ListSecUserActionServiceModel {
     public static final String SQL_LIST_SEC_USER_MODEL = """
     CREATE OR REPLACE VIEW list_sec_user_action_service_model AS
         SELECT suser.id, suser.version,suser.full_name,suser.username,suser.password,
-                suser.enabled, suser.account_expired, suser.account_locked
+                suser.enabled, suser.account_expired, suser.account_locked,
+                sc.id AS service_id, sc.name AS service
         FROM sec_user suser
+        LEFT JOIN pm_service_sector sc ON sc.id = suser.service_id
         ORDER BY suser.id ASC;
     """
 
@@ -16,6 +18,8 @@ class ListSecUserActionServiceModel {
     String fullName                         // full name of SecUser
     String username                         // user name of SecUser
     String password                         // password of SecUser
+    long serviceId                          // departmentId
+    String service                          // which department the user belongs
     boolean enabled                         // flag to enable SecUser
     boolean accountExpired                  // flag to determine is account expired or not
     boolean accountLocked                   // flag to determine is account locked or not

@@ -1,46 +1,42 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/pmServiceSector/update">
-    <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
-</sec:access>
-<sec:access url="/pmServiceSector/delete">
-    <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-</sec:access>
+    <sec:access url="/pmActions/create">
+        <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
+    </sec:access>
+    <sec:access url="/pmActions/update">
+        <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
+    </sec:access>
+    <sec:access url="/pmActions/delete">
+        <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
+    </sec:access>
 </ul>
 </script>
 
 <script language="javascript">
-    var gridService, dataSource, serviceModel,dropDownServiceCategory;
+    var gridActions, dataSource, actionsModel,dropDownService,dropDownGoals,dropDownObjectives;
 
     $(document).ready(function () {
-        onLoadServicePage();
-        initServiceGrid();
+        onLoadActionPage();
+        initActionsGrid();
         initObservable();
     });
 
-    function onLoadServicePage() {
-        $('#sequence').kendoNumericTextBox({
-            min: 1.00,
-            step:1,
-            decimals: 2,
-            max: 999999999999,
-            format: "##.##"
-
-        });
-        // initialize form with kendo validator & bind onSubmit event
-        initializeForm($("#serviceForm"), onSubmitService);
-        // update page title
-        defaultPageTile("Create pmServiceSector",null);
+    function onLoadActionPage() {
+        $("#rowAction").hide();
+        dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
+        dropDownObjectives = initKendoDropdown($('#objectiveId'), null, null, null);
+        initializeForm($("#actionForm"), onSubmitAction);
+        defaultPageTile("Create Actions",null);
     }
 
     function executePreCondition() {
-        if (!validateForm($("#serviceForm"))) {
+        if (!validateForm($("#actionForm"))) {
             return false;
         }
         return true;
     }
 
-    function onSubmitService() {
+    function onSubmitAction() {
         if (executePreCondition() == false) {
             return false;
         }
@@ -49,14 +45,14 @@
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'pmServiceSector', action: 'create')}";
+            actionUrl = "${createLink(controller:'pmActions', action: 'create')}";
         } else {
-            actionUrl = "${createLink(controller:'pmServiceSector', action: 'update')}";
+            actionUrl = "${createLink(controller:'pmActions', action: 'update')}";
         }
 
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#serviceForm").serialize(),
+            data: jQuery("#actionForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -78,18 +74,18 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.pmServiceSector;
+                var newEntry = result.pmAction;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridService.dataSource.data();
+                    var gridData = gridActions.dataSource.data();
                     gridData.unshift(newEntry);
                 } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridService.select();
-                    var allItems = gridService.items();
+                    var selectedRow = gridActions.select();
+                    var allItems = gridActions.items();
                     var selectedIndex = allItems.index(selectedRow);
-                    gridService.removeRow(selectedRow);
-                    gridService.dataSource.insert(selectedIndex, newEntry);
+                    gridActions.removeRow(selectedRow);
+                    gridActions.dataSource.insert(selectedIndex, newEntry);
                 }
-                resetForm();
+                emptyForm();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
@@ -97,9 +93,20 @@
         }
     }
 
-    function resetForm() {
-        clearForm($("#serviceForm"), $('#categoryId'));
+    function emptyForm() {
+        clearForm($("#actionForm"), null);
         initObservable();
+        dropDownService.value('');
+        dropDownGoals.value('');
+        dropDownObjectives.value('');
+    }
+    function resetForm() {
+        clearForm($("#actionForm"), null);
+        initObservable();
+        dropDownService.value('');
+        dropDownGoals.value('');
+        dropDownObjectives.value('');
+        $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
 
@@ -107,7 +114,7 @@
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'pmServiceSector', action: 'list')}",
+                    url: "${createLink(controller: 'pmActions', action: 'list')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -119,11 +126,23 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
-                        name: { type: "string" },
-                        categoryId: { type: "number" },
-                        categoryName: { type: "string" },
-                        shortName: { type: "string" },
-                        sequence: { type: "number" }
+                        actions: { type: "string" },
+                        objectiveId: { type: "number" },
+                        goalId: { type: "number" },
+                        goal: { type: "string" },
+                        service: { type: "string" },
+                        serShortName: { type: "string" },
+                        serviceId: { type: "number" },
+                        sequence: { type: "string" },
+                        meaIndicator: { type: "string" },
+                        target: { type: "string" },
+                        resPerson: { type: "string" },
+                        strategyMapRef: { type: "string" },
+                        supportDepartment: { type: "string" },
+                        sourceOfFund: { type: "string" },
+                        remarks: { type: "string" },
+                        start: { type: "date" },
+                        end: { type: "date" }
                     }
                 },
                 parse: function (data) {
@@ -139,9 +158,9 @@
         });
     }
 
-    function initServiceGrid() {
+    function initActionsGrid() {
         initDataSource();
-        $("#gridService").kendoGrid({
+        $("#gridActions").kendoGrid({
             dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
@@ -154,56 +173,144 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "categoryName", title: "Category", width: 50, sortable: false, filterable: kendoCommonFilterable()},
-                {field: "name", title: "Central Service/Sector", width: 180, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "shortName", title: "Short Name", width: 100, sortable: false, filterable: kendoCommonFilterable()},
-                {field: "sequence", title: "Sequence", width: 30, sortable: false, filterable: false}
+                {field: "serShortName", title: "Service", width: 60, sortable: false, filterable: false},
+                {field: "sequence", title: "Sequence", width: 60, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
+                },
+                {field: "actions", title: "Action", width: 120, sortable: false, filterable: false},
+                {field: "start", title: "Start", width: 70, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},
+                {field: "end", title: "End", width: 70, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},
+                {field: "meaIndicator", title: "Measurement Indicator", width: 120, sortable: false, filterable: false},
+                {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
+                {field: "supportDepartment", title: "Support Department", width: 120, sortable: false, filterable: false},
+                {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false}
             ],
             filterable: {
                 mode: "row"
             },
             toolbar: kendo.template($("#gridToolbar").html())
         });
-        gridService = $("#gridService").data("kendoGrid");
+        gridActions = $("#gridActions").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
 
     function initObservable() {
-        serviceModel = kendo.observable(
+        actionsModel = kendo.observable(
                 {
-                    service: {
+                    actions: {
                         id: "",
                         version: "",
                         sequence: "",
-                        name: "",
-                        shortName: "",
-                        categoryId: ""
+                        actions: "",
+                        serviceId: "",
+                        goalId: "",
+                        meaIndicator: "",
+                        target: "",
+                        resPerson: "",
+                        strategyMapRef: "",
+                        supportDepartment: "",
+                        sourceOfFund: "",
+                        start: "",
+                        end: ""
                     }
                 }
         );
-        kendo.bind($("#application_top_panel"), serviceModel);
+        kendo.bind($("#application_top_panel"), actionsModel);
     }
 
     function deleteService() {
-        if (executeCommonPreConditionForSelectKendo(gridService, 'service') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
             return;
         }
-        var msg = 'Are you sure you want to delete the selected pmServiceSector?',
-                url = "${createLink(controller: 'pmServiceSector', action:  'delete')}";
-        confirmDelete(msg, url, gridService);
+        var msg = 'Are you sure you want to delete the selected action?',
+                url = "${createLink(controller: 'pmActions', action:  'delete')}";
+        confirmDelete(msg, url, gridActions);
     }
 
+    function addService() {
+        $("#rowAction").show();
+    }
     function editService() {
-        if (executeCommonPreConditionForSelectKendo(gridService, 'service') == false) {
+        addService();
+        if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
             return;
         }
-        var service = getSelectedObjectFromGridKendo(gridService);
-        showService(service);
+        var actions = getSelectedObjectFromGridKendo(gridActions);
+        showService(actions);
     }
 
-    function showService(service) {
-        serviceModel.set('service', service);
+    function showService(actions) {
+        actionsModel.set('actions', actions);
+        populateGoals(actions.serviceId,actions.goalId,actions.objectiveId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    // To populate Goals List
+    function populateGoals(serId,goalId,objectiveId) {
+        var serviceId = serId?serId:dropDownService.value();
+        if (serviceId == '') {
+            dropDownGoals.setDataSource(getKendoEmptyDataSource(dropDownGoals, null));
+            dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
+            dropDownGoals.value('');
+            dropDownObjectives.value('');
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'pmGoals', action: 'lstGoalsByServiceId')}?serviceId=" + serviceId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                dropDownGoals.setDataSource(data.lstGoals);
+                if(goalId){
+                    dropDownGoals.value(goalId);
+                    populateObjectives(goalId,objectiveId);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
+        // To populate Objectives List
+    function populateObjectives(goalId,objectiveId) {
+        var goalsId = goalId?goalId:dropDownGoals.value();
+        if (goalsId == '') {
+            dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
+            dropDownObjectives.value('');
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'pmObjectives', action: 'lstObjectiveByGoalsId')}?goalId=" + goalsId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                dropDownObjectives.setDataSource(data.lstObjectives);
+                if(objectiveId) dropDownObjectives.value(objectiveId);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
     }
 
 </script>

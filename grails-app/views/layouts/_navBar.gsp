@@ -51,6 +51,11 @@
                                     <a href="#pmObjectives/show"><i class="fa fa-cubes"></i>&nbsp;Objectives</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/pmActions/show">
+                                <li>
+                                    <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>

@@ -162,10 +162,11 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
     }
 
     private List<GroovyRowResult> listServices() {
+        String param = currentUserDepartmentListStr()
         String queryForList = """
             SELECT id, CONCAT(name,' (',short_name,')') AS name
                 FROM pm_service_sector
-            WHERE is_displayble = TRUE
+            WHERE is_displayble = TRUE AND id IN (${param})
             ORDER BY sequence
         """
         List<GroovyRowResult> lstServices = executeSelectSql(queryForList)

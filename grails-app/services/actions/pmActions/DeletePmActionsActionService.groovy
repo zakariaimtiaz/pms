@@ -1,6 +1,6 @@
 package actions.pmActions
 
-import com.pms.PmServiceSector
+import com.pms.PmActions
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -11,27 +11,25 @@ class DeletePmActionsActionService extends BaseService implements ActionServiceI
 
     private Logger log = Logger.getLogger(getClass())
 
-    private static final String DELETE_SUCCESS_MESSAGE = "Service has been deleted successfully"
-    private static final String NOT_FOUND = "Selected Service does not exits"
-    private static final String ASSOCIATION_EXISTS = "Selected Service could not be deleted"
-    private static final String SERVICE_OBJ = "pmServiceSector"
+    private static final String DELETE_SUCCESS_MESSAGE = "Action has been deleted successfully"
+    private static final String ACTIONS_OBJ = "pmAction"
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         long id = Long.parseLong(params.id)
-        PmServiceSector service = PmServiceSector.read(id)
-        if(!service){
-            return super.setError(params, NOT_FOUND)
+        PmActions actions = PmActions.read(id)
+        if(!actions){
+            return super.setError(params, ENTITY_NOT_FOUND_ERROR_MESSAGE)
         }
-        params.put(SERVICE_OBJ, service)
+        params.put(ACTIONS_OBJ, actions)
         return params
     }
 
     @Transactional
     public Map execute(Map result) {
         try {
-            PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJ)
-            service.delete()
+            PmActions actions = (PmActions) result.get(ACTIONS_OBJ)
+            actions.delete()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

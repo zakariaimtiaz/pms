@@ -1,7 +1,6 @@
-package actions.secRole
+package actions.userDepartment
 
 import com.pms.SecRole
-import com.pms.SecUserSecRole
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -10,7 +9,7 @@ import service.FeatureManagementService
 import service.SecRoleService
 
 @Transactional
-class DeleteSecRoleActionService extends BaseService implements ActionServiceIntf {
+class UpdateUserDepartmentActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -30,10 +29,6 @@ class DeleteSecRoleActionService extends BaseService implements ActionServiceInt
         SecRole role = secRoleService.read(userId)
         if(!role){
             return super.setError(params, NOT_FOUND)
-        }
-        int count = SecUserSecRole.countBySecRole(role)
-        if(count>0){
-            return super.setError(params, count + RELATED_USER_FOUND)
         }
         boolean isMapped = featureManagementService.isRoleAssociatedWithRequestmap(role.authority)
         if(isMapped){

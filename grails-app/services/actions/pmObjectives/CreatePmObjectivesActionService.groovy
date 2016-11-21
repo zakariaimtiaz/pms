@@ -74,7 +74,7 @@ class CreatePmObjectivesActionService extends BaseService implements ActionServi
     }
 
     private static PmObjectives buildObject(Map parameterMap, long serviceId, long goalId) {
-        List<PmObjectives> max = PmGoals.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmObjectives" +
+        List<PmObjectives> max = PmObjectives.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmObjectives" +
                 " WHERE serviceId=${serviceId} AND goalId=${goalId}")
 
         int con =(int) max[0]+1
