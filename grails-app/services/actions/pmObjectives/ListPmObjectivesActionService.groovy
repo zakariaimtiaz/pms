@@ -18,7 +18,11 @@ class ListPmObjectivesActionService extends BaseService implements ActionService
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListPmObjectivesActionServiceModel.class)
+            List<Long> lst = currentUserDepartmentList()
+            Closure additionalParam = {
+                'in'('serviceId', lst)
+            }
+            Map resultMap = super.getSearchResult(result, ListPmObjectivesActionServiceModel.class,additionalParam)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

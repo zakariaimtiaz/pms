@@ -29,16 +29,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="fullName">User Name:</label>
+                                <label class="col-md-3 control-label label-required" for="serviceId">Service:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" id="fullName" name="fullName" maxlength="255"
-                                           placeholder="User Name" required validationMessage="Required" tabindex="2"
-                                           data-bind="value: secUser.fullName"/>
+                                    <app:dropDownService
+                                            class="kendo-drop-down"
+                                            id="serviceId" name="serviceId" tabindex="2"
+                                            data-bind="value: secUser.serviceId"
+                                            data_model_name="dropDownService">
+                                    </app:dropDownService>
                                 </div>
 
                                 <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="fullName"></span>
+                                    <span class="k-invalid-msg" data-for="serviceId"></span>
                                 </div>
                             </div>
 

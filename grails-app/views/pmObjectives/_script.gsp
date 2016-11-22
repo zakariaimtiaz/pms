@@ -1,5 +1,8 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
+<sec:access url="/pmObjectives/create">
+    <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
+</sec:access>
     <sec:access url="/pmObjectives/update">
     <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
 </sec:access>
@@ -19,6 +22,13 @@
     });
 
     function onLoadObjectivePage() {
+        $("#rowObjectives").hide();
+        $("#weight").kendoNumericTextBox({
+            decimals : 0,
+            format   : "### \\%",
+            min      : 1,
+            max      : 100
+        });
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
         initializeForm($("#objectiveForm"), onSubmitObjective);
         defaultPageTile("Create Objectives",null);
@@ -80,7 +90,7 @@
                     gridObjectives.removeRow(selectedRow);
                     gridObjectives.dataSource.insert(selectedIndex, newEntry);
                 }
-                resetForm();
+                emptyForm();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
@@ -88,12 +98,19 @@
         }
     }
 
-    function resetForm() {
+    function emptyForm() {
         clearForm($("#objectiveForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+    function resetForm() {
+        clearForm($("#objectiveForm"), null);
+        initObservable();
+        dropDownService.value('');
+        dropDownGoals.value('');
+        $("#rowObjectives").hide();
     }
 
     function initDataSource() {
@@ -113,6 +130,7 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         objective: { type: "string" },
+                        weight: { type: "number" },
                         goalId: { type: "number" },
                         goal: { type: "string" },
                         service: { type: "string" },
@@ -153,6 +171,9 @@
                 {field: "sequence", title: "Sequence", width: 20, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
+                {field: "weight", title: "Weight", width: 20, sortable: false, filterable: false,
+                    template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
+                },
                 {field: "objective", title: "Objective", width: 200, sortable: false, filterable: false}
             ],
             filterable: {
@@ -171,6 +192,7 @@
                         id: "",
                         version: "",
                         sequence: "",
+                        weight: "",
                         objective: "",
                         serviceId: "",
                         goalId: ""
@@ -188,11 +210,14 @@
                 url = "${createLink(controller: 'pmObjectives', action:  'delete')}";
         confirmDelete(msg, url, gridObjectives);
     }
-
+    function addService() {
+        $("#rowObjectives").show();
+    }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridObjectives, 'objective') == false) {
             return;
         }
+        $("#rowObjectives").show();
         var objectives = getSelectedObjectFromGridKendo(gridObjectives);
         showService(objectives);
     }

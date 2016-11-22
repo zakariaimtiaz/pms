@@ -1,6 +1,8 @@
 package actions.secuser
 
+import com.pms.PmServiceSector
 import com.pms.SecUser
+import com.pms.UserDepartment
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -22,20 +24,11 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
 
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
             if ((!params.id) || (!params.username)) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            //long version = Long.parseLong(params.version.toString())
-
-            //Check existing of Obj and version matching
             SecUser oldUser = (SecUser) secUserService.read(id)
-            /*if ((!oldUser) || oldUser.version != version) {
-                return super.setError(params, OBJ_CHANGED_MSG)
-            }*/
-
-            // Check existing of same secUser name
             String name = params.username.toString()
             int duplicateCount = secUserService.countByUsernameIlikeAndIdNotEqual(name, id)
             if (duplicateCount > 0) {
@@ -55,6 +48,15 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
         try {
             SecUser user = (SecUser) result.get(SEC_USER)
             secUserService.update(user)
+
+            int count = UserDepartment.countByServiceIdAndUserId(user.serviceId,user.id)
+            if(count==0){
+                UserDepartment userDepart = new UserDepartment()
+                userDepart.serviceId = user.serviceId
+                userDepart.userId =user.id
+                userDepart.save()
+            }
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -94,8 +96,11 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
      * @return -new SecUser object
      */
     private SecUser buildObject(Map parameterMap, SecUser oldSecUser) {
+        long serviceId = Long.parseLong(parameterMap.serviceId.toString())
+        PmServiceSector serviceSector = PmServiceSector.read(serviceId)
         SecUser user = new SecUser(parameterMap)
-        oldSecUser.fullName = user.fullName
+        oldSecUser.fullName = serviceSector.departmentHead
+        oldSecUser.serviceId = serviceSector.id
         oldSecUser.username = user.username
         oldSecUser.enabled = user.enabled
         oldSecUser.password = springSecurityService.encodePassword(user.password)

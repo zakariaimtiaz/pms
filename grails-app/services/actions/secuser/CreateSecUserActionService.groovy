@@ -1,6 +1,8 @@
 package actions.secuser
 
+import com.pms.PmServiceSector
 import com.pms.SecUser
+import com.pms.UserDepartment
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -29,7 +31,7 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
     public Map executePreCondition(Map params) {
         try {
             //Check parameters
-            if (!params.username) {
+            if (!params.username && !params.serviceId) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             int duplicateCount = secUserService.countByUsernameIlike(params.username)
@@ -56,6 +58,12 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
         try {
             SecUser secUser = (SecUser) result.get(SEC_USER)
             secUserService.create(secUser)
+
+            UserDepartment userDepart = new UserDepartment()
+            userDepart.serviceId = secUser.serviceId
+            userDepart.userId =secUser.id
+            userDepart.save()
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -93,7 +101,11 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
      * @return -new user object
      */
     private SecUser buildObject(Map parameterMap) {
+        long serviceId = Long.parseLong(parameterMap.serviceId.toString())
+        PmServiceSector serviceSector = PmServiceSector.read(serviceId)
         SecUser secUser = new SecUser(parameterMap)
+        secUser.fullName = serviceSector.departmentHead
+        secUser.serviceId = serviceSector.id
         return secUser
     }
 }

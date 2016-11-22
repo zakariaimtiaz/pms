@@ -7,6 +7,7 @@ class PmGoals {
     long serviceId
     String goal
     int sequence
+    int weight
 
     static mapping = {
         goal     sqlType: 'text'

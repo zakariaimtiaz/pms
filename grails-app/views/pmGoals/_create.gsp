@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id="rowGoals">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
@@ -13,8 +13,8 @@
                     <input type="hidden" name="version" id="version" data-bind="value: goal.version"/>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label label-required"
-                               for="serviceId">Central Service/Sector:</label>
+                        <label class="col-md-1 control-label label-required"
+                               for="serviceId">Service:</label>
 
                         <div class="col-md-6">
                             <app:dropDownService
@@ -30,13 +30,27 @@
                             <span class="k-invalid-msg" data-for="serviceId"></span>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-md-1 control-label label-required"
+                               for="weight">Weight:</label>
+
+                        <div class="col-md-6">
+                            <input type="text" class="form-control"
+                                   id="weight" name="weight" tabindex="2"
+                                   data-bind="value: goal.weight"/>
+                        </div>
+
+                        <div class="col-md-3 pull-left">
+                            <span class="k-invalid-msg" data-for="weight"></span>
+                        </div>
+                    </div>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label label-required" for="goal">Goals:</label>
+                        <label class="col-md-1 control-label label-required" for="goal">Goals:</label>
 
                         <div class="col-md-6">
                             <textarea id="goal" name="goal" cols="4" rows="5"
-                                      tabindex="2" class="form-control"
+                                      tabindex="3" class="form-control"
                                       data-bind="value: goal.goal"
                                       required validationMessage="Required"
                                       placeholder="Project Goal" class="kendo-drop-down"></textarea>
@@ -51,12 +65,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="3"
+                            role="button" tabindex="4"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="4"
+                            class="k-button k-button-icontext" role="button" tabindex="5"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

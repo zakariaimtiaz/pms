@@ -1,5 +1,11 @@
 package pms
 
+import com.pms.PmServiceSector
+import com.pms.SecRole
+import com.pms.SecUser
+import com.pms.SecUserSecRole
+import com.pms.UserDepartment
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.util.Environment
 import grid.FilterOperator
 import grid.FilterOption
@@ -17,6 +23,7 @@ class BaseService extends Tools {
 
     def sessionFactory
     def groovySql
+    SpringSecurityService springSecurityService
     static transactional = false
 
     public final static int DEFAULT_RESULT_PER_PAGE = 10;
@@ -588,5 +595,35 @@ class BaseService extends Tools {
         // append the original list (& return a new list in case cache utility object)
         return lstReturn
     }
-
+    public SecUser currentUserObject(){
+        def loggedUser = springSecurityService.principal
+        SecUser user = SecUser.read(loggedUser.id)
+        return user
+    }
+    public String currentUserDepartmentListStr(){
+        SecUser user = currentUserObject()
+        boolean isSysAdmin = isUserSystemAdmin(user.id)
+        if(!isSysAdmin){
+            List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
+            return Tools.buildCommaSeparatedStringOfIds(lstIds)
+        }
+        List<Long> lstIds = PmServiceSector.list().id
+        return Tools.buildCommaSeparatedStringOfIds(lstIds)
+    }
+    public List<Long> currentUserDepartmentList(){
+        SecUser user = currentUserObject()
+        boolean isSysAdmin = isUserSystemAdmin(user.id)
+        if(!isSysAdmin){
+            List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
+            return lstIds
+        }
+        List<Long> lstIds = PmServiceSector.list().id
+        return lstIds
+    }
+    public boolean isUserSystemAdmin(long userId) {
+        SecUser user = SecUser.read(userId)
+        SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
+        int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
+        return count > 0
+    }
 }

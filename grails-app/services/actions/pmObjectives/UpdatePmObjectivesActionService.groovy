@@ -11,6 +11,7 @@ import pms.BaseService
 class UpdatePmObjectivesActionService extends BaseService implements ActionServiceIntf {
 
     private static final String UPDATE_SUCCESS_MESSAGE = "Objective has been updated successfully"
+    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String OBJECTIVE_OBJ = "pmObjective"
 
     private Logger log = Logger.getLogger(getClass())
@@ -21,6 +22,13 @@ class UpdatePmObjectivesActionService extends BaseService implements ActionServi
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
+            long goalId = Long.parseLong(params.goalId.toString())
+            int weight = Long.parseLong(params.weight.toString())
+            int totalWeight =(int) PmObjectives.executeQuery("select sum(weight) from PmObjectives where goalId=${goalId} AND id<>${id}")[0]
+            int available = 100-totalWeight
+            if(weight>available){
+                return super.setError(params, WEIGHT_EXCEED)
+            }
             PmObjectives oldDepartment = (PmObjectives) PmObjectives.read(id)
             PmObjectives objectives = buildObject(params, oldDepartment)
             params.put(OBJECTIVE_OBJ, objectives)
@@ -74,6 +82,7 @@ class UpdatePmObjectivesActionService extends BaseService implements ActionServi
     private static PmObjectives buildObject(Map parameterMap, PmObjectives oldDepartment) {
         PmObjectives objectives = new PmObjectives(parameterMap)
         oldDepartment.objective = objectives.objective
+        oldDepartment.weight = objectives.weight
         return oldDepartment
     }
 }

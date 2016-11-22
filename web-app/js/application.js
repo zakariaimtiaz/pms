@@ -302,7 +302,7 @@ function gridDataBound(e) {
 }
 
 function getGridHeightKendo() {
-    var height = $("#page-wrapper").height() - $("#application_top_panel").height() - 20;
+    var height = $("#page-wrapper").height() - $("#application_top_panel").height()-10;
     return height;
 }
 

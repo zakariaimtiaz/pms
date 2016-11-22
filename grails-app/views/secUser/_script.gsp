@@ -6,11 +6,14 @@
     <sec:access url="/secUser/update">
         <li onclick="editSecUser();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
+    <sec:access url="/userDepartment/show">
+        <li onclick="editHeadInCharge();"><i class="fa fa-black-tie"></i>In-Charge</li>
+    </sec:access>
 </ul>
 </script>
 
 <script language="javascript">
-    var gridSecUser, dataSource, secUserModel;
+    var gridSecUser, dataSource, secUserModel,dropDownService;
 
     $(document).ready(function () {
         onLoadSecUserPage();
@@ -118,6 +121,8 @@
                         fullName: { type: "string" },
                         username: { type: "string" },
                         enabled: { type: "boolean" },
+                        serviceId: { type: "number"},
+                        service: { type: "string"},
                         accountLocked: { type: "boolean" },
                         accountExpired: { type: "boolean" }
                     }
@@ -152,6 +157,7 @@
             columns: [
                 {field: "username", title: "Login ID", width: 70, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "fullName", title: "User Name", width: 80, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "service", title: "Department", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "enabled", title: "Enabled", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()}, template:"#=enabled?'YES':'NO'#"},
                 {field: "accountLocked", title: "Locked", width: 30, sortable: false, filterable: false,attributes: {style: setAlignCenter()},
@@ -174,7 +180,7 @@
                     secUser: {
                         id: "",
                         version: "",
-                        fullName: "",
+                        serviceId: "",
                         username: "",
                         enabled: false,
                         accountLocked: false,
@@ -200,5 +206,14 @@
         secUserModel.set('secUser', secUser);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
-
+    function editHeadInCharge() {
+        if (executeCommonPreConditionForSelectKendo(gridSecUser, 'user') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGridKendo(gridSecUser);
+        var loc = "${createLink(controller: 'userDepartment', action: 'show')}?userId=" + id;
+        router.navigate(formatLink(loc));
+        return false;
+    }
 </script>

@@ -1,34 +1,37 @@
-package actions.pmActions
+package actions.userDepartment
 
-import com.model.ListPmActionsActionServiceModel
+import asia.grails.sample.*
+import com.pms.UserDepartment
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 
 @Transactional
-class ListPmActionsActionService extends BaseService implements ActionServiceIntf {
+class DeleteUserDepartmentActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
+    private static final String DELETE_SUCCESS_MESSAGE = "Mapping has been deleted successfully"
+    private static final String USER_DEPARTMENT = "userDepartment"
+
+    @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
+        long id = Long.parseLong(params.id)
+        UserDepartment userDepartment = UserDepartment.read(id)
+        params.put(USER_DEPARTMENT, userDepartment)
         return params
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Map execute(Map result) {
         try {
-            List<Long> lst = currentUserDepartmentList()
-            Closure additionalParam = {
-                'in'('serviceId', lst)
-            }
-            Map resultMap = super.getSearchResult(result, ListPmActionsActionServiceModel.class,additionalParam)
-            result.put(LIST, resultMap.list)
-            result.put(COUNT, resultMap.count)
+            UserDepartment userDepartment = (UserDepartment) result.get(USER_DEPARTMENT)
+            userDepartment.delete()
             return result
-        } catch (Exception e) {
-            log.error(e.getMessage())
-            throw new RuntimeException(e)
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(ex)
         }
     }
 
@@ -43,17 +46,19 @@ class ListPmActionsActionService extends BaseService implements ActionServiceInt
     }
 
     /**
-     * Since there is no success message return the same map
-     * @param result -map from execute/executePost method
+     * 1. put success message
+     *
+     * @param result - map from execute/executePost method
      * @return - same map of input-parameter containing isError(true/false)
      */
     public Map buildSuccessResultForUI(Map result) {
-        return result
+        return super.setSuccess(result, DELETE_SUCCESS_MESSAGE)
     }
 
     /**
      * The input-parameter Map must have "isError:true" with corresponding message
-     * @param result -map returned from previous methods
+     *
+     * @param result - map returned from previous methods
      * @return - same map of input-parameter containing isError(true/false)
      */
     public Map buildFailureResultForUI(Map result) {

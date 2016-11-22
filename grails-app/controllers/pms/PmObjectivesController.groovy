@@ -4,8 +4,14 @@ import actions.pmObjectives.CreatePmObjectivesActionService
 import actions.pmObjectives.DeletePmObjectivesActionService
 import actions.pmObjectives.ListPmObjectivesActionService
 import actions.pmObjectives.UpdatePmObjectivesActionService
+import grails.converters.JSON
+import groovy.sql.GroovyRowResult
+import service.PmObjectivesService
 
 class PmObjectivesController  extends BaseController {
+
+    BaseService baseService
+    PmObjectivesService pmObjectivesService
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
@@ -35,4 +41,11 @@ class PmObjectivesController  extends BaseController {
     def list() {
         renderOutput(listPmObjectivesActionService, params)
     }
+
+    def lstObjectiveByGoalsId() {
+        long goalId = Long.parseLong(params.goalId.toString())
+        List<GroovyRowResult> lst = pmObjectivesService.lstObjectivesForDropDown(goalId)
+        List lstValue = baseService.listForKendoDropdown(lst, null, null)
+        Map result = [lstObjectives: lstValue]
+        render result as JSON    }
 }

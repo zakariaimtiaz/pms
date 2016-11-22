@@ -9,6 +9,7 @@ class PmObjectives {
     String objective
     float sequence
     int tmpSeq
+    int weight
 
     static mapping = {
         objective     sqlType: 'text'

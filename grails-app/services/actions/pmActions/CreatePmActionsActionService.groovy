@@ -1,69 +1,57 @@
 package actions.pmActions
 
-import com.model.ListPmServiceSectorActionServiceModel
-import com.pms.PmServiceSector
+import com.model.ListPmActionsActionServiceModel
+import com.pms.PmActions
+import com.pms.PmGoals
+import com.pms.PmObjectives
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
+import pms.utility.DateUtility
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 @Transactional
 class CreatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
-    private static final String SAVE_SUCCESS_MESSAGE = "PmServiceSector has been saved successfully"
-    private static final String NAME_ALREADY_EXIST = "Same PmServiceSector already exist"
-    private static final String SEQUENCE_ALREADY_EXIST = "Same Sequence already exist"
-    private static final String SHORT_NAME_ALREADY_EXIST = "Short name already exist"
-    private static final String SERVICE_OBJECT = "pmServiceSector"
+    private static final String SAVE_SUCCESS_MESSAGE = "Actions has been saved successfully"
+    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
+    private static final String ACTIONS_OBJECT = "pmAction"
 
     private Logger log = Logger.getLogger(getClass())
 
 
-    /**
-     * 1. input validation check
-     * 2. duplicate check for role-name
-     * @param params - receive role object from controller
-     * @return - map.
-     */
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
-            if (!params.name && !params.shortName) {
+            if (!params.serviceId && !params.goalId &&!params.objectiveId && !params.actions) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            int count = PmServiceSector.countByNameIlike(params.name)
-            if (count > 0) {
-                return super.setError(params, NAME_ALREADY_EXIST)
+            long serviceId = Long.parseLong(params.serviceId.toString())
+            long goalId = Long.parseLong(params.goalId.toString())
+            long objectiveId = Long.parseLong(params.objectiveId.toString())
+            int weight = Long.parseLong(params.weight.toString())
+            int totalWeight =(int) PmActions.executeQuery("select sum(weight) from PmActions where objectiveId=${objectiveId}")[0]
+            int available = 100-totalWeight
+            if(weight>available){
+                return super.setError(params, WEIGHT_EXCEED)
             }
-/*            int countSequence = PmServiceSector.countBySequence(Integer.parseInt(params.sequence.toString()))
-            if (countSequence > 0) {
-                return super.setError(params, SEQUENCE_ALREADY_EXIST)
-            }*/
-            int duplicateCount = PmServiceSector.countByShortNameIlike(params.shortName)
-            if (duplicateCount > 0) {
-                return super.setError(params, SHORT_NAME_ALREADY_EXIST)
-            }
-            PmServiceSector service = buildObject(params)
-            params.put(SERVICE_OBJECT, service)
+            PmActions actions = buildObject(params, serviceId, goalId, objectiveId)
+            params.put(ACTIONS_OBJECT, actions)
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
             throw new RuntimeException(ex)
         }
     }
-    /**
-     * 1. receive pmPmServiceSectorSector object from pre execute method
-     * 2. create new pmPmServiceSectorSector
-     * This method is in transactional block and will roll back in case of any exception
-     * @param result - map received from pre execute method
-     * @return - map.
-     */
+
     @Transactional
     public Map execute(Map result) {
         try {
-            PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJECT)
-            service.save()
+            PmActions actions = (PmActions) result.get(ACTIONS_OBJECT)
+            actions.save()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -84,9 +72,9 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
-        PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJECT)
-        ListPmServiceSectorActionServiceModel model = ListPmServiceSectorActionServiceModel.read(service.id)
-        result.put(SERVICE_OBJECT, model)
+        PmActions actions = (PmActions) result.get(ACTIONS_OBJECT)
+        ListPmActionsActionServiceModel model = ListPmActionsActionServiceModel.read(actions.id)
+        result.put(ACTIONS_OBJECT, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**
@@ -98,15 +86,36 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    /**
-     * Build PmServiceSector object
-     * @param parameterMap -serialized parameters from UI
-     * @return -new PmServiceSector object
-     */
-    private PmServiceSector buildObject(Map parameterMap) {
-        PmServiceSector service = new PmServiceSector(parameterMap)
-        service.staticName = service.name.toUpperCase()
-        service.categoryId = Long.parseLong(parameterMap.categoryId.toString())
-        return service
+    private static PmActions buildObject(Map parameterMap, long serviceId, long goalId, long objectiveId) {
+        String startDateStr = parameterMap.start.toString()
+        String endDateStr = parameterMap.end.toString()
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+
+        Date start = originalFormat.parse(startDateStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+        Date end = originalFormat.parse(endDateStr);
+        Calendar ce = Calendar.getInstance();
+        ce.setTime(end);
+        ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
+                " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId}")
+
+        int con =(int) max[0]+1
+        PmObjectives objectives = PmObjectives.read(objectiveId)
+
+        parameterMap.start=DateUtility.getSqlDate(c.getTime())
+        parameterMap.end=DateUtility.getSqlDate(ce.getTime())
+
+        PmActions actions = new PmActions(parameterMap)
+        actions.serviceId = serviceId
+        actions.goalId = goalId
+        actions.objectiveId = objectiveId
+        actions.sequence = objectives.sequence+"."+con
+        actions.tmpSeq = con
+        return actions
     }
 }

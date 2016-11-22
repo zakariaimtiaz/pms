@@ -11,12 +11,14 @@ class SecUser {
 	boolean accountExpired
 	boolean accountLocked
 	boolean passwordExpired
+	long serviceId
 
 	static transients = ['springSecurityService']
 
 	static constraints = {
 		username blank: false, unique: true
 		password blank: false
+		serviceId blank: true
 	}
 
 	static mapping = {

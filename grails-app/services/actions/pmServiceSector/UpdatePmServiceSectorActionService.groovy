@@ -2,6 +2,7 @@ package actions.pmServiceSector
 
 import com.model.ListPmServiceSectorActionServiceModel
 import com.pms.PmServiceSector
+import com.pms.SecUser
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -93,6 +94,13 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
 
     private static PmServiceSector buildObject(Map parameterMap, PmServiceSector oldDepartment) {
         PmServiceSector service = new PmServiceSector(parameterMap)
+        if(!service.departmentHead.equals(oldDepartment.departmentHead)){
+            List<SecUser> lstUser = SecUser.findAllByServiceId(oldDepartment.id)
+            for(int i=0; i<lstUser.size();i++){
+                lstUser[i].fullName = service.departmentHead
+                lstUser[i].save()
+            }
+        }
         oldDepartment.name = service.name
         oldDepartment.sequence = service.sequence
         oldDepartment.shortName = service.shortName

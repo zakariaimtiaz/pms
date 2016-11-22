@@ -1,5 +1,8 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
+    <sec:access url="/pmGoals/create">
+        <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
+    </sec:access>
     <sec:access url="/pmGoals/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
@@ -19,6 +22,13 @@
     });
 
     function onLoadGoalPage() {
+        $("#rowGoals").hide();
+        $("#weight").kendoNumericTextBox({
+            decimals : 0,
+            format   : "### \\%",
+            min      : 1,
+            max      : 100
+        });
         initializeForm($("#goalForm"), onSubmitGoal);
         defaultPageTile("Create Goal",null);
     }
@@ -79,7 +89,7 @@
                     gridGoal.removeRow(selectedRow);
                     gridGoal.dataSource.insert(selectedIndex, newEntry);
                 }
-                resetForm();
+                emptyForm();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
@@ -87,11 +97,16 @@
         }
     }
 
-    function resetForm() {
+    function emptyForm() {
         clearForm($("#goalForm"), $('#serviceId'));
         initObservable();
         dropDownService.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+    function resetForm() {
+        initObservable();
+        dropDownService.value('');
+        $('#rowGoals').hide();
     }
 
     function initDataSource() {
@@ -111,6 +126,7 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         goal: { type: "string" },
+                        weight: { type: "number" },
                         serviceId: { type: "number" },
                         service: { type: "string" },
                         serShortName: { type: "string" },
@@ -149,6 +165,9 @@
                 {field: "sequence", title: "Sequence", width: 20, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
+                {field: "weight", title: "Weight", width: 20, sortable: false, filterable: false,
+                    template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
+                },
                 {field: "goal", title: "Goal Statement", width: 200, sortable: false, filterable: false}
             ],
             filterable: {
@@ -166,6 +185,7 @@
                     goal: {
                         id: "",
                         version: "",
+                        weight: "",
                         goal: "",
                         serviceId: ""
                     }
@@ -182,11 +202,14 @@
                 url = "${createLink(controller: 'pmGoals', action:  'delete')}";
         confirmDelete(msg, url, gridGoal);
     }
-
+    function addService(){
+        $("#rowGoals").show();
+    }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridGoal, 'goal') == false) {
             return;
         }
+        $("#rowGoals").show();
         var goal = getSelectedObjectFromGridKendo(gridGoal);
         showService(goal);
     }
