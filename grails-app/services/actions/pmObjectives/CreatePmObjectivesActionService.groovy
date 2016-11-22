@@ -12,6 +12,7 @@ import pms.BaseService
 class CreatePmObjectivesActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "Objectives has been saved successfully"
+    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String OBJECTIVES_OBJECT = "pmObjective"
 
     private Logger log = Logger.getLogger(getClass())
@@ -25,6 +26,12 @@ class CreatePmObjectivesActionService extends BaseService implements ActionServi
             }
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
+            int weight = Long.parseLong(params.weight.toString())
+            int totalWeight =(int) PmGoals.executeQuery("select sum(weight) from PmObjectives where goalId=${goalId}")[0]
+            int available = 100-totalWeight
+            if(weight>available){
+                return super.setError(params, WEIGHT_EXCEED)
+            }
             PmObjectives objectives = buildObject(params, serviceId, goalId)
             params.put(OBJECTIVES_OBJECT, objectives)
             return params

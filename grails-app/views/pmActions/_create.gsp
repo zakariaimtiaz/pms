@@ -55,12 +55,10 @@
                                 <label class="col-md-2 control-label label-required" for="start">Date:</label>
 
                                 <div class="col-md-10">
-                                    <app:dateControl id="start" name="start" placeholder="Start date"
-                                                     tabindex="3" data-bind="value: actions.start">
-                                    </app:dateControl>
-                                    <app:dateControl id="end" name="end" placeholder="End date"
-                                                     tabindex="3" data-bind="value: actions.end">
-                                    </app:dateControl>
+                                    <input type="text" id="start" name="start" tabindex="3"
+                                           data-bind="value: actions.start" placeholder="Start date">
+                                    <input type="text" id="end" name="end" tabindex="4"
+                                           data-bind="value: actions.end" placeholder="End date">
                                 </div>
                             </div>
 
@@ -103,10 +101,24 @@
                                 <label class="col-md-2 control-label label-required" for="actions">Actions:</label>
 
                                 <div class="col-md-10">
-                                    <textarea id="actions" name="actions" cols="4" rows="4"
+                                    <textarea id="actions" name="actions" cols="4" rows="3"
                                               tabindex="4" class="form-control"
                                               data-bind="value: actions.actions"
                                               placeholder="Actions" class="kendo-drop-down"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required"
+                                       for="weight">Weight:</label>
+
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control"
+                                           id="weight" name="weight" tabindex="3"
+                                           data-bind="value: actions.weight"/>
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="weight"></span>
                                 </div>
                             </div>
 

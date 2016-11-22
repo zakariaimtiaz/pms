@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id="rowObjectives">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
@@ -39,6 +39,20 @@
                                            tabindex="2" data-bind="value: objectives.goalId"></select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label label-required"
+                                       for="weight">Weight:</label>
+
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control"
+                                           id="weight" name="weight" tabindex="3"
+                                           data-bind="value: objectives.weight"/>
+                                </div>
+
+                                <div class="col-md-3 pull-left">
+                                    <span class="k-invalid-msg" data-for="weight"></span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="col-md-7">
@@ -47,7 +61,7 @@
 
                                 <div class="col-md-10">
                                     <textarea id="objective" name="objective" cols="4" rows="5"
-                                              tabindex="3" class="form-control"
+                                              tabindex="4" class="form-control"
                                               data-bind="value: objectives.objective"
                                               required validationMessage="Required"
                                               placeholder="Objectives" class="kendo-drop-down"></textarea>
@@ -61,12 +75,12 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="4"
+                            role="button" tabindex="5"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="5"
+                            class="k-button k-button-icontext" role="button" tabindex="6"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

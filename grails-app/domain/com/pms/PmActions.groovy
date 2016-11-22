@@ -19,6 +19,7 @@ class PmActions {
     String remarks
     Date start
     Date end
+    int weight
 
     static mapping = {
         actions    sqlType: 'text'

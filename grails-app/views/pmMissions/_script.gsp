@@ -1,6 +1,9 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/pmMissions/update">
+<sec:access url="/pmMissions/create">
+    <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
+</sec:access>
+<sec:access url="/pmMissions/update">
     <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
 </sec:access>
 <sec:access url="/pmMissions/delete">
@@ -19,6 +22,7 @@
     });
 
     function onLoadMissionPage() {
+        $("#rowMissions").hide();
         initializeForm($("#missionForm"), onSubmitMission);
         defaultPageTile("Create Mission",null);
     }
@@ -79,19 +83,24 @@
                     gridMission.removeRow(selectedRow);
                     gridMission.dataSource.insert(selectedIndex, newEntry);
                 }
-                resetForm();
+                emptyForm();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
             }
         }
     }
-
-    function resetForm() {
+    function emptyForm() {
         clearForm($("#missionForm"), $('#serviceId'));
         initObservable();
         dropDownService.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+    function resetForm() {
+        clearForm($("#missionForm"), $('#serviceId'));
+        initObservable();
+        dropDownService.value('');
+        $('#rowMissions').hide();
     }
 
     function initDataSource() {
@@ -178,11 +187,14 @@
                 url = "${createLink(controller: 'pmMissions', action:  'delete')}";
         confirmDelete(msg, url, gridMission);
     }
-
+    function addService() {
+        $('#rowMissions').show();
+    }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridMission, 'mission') == false) {
             return;
         }
+        $('#rowMissions').show();
         var mission = getSelectedObjectFromGridKendo(gridMission);
         showService(mission);
     }

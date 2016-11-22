@@ -10,10 +10,14 @@ import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 @Transactional
 class CreatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "Actions has been saved successfully"
+    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String ACTIONS_OBJECT = "pmAction"
 
     private Logger log = Logger.getLogger(getClass())
@@ -28,6 +32,12 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
             long objectiveId = Long.parseLong(params.objectiveId.toString())
+            int weight = Long.parseLong(params.weight.toString())
+            int totalWeight =(int) PmActions.executeQuery("select sum(weight) from PmActions where objectiveId=${objectiveId}")[0]
+            int available = 100-totalWeight
+            if(weight>available){
+                return super.setError(params, WEIGHT_EXCEED)
+            }
             PmActions actions = buildObject(params, serviceId, goalId, objectiveId)
             params.put(ACTIONS_OBJECT, actions)
             return params
@@ -77,13 +87,29 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
     }
 
     private static PmActions buildObject(Map parameterMap, long serviceId, long goalId, long objectiveId) {
+        String startDateStr = parameterMap.start.toString()
+        String endDateStr = parameterMap.end.toString()
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+
+        Date start = originalFormat.parse(startDateStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+        Date end = originalFormat.parse(endDateStr);
+        Calendar ce = Calendar.getInstance();
+        ce.setTime(end);
+        ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
         List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
                 " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId}")
 
         int con =(int) max[0]+1
         PmObjectives objectives = PmObjectives.read(objectiveId)
-        parameterMap.start=DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.start))
-        parameterMap.end=DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.end))
+
+        parameterMap.start=DateUtility.getSqlDate(c.getTime())
+        parameterMap.end=DateUtility.getSqlDate(ce.getTime())
+
         PmActions actions = new PmActions(parameterMap)
         actions.serviceId = serviceId
         actions.goalId = goalId

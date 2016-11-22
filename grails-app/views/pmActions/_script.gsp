@@ -23,6 +23,24 @@
 
     function onLoadActionPage() {
         $("#rowAction").hide();
+        $("#weight").kendoNumericTextBox({
+            decimals : 0,
+            format   : "### \\%",
+            min      : 1,
+            max      : 100
+        });
+        $('#start').kendoDatePicker({
+            format: "MMMM yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "year",
+            depth: "year"
+        });
+        $('#end').kendoDatePicker({
+            format: "MMMM yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "year",
+            depth: "year"
+        });
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
         dropDownObjectives = initKendoDropdown($('#objectiveId'), null, null, null);
         initializeForm($("#actionForm"), onSubmitAction);
@@ -128,6 +146,7 @@
                         version: { type: "number" },
                         actions: { type: "string" },
                         objectiveId: { type: "number" },
+                        weight: { type: "number" },
                         goalId: { type: "number" },
                         goal: { type: "string" },
                         service: { type: "string" },
@@ -177,11 +196,14 @@
                 {field: "sequence", title: "Sequence", width: 60, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
+                {field: "weight", title: "Weight", width: 60, sortable: false, filterable: false,
+                    template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
+                },
                 {field: "actions", title: "Action", width: 120, sortable: false, filterable: false},
-                {field: "start", title: "Start", width: 70, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},
-                {field: "end", title: "End", width: 70, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},
+                {field: "start", title: "Start", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM-yy')#"},
+                {field: "end", title: "End", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"},
                 {field: "meaIndicator", title: "Measurement Indicator", width: 120, sortable: false, filterable: false},
                 {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
                 {field: "supportDepartment", title: "Support Department", width: 120, sortable: false, filterable: false},
@@ -208,6 +230,7 @@
                         goalId: "",
                         meaIndicator: "",
                         target: "",
+                        weight: "",
                         resPerson: "",
                         strategyMapRef: "",
                         supportDepartment: "",
@@ -233,10 +256,10 @@
         $("#rowAction").show();
     }
     function editService() {
-        addService();
         if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
             return;
         }
+        addService();
         var actions = getSelectedObjectFromGridKendo(gridActions);
         showService(actions);
     }

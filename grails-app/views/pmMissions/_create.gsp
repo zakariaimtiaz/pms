@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id="rowMissions">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
@@ -13,8 +13,8 @@
                     <input type="hidden" name="version" id="version" data-bind="value: mission.version"/>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label label-required"
-                               for="serviceId">Central Service/Sector:</label>
+                        <label class="col-md-1 control-label label-required"
+                               for="serviceId">Service:</label>
 
                         <div class="col-md-6">
                             <app:dropDownService
@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label label-required" for="mission">Mission Statement:</label>
+                        <label class="col-md-1 control-label label-required" for="mission">Statement:</label>
 
                         <div class="col-md-6">
                             <textarea id="mission" name="mission" cols="4" rows="5"
