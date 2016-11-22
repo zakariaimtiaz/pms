@@ -55,6 +55,20 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/reports/showStrategicPlan">
+                    <li>
+                        <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Reports<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/reports/showStrategicPlan">
+                                <li>
+                                    <a href="#reports/showStrategicPlan"><i class="fa fa-cog"></i>&nbsp;Strategic Plan</a>
+                                </li>
+                            </sec:access>
+
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
                 <sec:ifAnyUrls urls="/systemEntity/show,/pmServiceSector/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>
@@ -67,6 +81,11 @@
                             <sec:access url="/systemEntity/show">
                                 <li>
                                     <a href="#systemEntity/show"><i class="fa fa-cogs"></i>&nbsp;System Entity</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/SPTimeSchedule/show">
+                                <li>
+                                    <a href="#SPTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
                                 </li>
                             </sec:access>
                         </ul>
