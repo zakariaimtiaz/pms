@@ -13,21 +13,21 @@
                     <input type="hidden" name="version" id="version" data-bind="value: spTimeSchedule.version"/>
 
                     <div class="form-group">
-                        <label class="col-md-2 control-label label-optional" for="from">From:</label>
+                        <label class="col-md-2 control-label label-required" for="from">From:</label>
 
                         <div class="col-md-2">
                             <input type='text' tabindex="1" required="required" onkeydown="return false;"
                                    class="kendo-date-picker" id="from" name="from"
                                    data-bind="value: spTimeSchedule.fromDate"
-                                   placeholder="Month" validationMessage="Required"/>
+                                   placeholder="Year" validationMessage="Required"/>
                         </div>
-                        <label class="col-md-2 control-label label-optional" for="to">To:</label>
+                        <label class="col-md-2 control-label label-required" for="to">To:</label>
 
                         <div class="col-md-2">
                             <input type='text' tabindex="2" required="required" onkeydown="return false;"
                                    class="kendo-date-picker" id="to" name="to"
                                    data-bind="value: spTimeSchedule.toDate"
-                                   placeholder="Month" validationMessage="Required"/>
+                                   placeholder="Year" validationMessage="Required"/>
                         </div>
                     </div>
 

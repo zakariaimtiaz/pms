@@ -22,20 +22,20 @@
         var currentDate = moment().format('MMMM YYYY');
 
         start = $('#from').kendoDatePicker({
-            format: "MMMM yyyy",
+            format: "yyyy",
             parseFormats: ["yyyy-MM-dd"],
             change: startChange,
-            start: "year",
-            depth: "year"
+            start: "decade",
+            depth: "decade"
         }).data("kendoDatePicker");
 
         start.value(currentDate);
 
         end = $('#to').kendoDatePicker({
-            format: "MMMM yyyy",
+            format: "yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
+            start: "decade",
+            depth: "decade"
         }).data("kendoDatePicker");
 
         end.value(currentDate);
@@ -138,8 +138,8 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
-                        fromDate: { type: "Date" },
-                        toDate: { type: "Date" },
+                        fromDate: { type: "date" },
+                        toDate: { type: "date" },
                         description: { type: "String" }
                     }
                 },
@@ -171,8 +171,10 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "fromDate", title: "From Date", width: 80, sortable: false, filterable: kendoCommonFilterable(97)},
-                {field: "toDate", title: "To Date", width: 80, sortable: false, filterable: false},
+                {field: "fromDate", title: "From Date", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(fromDate, 'yyyy-MM-dd'), 'yyyy')#"},
+                {field: "toDate", title: "To Date", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(toDate, 'yyyy-MM-dd'), 'yyyy')#"},
                 {field: "description", title: "Description", width: 200, sortable: false, filterable: false}
             ],
             filterable: {

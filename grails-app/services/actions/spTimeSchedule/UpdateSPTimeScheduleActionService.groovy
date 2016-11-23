@@ -21,7 +21,7 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
 
     public Map executePreCondition(Map params) {
         try {
-            if ((!params.from) || (!params.to)) {
+            if (!params.id && !params.from && !params.to) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
@@ -80,7 +80,7 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
         Date fromDate,toDate
         String fromStr = parameterMap.from.toString()
         Calendar c = Calendar.getInstance();
-        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        DateFormat originalFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
         Date from = originalFormat.parse(fromStr);
         c.setTime(from);
 
@@ -88,7 +88,9 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
         Calendar ce = Calendar.getInstance();
         Date to = originalFormat.parse(toStr);
         ce.setTime(to);
+        ce.set(Calendar.MONTH,ce.getActualMaximum(Calendar.MONTH));
         ce.set(Calendar.DAY_OF_MONTH, ce.getActualMaximum(Calendar.DAY_OF_MONTH));
+
 
         fromDate = DateUtility.getSqlDate(c.getTime())
         toDate = DateUtility.getSqlDate(ce.getTime())

@@ -15,6 +15,6 @@ class SpTimeSchedule {
     }
 
     static constraints = {
-
+        description nullable: true
     }
 }

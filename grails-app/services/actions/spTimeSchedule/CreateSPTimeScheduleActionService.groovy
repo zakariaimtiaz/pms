@@ -31,7 +31,7 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
             Date fromDate,toDate
             String fromStr = params.from.toString()
             Calendar c = Calendar.getInstance();
-            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+            DateFormat originalFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
             Date from = originalFormat.parse(fromStr);
             c.setTime(from);
 
@@ -39,6 +39,7 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
             Calendar ce = Calendar.getInstance();
             Date to = originalFormat.parse(toStr);
             ce.setTime(to);
+            ce.set(Calendar.MONTH,ce.getActualMaximum(Calendar.MONTH));
             ce.set(Calendar.DAY_OF_MONTH, ce.getActualMaximum(Calendar.DAY_OF_MONTH));
 
             fromDate = DateUtility.getSqlDate(c.getTime())
@@ -47,8 +48,8 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
             if (count > 0) {
                 return super.setError(params, ALREADY_EXIST)
             }
-            params.from=fromDate.toString()
-            params.to=toDate.toString()
+            params.from=fromDate
+            params.to=toDate
             SpTimeSchedule spTimeSchedule = buildObject(params)
             params.put(SP_TIME_SCHEDULE, spTimeSchedule)
             return params
@@ -99,11 +100,10 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
 
     private static SpTimeSchedule buildObject(Map parameterMap) {
         SpTimeSchedule service = new SpTimeSchedule(parameterMap)
-        Date fromDate = DateUtility.parseDateForDB(parameterMap.from)
-        Date toDate=DateUtility.parseDateForDB(parameterMap.to)
 
-        service.fromDate=DateUtility.getSqlDate(fromDate)
-        service.toDate=DateUtility.getSqlDate(toDate)
+
+        service.fromDate=DateUtility.getSqlDate(parameterMap.from)
+        service.toDate=DateUtility.getSqlDate(parameterMap.to)
         return service
     }
 }
