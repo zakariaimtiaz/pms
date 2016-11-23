@@ -6,6 +6,7 @@ class PmSprints {
     long serviceId
     long goalId
     long objectiveId
+    int sequence
     String actionsId
     String sprints
     String meaIndicator
@@ -20,7 +21,6 @@ class PmSprints {
     int weight
     Date createDate
     long createBy
-    boolean isActive
 
     static mapping = {
         sprints    sqlType: 'text'

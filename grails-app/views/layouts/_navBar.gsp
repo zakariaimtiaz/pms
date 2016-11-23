@@ -56,6 +56,11 @@
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/pmSprints/show">
+                                <li>
+                                    <a href="#pmSprints/show"><i class="fa fa-balance-scale"></i>&nbsp;Sprints</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
