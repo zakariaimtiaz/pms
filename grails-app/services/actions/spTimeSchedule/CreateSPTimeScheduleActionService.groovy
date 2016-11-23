@@ -1,9 +1,7 @@
 package actions.spTimeSchedule
 
-import com.model.ListPmMissionsActionServiceModel
-import com.model.ListSPTimeScheduleActionServiceModel
-import com.pms.PmMissions
-import com.pms.SPTimeSchedule
+import com.model.ListSpTimeScheduleActionServiceModel
+import com.pms.SpTimeSchedule
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -45,13 +43,13 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
 
             fromDate = DateUtility.getSqlDate(c.getTime())
             toDate = DateUtility.getSqlDate(ce.getTime())
-            int count = SPTimeSchedule.countByFromDateAndToDate(fromDate,toDate)
+            int count = SpTimeSchedule.countByFromDateAndToDate(fromDate,toDate)
             if (count > 0) {
                 return super.setError(params, ALREADY_EXIST)
             }
             params.from=fromDate.toString()
             params.to=toDate.toString()
-            SPTimeSchedule spTimeSchedule = buildObject(params)
+            SpTimeSchedule spTimeSchedule = buildObject(params)
             params.put(SP_TIME_SCHEDULE, spTimeSchedule)
             return params
         } catch (Exception ex) {
@@ -63,7 +61,7 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
     @Transactional
     public Map execute(Map result) {
         try {
-            SPTimeSchedule spTimeSchedule = (SPTimeSchedule) result.get(SP_TIME_SCHEDULE)
+            SpTimeSchedule spTimeSchedule = (SpTimeSchedule) result.get(SP_TIME_SCHEDULE)
             spTimeSchedule.save()
             return result
         } catch (Exception ex) {
@@ -85,8 +83,8 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
-        SPTimeSchedule spTimeSchedule = (SPTimeSchedule) result.get(SP_TIME_SCHEDULE)
-        ListSPTimeScheduleActionServiceModel model = ListSPTimeScheduleActionServiceModel.read(spTimeSchedule.id)
+        SpTimeSchedule spTimeSchedule = (SpTimeSchedule) result.get(SP_TIME_SCHEDULE)
+        ListSpTimeScheduleActionServiceModel model = ListSpTimeScheduleActionServiceModel.read(spTimeSchedule.id)
         result.put(SP_TIME_SCHEDULE, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
@@ -99,8 +97,8 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
         return result
     }
 
-    private static SPTimeSchedule buildObject(Map parameterMap) {
-        SPTimeSchedule service = new SPTimeSchedule(parameterMap)
+    private static SpTimeSchedule buildObject(Map parameterMap) {
+        SpTimeSchedule service = new SpTimeSchedule(parameterMap)
         Date fromDate = DateUtility.parseDateForDB(parameterMap.from)
         Date toDate=DateUtility.parseDateForDB(parameterMap.to)
 

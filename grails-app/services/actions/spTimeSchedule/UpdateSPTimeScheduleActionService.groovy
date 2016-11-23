@@ -1,7 +1,7 @@
 package actions.spTimeSchedule
 
-import com.model.ListSPTimeScheduleActionServiceModel
-import com.pms.SPTimeSchedule
+import com.model.ListSpTimeScheduleActionServiceModel
+import com.pms.SpTimeSchedule
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -25,8 +25,8 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            SPTimeSchedule oldObject = SPTimeSchedule.read(id)
-            SPTimeSchedule spTimeSchedule = buildObject(params, oldObject)
+            SpTimeSchedule oldObject = SpTimeSchedule.read(id)
+            SpTimeSchedule spTimeSchedule = buildObject(params, oldObject)
             params.put(SP_TIME_SCHEDULE, spTimeSchedule)
             return params
         } catch (Exception ex) {
@@ -38,7 +38,7 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
     @Transactional
     public Map execute(Map result) {
         try {
-            SPTimeSchedule spTimeSchedule = (SPTimeSchedule) result.get(SP_TIME_SCHEDULE)
+            SpTimeSchedule spTimeSchedule = (SpTimeSchedule) result.get(SP_TIME_SCHEDULE)
             spTimeSchedule.save()
             return result
         } catch (Exception ex) {
@@ -60,8 +60,8 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
      * @return - map with success message
      */
     public Map buildSuccessResultForUI(Map result) {
-        SPTimeSchedule spTimeSchedule = (SPTimeSchedule) result.get(SP_TIME_SCHEDULE)
-        ListSPTimeScheduleActionServiceModel model = ListSPTimeScheduleActionServiceModel.read(spTimeSchedule.id)
+        SpTimeSchedule spTimeSchedule = (SpTimeSchedule) result.get(SP_TIME_SCHEDULE)
+        ListSpTimeScheduleActionServiceModel model = ListSpTimeScheduleActionServiceModel.read(spTimeSchedule.id)
         result.put(SP_TIME_SCHEDULE, model)
         return super.setSuccess(result, UPDATE_SUCCESS_MESSAGE)
     }
@@ -75,8 +75,8 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
         return params
     }
 
-    private static SPTimeSchedule buildObject(Map parameterMap, SPTimeSchedule oldObject) {
-        SPTimeSchedule spTimeSchedule = new SPTimeSchedule(parameterMap)
+    private static SpTimeSchedule buildObject(Map parameterMap, SpTimeSchedule oldObject) {
+        SpTimeSchedule spTimeSchedule = new SpTimeSchedule(parameterMap)
         Date fromDate,toDate
         String fromStr = parameterMap.from.toString()
         Calendar c = Calendar.getInstance();

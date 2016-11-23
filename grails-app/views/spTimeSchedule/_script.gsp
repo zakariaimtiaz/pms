@@ -68,9 +68,9 @@
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'SPTimeSchedule', action: 'create')}";
+            actionUrl = "${createLink(controller:'spTimeSchedule', action: 'create')}";
         } else {
-            actionUrl = "${createLink(controller:'SPTimeSchedule', action: 'update')}";
+            actionUrl = "${createLink(controller:'spTimeSchedule', action: 'update')}";
         }
 
         jQuery.ajax({
@@ -126,7 +126,7 @@
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'SPTimeSchedule', action: 'list')}",
+                    url: "${createLink(controller: 'spTimeSchedule', action: 'list')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -204,7 +204,7 @@
             return;
         }
         var msg = 'Are you sure you want to delete the selected record?',
-                url = "${createLink(controller: 'SPTimeSchedule', action:  'delete')}";
+                url = "${createLink(controller: 'spTimeSchedule', action:  'delete')}";
         confirmDelete(msg, url, gridTimeSchedule);
     }
 

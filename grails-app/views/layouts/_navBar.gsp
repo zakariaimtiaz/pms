@@ -88,9 +88,9 @@
                                     <a href="#systemEntity/show"><i class="fa fa-cogs"></i>&nbsp;System Entity</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/SPTimeSchedule/show">
+                            <sec:access url="/spTimeSchedule/show">
                                 <li>
-                                    <a href="#SPTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
+                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
                                 </li>
                             </sec:access>
                         </ul>

@@ -1,6 +1,6 @@
 package actions.spTimeSchedule
 
-import com.pms.SPTimeSchedule
+import com.pms.SpTimeSchedule
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -18,7 +18,7 @@ class DeleteSPTimeScheduleService extends BaseService implements ActionServiceIn
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         long id = Long.parseLong(params.id.toString())
-        SPTimeSchedule spTimeSchedule = SPTimeSchedule.read(id)
+        SpTimeSchedule spTimeSchedule = SpTimeSchedule.read(id)
         if(!spTimeSchedule){
             return super.setError(params, NOT_FOUND)
         }
@@ -29,7 +29,7 @@ class DeleteSPTimeScheduleService extends BaseService implements ActionServiceIn
     @Transactional
     public Map execute(Map result) {
         try {
-            SPTimeSchedule spTimeSchedule = (SPTimeSchedule) result.get(SP_TIME_SCHEDULE)
+            SpTimeSchedule spTimeSchedule = (SpTimeSchedule) result.get(SP_TIME_SCHEDULE)
             spTimeSchedule.delete()
             return result
         } catch (Exception ex) {

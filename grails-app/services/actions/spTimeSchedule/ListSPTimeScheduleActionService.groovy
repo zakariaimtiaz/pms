@@ -1,7 +1,6 @@
 package actions.spTimeSchedule
 
-import com.model.ListPmMissionsActionServiceModel
-import com.model.ListSPTimeScheduleActionServiceModel
+import com.model.ListSpTimeScheduleActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -19,7 +18,7 @@ class ListSPTimeScheduleActionService extends BaseService implements ActionServi
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListSPTimeScheduleActionServiceModel.class)
+            Map resultMap = super.getSearchResult(result, ListSpTimeScheduleActionServiceModel.class)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result
