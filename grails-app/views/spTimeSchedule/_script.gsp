@@ -1,9 +1,9 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/SPTimeSchedule/update">
+    <sec:access url="/spTimeSchedule/update">
     <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
 </sec:access>
-<sec:access url="/SPTimeSchedule/delete">
+<sec:access url="/spTimeSchedule/delete">
     <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
 </sec:access>
 </ul>
@@ -41,7 +41,7 @@
         end.value(currentDate);
         end.min(start.value());
         initializeForm($("#timeScheduleForm"), onSubmitTimeSchedule);
-        defaultPageTile("SP Time Schedule",'/SPTimeSchedule/show');
+        defaultPageTile("SP Time Schedule",'/spTimeSchedule/show');
     }
     function startChange() {
         var startDate = start.value();
