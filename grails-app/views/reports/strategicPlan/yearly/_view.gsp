@@ -49,6 +49,6 @@
     </div>
 
     <div class="row">
-        <g:render template='/reports/strategicPlan/tempSP'/>
+        <g:render template='/reports/strategicPlan/yearly/tempSP'/>
     </div>
 </div>

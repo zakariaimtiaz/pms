@@ -11,7 +11,7 @@ class ReportsController  extends BaseController  {
             showSpPlan: "POST", listSpPlan: "POST"
     ]
     def showSpPlan() {
-        render(view: "/reports/strategicPlan/show")
+        render(view: "/reports/strategicPlan/yearly/show")
     }
     def showSpMonthlyPlan() {
         render(view: "/reports/strategicPlan/monthly/show")
