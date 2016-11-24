@@ -1,6 +1,7 @@
 package actions.pmObjectives
 
 import com.model.ListPmObjectivesActionServiceModel
+import com.pms.PmActions
 import com.pms.PmGoals
 import com.pms.PmObjectives
 import grails.transaction.Transactional
@@ -27,7 +28,9 @@ class CreatePmObjectivesActionService extends BaseService implements ActionServi
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
             int weight = Long.parseLong(params.weight.toString())
-            int totalWeight =(int) PmGoals.executeQuery("select sum(weight) from PmObjectives where goalId=${goalId}")[0]
+            int totalWeight = 0
+            List tmp = PmGoals.executeQuery("select sum(weight) from PmObjectives where goalId=${goalId}")
+            if(tmp[0]) totalWeight =(int) tmp[0]
             int available = 100-totalWeight
             if(weight>available){
                 return super.setError(params, WEIGHT_EXCEED)

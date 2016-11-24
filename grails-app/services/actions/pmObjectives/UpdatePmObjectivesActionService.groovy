@@ -1,6 +1,7 @@
 package actions.pmObjectives
 
 import com.model.ListPmObjectivesActionServiceModel
+import com.pms.PmGoals
 import com.pms.PmObjectives
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -24,7 +25,9 @@ class UpdatePmObjectivesActionService extends BaseService implements ActionServi
             long id = Long.parseLong(params.id.toString())
             long goalId = Long.parseLong(params.goalId.toString())
             int weight = Long.parseLong(params.weight.toString())
-            int totalWeight =(int) PmObjectives.executeQuery("select sum(weight) from PmObjectives where goalId=${goalId} AND id<>${id}")[0]
+            int totalWeight = 0
+            List tmp = PmGoals.executeQuery("SELECT SUM(weight) FROM PmObjectives WHERE goalId=${goalId} AND id<>${id}")
+            if(tmp[0]) totalWeight =(int) tmp[0]
             int available = 100-totalWeight
             if(weight>available){
                 return super.setError(params, WEIGHT_EXCEED)
