@@ -29,27 +29,43 @@
             min      : 1,
             max      : 100
         });
-        $('#start').kendoDatePicker({
-            format: "MMMM yyyy",
+        var currentDate = moment().format('dd/MM/yyyy');
+
+        start = $('#start').kendoDatePicker({
+            format: "dd/MM/yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
-        });
-        $('#end').kendoDatePicker({
-            format: "MMMM yyyy",
+            change: startChange,
+            start: "month",
+            depth: "month"
+        }).data("kendoDatePicker");
+
+        start.value(currentDate);
+
+        end = $('#end').kendoDatePicker({
+            format: "dd/MM/yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
-        });
+            start: "month",
+            depth: "month"
+        }).data("kendoDatePicker");
+
+        end.value(currentDate);
+        end.min(start.value());
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
         dropDownObjectives = initKendoDropdown($('#objectiveId'), null, null, null);
         dropDownActions = initKendoDropdown($('#actionsId'), null, null, null);
-        initializeForm($("#actionForm"), onSubmitAction);
+        initializeForm($("#sprintsForm"), onSubmitAction);
         defaultPageTile("Create Actions",null);
     }
-
+    function startChange() {
+        var startDate = start.value();
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate() + 1);
+            end.min(startDate);
+        }
+    }
     function executePreCondition() {
-        if (!validateForm($("#actionForm"))) {
+        if (!validateForm($("#sprintsForm"))) {
             return false;
         }
         return true;
@@ -71,7 +87,7 @@
 
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#actionForm").serialize(),
+            data: jQuery("#sprintsForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -93,7 +109,7 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.pmAction;
+                var newEntry = result.pmSprints;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
                     var gridData = gridSprints.dataSource.data();
                     gridData.unshift(newEntry);
@@ -113,14 +129,14 @@
     }
 
     function emptyForm() {
-        clearForm($("#actionForm"), null);
+        clearForm($("#sprintsForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
         dropDownObjectives.value('');
     }
     function resetForm() {
-        clearForm($("#actionForm"), null);
+        clearForm($("#sprintsForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
@@ -155,15 +171,12 @@
                         serShortName: { type: "string" },
                         serviceId: { type: "number" },
                         sequence: { type: "string" },
-                        meaIndicator: { type: "string" },
                         target: { type: "string" },
                         resPerson: { type: "string" },
-                        strategyMapRef: { type: "string" },
                         supportDepartment: { type: "string" },
-                        sourceOfFund: { type: "string" },
                         remarks: { type: "string" },
-                        start: { type: "date" },
-                        end: { type: "date" }
+                        startDate: { type: "date" },
+                        endDate: { type: "date" }
                     }
                 },
                 parse: function (data) {
@@ -201,12 +214,11 @@
                 {field: "weight", title: "Weight", width: 60, sortable: false, filterable: false,
                     template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "sprints", title: "Action", width: 120, sortable: false, filterable: false},
-                {field: "start", title: "Start", width: 80, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM-yy')#"},
-                {field: "end", title: "End", width: 80, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"},
-                {field: "meaIndicator", title: "Measurement Indicator", width: 120, sortable: false, filterable: false},
+                {field: "sprints", title: "Sprints", width: 120, sortable: false, filterable: false},
+                {field: "startDate", title: "Start", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
+                {field: "endDate", title: "End", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
                 {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
                 {field: "supportDepartment", title: "Support Department", width: 120, sortable: false, filterable: false},
                 {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false}
@@ -232,15 +244,12 @@
                         goalId: "",
                         objectiveId: "",
                         actionsId: "",
-                        meaIndicator: "",
                         target: "",
                         weight: "",
                         resPerson: "",
-                        strategyMapRef: "",
                         supportDepartment: "",
-                        sourceOfFund: "",
-                        start: "",
-                        end: ""
+                        startDate: "",
+                        endDate: ""
                     }
                 }
         );
@@ -251,7 +260,7 @@
         if (executeCommonPreConditionForSelectKendo(gridSprints, 'action') == false) {
             return;
         }
-        var msg = 'Are you sure you want to delete the selected sprint?',
+        var msg = 'Are you sure you want to delete the selected sprints?',
                 url = "${createLink(controller: 'pmSprints', action:  'delete')}";
         confirmDelete(msg, url, gridSprints);
     }
@@ -270,12 +279,12 @@
 
     function showService(sprints) {
         sprintsModel.set('sprints', sprints);
-        populateGoals(sprints.serviceId,sprints.goalId,sprints.objectiveId);
+        populateGoals(sprints.serviceId,sprints.goalId,sprints.objectiveId,sprints.actionsId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
     // To populate Goals List
-    function populateGoals(serId,goalId,objectiveId) {
+    function populateGoals(serId,goalId,objectiveId,actionsId) {
         var serviceId = serId?serId:dropDownService.value();
         if (serviceId == '') {
             dropDownGoals.setDataSource(getKendoEmptyDataSource(dropDownGoals, null));
@@ -295,7 +304,7 @@
                 dropDownGoals.setDataSource(data.lstGoals);
                 if(goalId){
                     dropDownGoals.value(goalId);
-                    populateObjectives(goalId,objectiveId);
+                    populateObjectives(goalId,objectiveId,actionsId);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -310,7 +319,7 @@
         return true;
     }
         // To populate Objectives List
-    function populateObjectives(goalId,objectiveId) {
+    function populateObjectives(goalId,objectiveId,actionsId) {
         var goalsId = goalId?goalId:dropDownGoals.value();
         if (goalsId == '') {
             dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
@@ -327,7 +336,7 @@
                 }
                 dropDownObjectives.setDataSource(data.lstObjectives);
                 if(objectiveId) dropDownObjectives.value(objectiveId);
-                populateActions(sprints.actionsId,sprints.objectiveId);
+                populateActions(actionsId,objectiveId);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);
