@@ -1,69 +1,64 @@
 package actions.pmSprints
 
-import com.model.ListPmServiceSectorActionServiceModel
-import com.pms.PmServiceSector
+import com.model.ListPmActionsActionServiceModel
+import com.pms.PmObjectives
+import com.pms.PmSprints
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
+import pms.utility.DateUtility
 
 @Transactional
 class CreatePmSprintsActionService extends BaseService implements ActionServiceIntf {
 
-    private static final String SAVE_SUCCESS_MESSAGE = "PmServiceSector has been saved successfully"
-    private static final String NAME_ALREADY_EXIST = "Same PmServiceSector already exist"
-    private static final String SEQUENCE_ALREADY_EXIST = "Same Sequence already exist"
-    private static final String SHORT_NAME_ALREADY_EXIST = "Short name already exist"
-    private static final String SERVICE_OBJECT = "pmServiceSector"
+    private static final String SAVE_SUCCESS_MESSAGE = "Sprits has been saved successfully"
+    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
+    private static final String SPRINTS_OBJECT = "pmSprints"
 
     private Logger log = Logger.getLogger(getClass())
 
 
-    /**
-     * 1. input validation check
-     * 2. duplicate check for role-name
-     * @param params - receive role object from controller
-     * @return - map.
-     */
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
-            if (!params.name && !params.shortName) {
+            if (!params.serviceId && !params.goalId && !params.objectiveId && !params.actionsId && !params.sprints) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            int count = PmServiceSector.countByNameIlike(params.name)
-            if (count > 0) {
-                return super.setError(params, NAME_ALREADY_EXIST)
+            long serviceId = Long.parseLong(params.serviceId.toString())
+            long goalId = Long.parseLong(params.goalId.toString())
+            long objectiveId = Long.parseLong(params.objectiveId.toString())
+            Long actionsId = Long.parseLong(params.actionsId.toString())
+            int weight = Long.parseLong(params.weight.toString())
+            Date startDateStr = DateUtility.parseMaskedDate(params.start)
+            Date endDateStr = DateUtility.parseMaskedDate(params.end)
+            startDateStr = DateUtility.getSqlDate(startDateStr)
+            endDateStr = DateUtility.getSqlDate(endDateStr)
+            params.start = startDateStr
+            params.end = endDateStr
+            int c = (int) PmSprints.executeQuery("SELECT count(id) FROM PmActions WHERE startDate<='${startDateStr}' AND endDate >='${endDateStr}' AND id=${actionsId} ")[0]
+            if (c < 1) {
+                return super.setError(params, "Sorry! Date range exceed action's time duration. ")
             }
-/*            int countSequence = PmServiceSector.countBySequence(Integer.parseInt(params.sequence.toString()))
-            if (countSequence > 0) {
-                return super.setError(params, SEQUENCE_ALREADY_EXIST)
-            }*/
-            int duplicateCount = PmServiceSector.countByShortNameIlike(params.shortName)
-            if (duplicateCount > 0) {
-                return super.setError(params, SHORT_NAME_ALREADY_EXIST)
+            int totalWeight = (int) PmSprints.executeQuery("select sum(weight) from PmSprints where actionsId=${actionsId}")[0]
+            int available = 100 - totalWeight
+            if (weight > available) {
+                return super.setError(params, WEIGHT_EXCEED)
             }
-            PmServiceSector service = buildObject(params)
-            params.put(SERVICE_OBJECT, service)
+            PmSprints sprints = buildObject(params, serviceId, goalId, objectiveId, actionsId)
+            params.put(SPRINTS_OBJECT, sprints)
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
             throw new RuntimeException(ex)
         }
     }
-    /**
-     * 1. receive pmPmServiceSectorSector object from pre execute method
-     * 2. create new pmPmServiceSectorSector
-     * This method is in transactional block and will roll back in case of any exception
-     * @param result - map received from pre execute method
-     * @return - map.
-     */
+
     @Transactional
     public Map execute(Map result) {
         try {
-            PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJECT)
-            service.save()
+            PmSprints sprints = (PmSprints) result.get(SPRINTS_OBJECT)
+            sprints.save()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -84,9 +79,9 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
-        PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJECT)
-        ListPmServiceSectorActionServiceModel model = ListPmServiceSectorActionServiceModel.read(service.id)
-        result.put(SERVICE_OBJECT, model)
+        PmSprints sprints = (PmSprints) result.get(SPRINTS_OBJECT)
+        ListPmActionsActionServiceModel model = ListPmActionsActionServiceModel.read(sprints.id)
+        result.put(SPRINTS_OBJECT, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**
@@ -98,15 +93,21 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    /**
-     * Build PmServiceSector object
-     * @param parameterMap -serialized parameters from UI
-     * @return -new PmServiceSector object
-     */
-    private PmServiceSector buildObject(Map parameterMap) {
-        PmServiceSector service = new PmServiceSector(parameterMap)
-        service.staticName = service.name.toUpperCase()
-        service.categoryId = Long.parseLong(parameterMap.categoryId.toString())
-        return service
+    private static PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long objectiveId,long actionsId) {
+
+        List<PmSprints> max = PmSprints.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmSprints" +
+                " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId} AND actionsId=${actionsId}")
+
+        int con =(int) max[0]+1
+        PmObjectives objectives = PmObjectives.read(objectiveId)
+        PmSprints sprints = new PmSprints(parameterMap)
+        sprints.serviceId = serviceId
+        sprints.goalId = goalId
+        sprints.objectiveId = objectiveId
+        sprints.sequence = objectives.sequence+"."+con
+        sprints.tmpSeq = con
+        sprints.startDate=DateUtility.getSqlDate(parameterMap.start)
+        sprints.endDate = DateUtility.getSqlDate(parameterMap.end)
+        return sprints
     }
 }

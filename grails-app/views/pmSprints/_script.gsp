@@ -29,27 +29,43 @@
             min      : 1,
             max      : 100
         });
-        $('#start').kendoDatePicker({
-            format: "MMMM yyyy",
+        var currentDate = moment().format('dd/MM/yyyy');
+
+        start = $('#start').kendoDatePicker({
+            format: "dd/MM/yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
-        });
-        $('#end').kendoDatePicker({
-            format: "MMMM yyyy",
+            change: startChange,
+            start: "month",
+            depth: "month"
+        }).data("kendoDatePicker");
+
+        start.value(currentDate);
+
+        end = $('#end').kendoDatePicker({
+            format: "dd/MM/yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
-        });
+            start: "month",
+            depth: "month"
+        }).data("kendoDatePicker");
+
+        end.value(currentDate);
+        end.min(start.value());
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
         dropDownObjectives = initKendoDropdown($('#objectiveId'), null, null, null);
         dropDownActions = initKendoDropdown($('#actionsId'), null, null, null);
-        initializeForm($("#actionForm"), onSubmitAction);
+        initializeForm($("#sprintsForm"), onSubmitAction);
         defaultPageTile("Create Actions",null);
     }
-
+    function startChange() {
+        var startDate = start.value();
+        if (startDate) {
+            startDate = new Date(startDate);
+            startDate.setDate(startDate.getDate() + 1);
+            end.min(startDate);
+        }
+    }
     function executePreCondition() {
-        if (!validateForm($("#actionForm"))) {
+        if (!validateForm($("#sprintsForm"))) {
             return false;
         }
         return true;
@@ -71,7 +87,7 @@
 
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#actionForm").serialize(),
+            data: jQuery("#sprintsForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -113,14 +129,14 @@
     }
 
     function emptyForm() {
-        clearForm($("#actionForm"), null);
+        clearForm($("#sprintsForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
         dropDownObjectives.value('');
     }
     function resetForm() {
-        clearForm($("#actionForm"), null);
+        clearForm($("#sprintsForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
@@ -155,15 +171,12 @@
                         serShortName: { type: "string" },
                         serviceId: { type: "number" },
                         sequence: { type: "string" },
-                        meaIndicator: { type: "string" },
                         target: { type: "string" },
                         resPerson: { type: "string" },
-                        strategyMapRef: { type: "string" },
                         supportDepartment: { type: "string" },
-                        sourceOfFund: { type: "string" },
                         remarks: { type: "string" },
-                        start: { type: "date" },
-                        end: { type: "date" }
+                        startDate: { type: "date" },
+                        endDate: { type: "date" }
                     }
                 },
                 parse: function (data) {
@@ -202,11 +215,10 @@
                     template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "sprints", title: "Action", width: 120, sortable: false, filterable: false},
-                {field: "start", title: "Start", width: 80, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM-yy')#"},
-                {field: "end", title: "End", width: 80, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"},
-                {field: "meaIndicator", title: "Measurement Indicator", width: 120, sortable: false, filterable: false},
+                {field: "startDate", title: "Start", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
+                {field: "endDate", title: "End", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
                 {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
                 {field: "supportDepartment", title: "Support Department", width: 120, sortable: false, filterable: false},
                 {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false}
@@ -232,15 +244,12 @@
                         goalId: "",
                         objectiveId: "",
                         actionsId: "",
-                        meaIndicator: "",
                         target: "",
                         weight: "",
                         resPerson: "",
-                        strategyMapRef: "",
                         supportDepartment: "",
-                        sourceOfFund: "",
-                        start: "",
-                        end: ""
+                        startDate: "",
+                        endDate: ""
                     }
                 }
         );

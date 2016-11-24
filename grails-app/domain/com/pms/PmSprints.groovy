@@ -7,14 +7,12 @@ class PmSprints {
     long goalId
     long objectiveId
     int sequence
+    int tmpSeq
     String actionsId
     String sprints
-    String meaIndicator
     String target
     String resPerson
-    String strategyMapRef
     String supportDepartment
-    String sourceOfFund
     String remarks
     Date startDate
     Date endDate
@@ -35,12 +33,9 @@ class PmSprints {
 
     static constraints = {
         sprints     size: 2..15000
-        meaIndicator(nullable: true)
         target(nullable: true)
         resPerson(nullable: true)
-        strategyMapRef(nullable: true)
         supportDepartment(nullable: true)
-        sourceOfFund(nullable: true)
         remarks(nullable: true)
     }
 }

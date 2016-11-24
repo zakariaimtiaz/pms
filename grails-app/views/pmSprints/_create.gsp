@@ -67,20 +67,9 @@
 
                                 <div class="col-md-10">
                                     <input type="text" id="start" name="start" tabindex="3"
-                                           data-bind="value: sprints.start" placeholder="Start date">
+                                           data-bind="value: sprints.startDate" placeholder="Start date">&nbsp;To&nbsp;
                                     <input type="text" id="end" name="end" tabindex="4"
-                                           data-bind="value: sprints.end" placeholder="End date">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="meaIndicator">Indicator:</label>
-
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="meaIndicator" name="meaIndicator"
-                                           placeholder="Measurement Indicator"
-                                           tabindex="3" data-bind="value: sprints.meaIndicator"/>
+                                           data-bind="value: sprints.endDate" placeholder="End date">
                                 </div>
                             </div>
 
@@ -94,17 +83,6 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="supportDepartment">Support:</label>
-
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="supportDepartment"
-                                           name="supportDepartment"
-                                           placeholder="Support Department"
-                                           tabindex="3" data-bind="value: sprints.supportDepartment"/>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="col-md-7">
@@ -112,7 +90,7 @@
                                 <label class="col-md-2 control-label label-required" for="sprints">Sprints:</label>
 
                                 <div class="col-md-10">
-                                    <textarea id="sprints" name="sprints" cols="4" rows="3"
+                                    <textarea id="sprints" name="sprints" cols="4" rows="4"
                                               tabindex="4" class="form-control"
                                               data-bind="value: sprints.sprints"
                                               placeholder="Sprints" class="kendo-drop-down"></textarea>
@@ -143,26 +121,15 @@
                                            tabindex="3" data-bind="value: sprints.resPerson"/>
                                 </div>
                             </div>
-
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-optional"
-                                       for="strategyMapRef">Reference:</label>
+                                       for="supportDepartment">Support:</label>
 
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="strategyMapRef" name="strategyMapRef"
-                                           placeholder="Strategy Map Ref"
-                                           tabindex="3" data-bind="value: sprints.strategyMapRef"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="sourceOfFund">Fund Source:</label>
-
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="sourceOfFund" name="sourceOfFund"
-                                           placeholder="Source Of Fund"
-                                           tabindex="3" data-bind="value: sprints.sourceOfFund"/>
+                                    <input type="text" class="form-control" id="supportDepartment"
+                                           name="supportDepartment"
+                                           placeholder="Support Department"
+                                           tabindex="3" data-bind="value: sprints.supportDepartment"/>
                                 </div>
                             </div>
 

@@ -1,6 +1,8 @@
 package actions.pmSprints
 
+import com.model.ListPmActionsActionServiceModel
 import com.model.ListPmServiceSectorActionServiceModel
+import com.model.ListPmSprintsActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -18,7 +20,11 @@ class ListPmSprintsActionService extends BaseService implements ActionServiceInt
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListPmServiceSectorActionServiceModel.class)
+            List<Long> lst = currentUserDepartmentList()
+            Closure additionalParam = {
+                'in'('serviceId', lst)
+            }
+            Map resultMap = super.getSearchResult(result, ListPmSprintsActionServiceModel.class,additionalParam)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

@@ -9,7 +9,7 @@ class PmActionsService extends BaseService{
 
     public List<GroovyRowResult> lstActionsForDropDown(long objectiveId) {
         String queryForList = """
-            SELECT o.id AS id, CONCAT(o.sequence,'. ',o.actions) AS NAME
+            SELECT o.id AS id, CONCAT(o.sequence,'. ',o.actions) AS name
                 FROM pm_actions o
                 WHERE o.objective_id = ${objectiveId}
                 ORDER BY o.sequence

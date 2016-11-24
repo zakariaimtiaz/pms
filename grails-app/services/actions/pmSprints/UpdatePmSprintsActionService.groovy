@@ -1,49 +1,50 @@
 package actions.pmSprints
 
-import com.model.ListPmServiceSectorActionServiceModel
-import com.pms.PmServiceSector
+import com.model.ListPmActionsActionServiceModel
+import com.pms.PmSprints
+import com.pms.PmSprints
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
+import pms.utility.DateUtility
 
 @Transactional
 class UpdatePmSprintsActionService extends BaseService implements ActionServiceIntf {
 
-    private static final String UPDATE_SUCCESS_MESSAGE = "Service has been updated successfully"
-    private static final String NAME_ALREADY_EXIST = "Same Service already exist"
-    private static final String SEQUENCE_ALREADY_EXIST = "Same Sequence already exist"
-    private static final String SHORT_NAME_ALREADY_EXIST = "Same Short Name already exist"
-    private static final String SERVICE_OBJ = "pmServiceSector"
+    private static final String UPDATE_SUCCESS_MESSAGE = "Sprints has been updated successfully"
+    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
+    private static final String SPRINTS_OBJ = "pmSprints"
 
     private Logger log = Logger.getLogger(getClass())
 
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
-            if ((!params.name) || (!params.shortName)) {
+            if (!params.serviceId && !params.goalId && !params.objectiveId && !params.actionsId && !params.sprints) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-
-            //Check existing of Obj and version matching
-            PmServiceSector oldDepartment = (PmServiceSector) PmServiceSector.read(id)
-
-            String name = params.name.toString()
-            int count = PmServiceSector.countByNameIlikeAndIdNotEqual(name, id)
-            if (count > 0) {
-                return super.setError(params, NAME_ALREADY_EXIST)
+            long objectiveId = Long.parseLong(params.objectiveId.toString())
+            Long actionsId = Long.parseLong(params.actionsId.toString())
+            Date startDateStr = DateUtility.parseDateForDB(params.start)
+            Date endDateStr = DateUtility.parseDateForDB(params.end)
+            startDateStr = DateUtility.getSqlDate(startDateStr)
+            endDateStr = DateUtility.getSqlDate(endDateStr)
+            params.start = startDateStr
+            params.end = endDateStr
+            int c = (int) PmSprints.executeQuery("SELECT COUNT(id) FROM PmSprints WHERE start<='${startDateStr}' AND end >='${endDateStr}' AND id=${actionsId} ")[0]
+            if (c < 1) {
+                return super.setError(params, "Sorry! Date range exceed action's time duration. ")
             }
-/*            int countSequence = Service.countBySequenceAndIdNotEqual(Integer.parseInt(params.sequence.toString()),id)
-            if (countSequence > 0) {
-                return super.setError(params, SEQUENCE_ALREADY_EXIST)
-            }*/
-            int duplicateCount = PmServiceSector.countByShortNameIlikeAndIdNotEqual(name, id)
-            if (duplicateCount > 0) {
-                return super.setError(params, SHORT_NAME_ALREADY_EXIST)
+            int weight = Long.parseLong(params.weight.toString())
+            int totalWeight =(int) PmSprints.executeQuery("select sum(weight) from PmSprints where objectiveId=${objectiveId} AND id<>${id}")[0]
+            int available = 100-totalWeight
+            if(weight>available){
+                return super.setError(params, WEIGHT_EXCEED)
             }
-            PmServiceSector service = buildObject(params, oldDepartment)
-            params.put(SERVICE_OBJ, service)
+            PmSprints oldObject = (PmSprints) PmSprints.read(id)
+            PmSprints sprints = buildObject(params, oldObject)
+            params.put(SPRINTS_OBJ, sprints)
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -54,8 +55,8 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
     @Transactional
     public Map execute(Map result) {
         try {
-            PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJ)
-            service.save()
+            PmSprints sprints = (PmSprints) result.get(SPRINTS_OBJ)
+            sprints.save()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -76,9 +77,9 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
      * @return - map with success message
      */
     public Map buildSuccessResultForUI(Map result) {
-        PmServiceSector service = (PmServiceSector) result.get(SERVICE_OBJ)
-        ListPmServiceSectorActionServiceModel model = ListPmServiceSectorActionServiceModel.read(service.id)
-        result.put(SERVICE_OBJ, model)
+        PmSprints sprints = (PmSprints) result.get(SPRINTS_OBJ)
+        ListPmActionsActionServiceModel model = ListPmActionsActionServiceModel.read(sprints.id)
+        result.put(SPRINTS_OBJ, model)
         return super.setSuccess(result, UPDATE_SUCCESS_MESSAGE)
     }
 
@@ -91,12 +92,20 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
         return params
     }
 
-    private static PmServiceSector buildObject(Map parameterMap, PmServiceSector oldDepartment) {
-        PmServiceSector service = new PmServiceSector(parameterMap)
-        oldDepartment.name = service.name
-        oldDepartment.sequence = service.sequence
-        oldDepartment.shortName = service.shortName
-        oldDepartment.categoryId = Long.parseLong(parameterMap.categoryId.toString())
-        return oldDepartment
+    private static PmSprints buildObject(Map parameterMap, PmSprints oldObject) {
+
+
+        PmSprints sprints = new PmSprints(parameterMap)
+        oldObject.sprints = sprints.sprints
+        oldObject.actionsId = Long.parseLong(parameterMap.actionsId)
+        oldObject.weight = sprints.weight
+        oldObject.target = sprints.target
+        oldObject.resPerson = sprints.resPerson
+        oldObject.supportDepartment = sprints.supportDepartment
+        oldObject.remarks = sprints.remarks
+        oldObject.startDate=DateUtility.getSqlDate(parameterMap.start)
+        oldObject.endDate = DateUtility.getSqlDate(parameterMap.end)
+
+        return oldObject
     }
 }
