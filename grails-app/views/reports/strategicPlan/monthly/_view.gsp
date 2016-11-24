@@ -3,19 +3,19 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Yearly Strategic Plan
+                    Monthly Strategic Plan
                 </div>
             </div>
 
             <g:form name='detailsForm' id='detailsForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div class="form-group">
-                        <label class="col-md-1 control-label label-optional" for="year">Year:</label>
+                        <label class="col-md-1 control-label label-optional" for="month">Month:</label>
 
                         <div class="col-md-2">
                             <input type='text' tabindex="1" required="required" onkeydown="return false;"
-                                   class="kendo-date-picker" id="year" name="year"
-                                   placeholder="Year" validationMessage="Required"/>
+                                   class="kendo-date-picker" id="month" name="month"
+                                   placeholder="Month" validationMessage="Required"/>
                         </div>
                         <label class="col-md-1 control-label label-optional"
                                for="serviceId">Service:</label>
@@ -49,6 +49,6 @@
     </div>
 
     <div class="row">
-        <g:render template='/reports/strategicPlan/tempSP'/>
+        <g:render template='/reports/strategicPlan/monthly/tempSP'/>
     </div>
 </div>

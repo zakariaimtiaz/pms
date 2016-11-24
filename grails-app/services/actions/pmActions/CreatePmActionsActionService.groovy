@@ -2,7 +2,6 @@ package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
 import com.pms.PmActions
-import com.pms.PmGoals
 import com.pms.PmObjectives
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -33,7 +32,9 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             long goalId = Long.parseLong(params.goalId.toString())
             long objectiveId = Long.parseLong(params.objectiveId.toString())
             int weight = Long.parseLong(params.weight.toString())
-            int totalWeight =(int) PmActions.executeQuery("select sum(weight) from PmActions where objectiveId=${objectiveId}")[0]
+            int totalWeight = 0
+            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE objectiveId=${objectiveId}")
+            if(tmp[0]) totalWeight =(int) tmp[0]
             int available = 100-totalWeight
             if(weight>available){
                 return super.setError(params, WEIGHT_EXCEED)

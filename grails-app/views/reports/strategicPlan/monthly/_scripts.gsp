@@ -36,7 +36,7 @@
     </tr>
 </script>
 <script language="javascript">
-    var year,dropDownService,isApplicable = false;
+    var month,dropDownService,isApplicable = false;
     var listViewMission,listViewGoal,listViewObjective,listViewAction,listViewSprint;
 
     $(document).ready(function () {
@@ -44,18 +44,17 @@
         initListView();
     });
     function onLoadInfoPage() {
-        var str = moment().format('YYYY');
-
-        year = $('#year').kendoDatePicker({
-            format: "yyyy",
+        var str = moment().format('MMMM YYYY');
+        month = $('#month').kendoDatePicker({
+            format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "decade",
-            depth: "decade"
+            start: "year",
+            depth: "year"
         }).data("kendoDatePicker");
-        year.value(str);
+        month.value(str);
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showSpPlan');
+        defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
     }
     function initDataSource(){
         var ds = new kendo.data.DataSource({
@@ -107,17 +106,17 @@
     }
 
     function onSubmitForm() {
-        var year = $('#year').val();
+        var month = $('#month').val();
         var serviceId = dropDownService.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
-        var url1 ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Mission";
-        var url2 ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Goals";
-        var url3 ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Objectives";
-        var url4 ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Actions";
-        var url5 ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Sprints";
+        var url1 ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Mission";
+        var url2 ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Goals";
+        var url3 ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Objectives";
+        var url4 ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Actions";
+        var url5 ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Sprints";
         populateGridKendo(listViewMission,url1);
         populateGridKendo(listViewGoal,url2);
         populateGridKendo(listViewObjective,url3);

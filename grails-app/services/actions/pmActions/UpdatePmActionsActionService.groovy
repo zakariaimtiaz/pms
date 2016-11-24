@@ -2,6 +2,7 @@ package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
 import com.pms.PmActions
+import com.pms.PmObjectives
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -28,7 +29,9 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
             long id = Long.parseLong(params.id.toString())
             long objectiveId = Long.parseLong(params.objectiveId.toString())
             int weight = Long.parseLong(params.weight.toString())
-            int totalWeight =(int) PmActions.executeQuery("select sum(weight) from PmActions where objectiveId=${objectiveId} AND id<>${id}")[0]
+            int totalWeight = 0
+            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE objectiveId=${objectiveId} AND id<>${id}")
+            if(tmp[0]) totalWeight =(int) tmp[0]
             int available = 100-totalWeight
             if(weight>available){
                 return super.setError(params, WEIGHT_EXCEED)
@@ -83,9 +86,13 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         return params
     }
 
-    private static PmActions buildObject(Map parameterMap, PmActions oldObject) {
-        String startDateStr = parameterMap.start.toString()
-        String endDateStr = parameterMap.end.toString()
+    private static PmActions buildObject(Map params, PmActions oldObject) {
+        long serviceId = Long.parseLong(params.serviceId)
+        long goalId = Long.parseLong(params.goalId)
+        long objectiveId = Long.parseLong(params.objectiveId)
+
+        String startDateStr = params.start.toString()
+        String endDateStr = params.end.toString()
         DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date start = originalFormat.parse(startDateStr);
@@ -98,12 +105,21 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         ce.setTime(end);
         ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-        parameterMap.start=DateUtility.getSqlDate(c.getTime())
-        parameterMap.end=DateUtility.getSqlDate(ce.getTime())
+        List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
+                " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId}")
 
-        PmActions actions = new PmActions(parameterMap)
+        int con =(int) max[0]+1
+        PmObjectives objectives = PmObjectives.read(objectiveId)
+
+        params.start=DateUtility.getSqlDate(c.getTime())
+        params.end=DateUtility.getSqlDate(ce.getTime())
+
+        PmActions actions = new PmActions(params)
+        oldObject.serviceId = serviceId
+        oldObject.goalId = goalId
+        oldObject.objectiveId = objectiveId
+        oldObject.sequence = objectives.sequence+"."+con
         oldObject.actions = actions.actions
-        oldObject.objectiveId = Long.parseLong(parameterMap.objectiveId)
         oldObject.weight = actions.weight
         oldObject.start = actions.start
         oldObject.end = actions.end

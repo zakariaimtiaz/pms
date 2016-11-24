@@ -169,7 +169,7 @@
                     return data;
                 }
             },
-            sort: {field: 'sequence', dir: 'asc'},
+            sort: {field: 'id', dir: 'asc'},
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,

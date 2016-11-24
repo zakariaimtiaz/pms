@@ -13,7 +13,7 @@ class ListPmActionsActionServiceModel {
         LEFT JOIN pm_objectives o ON o.id = d.objective_id
         LEFT JOIN pm_goals g ON g.id = d.goal_id
         LEFT JOIN pm_service_sector sc ON sc.id = d.service_id
-        ORDER BY sc.sequence,d.sequence ASC;
+        ORDER BY sc.sequence,d.id ASC;
     """
 
     long id
