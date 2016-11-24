@@ -260,7 +260,7 @@
         if (executeCommonPreConditionForSelectKendo(gridSprints, 'action') == false) {
             return;
         }
-        var msg = 'Are you sure you want to delete the selected sprint?',
+        var msg = 'Are you sure you want to delete the selected sprints?',
                 url = "${createLink(controller: 'pmSprints', action:  'delete')}";
         confirmDelete(msg, url, gridSprints);
     }
