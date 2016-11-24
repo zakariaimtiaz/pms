@@ -35,7 +35,7 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show">
+                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmObjectives/show,/pmActions/show,/pmSprints/show">
                     <li>
                         <a href="#"><i class="fa fa-book"></i>&nbsp;PMS<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -57,6 +57,11 @@
                             <sec:access url="/pmActions/show">
                                 <li>
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/pmSprints/show">
+                                <li>
+                                    <a href="#pmSprints/show"><i class="fa fa-anchor"></i>&nbsp;Sprints</a>
                                 </li>
                             </sec:access>
                         </ul>
