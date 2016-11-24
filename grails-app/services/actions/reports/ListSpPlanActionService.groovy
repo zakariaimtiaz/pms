@@ -170,7 +170,7 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
         for (int i = 0; i < lstSprint.size(); i++) {
             Map obj = [
                     sl:lstSprint[i].sequence,
-                    sprint: lstSprint[i].sprint
+                    sprint: lstSprint[i].sprints
             ]
             result << obj
         }
