@@ -1,6 +1,7 @@
 package actions.pmSprints
 
 import com.model.ListPmSprintsActionServiceModel
+import com.pms.PmActions
 import com.pms.PmObjectives
 import com.pms.PmSprints
 import grails.plugin.springsecurity.SpringSecurityService
@@ -106,12 +107,13 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
                 " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId} AND actionsId=${actionsId}")
 
         int con =(int) max[0]+1
-        PmObjectives objectives = PmObjectives.read(objectiveId)
+        PmActions pmActions = PmActions.read(actionsId)
         PmSprints sprints = new PmSprints(parameterMap)
         sprints.serviceId = serviceId
         sprints.goalId = goalId
         sprints.objectiveId = objectiveId
-        sprints.sequence = objectives.sequence+"."+con
+        sprints.actionsId=actionsId
+        sprints.sequence = pmActions.sequence+"."+con
         sprints.tmpSeq = con
         sprints.startDate=DateUtility.getSqlDate(parameterMap.start)
         sprints.endDate = DateUtility.getSqlDate(parameterMap.end)
