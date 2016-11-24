@@ -6,7 +6,7 @@ class PmSprints {
     long serviceId
     long goalId
     long objectiveId
-    int sequence
+    String sequence
     int tmpSeq
     String actionsId
     String sprints

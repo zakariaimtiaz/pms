@@ -1,17 +1,18 @@
 package actions.pmSprints
 
-import com.model.ListPmActionsActionServiceModel
-import com.pms.PmSprints
+import com.model.ListPmSprintsActionServiceModel
 import com.pms.PmSprints
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.PmActionsService
 
 @Transactional
 class UpdatePmSprintsActionService extends BaseService implements ActionServiceIntf {
 
+    PmActionsService pmActionsService
     private static final String UPDATE_SUCCESS_MESSAGE = "Sprints has been updated successfully"
     private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String SPRINTS_OBJ = "pmSprints"
@@ -26,18 +27,21 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
             long id = Long.parseLong(params.id.toString())
             long objectiveId = Long.parseLong(params.objectiveId.toString())
             Long actionsId = Long.parseLong(params.actionsId.toString())
-            Date startDateStr = DateUtility.parseDateForDB(params.start)
-            Date endDateStr = DateUtility.parseDateForDB(params.end)
+            Date startDateStr = DateUtility.parseMaskedDate(params.start)
+            Date endDateStr = DateUtility.parseMaskedDate(params.end)
             startDateStr = DateUtility.getSqlDate(startDateStr)
             endDateStr = DateUtility.getSqlDate(endDateStr)
             params.start = startDateStr
             params.end = endDateStr
-            int c = (int) PmSprints.executeQuery("SELECT COUNT(id) FROM PmSprints WHERE start<='${startDateStr}' AND end >='${endDateStr}' AND id=${actionsId} ")[0]
-            if (c < 1) {
+            boolean isWithin = pmActionsService.taskDateWithinActionsDate(startDateStr,endDateStr,actionsId)
+            if (!isWithin) {
                 return super.setError(params, "Sorry! Date range exceed action's time duration. ")
             }
+
             int weight = Long.parseLong(params.weight.toString())
-            int totalWeight =(int) PmSprints.executeQuery("select sum(weight) from PmSprints where objectiveId=${objectiveId} AND id<>${id}")[0]
+            int totalWeight =0
+            List lst = PmSprints.executeQuery("select sum(weight) from PmSprints where actionsId=${actionsId} AND id<>${id}")
+            if(lst[0]) totalWeight = (int)lst[0]
             int available = 100-totalWeight
             if(weight>available){
                 return super.setError(params, WEIGHT_EXCEED)
@@ -78,7 +82,7 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
      */
     public Map buildSuccessResultForUI(Map result) {
         PmSprints sprints = (PmSprints) result.get(SPRINTS_OBJ)
-        ListPmActionsActionServiceModel model = ListPmActionsActionServiceModel.read(sprints.id)
+        ListPmSprintsActionServiceModel model = ListPmSprintsActionServiceModel.read(sprints.id)
         result.put(SPRINTS_OBJ, model)
         return super.setSuccess(result, UPDATE_SUCCESS_MESSAGE)
     }

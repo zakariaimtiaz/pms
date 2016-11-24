@@ -1,17 +1,21 @@
 package actions.pmSprints
 
-import com.model.ListPmActionsActionServiceModel
+import com.model.ListPmSprintsActionServiceModel
 import com.pms.PmObjectives
 import com.pms.PmSprints
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.PmActionsService
 
 @Transactional
 class CreatePmSprintsActionService extends BaseService implements ActionServiceIntf {
 
+    PmActionsService pmActionsService
+    SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Sprits has been saved successfully"
     private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String SPRINTS_OBJECT = "pmSprints"
@@ -36,11 +40,14 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
             endDateStr = DateUtility.getSqlDate(endDateStr)
             params.start = startDateStr
             params.end = endDateStr
-            int c = (int) PmSprints.executeQuery("SELECT count(id) FROM PmActions WHERE startDate<='${startDateStr}' AND endDate >='${endDateStr}' AND id=${actionsId} ")[0]
-            if (c < 1) {
+
+            boolean isWithin = pmActionsService.taskDateWithinActionsDate(startDateStr,endDateStr,actionsId)
+            if (!isWithin) {
                 return super.setError(params, "Sorry! Date range exceed action's time duration. ")
             }
-            int totalWeight = (int) PmSprints.executeQuery("select sum(weight) from PmSprints where actionsId=${actionsId}")[0]
+            int totalWeight =0
+                    List lst= PmSprints.executeQuery("select sum(weight) from PmSprints where actionsId=${actionsId}")
+            if(lst[0]) totalWeight = (int)lst[0]
             int available = 100 - totalWeight
             if (weight > available) {
                 return super.setError(params, WEIGHT_EXCEED)
@@ -80,7 +87,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
      */
     public Map buildSuccessResultForUI(Map result) {
         PmSprints sprints = (PmSprints) result.get(SPRINTS_OBJECT)
-        ListPmActionsActionServiceModel model = ListPmActionsActionServiceModel.read(sprints.id)
+        ListPmSprintsActionServiceModel model = ListPmSprintsActionServiceModel.read(sprints.id)
         result.put(SPRINTS_OBJECT, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
@@ -108,6 +115,9 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         sprints.tmpSeq = con
         sprints.startDate=DateUtility.getSqlDate(parameterMap.start)
         sprints.endDate = DateUtility.getSqlDate(parameterMap.end)
+        sprints.createDate = DateUtility.getSqlDate(new Date())
+        sprints.createBy = 1
+
         return sprints
     }
 }

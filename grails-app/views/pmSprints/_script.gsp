@@ -109,7 +109,7 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.pmAction;
+                var newEntry = result.pmSprints;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
                     var gridData = gridSprints.dataSource.data();
                     gridData.unshift(newEntry);
@@ -214,7 +214,7 @@
                 {field: "weight", title: "Weight", width: 60, sortable: false, filterable: false,
                     template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "sprints", title: "Action", width: 120, sortable: false, filterable: false},
+                {field: "sprints", title: "Sprints", width: 120, sortable: false, filterable: false},
                 {field: "startDate", title: "Start", width: 80, sortable: false, filterable: false,
                     template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
                 {field: "endDate", title: "End", width: 80, sortable: false, filterable: false,
@@ -279,12 +279,12 @@
 
     function showService(sprints) {
         sprintsModel.set('sprints', sprints);
-        populateGoals(sprints.serviceId,sprints.goalId,sprints.objectiveId);
+        populateGoals(sprints.serviceId,sprints.goalId,sprints.objectiveId,sprints.actionsId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
     // To populate Goals List
-    function populateGoals(serId,goalId,objectiveId) {
+    function populateGoals(serId,goalId,objectiveId,actionsId) {
         var serviceId = serId?serId:dropDownService.value();
         if (serviceId == '') {
             dropDownGoals.setDataSource(getKendoEmptyDataSource(dropDownGoals, null));
@@ -304,7 +304,7 @@
                 dropDownGoals.setDataSource(data.lstGoals);
                 if(goalId){
                     dropDownGoals.value(goalId);
-                    populateObjectives(goalId,objectiveId);
+                    populateObjectives(goalId,objectiveId,actionsId);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -319,7 +319,7 @@
         return true;
     }
         // To populate Objectives List
-    function populateObjectives(goalId,objectiveId) {
+    function populateObjectives(goalId,objectiveId,actionsId) {
         var goalsId = goalId?goalId:dropDownGoals.value();
         if (goalsId == '') {
             dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
@@ -336,7 +336,7 @@
                 }
                 dropDownObjectives.setDataSource(data.lstObjectives);
                 if(objectiveId) dropDownObjectives.value(objectiveId);
-                populateActions(sprints.actionsId,sprints.objectiveId);
+                populateActions(actionsId,objectiveId);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);
