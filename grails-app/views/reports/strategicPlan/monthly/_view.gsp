@@ -27,6 +27,7 @@
                                     data_model_name="dropDownService">
                             </app:dropDownService>
                         </div>
+
                         <div class="col-md-2">
                             <button id="create" name="create" type="submit" data-role="button"
                                     class="k-button k-button-icontext"
@@ -37,6 +38,7 @@
 
                     </div>
                 </div>
+
                 <div class="panel-footer" style="height: 33px;">
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                             class="k-button k-button-icontext pull-right" role="button" tabindex="4"
@@ -47,9 +49,11 @@
             </g:form>
         </div>
     </div>
+
     <div class="row">
         <g:render template='/reports/strategicPlan/monthly/tempSP'/>
     </div>
+
     <div class="row">
         <div id="grid"></div>
     </div>

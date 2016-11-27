@@ -1,8 +1,8 @@
 <script language="javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function () {
-         $('#accordion').on('show.bs.collapse', function () {
+        $('#accordion').on('show.bs.collapse', function () {
             $('#accordion .in').collapse('hide');
-         });
+        });
     });
     function togglePlus(e) {
         $(e.target)
@@ -20,7 +20,7 @@
     $('#accordion').on('shown.bs.collapse', toggleMinus);
 </script>
 <style>
-.panel-heading{
+.panel-heading {
     cursor: pointer;
 }
 </style>
