@@ -1,18 +1,14 @@
 package actions.reports
 
-import com.pms.PmActions
 import com.pms.PmGoals
 import com.pms.PmMissions
 import com.pms.PmObjectives
-import com.pms.PmSprints
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
-
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 
 @Transactional
 class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
@@ -59,19 +55,32 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
 
             long serviceId = Long.parseLong(result.serviceId.toString())
             String type = result.type
-            List<Map> lstVal = []
             if(type.equals("Mission")){
-                lstVal = buildMissionList(serviceId)
+                List lstVal = buildMissionList(serviceId)
+                result.put("mission", lstVal)
             }else if(type.equals("Goals")){
-                lstVal = buildGoalsList(serviceId)
+                List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
+                result.put(LIST, lstGoals)
+                return result
             }else if(type.equals("Objectives")){
-                lstVal = buildObjectivesList(serviceId)
+                long goalId = Long.parseLong(result."filter[filters][0][value]")
+                List<PmObjectives> lstObj = PmObjectives.findAllByServiceIdAndGoalId(serviceId,goalId)
+                result.put(LIST, lstObj)
+                return result
             }else if(type.equals("Actions")){
-                lstVal = buildActionsList(serviceId,start,end)
+                long goalId = Long.parseLong(result.goalId.toString())
+                long objId = Long.parseLong(result."filter[filters][0][value]")
+                List<GroovyRowResult> lstAction = buildActionsList(serviceId,goalId,objId,start,end)
+                result.put(LIST, lstAction)
+                return result
             }else if(type.equals("Sprints")){
-                lstVal = buildSprintList(serviceId)
+                long goalId = Long.parseLong(result.goalId.toString())
+                long objId = Long.parseLong(result.objectiveId.toString())
+                long actionsId = Long.parseLong(result."filter[filters][0][value]")
+                List<GroovyRowResult> lstSprint = buildSprintList(serviceId,goalId,objId,actionsId, start, end)
+                result.put(LIST, lstSprint)
+                return result
             }
-            result.put(LIST, lstVal)
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -107,73 +116,39 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
         return result
     }
 
-    private List<Map> buildMissionList(long serviceId) {
+    private static List<Map> buildMissionList(long serviceId) {
         List<Map> result = []
         PmMissions mission = PmMissions.findByServiceId(serviceId)
         Map obj = [
-                mission: mission.mission
+                mission: mission?.mission
         ]
         result << obj
         return result
     }
-    private List<Map> buildGoalsList(long serviceId) {
-        List<Map> result = []
-        List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
-        for (int i = 0; i < lstGoals.size(); i++) {
-            Map obj = [
-                    sl: lstGoals[i].sequence,
-                    goal: lstGoals[i].goal
-            ]
-            result << obj
-        }
-        return result
-    }
-    private List<Map> buildObjectivesList(long serviceId) {
-        List<Map> result = []
-        List<PmObjectives> lstObj = PmObjectives.findAllByServiceId(serviceId)
-        for (int i = 0; i < lstObj.size(); i++) {
-            Map obj = [
-                    sl: lstObj[i].sequence,
-                    objective: lstObj[i].objective,
-                    weight: lstObj[i].weight + ' %'
-            ]
-            result << obj
-        }
-        return result
-    }
-    private List<Map> buildActionsList(long serviceId, Date start, Date end) {
-        List<Map> result = []
-        List<PmActions> lstActions = PmActions.findAllByServiceIdAndStartBetween(serviceId,start,end)
 
-        for (int i = 0; i < lstActions.size(); i++) {
-            String startStr = new SimpleDateFormat("MMMMM").format(lstActions[i].start.getTime())
-            String endStr = new SimpleDateFormat("MMMMM").format(lstActions[i].end.getTime())
-
-            Map obj = [
-                    sl: lstActions[i].sequence,
-                    action: lstActions[i].actions,
-                    startDate: startStr,
-                    endDate: endStr,
-                    weight: lstActions[i].weight + ' %',
-                    meaIndicator: lstActions[i].meaIndicator?:'',
-                    target: lstActions[i].target?:'',
-                    supportDepartment: lstActions[i].supportDepartment?:'',
-                    resPerson: lstActions[i].resPerson?:''
-            ]
-            result << obj
-        }
-        return result
+    private List<GroovyRowResult> buildActionsList(long serviceId,long goalId,long objId, Date start, Date end) {
+        String query = """
+                SELECT id,service_id AS serviceId,goal_id AS goalId,objective_id AS objectiveId,start,end,sequence,tmp_seq AS tmpSeq,
+                        mea_indicator AS meaIndicator,target,actions,weight,res_person AS resPerson, remarks,
+                        support_department AS supportDepartment,strategy_map_ref AS strategyMapRef,source_of_fund AS sourceOfFund
+                FROM pm_actions
+                WHERE service_id = ${serviceId} AND goal_id = ${goalId} AND objective_id = ${objId}
+                AND ('${start}' <= end AND '${end}' >= start)
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
     }
-    private List<Map> buildSprintList(long serviceId) {
-        List<Map> result = []
-        List<PmSprints> lstSprint = PmSprints.list()
-        for (int i = 0; i < lstSprint.size(); i++) {
-            Map obj = [
-                    sl:lstSprint[i].sequence,
-                    sprint: lstSprint[i].sprints
-            ]
-            result << obj
-        }
-        return result
+    private List<GroovyRowResult> buildSprintList(long serviceId,long goalId,long objId,long actionsId, Date start, Date end) {
+        String query = """
+                SELECT id,service_id AS serviceId,goal_id AS goalId,objective_id AS objectiveId,actions_id AS actionsId,
+                        start_date AS startDate,end_date AS endDate,sequence,sprints,weight,tmp_seq AS tmpSeq,target,
+                        support_department AS supportDepartment,res_person AS resPerson
+                FROM pm_sprints
+                WHERE service_id = ${serviceId} AND goal_id = ${goalId}
+                 AND objective_id = ${objId} AND actions_id = ${actionsId}
+                 AND ('${start}' <= end_date AND '${end}' >= start_date)
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
     }
 }

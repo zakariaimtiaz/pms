@@ -51,4 +51,7 @@
     <div class="row">
         <g:render template='/reports/strategicPlan/yearly/tempSP'/>
     </div>
+    <div class="row">
+        <div id="grid"></div>
+    </div>
 </div>
