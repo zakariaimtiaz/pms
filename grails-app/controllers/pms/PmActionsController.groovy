@@ -25,7 +25,7 @@ class PmActionsController extends BaseController {
     ListPmActionsActionService listPmActionsActionService
 
     def show() {
-        List<PmServiceSector> lst = pmServiceSectorService.activeList()
+        List<GroovyRowResult> lst = pmServiceSectorService.activeList()
         lst.remove(0)
         render(view: "/pmActions/show", model: [lstService: lst as JSON])
     }

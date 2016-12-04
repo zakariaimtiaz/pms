@@ -44,9 +44,11 @@
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
 
         $("#supportDepartment").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "id",
-            dataSource: getBlankDataSource
+            dataTextField  : "name",
+            dataValueField : "id",
+            filter         : "contains",
+            suggest        : true,
+            dataSource     : getBlankDataSource
         });
         supportDepartment =$("#supportDepartment").data("kendoMultiSelect");
         supportDepartment.setDataSource(${lstService});

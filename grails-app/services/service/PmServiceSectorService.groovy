@@ -2,13 +2,20 @@ package service
 
 import com.pms.PmServiceSector
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import pms.BaseService
 
 @Transactional
 class PmServiceSectorService extends BaseService{
 
     def activeList() {
-        List<PmServiceSector> lst = PmServiceSector.findAllByIsDisplayble(true,[sort: "sequence",order: "asc"])
+        String queryForList = """
+                SELECT s.id AS id, CONCAT(s.name,' (',s.short_name,')') AS name
+                        FROM pm_service_sector s
+                        WHERE s.is_displayble = TRUE
+                        ORDER BY s.sequence ASC
+        """
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
         lst = listForKendoDropdown(lst, null, null)
         return lst
     }
