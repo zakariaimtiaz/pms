@@ -1,6 +1,7 @@
 package pms.usage
 
 import pms.BaseTagLibExecutor
+import taglib.GetDropDownEmployeeTaglibActionService
 import taglib.GetDropDownServiceCategoryTaglibActionService
 import taglib.GetDropDownServiceTaglibActionService
 import taglib.GetDropDownSystemEntityTypeTaglibActionService
@@ -12,6 +13,7 @@ class ApplicationTagLib extends BaseTagLibExecutor {
     GetDropDownSystemEntityTypeTaglibActionService getDropDownSystemEntityTypeTaglibActionService
     GetDropDownServiceCategoryTaglibActionService getDropDownServiceCategoryTaglibActionService
     GetDropDownServiceTaglibActionService getDropDownServiceTaglibActionService
+    GetDropDownEmployeeTaglibActionService getDropDownEmployeeTaglibActionService
     /**
      * Render html select of Department
      * example: <depart:dropDownDepartment id=""></depart:dropDownDepartment>
@@ -45,5 +47,10 @@ class ApplicationTagLib extends BaseTagLibExecutor {
         super.executeTag(getDropDownServiceTaglibActionService, attrs)
         out << (String) attrs.html
     }
+    def dropDownEmployee = { attrs, body ->
+        attrs.body = body
+        super.executeTag(getDropDownEmployeeTaglibActionService, attrs)
+        out << (String) attrs.html
 
+    }
 }

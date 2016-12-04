@@ -2,7 +2,7 @@ package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
 import com.pms.PmActions
-import com.pms.PmObjectives
+import com.pms.PmGoals
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -25,21 +25,20 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.serviceId && !params.goalId &&!params.objectiveId && !params.actions) {
+            if (!params.serviceId && !params.goalId && !params.actions) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
-            long objectiveId = Long.parseLong(params.objectiveId.toString())
             int weight = Long.parseLong(params.weight.toString())
             int totalWeight = 0
-            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE objectiveId=${objectiveId}")
+            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE goalId=${goalId}")
             if(tmp[0]) totalWeight =(int) tmp[0]
             int available = 100-totalWeight
             if(weight>available){
                 return super.setError(params, WEIGHT_EXCEED)
             }
-            PmActions actions = buildObject(params, serviceId, goalId, objectiveId)
+            PmActions actions = buildObject(params, serviceId, goalId)
             params.put(ACTIONS_OBJECT, actions)
             return params
         } catch (Exception ex) {
@@ -87,7 +86,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private static PmActions buildObject(Map parameterMap, long serviceId, long goalId, long objectiveId) {
+    private static PmActions buildObject(Map parameterMap, long serviceId, long goalId) {
         String startDateStr = parameterMap.start.toString()
         String endDateStr = parameterMap.end.toString()
         DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
@@ -103,10 +102,10 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
-                " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId}")
+                " WHERE serviceId=${serviceId} AND goalId=${goalId}")
 
         int con =(int) max[0]+1
-        PmObjectives objectives = PmObjectives.read(objectiveId)
+        PmGoals goals = PmGoals.read(goalId)
 
         parameterMap.start=DateUtility.getSqlDate(c.getTime())
         parameterMap.end=DateUtility.getSqlDate(ce.getTime())
@@ -114,8 +113,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         PmActions actions = new PmActions(parameterMap)
         actions.serviceId = serviceId
         actions.goalId = goalId
-        actions.objectiveId = objectiveId
-        actions.sequence = objectives.sequence+"."+con
+        actions.sequence = goals.sequence+"."+con
         actions.tmpSeq = con
         return actions
     }

@@ -1,3 +1,4 @@
+
 <div class="container-fluid">
     <div class="row" id="rowAction">
         <div id="application_top_panel" class="panel panel-primary">
@@ -34,20 +35,8 @@
 
                                 <div class="col-md-10">
                                     <select class="kendo-drop-down" id="goalId" name="goalId"
-                                            onchange="javascript:populateObjectives();"
                                             placeholder="Select Goal"
                                             tabindex="2" data-bind="value: actions.goalId"></select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required"
-                                       for="objectiveId">Objectives:</label>
-
-                                <div class="col-md-10">
-                                    <select class="kendo-drop-down" id="objectiveId" name="objectiveId"
-                                            placeholder="Select Objective"
-                                            tabindex="3" data-bind="value: actions.objectiveId"></select>
                                 </div>
                             </div>
 
@@ -88,10 +77,10 @@
                                        for="supportDepartment">Support:</label>
 
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="supportDepartment"
-                                           name="supportDepartment"
-                                           placeholder="Support Department"
-                                           tabindex="3" data-bind="value: actions.supportDepartment"/>
+                                    <select id="supportDepartment" name="supportDepartment"
+                                            tabindex="3" data-placeholder="Select Support Department..."
+                                            data-bind="value: actions.supportDepartment">
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -111,14 +100,18 @@
                                 <label class="col-md-2 control-label label-required"
                                        for="weight">Weight:</label>
 
-                                <div class="col-md-10">
+                                <div class="col-md-3">
                                     <input type="text" class="form-control"
                                            id="weight" name="weight" tabindex="3"
                                            data-bind="value: actions.weight"/>
                                 </div>
 
-                                <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="weight"></span>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="strategyMapRef">Reference:</label>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control" id="strategyMapRef"
+                                           placeholder="Strategy Map Ref"  name="strategyMapRef"
+                                           tabindex="3" data-bind="value: actions.strategyMapRef"/>
                                 </div>
                             </div>
 
@@ -127,20 +120,13 @@
                                        for="resPerson">Responsible:</label>
 
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="resPerson" name="resPerson"
-                                           placeholder="Responsible Person"
-                                           tabindex="3" data-bind="value: actions.resPerson"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="strategyMapRef">Reference:</label>
-
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="strategyMapRef" name="strategyMapRef"
-                                           placeholder="Strategy Map Ref"
-                                           tabindex="3" data-bind="value: actions.strategyMapRef"/>
+                                    <app:dropDownEmployee
+                                            data_model_name="dropDownEmployee"
+                                            required="false" class="kendo-drop-down"
+                                            sort_by_department="false" tabindex="3"
+                                            id="resPerson" name="resPerson"
+                                            data-bind="value: actions.resPerson">
+                                    </app:dropDownEmployee>
                                 </div>
                             </div>
 

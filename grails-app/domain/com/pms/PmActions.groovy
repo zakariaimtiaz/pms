@@ -6,7 +6,6 @@ class PmActions {
     long version
     long serviceId
     long goalId
-    long objectiveId
     String actions
     String sequence
     int tmpSeq

@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridActions, dataSource, actionsModel,dropDownService,dropDownGoals,dropDownObjectives;
+    var gridActions, dataSource,actionsModel,dropDownService,dropDownGoals,supportDepartment,dropDownEmployee;
 
     $(document).ready(function () {
         onLoadActionPage();
@@ -42,9 +42,19 @@
             depth: "year"
         });
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
-        dropDownObjectives = initKendoDropdown($('#objectiveId'), null, null, null);
+
+        $("#supportDepartment").kendoMultiSelect({
+            dataTextField: "name",
+            dataValueField: "id",
+            dataSource: getBlankDataSource
+        });
+        supportDepartment =$("#supportDepartment").data("kendoMultiSelect");
+        supportDepartment.setDataSource(${lstService});
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions",null);
+
+//        supportDepartment.value("3,7".split(","));
+
     }
 
     function executePreCondition() {
@@ -116,14 +126,12 @@
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
-        dropDownObjectives.value('');
     }
     function resetForm() {
         clearForm($("#actionForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
-        dropDownObjectives.value('');
         $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
@@ -145,7 +153,6 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         actions: { type: "string" },
-                        objectiveId: { type: "number" },
                         weight: { type: "number" },
                         goalId: { type: "number" },
                         goal: { type: "string" },
@@ -266,18 +273,16 @@
 
     function showService(actions) {
         actionsModel.set('actions', actions);
-        populateGoals(actions.serviceId,actions.goalId,actions.objectiveId);
+        populateGoals(actions.serviceId,actions.goalId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
     // To populate Goals List
-    function populateGoals(serId,goalId,objectiveId) {
+    function populateGoals(serId,goalId) {
         var serviceId = serId?serId:dropDownService.value();
         if (serviceId == '') {
             dropDownGoals.setDataSource(getKendoEmptyDataSource(dropDownGoals, null));
-            dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
             dropDownGoals.value('');
-            dropDownObjectives.value('');
             return false;
         }
         showLoadingSpinner(true);
@@ -291,38 +296,7 @@
                 dropDownGoals.setDataSource(data.lstGoals);
                 if(goalId){
                     dropDownGoals.value(goalId);
-                    populateObjectives(goalId,objectiveId);
                 }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus);
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-        return true;
-    }
-        // To populate Objectives List
-    function populateObjectives(goalId,objectiveId) {
-        var goalsId = goalId?goalId:dropDownGoals.value();
-        if (goalsId == '') {
-            dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
-            dropDownObjectives.value('');
-            return false;
-        }
-        showLoadingSpinner(true);
-        $.ajax({
-            url: "${createLink(controller: 'pmObjectives', action: 'lstObjectiveByGoalsId')}?goalId=" + goalsId,
-            success: function (data) {
-                if (data.isError) {
-                    showError(data.message);
-                    return false;
-                }
-                dropDownObjectives.setDataSource(data.lstObjectives);
-                if(objectiveId) dropDownObjectives.value(objectiveId);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 afterAjaxError(XMLHttpRequest, textStatus);

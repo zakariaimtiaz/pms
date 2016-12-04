@@ -2,7 +2,7 @@ package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
 import com.pms.PmActions
-import com.pms.PmObjectives
+import com.pms.PmGoals
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -23,14 +23,13 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
 
     public Map executePreCondition(Map params) {
         try {
-            if (!params.id &&!params.serviceId && !params.goalId &&!params.objectiveId && !params.actions) {
+            if (!params.id &&!params.serviceId && !params.goalId && !params.actions) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            long objectiveId = Long.parseLong(params.objectiveId.toString())
             int weight = Long.parseLong(params.weight.toString())
             int totalWeight = 0
-            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE objectiveId=${objectiveId} AND id<>${id}")
+            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE goalId=${goalId} AND id<>${id}")
             if(tmp[0]) totalWeight =(int) tmp[0]
             int available = 100-totalWeight
             if(weight>available){
@@ -87,9 +86,8 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
     }
 
     private static PmActions buildObject(Map params, PmActions oldObject) {
-        long serviceId = Long.parseLong(params.serviceId)
-        long goalId = Long.parseLong(params.goalId)
-        long objectiveId = Long.parseLong(params.objectiveId)
+        long serviceId = Long.parseLong(params.serviceId.toString())
+        long goalId = Long.parseLong(params.goalId.toString())
 
         String startDateStr = params.start.toString()
         String endDateStr = params.end.toString()
@@ -106,10 +104,10 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
-                " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId}")
+                " WHERE serviceId=${serviceId} AND goalId=${goalId}")
 
         int con =(int) max[0]+1
-        PmObjectives objectives = PmObjectives.read(objectiveId)
+        PmGoals goals = PmGoals.read(goalId)
 
         params.start=DateUtility.getSqlDate(c.getTime())
         params.end=DateUtility.getSqlDate(ce.getTime())
@@ -117,8 +115,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         PmActions actions = new PmActions(params)
         oldObject.serviceId = serviceId
         oldObject.goalId = goalId
-        oldObject.objectiveId = objectiveId
-        oldObject.sequence = objectives.sequence+"."+con
+        oldObject.sequence = goals.sequence+"."+con
         oldObject.actions = actions.actions
         oldObject.weight = actions.weight
         oldObject.start = actions.start

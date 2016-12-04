@@ -23,6 +23,7 @@ class BaseService extends Tools {
 
     def sessionFactory
     def groovySql
+    def groovySql_mis
     SpringSecurityService springSecurityService
     static transactional = false
 

@@ -7,6 +7,7 @@ import actions.pmServiceSector.UpdatePmServiceSectorActionService
 import actions.secUserSecRole.UpdateSecUserSecRoleActionService
 import com.pms.PmServiceSector
 import grails.converters.JSON
+import service.PmServiceSectorService
 
 class PmServiceSectorController extends BaseController {
 
@@ -14,7 +15,7 @@ class PmServiceSectorController extends BaseController {
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST", serviceListByCategoryId: "POST"
     ]
 
-    def baseService
+    PmServiceSectorService pmServiceSectorService
     CreatePmServiceSectorActionService createPmServiceSectorActionService
     DeletePmServiceSectorActionService deletePmServiceSectorActionService
     ListPmServiceSectorActionService listPmServiceSectorActionService
@@ -22,15 +23,13 @@ class PmServiceSectorController extends BaseController {
 
     def serviceListByCategoryId() {
         long categoryId = Long.parseLong(params.serviceCategoryId.toString())
-        List<PmServiceSector> lstService = PmServiceSector.findAllByCategoryId(categoryId, [sort: 'sequence', order: 'asc'])
-        lstService = baseService.listForKendoDropdown(lstService, null, null)
+        List<PmServiceSector> lstService = pmServiceSectorService.categoryWiseServiceList(categoryId)
         Map result = [lstService: lstService]
         render result as JSON
     }
 
     def activeServiceList() {
-        List<PmServiceSector> lst = PmServiceSector.findAllByIsDisplayble(true,[sort: "sequence",order: "asc"])
-        lst = baseService.listForKendoDropdown(lst, null, null)
+        List<PmServiceSector> lst = pmServiceSectorService.activeList()
         Map result = [lstValue: lst]
         render result as JSON
     }

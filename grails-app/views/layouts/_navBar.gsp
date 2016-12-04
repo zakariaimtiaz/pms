@@ -49,11 +49,6 @@
                                     <a href="#pmGoals/show"><i class="fa fa-plane"></i>&nbsp;Goals</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/pmObjectives/show">
-                                <li>
-                                    <a href="#pmObjectives/show"><i class="fa fa-cubes"></i>&nbsp;Objectives</a>
-                                </li>
-                            </sec:access>
                             <sec:access url="/pmActions/show">
                                 <li>
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
@@ -61,7 +56,7 @@
                             </sec:access>
                             <sec:access url="/pmSprints/show">
                                 <li>
-                                    <a href="#pmSprints/show"><i class="fa fa-anchor"></i>&nbsp;Sprints</a>
+                                    <a href="#pmSprints/show"><i class="fa fa-anchor"></i>&nbsp;Steps</a>
                                 </li>
                             </sec:access>
                         </ul>

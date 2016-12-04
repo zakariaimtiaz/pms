@@ -30,7 +30,7 @@
             type: 'post',
             url: loc,
             success: function (data, textStatus) {
-                console.log('developed by zakaria imtiaz');
+//                console.log('developed by zakaria imtiaz');
                 $('#page-wrapper').height($(window).height()-60);
                 $('#page-wrapper').html(data);
                 markLeftMenu(loc);

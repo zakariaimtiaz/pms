@@ -16,7 +16,7 @@ class DeletePmActionsActionService extends BaseService implements ActionServiceI
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
-        long id = Long.parseLong(params.id)
+        long id = Long.parseLong(params.id.toString())
         PmActions actions = PmActions.read(id)
         if(!actions){
             return super.setError(params, ENTITY_NOT_FOUND_ERROR_MESSAGE)
