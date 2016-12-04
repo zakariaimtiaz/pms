@@ -123,7 +123,7 @@
                                     <app:dropDownEmployee
                                             data_model_name="dropDownEmployee"
                                             required="false" class="kendo-drop-down"
-                                            sort_by_department="false" tabindex="3"
+                                            sort_by_department="true" tabindex="3"
                                             id="resPerson" name="resPerson"
                                             data-bind="value: actions.resPerson">
                                     </app:dropDownEmployee>
