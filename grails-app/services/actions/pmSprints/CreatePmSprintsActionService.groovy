@@ -17,7 +17,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
 
     PmActionsService pmActionsService
     SpringSecurityService springSecurityService
-    private static final String SAVE_SUCCESS_MESSAGE = "Sprits has been saved successfully"
+    private static final String SAVE_SUCCESS_MESSAGE = "Steps has been saved successfully"
     private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String SPRINTS_OBJECT = "pmSprints"
 
