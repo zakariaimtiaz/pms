@@ -4,8 +4,6 @@ import actions.pmActions.CreatePmActionsActionService
 import actions.pmActions.DeletePmActionsActionService
 import actions.pmActions.ListPmActionsActionService
 import actions.pmActions.UpdatePmActionsActionService
-import com.pms.PmActions
-import com.pms.PmServiceSector
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
 import service.PmActionsService
@@ -25,7 +23,7 @@ class PmActionsController extends BaseController {
     ListPmActionsActionService listPmActionsActionService
 
     def show() {
-        List<PmServiceSector> lst = pmServiceSectorService.activeList()
+        List<GroovyRowResult> lst = pmServiceSectorService.activeList()
         lst.remove(0)
         render(view: "/pmActions/show", model: [lstService: lst as JSON])
     }

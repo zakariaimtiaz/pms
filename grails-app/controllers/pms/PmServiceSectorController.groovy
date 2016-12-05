@@ -4,9 +4,9 @@ import actions.pmServiceSector.CreatePmServiceSectorActionService
 import actions.pmServiceSector.DeletePmServiceSectorActionService
 import actions.pmServiceSector.ListPmServiceSectorActionService
 import actions.pmServiceSector.UpdatePmServiceSectorActionService
-import actions.secUserSecRole.UpdateSecUserSecRoleActionService
 import com.pms.PmServiceSector
 import grails.converters.JSON
+import groovy.sql.GroovyRowResult
 import service.PmServiceSectorService
 
 class PmServiceSectorController extends BaseController {
@@ -29,7 +29,7 @@ class PmServiceSectorController extends BaseController {
     }
 
     def activeServiceList() {
-        List<PmServiceSector> lst = pmServiceSectorService.activeList()
+        List<GroovyRowResult> lst = pmServiceSectorService.activeList()
         Map result = [lstValue: lst]
         render result as JSON
     }

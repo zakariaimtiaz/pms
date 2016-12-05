@@ -27,6 +27,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
+            long goalId = Long.parseLong(params.goalId.toString())
             int weight = Long.parseLong(params.weight.toString())
             int totalWeight = 0
             List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE goalId=${goalId} AND id<>${id}")
@@ -88,6 +89,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
     private static PmActions buildObject(Map params, PmActions oldObject) {
         long serviceId = Long.parseLong(params.serviceId.toString())
         long goalId = Long.parseLong(params.goalId.toString())
+        long resPersonId = Long.parseLong(params.resPersonId.toString())
 
         String startDateStr = params.start.toString()
         String endDateStr = params.end.toString()
@@ -115,11 +117,17 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         PmActions actions = new PmActions(params)
         oldObject.serviceId = serviceId
         oldObject.goalId = goalId
+        oldObject.resPersonId = resPersonId
+        oldObject.supportDepartment = actions.supportDepartment
+        oldObject.resPerson = actions.resPerson
         oldObject.sequence = goals.sequence+"."+con
         oldObject.actions = actions.actions
         oldObject.weight = actions.weight
         oldObject.start = actions.start
         oldObject.end = actions.end
+        oldObject.sourceOfFund = actions.sourceOfFund
+        oldObject.target = actions.target
+        oldObject.meaIndicator = actions.meaIndicator
         return oldObject
     }
 }

@@ -6,6 +6,7 @@ class PmActions {
     long version
     long serviceId
     long goalId
+    long resPersonId
     String actions
     String sequence
     int tmpSeq
@@ -28,6 +29,7 @@ class PmActions {
 
     static constraints = {
         actions     size: 2..15000
+        resPersonId(nullable: true)
         meaIndicator(nullable: true)
         target(nullable: true)
         resPerson(nullable: true)

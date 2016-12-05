@@ -58,7 +58,7 @@
                                 <div class="col-md-10">
                                     <input type="text" class="form-control" id="meaIndicator" name="meaIndicator"
                                            placeholder="Measurement Indicator"
-                                           tabindex="3" data-bind="value: actions.meaIndicator"/>
+                                           tabindex="5" data-bind="value: actions.meaIndicator"/>
                                 </div>
                             </div>
 
@@ -68,7 +68,7 @@
                                 <div class="col-md-10">
                                     <input type="text" class="form-control" id="target" name="target"
                                            placeholder="Target"
-                                           tabindex="3" data-bind="value: actions.target"/>
+                                           tabindex="6" data-bind="value: actions.target"/>
                                 </div>
                             </div>
 
@@ -78,7 +78,7 @@
 
                                 <div class="col-md-10">
                                     <select id="supportDepartment" name="supportDepartment"
-                                            tabindex="3" data-placeholder="Select Support Department..."
+                                            tabindex="7" data-placeholder="Select Support Department..."
                                             data-bind="value: actions.supportDepartment">
                                     </select>
                                 </div>
@@ -91,7 +91,7 @@
 
                                 <div class="col-md-10">
                                     <textarea id="actions" name="actions" cols="4" rows="3"
-                                              tabindex="4" class="form-control"
+                                              tabindex="8" class="form-control"
                                               data-bind="value: actions.actions"
                                               placeholder="Actions" class="kendo-drop-down"></textarea>
                                 </div>
@@ -102,7 +102,7 @@
 
                                 <div class="col-md-3">
                                     <input type="text" class="form-control"
-                                           id="weight" name="weight" tabindex="3"
+                                           id="weight" name="weight" tabindex="9"
                                            data-bind="value: actions.weight"/>
                                 </div>
 
@@ -111,21 +111,21 @@
                                 <div class="col-md-5">
                                     <input type="text" class="form-control" id="strategyMapRef"
                                            placeholder="Strategy Map Ref"  name="strategyMapRef"
-                                           tabindex="3" data-bind="value: actions.strategyMapRef"/>
+                                           tabindex="10" data-bind="value: actions.strategyMapRef"/>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="resPerson">Responsible:</label>
+                                <label class="col-md-2 control-label label-required"
+                                       for="resPersonId">Responsible:</label>
 
                                 <div class="col-md-10">
                                     <app:dropDownEmployee
                                             data_model_name="dropDownEmployee"
                                             required="false" class="kendo-drop-down"
-                                            sort_by_department="false" tabindex="3"
-                                            id="resPerson" name="resPerson"
-                                            data-bind="value: actions.resPerson">
+                                            sort_by_department="true" tabindex="11"
+                                            id="resPersonId" name="resPersonId"
+                                            data-bind="value: actions.resPersonId">
                                     </app:dropDownEmployee>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@
                                 <div class="col-md-10">
                                     <input type="text" class="form-control" id="sourceOfFund" name="sourceOfFund"
                                            placeholder="Source Of Fund"
-                                           tabindex="3" data-bind="value: actions.sourceOfFund"/>
+                                           tabindex="12" data-bind="value: actions.sourceOfFund"/>
                                 </div>
                             </div>
 
@@ -147,7 +147,7 @@
                                 <div class="col-md-10">
                                     <input type="text" class="form-control" id="remarks" name="remarks"
                                            placeholder="Remarks"
-                                           tabindex="3" data-bind="value: actions.remarks"/>
+                                           tabindex="13" data-bind="value: actions.remarks"/>
                                 </div>
                             </div>
                         </div>
@@ -157,12 +157,12 @@
 
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="5"
+                            class="k-button k-button-icontext" role="button" tabindex="14"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="6"
+                            class="k-button k-button-icontext" role="button" tabindex="15"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

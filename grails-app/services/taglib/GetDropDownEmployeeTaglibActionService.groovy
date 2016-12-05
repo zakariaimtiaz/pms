@@ -1,5 +1,6 @@
 package taglib
 
+import com.pms.PmServiceSector
 import com.pms.SecUser
 import com.pms.UserDepartment
 import grails.converters.JSON
@@ -29,7 +30,6 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
     SecUserService secUserService
     SpringSecurityService springSecurityService
 
-
     /**
      * Build a map containing properties of html select
      *  1. Set default values of properties
@@ -54,8 +54,17 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
                 def loggedUser = springSecurityService.principal
                 SecUser user = SecUser.read(loggedUser.id)
                 List<Long> lstDepts =(List<Long>) UserDepartment.findAllByUserId(user.id)*.serviceId
+                List<Long> depts = []
+                for(int i=0;i<lstDepts.size();i++){
+                    PmServiceSector service = PmServiceSector.read(lstDepts[i])
+                    String query = """
+                       SELECT id FROM service WHERE name LIKE '${service.name}'
+                    """
+                    List<GroovyRowResult> lst = groovySql_mis.rows(query)
+                    depts << lst[0].id
+                }
                 if(lstDepts.size()==0) sortDept = Boolean.FALSE      // if no department found it means its SUPER_ADMIN
-                params.put(LST_DEPARTMENT, lstDepts)
+                params.put(LST_DEPARTMENT, depts)
             }
 
             // Set default values for optional parameters
@@ -80,7 +89,6 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
     public Map execute(Map result) {
         try {
             boolean sortDept = (boolean) result.get(SORT_BY_DEPARTMENT)
-
             List<Long> lstDepts = []
             if(sortDept){
                lstDepts =(List<Long>) result.get(LST_DEPARTMENT)
@@ -135,7 +143,7 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
         }
 
         String queryForList = """
-            SELECT e.employee_id AS id, CONCAT(e.name,' (',e.employee_id,') - ', d.name) AS name
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,') - ', d.name) AS name
                 FROM employee e
                 LEFT JOIN system_entity d ON d.id = e.designation_id AND d.type_id = 1
                 ${left_join}
