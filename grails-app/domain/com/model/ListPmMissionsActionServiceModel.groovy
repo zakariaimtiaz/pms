@@ -5,7 +5,8 @@ class ListPmMissionsActionServiceModel {
 
     public static final String SQL_LIST_MISSION_MODEL = """
 
-        DROP VIEW IF EXISTS `list_pm_missions_action_service_model`
+        DROP TABLE IF EXISTS `list_pm_missions_action_service_model`;
+        DROP VIEW IF EXISTS `list_pm_missions_action_service_model`;
 
         CREATE OR REPLACE VIEW `pms`.`list_pm_missions_action_service_model` AS
                 SELECT

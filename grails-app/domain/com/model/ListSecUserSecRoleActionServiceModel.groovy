@@ -4,6 +4,7 @@ class ListSecUserSecRoleActionServiceModel implements Serializable {
     public static final String MODEL_NAME = 'list_sec_user_sec_role_action_service_model'
 
     public static final String SQL_LIST_USER_ROLE_MODEL = """
+    DROP TABLE IF EXISTS list_sec_user_sec_role_action_service_model;
     CREATE OR REPLACE VIEW list_sec_user_sec_role_action_service_model AS
         SELECT sec_user_id AS user_id, sec_role_id AS role_id, u.username,role.authority FROM sec_user_sec_role ur
          LEFT JOIN sec_user u ON u.id = ur.sec_user_id

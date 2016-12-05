@@ -3,6 +3,7 @@ package com.model
 class ListSecRoleActionServiceModel {
     public static final String MODEL_NAME = 'list_sec_role_action_service_model'
     public static final String SQL_LIST_SEC_ROLE_MODEL = """
+    DROP TABLE IF EXISTS list_sec_role_action_service_model;
     CREATE OR REPLACE VIEW list_sec_role_action_service_model AS
           SELECT role.id, role.version, role.name,role.authority, COUNT(au.id) AS count FROM sec_role AS role
           LEFT JOIN sec_user_sec_role ur ON ur.sec_role_id = role.id
