@@ -143,7 +143,7 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
         }
 
         String queryForList = """
-            SELECT e.employee_id AS id, CONCAT(e.name,' (',e.employee_id,') - ', d.name) AS name
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,') - ', d.name) AS name
                 FROM employee e
                 LEFT JOIN system_entity d ON d.id = e.designation_id AND d.type_id = 1
                 ${left_join}

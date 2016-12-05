@@ -54,13 +54,29 @@
         supportDepartment.setDataSource(${lstService});
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions",null);
-
-//        supportDepartment.value("3,7".split(","));
-
     }
 
     function executePreCondition() {
-        if (!validateForm($("#actionForm"))) {
+        if ($("#serviceId").val()==''){
+            showError('Please select any service.');
+            return false;
+        }else if($("#goalId").val()==''){
+            showError('Please select any goal.');
+            return false;
+        }else if($("#start").val()==''){
+            showError('Please select start date.');
+            return false;
+        }else if($("#end").val()==''){
+            showError('Please select end date.');
+            return false;
+        }else if($("#actions").val()==''){
+            showError('Please insert actions.');
+            return false;
+        }else if($("#weight").val()==''){
+            showError('Please insert weight.');
+            return false;
+        }else if($("#resPersonId").val()==''){
+            showError('Please select responsible person.');
             return false;
         }
         return true;
@@ -70,7 +86,6 @@
         if (executePreCondition() == false) {
             return false;
         }
-
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
@@ -79,10 +94,10 @@
         } else {
             actionUrl = "${createLink(controller:'pmActions', action: 'update')}";
         }
-
+        var resPerson = $("#resPersonId").data("kendoDropDownList").text();
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#actionForm").serialize(),
+            data: jQuery("#actionForm").serialize()+ '&resPerson=' + resPerson,
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -157,6 +172,7 @@
                         actions: { type: "string" },
                         weight: { type: "number" },
                         goalId: { type: "number" },
+                        resPersonId: { type: "number" },
                         goal: { type: "string" },
                         service: { type: "string" },
                         serShortName: { type: "string" },
@@ -167,6 +183,7 @@
                         resPerson: { type: "string" },
                         strategyMapRef: { type: "string" },
                         supportDepartment: { type: "string" },
+                        supportDepartmentStr: { type: "string" },
                         sourceOfFund: { type: "string" },
                         remarks: { type: "string" },
                         start: { type: "date" },
@@ -202,7 +219,7 @@
             },
             columns: [
                 {field: "serShortName", title: "Service", width: 60, sortable: false, filterable: false},
-                {field: "sequence", title: "Sequence", width: 60, sortable: false, filterable: false,
+                {field: "sequence", title: "ID#", width: 60, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "weight", title: "Weight", width: 60, sortable: false, filterable: false,
@@ -215,7 +232,7 @@
                     template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"},
                 {field: "meaIndicator", title: "Measurement Indicator", width: 120, sortable: false, filterable: false},
                 {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
-                {field: "supportDepartment", title: "Support Department", width: 120, sortable: false, filterable: false},
+                {field: "supportDepartmentStr", title: "Support Department", width: 120, sortable: false, filterable: false},
                 {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false}
             ],
             filterable: {
@@ -236,6 +253,7 @@
                         sequence: "",
                         actions: "",
                         serviceId: "",
+                        resPersonId: "",
                         goalId: "",
                         meaIndicator: "",
                         target: "",
@@ -275,6 +293,8 @@
 
     function showService(actions) {
         actionsModel.set('actions', actions);
+        dropDownEmployee.value(actions.resPersonId);
+        if(actions.supportDepartment) supportDepartment.value(actions.supportDepartment.split(","));
         populateGoals(actions.serviceId,actions.goalId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }

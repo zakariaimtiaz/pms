@@ -4,8 +4,6 @@ import actions.pmActions.CreatePmActionsActionService
 import actions.pmActions.DeletePmActionsActionService
 import actions.pmActions.ListPmActionsActionService
 import actions.pmActions.UpdatePmActionsActionService
-import com.pms.PmActions
-import com.pms.PmServiceSector
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
 import service.PmActionsService
