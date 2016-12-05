@@ -99,7 +99,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private static PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long actionsId) {
+    private PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long actionsId) {
 
         List<PmSprints> max = PmSprints.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmSprints" +
                 " WHERE serviceId=${serviceId} AND goalId=${goalId}  AND actionsId=${actionsId}")
@@ -115,7 +115,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         sprints.startDate=DateUtility.getSqlDate(parameterMap.start)
         sprints.endDate = DateUtility.getSqlDate(parameterMap.end)
         sprints.createDate = DateUtility.getSqlDate(new Date())
-        sprints.createBy = pmActions.resPersonId
+        sprints.createBy = springSecurityService.principal.id
         sprints.resPersonId=sprints.resPersonId>0?Long.parseLong(parameterMap.resPersonId):null
         sprints.resPerson=sprints.resPersonId>0?sprints.resPerson:null
 

@@ -10,7 +10,7 @@ class PmSprints {
     int tmpSeq
     String sprints
     String target
-    long resPersonId
+    Long resPersonId
     String resPerson
     String supportDepartment
     String remarks

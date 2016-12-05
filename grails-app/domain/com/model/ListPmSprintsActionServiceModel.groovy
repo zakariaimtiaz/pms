@@ -27,7 +27,7 @@ class ListPmSprintsActionServiceModel {
     String sprints
     String sequence
     String target
-    long resPersonId
+    Long resPersonId
     String resPerson
     String supportDepartment
     String remarks
