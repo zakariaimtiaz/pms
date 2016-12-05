@@ -27,12 +27,11 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.serviceId && !params.goalId && !params.objectiveId && !params.actionsId && !params.sprints) {
+            if (!params.serviceId && !params.goalId && !params.actionsId && !params.sprints ) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
-            long objectiveId = Long.parseLong(params.objectiveId.toString())
             Long actionsId = Long.parseLong(params.actionsId.toString())
             int weight = Long.parseLong(params.weight.toString())
             Date startDateStr = DateUtility.parseMaskedDate(params.start)
@@ -41,7 +40,6 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
             endDateStr = DateUtility.getSqlDate(endDateStr)
             params.start = startDateStr
             params.end = endDateStr
-
             boolean isWithin = pmActionsService.taskDateWithinActionsDate(startDateStr,endDateStr,actionsId)
             if (!isWithin) {
                 return super.setError(params, "Sorry! Date range exceed action's time duration. ")
@@ -53,7 +51,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
             if (weight > available) {
                 return super.setError(params, WEIGHT_EXCEED)
             }
-            PmSprints sprints = buildObject(params, serviceId, goalId, objectiveId, actionsId)
+            PmSprints sprints = buildObject(params, serviceId, goalId, actionsId)
             params.put(SPRINTS_OBJECT, sprints)
             return params
         } catch (Exception ex) {
@@ -101,17 +99,16 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private static PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long objectiveId,long actionsId) {
+    private static PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long actionsId) {
 
         List<PmSprints> max = PmSprints.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmSprints" +
-                " WHERE serviceId=${serviceId} AND goalId=${goalId} AND objectiveId=${objectiveId} AND actionsId=${actionsId}")
+                " WHERE serviceId=${serviceId} AND goalId=${goalId}  AND actionsId=${actionsId}")
 
         int con =(int) max[0]+1
         PmActions pmActions = PmActions.read(actionsId)
         PmSprints sprints = new PmSprints(parameterMap)
         sprints.serviceId = serviceId
         sprints.goalId = goalId
-        sprints.objectiveId = objectiveId
         sprints.actionsId=actionsId
         sprints.sequence = pmActions.sequence+"."+con
         sprints.tmpSeq = con

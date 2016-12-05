@@ -5,12 +5,12 @@ class PmSprints {
     long version
     long serviceId
     long goalId
-    long objectiveId
     long actionsId
     String sequence
     int tmpSeq
     String sprints
     String target
+    long resPersonId
     String resPerson
     String supportDepartment
     String remarks
@@ -27,7 +27,6 @@ class PmSprints {
         createDate sqlType: 'date'
         serviceId   index: 'sprints_service_id_idx'
         goalId   index: 'sprints_goal_id_idx'
-        objectiveId   index: 'sprints_objective_id_idx'
         actionsId   index: 'sprints_actions_id_idx'
     }
 
@@ -37,5 +36,6 @@ class PmSprints {
         resPerson(nullable: true)
         supportDepartment(nullable: true)
         remarks(nullable: true)
+        resPersonId(nullable: true)
     }
 }

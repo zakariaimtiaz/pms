@@ -13,16 +13,16 @@
 </script>
 
 <script language="javascript">
-    var gridSprints, dataSource, sprintsModel,dropDownService,dropDownGoals,dropDownObjectives,dropDownActions;
+    var gridSprints, dataSource, sprintsModel,dropDownService,dropDownGoals,dropDownActions,dropDownEmployee;
 
     $(document).ready(function () {
-        onLoadActionPage();
-        initActionsGrid();
+        onLoadSprintsPage();
+        initSprintsGrid();
         initObservable();
     });
 
-    function onLoadActionPage() {
-        $("#rowAction").hide();
+    function onLoadSprintsPage() {
+        $("#rowSprint").hide();
         $("#weight").kendoNumericTextBox({
             decimals : 0,
             format   : "### \\%",
@@ -51,10 +51,9 @@
         end.value(currentDate);
         end.min(start.value());
         dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
-        dropDownObjectives = initKendoDropdown($('#objectiveId'), null, null, null);
         dropDownActions = initKendoDropdown($('#actionsId'), null, null, null);
-        initializeForm($("#sprintsForm"), onSubmitAction);
-        defaultPageTile("Create Actions",null);
+        initializeForm($("#sprintsForm"), onSubmitSprints);
+        defaultPageTile("Create Steps",null);
     }
     function startChange() {
         var startDate = start.value();
@@ -71,7 +70,7 @@
         return true;
     }
 
-    function onSubmitAction() {
+    function onSubmitSprints() {
         if (executePreCondition() == false) {
             return false;
         }
@@ -80,7 +79,8 @@
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'pmSprints', action: 'create')}";
+
+            actionUrl = "${createLink(controller:'pmSprints', action: 'create')}?resPerson="+dropDownEmployee.text();
         } else {
             actionUrl = "${createLink(controller:'pmSprints', action: 'update')}";
         }
@@ -133,15 +133,15 @@
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
-        dropDownObjectives.value('');
+        dropDownActions.value('');
     }
     function resetForm() {
         clearForm($("#sprintsForm"), null);
         initObservable();
         dropDownService.value('');
         dropDownGoals.value('');
-        dropDownObjectives.value('');
-        $("#rowAction").hide();
+        dropDownActions.value('');
+        $("#rowSprint").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
 
@@ -162,7 +162,6 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         sprints: { type: "string" },
-                        objectiveId: { type: "number" },
                         actionsId: { type: "number" },
                         weight: { type: "number" },
                         goalId: { type: "number" },
@@ -172,6 +171,7 @@
                         serviceId: { type: "number" },
                         sequence: { type: "string" },
                         target: { type: "string" },
+                        resPersonId: { type: "number" },
                         resPerson: { type: "string" },
                         supportDepartment: { type: "string" },
                         remarks: { type: "string" },
@@ -192,7 +192,7 @@
         });
     }
 
-    function initActionsGrid() {
+    function initSprintsGrid() {
         initDataSource();
         $("#gridSprints").kendoGrid({
             dataSource: dataSource,
@@ -214,13 +214,12 @@
                 {field: "weight", title: "Weight", width: 60, sortable: false, filterable: false,
                     template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "sprints", title: "Sprints", width: 120, sortable: false, filterable: false},
+                {field: "sprints", title: "Steps", width: 120, sortable: false, filterable: false},
                 {field: "startDate", title: "Start", width: 80, sortable: false, filterable: false,
                     template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
                 {field: "endDate", title: "End", width: 80, sortable: false, filterable: false,
                     template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
                 {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
-                {field: "supportDepartment", title: "Support Department", width: 120, sortable: false, filterable: false},
                 {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false}
             ],
             filterable: {
@@ -242,10 +241,10 @@
                         sprints: "",
                         serviceId: "",
                         goalId: "",
-                        objectiveId: "",
                         actionsId: "",
                         target: "",
                         weight: "",
+                        resPersonId: "",
                         resPerson: "",
                         supportDepartment: "",
                         startDate: "",
@@ -266,7 +265,7 @@
     }
 
     function addService() {
-        $("#rowAction").show();
+        $("#rowSprint").show();
     }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridSprints, 'action') == false) {
@@ -279,18 +278,18 @@
 
     function showService(sprints) {
         sprintsModel.set('sprints', sprints);
-        populateGoals(sprints.serviceId,sprints.goalId,sprints.objectiveId,sprints.actionsId);
+        populateGoals(sprints.serviceId,sprints.goalId,sprints.actionsId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
     // To populate Goals List
-    function populateGoals(serId,goalId,objectiveId,actionsId) {
+    function populateGoals(serId,goalId,actionsId) {
         var serviceId = serId?serId:dropDownService.value();
         if (serviceId == '') {
             dropDownGoals.setDataSource(getKendoEmptyDataSource(dropDownGoals, null));
-            dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
+            dropDownActions.setDataSource(getKendoEmptyDataSource(dropDownActions, null));
             dropDownGoals.value('');
-            dropDownObjectives.value('');
+            dropDownActions.value('');
             return false;
         }
         showLoadingSpinner(true);
@@ -304,7 +303,7 @@
                 dropDownGoals.setDataSource(data.lstGoals);
                 if(goalId){
                     dropDownGoals.value(goalId);
-                    populateObjectives(goalId,objectiveId,actionsId);
+                    populateActions(actionsId,goalId);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -318,47 +317,18 @@
         });
         return true;
     }
-        // To populate Objectives List
-    function populateObjectives(goalId,objectiveId,actionsId) {
-        var goalsId = goalId?goalId:dropDownGoals.value();
-        if (goalsId == '') {
-            dropDownObjectives.setDataSource(getKendoEmptyDataSource(dropDownObjectives, null));
-            dropDownObjectives.value('');
-            return false;
-        }
-        showLoadingSpinner(true);
-        $.ajax({
-            url: "${createLink(controller: 'pmObjectives', action: 'lstObjectiveByGoalsId')}?goalId=" + goalsId,
-            success: function (data) {
-                if (data.isError) {
-                    showError(data.message);
-                    return false;
-                }
-                dropDownObjectives.setDataSource(data.lstObjectives);
-                if(objectiveId) dropDownObjectives.value(objectiveId);
-                populateActions(actionsId,objectiveId);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus);
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-        return true;
-    }
-    function populateActions(actionsId,objectiveId) {
-        var objectiveId = objectiveId?objectiveId:dropDownObjectives.value();
-        if (objectiveId == '') {
+
+
+    function populateActions(actionsId,goalId) {
+        var goalId = goalId?goalId:dropDownGoals.value();
+        if (goalId == '') {
             dropDownActions.setDataSource(getKendoEmptyDataSource(dropDownActions, null));
             dropDownActions.value('');
             return false;
         }
         showLoadingSpinner(true);
         $.ajax({
-            url: "${createLink(controller: 'pmActions', action: 'lstActionsByObjectiveId')}?objectiveId=" + objectiveId,
+            url: "${createLink(controller: 'pmActions', action: 'lstActionsByGoalId')}?goalId=" + goalId,
             success: function (data) {
                 if (data.isError) {
                     showError(data.message);
@@ -378,5 +348,29 @@
         });
         return true;
     }
+    function populateStartAndEndDate() {
+        var actionId = dropDownActions.value();
 
+        showLoadingSpinner(true);
+        $.ajax({
+            url:  "${createLink(controller:'pmActions', action: 'actionsStartAndEndDateById')}?actionId=" + actionId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                start.value(data.lstActions.start);
+                end.value(data.lstActions.end);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                afterAjaxError(XMLHttpRequest, textStatus);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
 </script>

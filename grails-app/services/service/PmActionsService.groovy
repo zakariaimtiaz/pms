@@ -7,11 +7,11 @@ import pms.BaseService
 @Transactional
 class PmActionsService extends BaseService{
 
-    public List<GroovyRowResult> lstActionsForDropDown(long objectiveId) {
+    public List<GroovyRowResult> lstActionsForDropDown(long goalId) {
         String queryForList = """
             SELECT o.id AS id, CONCAT(o.sequence,'. ',o.actions) AS name
                 FROM pm_actions o
-                WHERE o.objective_id = ${objectiveId}
+                WHERE o.goal_id = ${goalId}
                 ORDER BY o.sequence
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)

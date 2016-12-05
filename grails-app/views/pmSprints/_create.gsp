@@ -1,9 +1,9 @@
 <div class="container-fluid">
-    <div class="row" id="rowAction">
+    <div class="row" id="rowSprint">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Create Sprints Plan
+                    Create Steps Plan
                 </div>
             </div>
 
@@ -34,21 +34,9 @@
 
                                 <div class="col-md-10">
                                     <select class="kendo-drop-down" id="goalId" name="goalId"
-                                            onchange="javascript:populateObjectives();"
+                                            onchange="javascript:populateActions();"
                                             placeholder="Select Goal"
                                             tabindex="2" data-bind="value: sprints.goalId"></select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required"
-                                       for="objectiveId">Objectives:</label>
-
-                                <div class="col-md-10">
-                                    <select class="kendo-drop-down" id="objectiveId" name="objectiveId"
-                                            placeholder="Select Objective"
-                                            onchange="javascript:populateActions();"
-                                            tabindex="3" data-bind="value: sprints.objectiveId"></select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -58,6 +46,7 @@
                                 <div class="col-md-10">
                                     <select class="kendo-drop-down" id="actionsId" name="actionsId"
                                             placeholder="Select Action"
+                                            onchange="javascript:populateStartAndEndDate();"
                                             tabindex="3" data-bind="value: sprints.actionsId"></select>
                                 </div>
                             </div>
@@ -87,13 +76,13 @@
 
                         <div class="col-md-7">
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="sprints">Sprints:</label>
+                                <label class="col-md-2 control-label label-required" for="sprints">Steps:</label>
 
                                 <div class="col-md-10">
                                     <textarea id="sprints" name="sprints" cols="4" rows="4"
                                               tabindex="4" class="form-control"
                                               data-bind="value: sprints.sprints"
-                                              placeholder="Sprints" class="kendo-drop-down"></textarea>
+                                              placeholder="Steps" class="kendo-drop-down"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -113,23 +102,16 @@
 
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-optional"
-                                       for="resPerson">Responsible:</label>
+                                       for="resPersonId">Responsible:</label>
 
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="resPerson" name="resPerson"
-                                           placeholder="Responsible Person"
-                                           tabindex="3" data-bind="value: sprints.resPerson"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="supportDepartment">Support:</label>
-
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="supportDepartment"
-                                           name="supportDepartment"
-                                           placeholder="Support Department"
-                                           tabindex="3" data-bind="value: sprints.supportDepartment"/>
+                                    <app:dropDownEmployee
+                                            data_model_name="dropDownEmployee"
+                                            required="false" class="kendo-drop-down"
+                                            sort_by_department="false" tabindex="3"
+                                            id="resPersonId" name="resPersonId"
+                                            data-bind="value: sprints.resPersonId">
+                                    </app:dropDownEmployee>
                                 </div>
                             </div>
 

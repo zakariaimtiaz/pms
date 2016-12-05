@@ -21,11 +21,10 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
 
     public Map executePreCondition(Map params) {
         try {
-            if (!params.serviceId && !params.goalId && !params.objectiveId && !params.actionsId && !params.sprints) {
+            if (!params.serviceId && !params.goalId && !params.actionsId && !params.sprints) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            long objectiveId = Long.parseLong(params.objectiveId.toString())
             Long actionsId = Long.parseLong(params.actionsId.toString())
             Date startDateStr = DateUtility.parseMaskedDate(params.start)
             Date endDateStr = DateUtility.parseMaskedDate(params.end)
@@ -109,6 +108,7 @@ class UpdatePmSprintsActionService extends BaseService implements ActionServiceI
         oldObject.remarks = sprints.remarks
         oldObject.startDate=DateUtility.getSqlDate(parameterMap.start)
         oldObject.endDate = DateUtility.getSqlDate(parameterMap.end)
+        oldObject.resPersonId=sprints.resPersonId
 
         return oldObject
     }

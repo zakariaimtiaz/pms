@@ -7,7 +7,7 @@ class ListPmSprintsActionServiceModel {
          CREATE OR REPLACE VIEW list_pm_sprints_action_service_model AS
         SELECT s.id, s.version, s.sprints,d.id AS actions_id,d.actions, g.id AS goal_id, g.goal,s.sequence,
         sc.id AS service_id,sc.name AS service,sc.short_name AS ser_short_name,s.weight,
-        s.start_date, s.end_date, s.target,s.res_person,s.support_department,s.remarks
+        s.start_date, s.end_date, s.target,s.res_person,s.res_person_id,s.support_department,s.remarks
         FROM pm_sprints s LEFT JOIN
         pm_actions d ON s.actions_id=d.id
         LEFT JOIN pm_goals g ON g.id = d.goal_id
@@ -27,6 +27,7 @@ class ListPmSprintsActionServiceModel {
     String sprints
     String sequence
     String target
+    long resPersonId
     String resPerson
     String supportDepartment
     String remarks
