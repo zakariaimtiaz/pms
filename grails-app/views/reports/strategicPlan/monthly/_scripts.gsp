@@ -62,7 +62,7 @@
             height: getGridHeightKendo(),
             sortable: false,
             pageable: false,
-            detailInit: objectiveInit,
+            detailInit: actionsInit,
             dataBound: function() {
                 this.expandRow(this.tbody.find("tr.k-master-row").first());
             },
@@ -79,12 +79,14 @@
         });
         gridMission = $("#grid").data("kendoGrid");
     }
-    function objectiveInit(e) {
+
+    function actionsInit(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
                 transport: {
                     read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId="+ e.data.serviceId+"&month="+month+"&type=Objectives",
+                        url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId="+ e.data.serviceId
+                        +"&month="+month+"&type=Actions",
                         dataType: "json",
                         type: "post"
                     }
@@ -98,37 +100,6 @@
                 serverFiltering: true,
                 pageSize: 10,
                 filter: { field: "goalId", operator: "eq", value: e.data.id }
-            },
-            scrollable: false,
-            sortable: false,
-            pageable: false,
-            detailInit: actionsInit,
-            columns: [
-                { field: "sequence",title: "#ID", width: "50px" },
-                { field: "objective", title:"Objectives" }
-            ]
-        });
-    }
-    function actionsInit(e) {
-        $("<div/>").appendTo(e.detailCell).kendoGrid({
-            dataSource: {
-                transport: {
-                    read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId="+ e.data.serviceId+"&goalId="+
-                        e.data.goalId+"&month="+month+"&type=Actions",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                schema: {
-                    type: 'json',
-                    data: "list"
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                filter: { field: "objectiveId", operator: "eq", value: e.data.id }
             },
             scrollable: false,
             sortable: false,
@@ -154,7 +125,7 @@
                 transport: {
                     read: {
                         url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId="+ e.data.serviceId+
-                        "&goalId="+e.data.goalId+"&objectiveId="+e.data.objectiveId+"&month="+month+"&type=Sprints",
+                        "&goalId="+e.data.goalId+"&month="+month+"&type=Sprints",
                         dataType: "json",
                         type: "post"
                     }

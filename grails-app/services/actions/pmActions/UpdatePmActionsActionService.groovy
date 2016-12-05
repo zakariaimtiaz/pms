@@ -105,12 +105,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         ce.setTime(end);
         ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-        List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
-                " WHERE serviceId=${serviceId} AND goalId=${goalId}")
-
-        int con =(int) max[0]+1
-        PmGoals goals = PmGoals.read(goalId)
-
         params.start=DateUtility.getSqlDate(c.getTime())
         params.end=DateUtility.getSqlDate(ce.getTime())
 
@@ -120,7 +114,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         oldObject.resPersonId = resPersonId
         oldObject.supportDepartment = actions.supportDepartment
         oldObject.resPerson = actions.resPerson
-        oldObject.sequence = goals.sequence+"."+con
         oldObject.actions = actions.actions
         oldObject.weight = actions.weight
         oldObject.start = actions.start

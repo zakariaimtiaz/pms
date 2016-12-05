@@ -63,7 +63,7 @@
             height: getGridHeightKendo(),
             sortable: false,
             pageable: false,
-            detailInit: objectiveInit,
+            detailInit: actionsInit,
             dataBound: function() {
                 this.expandRow(this.tbody.find("tr.k-master-row").first());
             },
@@ -80,43 +80,13 @@
         });
         gridMission = $("#grid").data("kendoGrid");
     }
-    function objectiveInit(e) {
-        $("<div/>").appendTo(e.detailCell).kendoGrid({
-            dataSource: {
-                transport: {
-                    read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+"&year="+year+"&type=Objectives",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                schema: {
-                    type: 'json',
-                    data: "list"
-                },noRecords: true,
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                filter: { field: "goalId", operator: "eq", value: e.data.id }
-            },
-            scrollable: false,
-            sortable: false,
-            pageable: false,
-            detailInit: actionsInit,
-            columns: [
-                { field: "sequence",title: "#ID", width: "50px" },
-                { field: "objective", title:"Objectives" }
-            ]
-        });
-    }
     function actionsInit(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
                 transport: {
                     read: {
                         url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+"&goalId="+
-                        e.data.goalId+"&year="+year+"&type=Actions",
+                        "&year="+year+"&type=Actions",
                         dataType: "json",
                         type: "post"
                     }
@@ -129,7 +99,7 @@
                 serverSorting: true,
                 serverFiltering: true,
                 pageSize: 10,
-                filter: { field: "objectiveId", operator: "eq", value: e.data.id }
+                filter: { field: "goalId", operator: "eq", value: e.data.id }
             },
             scrollable: false,
             sortable: false,
@@ -155,7 +125,7 @@
                 transport: {
                     read: {
                         url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+
-                        "&goalId="+e.data.goalId+"&objectiveId="+e.data.objectiveId+"&year="+year+"&type=Sprints",
+                        "&goalId="+e.data.goalId+"&year="+year+"&type=Sprints",
                         dataType: "json",
                         type: "post"
                     }

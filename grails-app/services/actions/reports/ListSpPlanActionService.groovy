@@ -62,22 +62,15 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
                 List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
                 result.put(LIST, lstGoals)
                 return result
-            }else if(type.equals("Objectives")){
-                long goalId = Long.parseLong(result."filter[filters][0][value]")
-                List<PmObjectives> lstObj = PmObjectives.findAllByServiceIdAndGoalId(serviceId,goalId)
-                result.put(LIST, lstObj)
-                return result
             }else if(type.equals("Actions")){
-                long goalId = Long.parseLong(result.goalId.toString())
-                long objId = Long.parseLong(result."filter[filters][0][value]")
-                List<GroovyRowResult> lstAction = buildActionsList(serviceId,goalId,objId,start,end)
+                long goalId = Long.parseLong(result."filter[filters][0][value]")
+                List<GroovyRowResult> lstAction = buildActionsList(serviceId,goalId,start,end)
                 result.put(LIST, lstAction)
                 return result
             }else if(type.equals("Sprints")){
                 long goalId = Long.parseLong(result.goalId.toString())
-                long objId = Long.parseLong(result.objectiveId.toString())
                 long actionsId = Long.parseLong(result."filter[filters][0][value]")
-                List<GroovyRowResult> lstSprint = buildSprintList(serviceId,goalId,objId,actionsId, start, end)
+                List<GroovyRowResult> lstSprint = buildSprintList(serviceId,goalId,actionsId, start, end)
                 result.put(LIST, lstSprint)
                 return result
             }
@@ -126,26 +119,25 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
         return result
     }
 
-    private List<GroovyRowResult> buildActionsList(long serviceId,long goalId,long objId, Date start, Date end) {
+    private List<GroovyRowResult> buildActionsList(long serviceId,long goalId, Date start, Date end) {
         String query = """
-                SELECT id,service_id AS serviceId,goal_id AS goalId,objective_id AS objectiveId,start,end,sequence,tmp_seq AS tmpSeq,
+                SELECT id,service_id AS serviceId,goal_id AS goalId,start,end,sequence,tmp_seq AS tmpSeq,
                         mea_indicator AS meaIndicator,target,actions,weight,res_person AS resPerson, remarks,
                         support_department AS supportDepartment,strategy_map_ref AS strategyMapRef,source_of_fund AS sourceOfFund
                 FROM pm_actions
-                WHERE service_id = ${serviceId} AND goal_id = ${goalId} AND objective_id = ${objId}
+                WHERE service_id = ${serviceId} AND goal_id = ${goalId}
                 AND ('${start}' <= end AND '${end}' >= start)
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
     }
-    private List<GroovyRowResult> buildSprintList(long serviceId,long goalId,long objId,long actionsId, Date start, Date end) {
+    private List<GroovyRowResult> buildSprintList(long serviceId,long goalId,long actionsId, Date start, Date end) {
         String query = """
-                SELECT id,service_id AS serviceId,goal_id AS goalId,objective_id AS objectiveId,actions_id AS actionsId,
+                SELECT id,service_id AS serviceId,goal_id AS goalId,actions_id AS actionsId,
                         start_date AS startDate,end_date AS endDate,sequence,sprints,weight,tmp_seq AS tmpSeq,target,
                         support_department AS supportDepartment,res_person AS resPerson
                 FROM pm_sprints
-                WHERE service_id = ${serviceId} AND goal_id = ${goalId}
-                 AND objective_id = ${objId} AND actions_id = ${actionsId}
+                WHERE service_id = ${serviceId} AND goal_id = ${goalId} AND actions_id = ${actionsId}
                  AND ('${start}' <= end_date AND '${end}' >= start_date)
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
