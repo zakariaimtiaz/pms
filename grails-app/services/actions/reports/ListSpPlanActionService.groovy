@@ -2,7 +2,6 @@ package actions.reports
 
 import com.pms.PmGoals
 import com.pms.PmMissions
-import com.pms.PmObjectives
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
