@@ -12,7 +12,7 @@ class PmActionsService extends BaseService{
             SELECT o.id AS id, CONCAT(o.sequence,'. ',o.actions) AS name
                 FROM pm_actions o
                 WHERE o.goal_id = ${goalId}
-                ORDER BY o.sequence
+                ORDER BY o.tmp_seq
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
         return lst
