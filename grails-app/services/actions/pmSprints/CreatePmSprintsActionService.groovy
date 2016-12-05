@@ -17,7 +17,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
 
     PmActionsService pmActionsService
     SpringSecurityService springSecurityService
-    private static final String SAVE_SUCCESS_MESSAGE = "Sprits has been saved successfully"
+    private static final String SAVE_SUCCESS_MESSAGE = "Steps has been saved successfully"
     private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String SPRINTS_OBJECT = "pmSprints"
 
@@ -99,7 +99,7 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private static PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long actionsId) {
+    private PmSprints buildObject(Map parameterMap, long serviceId, long goalId, long actionsId) {
 
         List<PmSprints> max = PmSprints.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmSprints" +
                 " WHERE serviceId=${serviceId} AND goalId=${goalId}  AND actionsId=${actionsId}")
@@ -115,7 +115,9 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         sprints.startDate=DateUtility.getSqlDate(parameterMap.start)
         sprints.endDate = DateUtility.getSqlDate(parameterMap.end)
         sprints.createDate = DateUtility.getSqlDate(new Date())
-        sprints.createBy = 1
+        sprints.createBy = springSecurityService.principal.id
+        sprints.resPersonId=sprints.resPersonId>0?Long.parseLong(parameterMap.resPersonId):null
+        sprints.resPerson=sprints.resPersonId>0?sprints.resPerson:null
 
         return sprints
     }
