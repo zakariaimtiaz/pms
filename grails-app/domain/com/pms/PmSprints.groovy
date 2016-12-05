@@ -36,6 +36,6 @@ class PmSprints {
         resPerson(nullable: true)
         supportDepartment(nullable: true)
         remarks(nullable: true)
-        resPersonId(nullable: true)
+        resPersonId (nullable: true)
     }
 }

@@ -115,7 +115,9 @@ class CreatePmSprintsActionService extends BaseService implements ActionServiceI
         sprints.startDate=DateUtility.getSqlDate(parameterMap.start)
         sprints.endDate = DateUtility.getSqlDate(parameterMap.end)
         sprints.createDate = DateUtility.getSqlDate(new Date())
-        sprints.createBy = 1
+        sprints.createBy = pmActions.resPersonId
+        sprints.resPersonId=sprints.resPersonId>0?Long.parseLong(parameterMap.resPersonId):null
+        sprints.resPerson=sprints.resPersonId>0?sprints.resPerson:null
 
         return sprints
     }
