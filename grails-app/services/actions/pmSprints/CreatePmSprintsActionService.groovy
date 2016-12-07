@@ -2,7 +2,6 @@ package actions.pmSprints
 
 import com.model.ListPmSprintsActionServiceModel
 import com.pms.PmActions
-import com.pms.PmObjectives
 import com.pms.PmSprints
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional

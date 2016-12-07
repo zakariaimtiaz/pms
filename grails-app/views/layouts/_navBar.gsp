@@ -105,8 +105,13 @@
                                 </li>
                             </sec:access>
                             <sec:access url="/spTimeSchedule/show">
+                            <li>
+                                <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
+                            </li>
+                        </sec:access>
+                            <sec:access url="/pmProjects/show">
                                 <li>
-                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
+                                    <a href="#pmProjects/show"><i class="fa fa-cogs"></i>&nbsp;Projects</a>
                                 </li>
                             </sec:access>
                         </ul>
