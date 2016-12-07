@@ -115,6 +115,7 @@
                         userId: { type: "number" },
                         roleId: { type: "number" },
                         username: { type: "string" },
+                        service: { type: "string" },
                         authority: { type: "string" }
                     }
                 },
@@ -146,7 +147,8 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "username", title: "User Name", width: 150, sortable: false, filterable: kendoCommonFilterable(96)}
+                {field: "username", title: "User Name", width: 150, sortable: false, filterable: kendoCommonFilterable(96)},
+                {field: "service", title: "Department Name", width: 150, sortable: false, filterable: kendoCommonFilterable(96)}
             ],
             filterable: {
                 mode: "row"

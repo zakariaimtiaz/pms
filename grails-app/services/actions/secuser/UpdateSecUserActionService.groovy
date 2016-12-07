@@ -1,6 +1,6 @@
 package actions.secuser
 
-import com.pms.PmServiceSector
+import com.model.ListSecUserActionServiceModel
 import com.pms.SecUser
 import com.pms.UserDepartment
 import grails.plugin.springsecurity.SpringSecurityService
@@ -77,6 +77,9 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
      * @return - map with success message
      */
     public Map buildSuccessResultForUI(Map result) {
+        SecUser secUser = (SecUser) result.get(SEC_USER)
+        ListSecUserActionServiceModel model = ListSecUserActionServiceModel.read(secUser.id)
+        result.put(SEC_USER, model)
         return super.setSuccess(result, UPDATE_SUCCESS_MESSAGE)
     }
 
@@ -97,11 +100,16 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
      */
     private SecUser buildObject(Map parameterMap, SecUser oldSecUser) {
         long serviceId = Long.parseLong(parameterMap.serviceId.toString())
-        PmServiceSector serviceSector = PmServiceSector.read(serviceId)
+        String str = parameterMap.fullName
+        int startIndex = str.indexOf("(");
+        int endIndex = str.indexOf(")");
+        String toBeReplaced = str.substring(startIndex, endIndex + 1);
+        parameterMap.fullName = str.replace(toBeReplaced, "");
+
         SecUser user = new SecUser(parameterMap)
-        oldSecUser.fullName = serviceSector.departmentHead
-        oldSecUser.serviceId = serviceSector.id
+        oldSecUser.serviceId = serviceId
         oldSecUser.username = user.username
+        oldSecUser.fullName = user.fullName
         oldSecUser.enabled = user.enabled
         oldSecUser.password = springSecurityService.encodePassword(user.password)
         oldSecUser.accountExpired = user.accountExpired

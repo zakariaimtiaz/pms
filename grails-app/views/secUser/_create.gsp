@@ -19,9 +19,14 @@
                                 <label class="col-md-3 control-label label-required" for="username">Login ID:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" id="username" name="username" maxlength="255"
-                                           placeholder="Login ID" required validationMessage="Required" tabindex="1"
-                                           data-bind="value: secUser.username"/>
+                                    <app:dropDownEmployee
+                                            data_model_name="dropDownEmployee"
+                                            placeholder="Login ID" is_for_login="true"
+                                            required="false" class="kendo-drop-down"
+                                            sort_by_department="false" tabindex="1"
+                                            id="username" name="username"
+                                            data-bind="value: secUser.username">
+                                    </app:dropDownEmployee>
                                 </div>
 
                                 <div class="col-md-3 pull-left">

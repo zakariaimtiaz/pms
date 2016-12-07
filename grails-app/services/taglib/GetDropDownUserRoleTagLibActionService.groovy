@@ -125,7 +125,7 @@ class GetDropDownUserRoleTagLibActionService extends BaseService implements Acti
      */
     private List<GroovyRowResult> listAppUser(long roleId) {
         String queryForList = """
-            SELECT id, username AS name
+            SELECT id, CONCAT(full_name,' (',username,')') AS name
             FROM sec_user
             WHERE enabled = true
             AND id NOT IN

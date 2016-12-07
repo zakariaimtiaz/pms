@@ -51,7 +51,7 @@
 
                             <input type="password" class="form-control" id="password" name="j_password"
                                    tabindex="2"
-                                   placeholder="Password" value="admin"/>
+                                   placeholder="Password" value="123"/>
                         </div>
                     </div>
 

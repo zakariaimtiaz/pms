@@ -627,4 +627,22 @@ class BaseService extends Tools {
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         return count > 0
     }
+
+    public long currentUserEmployeeId(){
+        SecUser user = currentUserObject()
+        String query = """
+            SELECT id FROM employee WHERE employee_id = ${user.username}
+        """
+        List<GroovyRowResult> result = groovySql_mis.rows(query)
+        long empId =(long) result[0].id
+        return empId
+    }
+    public long userEmployeeId(long empId){
+        String query = """
+            SELECT id FROM employee WHERE employee_id = ${empId}
+        """
+        List<GroovyRowResult> result = groovySql_mis.rows(query)
+        long id =(long) result[0]
+        return id
+    }
 }

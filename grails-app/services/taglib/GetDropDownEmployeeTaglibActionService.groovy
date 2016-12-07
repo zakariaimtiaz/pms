@@ -24,6 +24,7 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
     private static final String DEFAULT_MESSAGE = 'Required'
     private static final String DATA_MODEL_NAME = 'data_model_name'
     private static final String SORT_BY_DEPARTMENT = 'sort_by_department'
+    private static final String IS_FOR_LOGIN = 'is_for_login'
     private static final String LST_DEPARTMENT = 'lstDepartment'
     private static final String ERROR_FOR_INVALID_INPUT = 'Error for invalid input'
 
@@ -71,6 +72,7 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
             params.put(HINTS_TEXT, params.hints_text ? params.hints_text : PLEASE_SELECT)
             params.put(SHOW_HINTS, params.show_hints ? new Boolean(Boolean.parseBoolean(params.show_hints.toString())) : Boolean.TRUE)
             params.put(REQUIRED, params.required ? new Boolean(Boolean.parseBoolean(params.required.toString())) : Boolean.FALSE)
+            params.put(IS_FOR_LOGIN, params.is_for_login ? new Boolean(Boolean.parseBoolean(params.is_for_login.toString())) : Boolean.FALSE)
             params.put(VALIDATION_MESSAGE, params.validationmessage ? params.validationmessage : DEFAULT_MESSAGE)
             params.put(SORT_BY_DEPARTMENT, sortDept)
             return params
@@ -89,11 +91,12 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
     public Map execute(Map result) {
         try {
             boolean sortDept = (boolean) result.get(SORT_BY_DEPARTMENT)
+            boolean isForLogin = (boolean) result.get(IS_FOR_LOGIN)
             List<Long> lstDepts = []
             if(sortDept){
                lstDepts =(List<Long>) result.get(LST_DEPARTMENT)
             }
-            List<GroovyRowResult> lstEmployee = (List<GroovyRowResult>) listOfficeEmployee(sortDept,lstDepts)
+            List<GroovyRowResult> lstEmployee = (List<GroovyRowResult>) listOfficeEmployee(sortDept,isForLogin,lstDepts)
             String html = buildDropDown(lstEmployee, result)
             result.html = html
             return result
@@ -129,7 +132,7 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
         return result
     }
 
-    private List<GroovyRowResult> listOfficeEmployee(boolean sortDept, List<Long> lstDept) {
+    private List<GroovyRowResult> listOfficeEmployee(boolean sortDept, boolean isForLogin,  List<Long> lstDept) {
         def loggedUser = springSecurityService.principal
         SecUser user = SecUser.read(loggedUser.id)
         boolean isSystemAdmin = isUserSystemAdmin(user.id)
@@ -151,6 +154,16 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
                 ${sort_dept_str}
                 ORDER BY e.employee_id
         """
+        String queryForLoginId = """
+            SELECT e.employee_id AS id, CONCAT(e.name,' (',e.employee_id,')') AS name
+                FROM employee e
+                WHERE e.employee_status_id = 1
+                ORDER BY e.employee_id
+        """
+        if(isForLogin){
+            List<GroovyRowResult> lstAppUser = groovySql_mis.rows(queryForLoginId)
+            return lstAppUser
+        }
         List<GroovyRowResult> lstAppUser = groovySql_mis.rows(queryForList)
         return lstAppUser
     }

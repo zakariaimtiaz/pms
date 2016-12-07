@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridSecUser, dataSource, secUserModel,dropDownService;
+    var gridSecUser, dataSource, secUserModel,dropDownEmployee,dropDownService;
 
     $(document).ready(function () {
         onLoadSecUserPage();
@@ -39,7 +39,8 @@
             return false;
         }
         var password = $('#password').val(),
-            confirmPassword = $('#confirmPassword').val();
+            confirmPassword = $('#confirmPassword').val(),
+            fullName = $('#username').data("kendoDropDownList").text();
         if(password!=confirmPassword){
             showError('Password mis-match');
             return false;
@@ -54,7 +55,7 @@
         }
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#userForm").serialize(),
+            data: jQuery("#userForm").serialize()+"&fullName="+fullName,
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);

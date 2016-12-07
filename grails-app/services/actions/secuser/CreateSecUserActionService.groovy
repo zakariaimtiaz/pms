@@ -1,6 +1,6 @@
 package actions.secuser
 
-import com.pms.PmServiceSector
+import com.model.ListSecUserActionServiceModel
 import com.pms.SecUser
 import com.pms.UserDepartment
 import grails.plugin.springsecurity.SpringSecurityService
@@ -34,7 +34,7 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
             if (!params.username && !params.serviceId) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            int duplicateCount = secUserService.countByUsernameIlike(params.username)
+            int duplicateCount = secUserService.countByUsernameIlike(params.username.toString())
             if (duplicateCount > 0) {
                 return super.setError(params, ALREADY_EXIST)
             }
@@ -84,6 +84,9 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
+        SecUser secUser = (SecUser) result.get(SEC_USER)
+        ListSecUserActionServiceModel model = ListSecUserActionServiceModel.read(secUser.id)
+        result.put(SEC_USER, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**
@@ -102,10 +105,14 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
      */
     private SecUser buildObject(Map parameterMap) {
         long serviceId = Long.parseLong(parameterMap.serviceId.toString())
-        PmServiceSector serviceSector = PmServiceSector.read(serviceId)
+        String str = parameterMap.fullName
+        int startIndex = str.indexOf("(");
+        int endIndex = str.indexOf(")");
+        String toBeReplaced = str.substring(startIndex, endIndex + 1);
+        parameterMap.fullName = str.replace(toBeReplaced, "");
+
         SecUser secUser = new SecUser(parameterMap)
-        secUser.fullName = serviceSector.departmentHead
-        secUser.serviceId = serviceSector.id
+        secUser.serviceId = serviceId
         return secUser
     }
 }

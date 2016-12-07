@@ -7,7 +7,7 @@ class ListPmSprintsActionServiceModel {
         DROP TABLE IF EXISTS list_pm_sprints_action_service_model;
         CREATE OR REPLACE VIEW list_pm_sprints_action_service_model AS
         SELECT s.id, s.version, s.sprints,d.id AS actions_id,d.actions, g.id AS goal_id, g.goal,s.sequence,
-        sc.id AS service_id,sc.name AS service,sc.short_name AS ser_short_name,s.weight,
+        sc.id AS service_id,sc.name AS service,sc.short_name AS ser_short_name,s.weight,d.res_person_id AS action_res_id,
         s.start_date, s.end_date, s.target,s.res_person,s.res_person_id,s.support_department,s.remarks
         FROM pm_sprints s LEFT JOIN
         pm_actions d ON s.actions_id=d.id
@@ -21,6 +21,7 @@ class ListPmSprintsActionServiceModel {
     long serviceId
     long goalId
     long actionsId
+    long actionResId
     String service
     String serShortName
     String goal

@@ -127,9 +127,9 @@ function clearFormValues(form) {
         // select elements need to have their 'selectedIndex' property set to -1
         else if (tag == 'select') {
             var dropDownKendo = $(this).data("kendoDropDownList");
-            if(dropDownKendo) dropDownKendo.value('');
+            if (dropDownKendo) dropDownKendo.value('');
             var multiSelect = $(this).data("kendoMultiSelect");
-            if(multiSelect) multiSelect.value('');
+            if (multiSelect) multiSelect.value('');
         }
     });
 
@@ -205,7 +205,7 @@ function onCompleteAjaxCall(XMLHttpRequest, textStatus) {
 
 // function trims the leading / for hash loading
 function formatLink(link) {
-    link=link.substring(5, link.length); // 5 = '/pms/'
+    link = link.substring(5, link.length); // 5 = '/pms/'
     if (link.indexOf('/') == 0) {
         link = link.substring(1, link.length);
     }
@@ -304,7 +304,7 @@ function gridDataBound(e) {
 }
 
 function getGridHeightKendo() {
-    var height = $("#page-wrapper").height() - $("#application_top_panel").height()-10;
+    var height = $("#page-wrapper").height() - $("#application_top_panel").height() - 10;
     return height;
 }
 
@@ -313,8 +313,15 @@ function clearGridKendo(gridModel) {
 }
 
 function kendoCommonFilterable(width) {
-    width = width? width:103
-    return {cell: {inputWidth: width+"%",showOperators: false,operator: "contains", dataSource:getBlankDataSource()}};
+    width = width ? width : 103
+    return {
+        cell: {
+            inputWidth: width + "%",
+            showOperators: false,
+            operator: "contains",
+            dataSource: getBlankDataSource()
+        }
+    };
 }
 
 // function to check if one or more grid row is selected or not
@@ -574,23 +581,23 @@ function getProperFileClass(fileExt) {
 
     if (excel.indexOf(fileExt) >= 0) {
         extClass = "fa fa-file-excel-o";
-    }else if (word.indexOf(fileExt) >= 0) {
+    } else if (word.indexOf(fileExt) >= 0) {
         extClass = "fa fa-file-word-o";
-    }else if (['pdf'].indexOf(fileExt) >= 0) {
+    } else if (['pdf'].indexOf(fileExt) >= 0) {
         extClass = "fa fa-file-pdf-o";
-    }else if (pPoint.indexOf(fileExt) >= 0) {
+    } else if (pPoint.indexOf(fileExt) >= 0) {
         extClass = "fa fa-file-powerpoint-o";
-    }else if (['txt'].indexOf(fileExt) >= 0) {
+    } else if (['txt'].indexOf(fileExt) >= 0) {
         extClass = "fa fa-file-text-o";
-    }else if (archive.indexOf(fileExt) >= 0) {
+    } else if (archive.indexOf(fileExt) >= 0) {
         extClass = "fa fa-file-archive-o";
-    }else{
+    } else {
         extClass = "fa fa-file-code-o";
     }
-        return extClass;
+    return extClass;
 }
 
-function isFileImage(fileExt){
+function isFileImage(fileExt) {
     var image = ['jpg', 'jepg', 'gif', 'png'];
     if (image.indexOf(fileExt) >= 0) {
         return true;
@@ -617,18 +624,23 @@ function defaultPageTile(page_header, left_menu) {
 }
 
 //return date as dd/mm/yyyy format
-function convertDate(date){
+function convertDate(date) {
     var formatedDate = new Date(date);
     var dd = formatedDate.getDate();
-    var mm = formatedDate.getMonth()+1;
+    var mm = formatedDate.getMonth() + 1;
     var yyyy = formatedDate.getFullYear();
-    if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
-    formatedDate = dd+'/'+mm+'/'+yyyy;
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    formatedDate = dd + '/' + mm + '/' + yyyy;
     return formatedDate;
 }
 
 //return  date difference as year, month, days format
-function evaluateDateRange(date1, date2){
+function evaluateDateRange(date1, date2) {
     var diff = new Date(date2.getTime() - date1.getTime());
     var years = diff.getUTCFullYear() - 1970;
     var months = diff.getUTCMonth();
@@ -640,22 +652,40 @@ function evaluateDateRange(date1, date2){
     if (strDifference.size == 0) strDifference = 0 + ' ' + ' Day(s)'
     return strDifference
 }
-function minToHourMin(a){
-    var hours = Math.trunc(a/60);
+function minToHourMin(a) {
+    var hours = Math.trunc(a / 60);
     var minutes = a % 60;
-    return hours +":"+ minutes;
+    return hours + ":" + minutes;
+}
+
+function monthDifference(start, end) {
+    var startMonths = moment().month(start).format("M");
+    var endMonths = moment().month(end).format("M");
+    return (endMonths - startMonths) + 1;
+}
+function monthNamesFromRange(start, end) {
+    var startMonths = moment().month(start).format("M")-1;
+    var endMonths = moment().month(end).format("M")-1;
+    var list = [];
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    for (var i = startMonths; i <= endMonths; i++) {
+        list.push(monthNames[i]);
+    }
+    return list;
 }
 
 //********** START ----  Delete selected row from grid with custom confirmation box  ***********//
-function confirmDelete(msg, url, grid){
-    bootbox.confirm(msg, function(result) {
-        if(result){
+function confirmDelete(msg, url, grid) {
+    bootbox.confirm(msg, function (result) {
+        if (result) {
             executeDelete(url, grid);
         }
     }).find("div.modal-content").addClass("conf-delete");
 }
 
-function executeDelete(url, grid){
+function executeDelete(url, grid) {
     showLoadingSpinner(true);
     var id = getSelectedIdFromGridKendo(grid);
     $.ajax({
@@ -675,28 +705,28 @@ function executeDelete(url, grid){
 
 
 function executePostConditionForDelete(data) {
-    if (data.isError){
-    showError(data.message);
-    return false;
+    if (data.isError) {
+        showError(data.message);
+        return false;
     }
     var grid = this.customData.grid,
         row = grid.select();
     row.each(function () {
         grid.removeRow($(this));
-        });
+    });
     resetForm();
     showSuccess(data.message);
 }
 
-function confirmAction(msg, url){
-    bootbox.confirm(msg, function(result) {
-        if(result){
+function confirmAction(msg, url) {
+    bootbox.confirm(msg, function (result) {
+        if (result) {
             executeAction(url);
         }
     }).find("div.modal-content").addClass("conf-delete");
 }
 
-function executeAction(url){
+function executeAction(url) {
     showLoadingSpinner(true);
     $.ajax({
         url: url,
@@ -714,7 +744,7 @@ function executeAction(url){
 
 
 function executePostConditionForAction(data) {
-    if (data.isError){
+    if (data.isError) {
         showError(data.message);
         return false;
     }
@@ -722,20 +752,20 @@ function executePostConditionForAction(data) {
 }
 //********** END ----  Delete selected row from grid with custom confirmation box  ***********//
 
-function confirmDownload(msg, url){
-    bootbox.confirm(msg, function(result) {
+function confirmDownload(msg, url) {
+    bootbox.confirm(msg, function (result) {
         showLoadingSpinner(false);
-        if(result){
+        if (result) {
             document.location = url;
         }
     }).find("div.modal-content").addClass("conf-download");
 }
 
-function getDefaultPageSize(){
+function getDefaultPageSize() {
     return 50;
 }
-function getDefaultPageSizes(){
-    return [20,30,40,50];
+function getDefaultPageSizes() {
+    return [20, 30, 40, 50];
 }
 
 

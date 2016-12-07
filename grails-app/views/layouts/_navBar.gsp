@@ -76,7 +76,7 @@
                                             <a href="#reports/showSpPlan"><i class="fa fa-cubes"></i>&nbsp;Yearly</a>
                                         </li>
                                     </sec:access>
-                                    <sec:access url="/pmServiceSector/show">
+                                    <sec:access url="/reports/showSpMonthlyPlan">
                                         <li>
                                             <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly
                                             </a>

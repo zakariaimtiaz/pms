@@ -207,18 +207,17 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "serShortName", title: "Service", width: 60, sortable: false, filterable: false},
                 {field: "sequence", title: "Sequence", width: 60, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "weight", title: "Weight", width: 60, sortable: false, filterable: false,
                     template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "sprints", title: "Steps", width: 120, sortable: false, filterable: false},
                 {field: "startDate", title: "Start", width: 80, sortable: false, filterable: false,
                     template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
                 {field: "endDate", title: "End", width: 80, sortable: false, filterable: false,
                     template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd/MM/yyyy')#"},
+                {field: "sprints", title: "Steps", width: 120, sortable: false, filterable: false},
                 {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
                 {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false}
             ],

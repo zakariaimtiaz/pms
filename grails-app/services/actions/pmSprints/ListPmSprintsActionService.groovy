@@ -1,8 +1,9 @@
 package actions.pmSprints
 
-import com.model.ListPmActionsActionServiceModel
-import com.model.ListPmServiceSectorActionServiceModel
 import com.model.ListPmSprintsActionServiceModel
+import com.pms.SecRole
+import com.pms.SecUser
+import com.pms.SecUserSecRole
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -13,6 +14,8 @@ class ListPmSprintsActionService extends BaseService implements ActionServiceInt
 
     private Logger log = Logger.getLogger(getClass())
 
+    public static final String ROLE_ACTION_USER = "ROLE_ACTION_USER"
+
     public Map executePreCondition(Map params) {
         return params
     }
@@ -21,6 +24,26 @@ class ListPmSprintsActionService extends BaseService implements ActionServiceInt
     public Map execute(Map result) {
         try {
             List<Long> lst = currentUserDepartmentList()
+            SecUser user = currentUserObject()
+            Boolean isActionUser = Boolean.FALSE
+            List<SecUserSecRole> lstRole = SecUserSecRole.findAllBySecUser(user)
+            SecRole role = SecRole.findByAuthority(ROLE_ACTION_USER)
+            for(int i=0; i<lstRole.size(); i++){
+                if(lstRole[i].secRole==role){
+                    isActionUser = Boolean.TRUE
+                }
+            }
+            if(isActionUser){
+                long empId = currentUserEmployeeId()
+                Closure additionalParam = {
+                    'in'('serviceId', lst)
+                    'eq'('actionResId', empId)
+                }
+                Map resultMap = super.getSearchResult(result, ListPmSprintsActionServiceModel.class,additionalParam)
+                result.put(LIST, resultMap.list)
+                result.put(COUNT, resultMap.count)
+                return result
+            }
             Closure additionalParam = {
                 'in'('serviceId', lst)
             }

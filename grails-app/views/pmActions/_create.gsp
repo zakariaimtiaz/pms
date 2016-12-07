@@ -1,4 +1,3 @@
-
 <div class="container-fluid">
     <div class="row" id="rowAction">
         <div id="application_top_panel" class="panel panel-primary">
@@ -52,35 +51,27 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="meaIndicator">Indicator:</label>
+                                <label class="col-md-2 control-label label-required">Indicator:</label>
 
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="meaIndicator" name="meaIndicator"
-                                           placeholder="Measurement Indicator"
-                                           tabindex="5" data-bind="value: actions.meaIndicator"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional" for="target">Target:</label>
-
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="target" name="target"
-                                           placeholder="Target"
-                                           tabindex="6" data-bind="value: actions.target"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="supportDepartment">Support:</label>
-
-                                <div class="col-md-10">
-                                    <select id="supportDepartment" name="supportDepartment"
-                                            tabindex="7" data-placeholder="Select Support Department..."
-                                            data-bind="value: actions.supportDepartment">
-                                    </select>
+                                    <table class="table table-bordered table-hover" id="tab_logic">
+                                        <tbody>
+                                        <tr id='addr0'>
+                                            <td width="60%">
+                                                <input type="text" name='indicator0' placeholder='Indicator'
+                                                     readonly="true"  class="form-control"/>
+                                            </td>
+                                            <td width="40%">
+                                                <input type="text" onkeypress='validate(event)' name='target0'
+                                                       placeholder='Target' onblur ="getName(this.name,this.value)"
+                                                       readonly="true"  class="form-control"/>
+                                            </td>
+                                        </tr>
+                                        <tr id='addr1'></tr>
+                                        </tbody>
+                                    </table>
+                                    <a id="add_row" class="btn btn-default pull-left">Add</a>
+                                    <a id='delete_row' class="pull-right btn btn-default">Delete</a>
                                 </div>
                             </div>
                         </div>
@@ -94,24 +85,6 @@
                                               tabindex="8" class="form-control"
                                               data-bind="value: actions.actions"
                                               placeholder="Actions" class="kendo-drop-down"></textarea>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required"
-                                       for="weight">Weight:</label>
-
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control"
-                                           id="weight" name="weight" tabindex="9"
-                                           data-bind="value: actions.weight"/>
-                                </div>
-
-                                <label class="col-md-2 control-label label-optional"
-                                       for="strategyMapRef">Reference:</label>
-                                <div class="col-md-5">
-                                    <input type="text" class="form-control" id="strategyMapRef"
-                                           placeholder="Strategy Map Ref"  name="strategyMapRef"
-                                           tabindex="10" data-bind="value: actions.strategyMapRef"/>
                                 </div>
                             </div>
 
@@ -142,12 +115,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-optional" for="remarks">Remarks:</label>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="supportDepartment">Support:</label>
 
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="remarks" name="remarks"
-                                           placeholder="Remarks"
-                                           tabindex="13" data-bind="value: actions.remarks"/>
+                                    <select id="supportDepartment" name="supportDepartment"
+                                            tabindex="7" data-placeholder="Select Support Department..."
+                                            data-bind="value: actions.supportDepartment">
+                                    </select>
                                 </div>
                             </div>
                         </div>
