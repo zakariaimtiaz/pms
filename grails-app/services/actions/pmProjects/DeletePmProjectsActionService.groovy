@@ -23,7 +23,7 @@ class DeletePmProjectsActionService extends BaseService implements ActionService
         if (!projects) {
             return super.setError(params, ENTITY_NOT_FOUND_ERROR_MESSAGE)
         }
-        projects.inActive = true
+
         params.put(PROJECTS_OBJ, projects)
         return params
     }
@@ -32,6 +32,7 @@ class DeletePmProjectsActionService extends BaseService implements ActionService
     public Map execute(Map result) {
         try {
             PmProjects projects = (PmProjects) result.get(PROJECTS_OBJ)
+            projects.inActive = true
             projects.save()
             return result
         } catch (Exception ex) {

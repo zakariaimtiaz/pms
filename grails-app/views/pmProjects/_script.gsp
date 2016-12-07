@@ -125,6 +125,25 @@
             }
         }
     }
+    function executePostConditionDelete(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                var newEntry = result.pmProjects;
+                var selectedRow = gridProjects.select();
+                    var allItems = gridProjects.items();
+                    var selectedIndex = allItems.index(selectedRow);
+                    gridProjects.removeRow(selectedRow);
+                    gridProjects.dataSource.insert(selectedIndex, newEntry);
+
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
 
     function emptyForm() {
         clearForm($("#projectForm"), $('#serviceId'));
@@ -250,21 +269,24 @@
         }
         var msg = 'Are you sure you want to inactive the selected record?',
                 url = "${createLink(controller: 'pmProjects', action:  'delete')}";
-        jQuery.ajax({
-            type: 'post',
-            data: jQuery("#projectForm").serialize(),
-            url: url,
-            success: function (data, textStatus) {
-                executePostCondition(data);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json'
-        });
-        return false;
+        bootbox.confirm(msg, function(result) {
+            if(result){
+                var id = getSelectedIdFromGridKendo(gridProjects);
+                jQuery.ajax({
+                    type: 'post',
+                    url: url+ "?id=" + id,
+                    success: function (data, textStatus) {
+                        executePostConditionDelete(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    },
+                    complete: function (XMLHttpRequest, textStatus) {
+                        showLoadingSpinner(false);
+                    },
+                    dataType: 'json'
+                });
+            }
+        }).find("div.modal-content").addClass("conf-delete");
     }
     function addService(){
         $("#rowProjects").show();
