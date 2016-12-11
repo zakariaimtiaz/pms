@@ -2,6 +2,7 @@ package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
 import com.pms.PmActions
+import com.pms.PmActionsIndicator
 import com.pms.PmGoals
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -16,7 +17,6 @@ import java.text.SimpleDateFormat
 class CreatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "Actions has been saved successfully"
-    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String ACTIONS_OBJECT = "pmAction"
 
     private Logger log = Logger.getLogger(getClass())
@@ -30,14 +30,6 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             }
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
-            int weight = Long.parseLong(params.weight.toString())
-            int totalWeight = 0
-            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE goalId=${goalId}")
-            if(tmp[0]) totalWeight =(int) tmp[0]
-            int available = 100-totalWeight
-            if(weight>available){
-                return super.setError(params, WEIGHT_EXCEED)
-            }
             PmActions actions = buildObject(params, serviceId, goalId)
             params.put(ACTIONS_OBJECT, actions)
             return params
@@ -51,7 +43,30 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
     public Map execute(Map result) {
         try {
             PmActions actions = (PmActions) result.get(ACTIONS_OBJECT)
+
             actions.save()
+            Integer count=Integer.parseInt(result.rowCount)
+            (0..count)?.each { item ->
+                def indicatorName  = 'indicator'+item
+                def targetName = 'target'+item
+                def monthlyIndId='monthlyIndicatorId'+item
+                PmActionsIndicator pmActionsIndicator=new PmActionsIndicator()
+                pmActionsIndicator.indicator=result?.get(indicatorName)
+                String target=result?.get(targetName)
+                try {
+                    pmActionsIndicator.target = Double?.parseDouble(target)
+                }catch (ex) {
+                    pmActionsIndicator.target = 0
+                }
+                String mIndId=result?.get(monthlyIndId)
+                try {
+                    pmActionsIndicator.monthlyIndicatorId = Double?.parseDouble(mIndId)
+                }catch (ex) {
+                    pmActionsIndicator.monthlyIndicatorId = 0
+                }
+                pmActionsIndicator.actionsId=actions.id
+                pmActionsIndicator.save();
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

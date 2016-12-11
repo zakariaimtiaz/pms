@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridActions, dataSource, actionsModel, dropDownService, dropDownGoals, supportDepartment, dropDownEmployee;
+    var gridActions, dataSource, actionsModel, dropDownService, dropDownGoals, supportDepartment, dropDownEmployee,sourceOfFund;
 
     $(document).ready(function () {
         onLoadActionPage();
@@ -39,7 +39,7 @@
         var end = $('#end').val();
         var count = monthDifference(start, end);
         var list = monthNamesFromRange(start, end);
-        if (count > 1 && target > 0 && indicator != '') showIndicatorModal(indicator, target, count, list);
+        if (count > 1 && target > 0 && indicator != '') showIndicatorModal(index,indicator, target, count, list);
     }
 
     function dynamicIndicator() {
@@ -47,11 +47,13 @@
         $("#add_row").click(function () {
             var end = $('#end').val();
             if (end != '') {
-                $('#addr' + i).html("<td width='60%'><input name='indicator" + i + "' type='text'  placeholder='Indicator' class='form-control'/></td>" +
-                "<td width='40%'><input  name='target" + i + "' type='text' onkeypress='validate(event)' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'></td>");
+                $('#addr' + i).html("<td width='80%'><input name='indicator" + i + "' type='text'  placeholder='Indicator' class='form-control'/></td>" +
+                "<td width='20%'><input  name='target" + i + "' type='text' onkeypress='validate(event)' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>"
+                + "<input type='hidden' name='monthlyIndicatorId" + i + "' value=''/></td>");
             } else {
-                $('#addr' + i).html("<td width='60%'><input name='indicator" + i + "' type='text' readonly='true' placeholder='Indicator' class='form-control'/></td>" +
-                "<td width='40%'><input  name='target" + i + "' type='text' onkeypress='validate(event)' placeholder='Target' readonly='true' class='form-control'  onblur ='getName(this.name,this.value)'></td>");
+                $('#addr' + i).html("<td width='80%'><input name='indicator" + i + "' type='text' readonly='true' placeholder='Indicator' class='form-control'/></td>" +
+                "<td width='20%'><input  name='target" + i + "' type='text' onkeypress='validate(event)' placeholder='Target' readonly='true' class='form-control'  onblur ='getName(this.name,this.value)'>"
+                + "<input name='monthlyIndicatorId" + i + "' type='hidden' value=''/></td>");
             }
             $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
             i++;
@@ -62,6 +64,8 @@
                 i--;
             }
         });
+        $('#rowCount').val(i);
+
     }
     function onLoadActionPage() {
         $("#rowAction").hide();
@@ -112,6 +116,16 @@
         });
         supportDepartment = $("#supportDepartment").data("kendoMultiSelect");
         supportDepartment.setDataSource(${lstService});
+
+        $("#sourceOfFund").kendoMultiSelect({
+            dataTextField: "name",
+            dataValueField: "id",
+            filter: "contains",
+            suggest: true,
+            dataSource: getBlankDataSource
+        });
+        sourceOfFund = $("#sourceOfFund").data("kendoMultiSelect");
+        sourceOfFund.setDataSource(${lstProjects});
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions", null);
     }
@@ -155,10 +169,10 @@
             actionUrl = "${createLink(controller:'pmActions', action: 'update')}";
         }
         var resPerson = $("#resPersonId").data("kendoDropDownList").text();
-        console.log(jQuery("#actionForm").serialize());
-        /*        jQuery.ajax({
+       // console.log(jQuery("#actionForm").serialize());
+       jQuery.ajax({
          type: 'post',
-         data: jQuery("#actionForm").serialize()+ '&resPerson=' + resPerson,
+         data: jQuery("#actionForm").serialize()+'&resPerson='+resPerson,
          url: actionUrl,
          success: function (data, textStatus) {
          executePostCondition(data);
@@ -170,7 +184,7 @@
          showLoadingSpinner(false);
          },
          dataType: 'json'
-         });*/
+         });
         return false;
     }
 
@@ -239,10 +253,7 @@
                         serShortName: {type: "string"},
                         serviceId: {type: "number"},
                         sequence: {type: "string"},
-                        meaIndicator: {type: "string"},
-                        target: {type: "string"},
                         resPerson: {type: "string"},
-                        strategyMapRef: {type: "string"},
                         supportDepartment: {type: "string"},
                         supportDepartmentStr: {type: "string"},
                         sourceOfFund: {type: "string"},
@@ -284,16 +295,6 @@
                     field: "sequence", title: "ID#", width: 60, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {
-                    field: "weight",
-                    title: "Weight",
-                    width: 60,
-                    sortable: false,
-                    filterable: false,
-                    template: "#=weight # %",
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}
-                },
                 {field: "actions", title: "Action", width: 120, sortable: false, filterable: false},
                 {
                     field: "start", title: "Start", width: 80, sortable: false, filterable: false,
@@ -303,8 +304,6 @@
                     field: "end", title: "End", width: 80, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"
                 },
-                {field: "meaIndicator", title: "Measurement Indicator", width: 120, sortable: false, filterable: false},
-                {field: "target", title: "Target", width: 80, sortable: false, filterable: false},
                 {
                     field: "supportDepartmentStr",
                     title: "Support Department",
@@ -334,11 +333,7 @@
                         serviceId: "",
                         resPersonId: "",
                         goalId: "",
-                        meaIndicator: "",
-                        target: "",
-                        weight: "",
                         resPerson: "",
-                        strategyMapRef: "",
                         supportDepartment: "",
                         sourceOfFund: "",
                         start: "",
@@ -411,10 +406,14 @@
         return true;
     }
 
-    function showIndicatorModal(indicator, target, count, list) {
+    function showIndicatorModal(index,indicator, target, count, list) {
         $("#createIndicatorModal").modal('show');
+        var tmp = 'input[name=monthlyIndicatorId' + index + ']';
+        $('#indicatorIdModal').val($(tmp).val());
+        $('#indicatorIdName').val(tmp);
         $('#indicatorModalIndicatorLbl').text(indicator);
         $('#indicatorModalTargetLbl').text(target);
+        $('#monthCount').val(count);
         $("#i_logic tr").remove();
         for (var i = 0; i < count+1; i++) {
             var a = list[i];
@@ -429,7 +428,33 @@
     }
 
     function onClickCreateIndicatorModal() {
+        var actionUrl = null;
+        if ($('#indicatorIdModal').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'pmActions', action: 'createIndicatorDetails')}";
+        } else {
+            actionUrl = "${createLink(controller:'pmActions', action: 'updateIndicatorDetails')}";
+        }
+        //console.log(jQuery("#createIndicatorForm").serialize());
+                jQuery.ajax({
+         type: 'post',
+         data: jQuery("#createIndicatorForm").serialize(),
+         url: actionUrl,
+         success: function (data, textStatus) {
+             var parentName = $('#indicatorIdName').val();
 
+             //document.getElementsByName("'"+tmp+"'")[0].value=data.indicatorId;
+             $(parentName).val(data.indicatorId);
+             hideCreateIndicatorModal();
+         },
+         error: function (XMLHttpRequest, textStatus, errorThrown) {
+         },
+         complete: function (XMLHttpRequest, textStatus) {
+         showLoadingSpinner(false);
+         },
+         dataType: 'json'
+         });
+
+        return false;
     }
 
     function hideCreateIndicatorModal() {

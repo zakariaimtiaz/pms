@@ -54,7 +54,8 @@
             <div class="modal-body">
                 <form class="form-horizontal form-widgets" id="createIndicatorForm" name="createIndicatorForm">
                     <input type="hidden" id="indicatorIdModal" name="indicatorIdModal" value=""/>
-
+                    <input type="hidden" id="indicatorIdName" name="indicatorIdName" value=""/>
+                    <input type="hidden" id="monthCount" name="monthCount" value=""/>
                     <div class="form-group">
                         <label class="col-md-2 label-optional"><b>Indicator :</b></label>
                         <span class="col-md-7" id="indicatorModalIndicatorLbl"></span>

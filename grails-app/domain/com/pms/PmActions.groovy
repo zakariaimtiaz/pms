@@ -10,16 +10,13 @@ class PmActions {
     String actions
     String sequence
     int tmpSeq
-    String meaIndicator
-    String target
     String resPerson
-    String strategyMapRef
     String supportDepartment
     String sourceOfFund
     String remarks
     Date start
     Date end
-    int weight
+    Double budget
 
     static mapping = {
         actions    sqlType: 'text'
@@ -30,12 +27,10 @@ class PmActions {
     static constraints = {
         actions     size: 2..15000
         resPersonId(nullable: true)
-        meaIndicator(nullable: true)
-        target(nullable: true)
         resPerson(nullable: true)
-        strategyMapRef(nullable: true)
         supportDepartment(nullable: true)
         sourceOfFund(nullable: true)
         remarks(nullable: true)
+        budget(nullable: true)
     }
 }
