@@ -35,9 +35,29 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
+                <sec:ifAnyUrls urls="/reports/showSpPlan,reports/showSpMonthlyPlan">
+                    <li>
+                        <a href="#"><i class="fa fa-server"></i>&nbsp;Strategic Plan<span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/reports/showSpPlan">
+                                <li>
+                                    <a href="#reports/showSpPlan"><i class="fa fa-cubes"></i>&nbsp;Yearly</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/reports/showSpMonthlyPlan">
+                                <li>
+                                    <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly
+                                    </a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
                 <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmObjectives/show,/pmActions/show,/pmSprints/show">
                     <li>
-                        <a href="#"><i class="fa fa-book"></i>&nbsp;PMS<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-book"></i>&nbsp;Entry Forms<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmMissions/show">
                                 <li>
@@ -54,37 +74,6 @@
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/pmSprints/show">
-                                <li>
-                                    <a href="#pmSprints/show"><i class="fa fa-anchor"></i>&nbsp;Steps</a>
-                                </li>
-                            </sec:access>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/reports/showSpPlan,reports/showSpMonthlyPlan">
-                    <li>
-                        <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;Reports<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#"><i class="fa fa-server"></i>&nbsp;Strategic Plan<span
-                                        class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <sec:access url="/reports/showSpPlan">
-                                        <li>
-                                            <a href="#reports/showSpPlan"><i class="fa fa-cubes"></i>&nbsp;Yearly</a>
-                                        </li>
-                                    </sec:access>
-                                    <sec:access url="/reports/showSpMonthlyPlan">
-                                        <li>
-                                            <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly
-                                            </a>
-                                        </li>
-                                    </sec:access>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
@@ -105,10 +94,10 @@
                                 </li>
                             </sec:access>
                             <sec:access url="/spTimeSchedule/show">
-                            <li>
-                                <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
-                            </li>
-                        </sec:access>
+                                <li>
+                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/pmProjects/show">
                                 <li>
                                     <a href="#pmProjects/show"><i class="fa fa-cogs"></i>&nbsp;Projects</a>

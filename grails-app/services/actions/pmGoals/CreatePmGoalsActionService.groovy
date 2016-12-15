@@ -12,7 +12,6 @@ class CreatePmGoalsActionService extends BaseService implements ActionServiceInt
 
     private static final String SAVE_SUCCESS_MESSAGE = "Goal has been saved successfully"
     private static final String ALREADY_EXIST = "Sequence already exist"
-    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String GOAL_OBJECT = "pmGoal"
 
     private Logger log = Logger.getLogger(getClass())
@@ -27,12 +26,6 @@ class CreatePmGoalsActionService extends BaseService implements ActionServiceInt
             int count = PmGoals.countByServiceIdAndSequence(serviceId,params.sequence)
             if (count > 0) {
                 return super.setError(params, ALREADY_EXIST)
-            }
-            int weight = Long.parseLong(params.weight.toString())
-            int totalWeight =(int) PmGoals.executeQuery("select sum(weight) from PmGoals where serviceId=${serviceId}")[0]
-            int available = 100-totalWeight
-            if(weight>available){
-                return super.setError(params, WEIGHT_EXCEED)
             }
             PmGoals goals = buildObject(params,serviceId)
             params.put(GOAL_OBJECT, goals)
@@ -87,6 +80,7 @@ class CreatePmGoalsActionService extends BaseService implements ActionServiceInt
         PmGoals goals = new PmGoals(parameterMap)
         goals.serviceId = serviceId
         goals.sequence = max[0]+1
+        goals.year = 2017
         return goals
     }
 }

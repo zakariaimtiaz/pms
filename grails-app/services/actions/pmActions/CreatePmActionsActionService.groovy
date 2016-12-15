@@ -2,8 +2,12 @@ package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
 import com.pms.PmActions
+import com.pms.PmActionsIndicator
+import com.pms.PmActionsIndicatorDetails
 import com.pms.PmGoals
+import com.pms.SecUser
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
@@ -16,7 +20,6 @@ import java.text.SimpleDateFormat
 class CreatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "Actions has been saved successfully"
-    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String ACTIONS_OBJECT = "pmAction"
 
     private Logger log = Logger.getLogger(getClass())
@@ -30,14 +33,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             }
             long serviceId = Long.parseLong(params.serviceId.toString())
             long goalId = Long.parseLong(params.goalId.toString())
-            int weight = Long.parseLong(params.weight.toString())
-            int totalWeight = 0
-            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE goalId=${goalId}")
-            if(tmp[0]) totalWeight =(int) tmp[0]
-            int available = 100-totalWeight
-            if(weight>available){
-                return super.setError(params, WEIGHT_EXCEED)
-            }
+
             PmActions actions = buildObject(params, serviceId, goalId)
             params.put(ACTIONS_OBJECT, actions)
             return params
@@ -51,7 +47,70 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
     public Map execute(Map result) {
         try {
             PmActions actions = (PmActions) result.get(ACTIONS_OBJECT)
+            int count = Integer.parseInt(result.indicatorCount.toString())
+            actions.totalIndicator = count
             actions.save()
+            String str = result.indicator.toString()
+            if (str.isEmpty()) {
+                String monthStr = result.start.toString()
+                DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+
+                Date date = originalFormat.parse(monthStr);
+                Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
+
+                for (int i = 0; i < count; i++) {
+                    PmActionsIndicator indicator = new PmActionsIndicator()
+                    indicator.actionsId = actions.id
+                    indicator.indicator = result.get("indicator" + (i + 1))
+                    indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
+                    indicator.save()
+
+                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                    details.actionsId = actions.id
+                    details.indicatorId = indicator.id
+                    details.monthName = monthName
+                    details.target = indicator.target
+                    details.createBy = 1
+                    details.createDate = new Date()
+                    details.save()
+                }
+            } else {
+                String[] ind = str.split(",");
+                for (int i = 0; i < ind.length; i++) {
+                    PmActionsIndicator indicator = new PmActionsIndicator()
+                    indicator.actionsId = actions.id
+                    indicator.indicator = result.get("indicator" + (i+1))
+                    indicator.target = Integer.parseInt(result.get("target" + (i+1)).toString())
+                    indicator.save()
+
+                    String[] couple = ind[i].split("&");
+                    int tmpCount = Integer.parseInt(couple[2].split("=")[1].replaceAll("^\\d.]", ""))
+
+                    int t = 3;
+                    for (int j = 0; j < tmpCount; j++) {
+                        PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                        details.actionsId = actions.id
+                        details.indicatorId = indicator.id
+                        String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
+                        String target = couple[t+1].split("=")[1].replaceAll("[^\\d.]", "")
+                        int targetInt = 0
+                        try {
+                            targetInt = Integer.parseInt(target)
+                        }catch (Exception e){
+                            targetInt = 0
+                        }
+
+                        details.monthName = name
+                        details.target = targetInt
+                        details.createBy = 1
+                        details.createDate = new Date()
+                        details.save()
+                        t += 2
+                    }
+                }
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -86,7 +145,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private static PmActions buildObject(Map parameterMap, long serviceId, long goalId) {
+    private PmActions buildObject(Map parameterMap, long serviceId, long goalId) {
         String startDateStr = parameterMap.start.toString()
         String endDateStr = parameterMap.end.toString()
         DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
@@ -95,25 +154,28 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         Calendar c = Calendar.getInstance();
         c.setTime(start);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+        parameterMap.start = DateUtility.getSqlDate(c.getTime())
 
         Date end = originalFormat.parse(endDateStr);
-        Calendar ce = Calendar.getInstance();
-        ce.setTime(end);
-        ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        c.setTime(end);
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        parameterMap.end = DateUtility.getSqlDate(c.getTime())
+
 
         List<PmActions> max = PmActions.executeQuery("SELECT COALESCE(MAX(tmpSeq),0) FROM PmActions" +
                 " WHERE serviceId=${serviceId} AND goalId=${goalId}")
 
-        int con =(int) max[0]+1
+        int con = (int) max[0] + 1
         PmGoals goals = PmGoals.read(goalId)
 
-        parameterMap.start=DateUtility.getSqlDate(c.getTime())
-        parameterMap.end=DateUtility.getSqlDate(ce.getTime())
+        long responsibleId = Long.parseLong(parameterMap.resPersonId.toString())
+        String resName = responsiblePersonName(responsibleId)
 
         PmActions actions = new PmActions(parameterMap)
         actions.serviceId = serviceId
         actions.goalId = goalId
-        actions.sequence = goals.sequence+"."+con
+        actions.resPerson = resName
+        actions.sequence = goals.sequence + "." + con
         actions.tmpSeq = con
         return actions
     }

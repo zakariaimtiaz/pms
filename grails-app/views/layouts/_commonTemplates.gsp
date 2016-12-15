@@ -54,10 +54,12 @@
             <div class="modal-body">
                 <form class="form-horizontal form-widgets" id="createIndicatorForm" name="createIndicatorForm">
                     <input type="hidden" id="indicatorIdModal" name="indicatorIdModal" value=""/>
+                    <input type="hidden" id="tempTargetNameModal" name="tempTargetNameModal" value=""/>
+                    <input type="hidden" id="tempCountModal" name="tempCountModal" value=""/>
 
                     <div class="form-group">
-                        <label class="col-md-2 label-optional"><b>Indicator :</b></label>
-                        <span class="col-md-7" id="indicatorModalIndicatorLbl"></span>
+                        <label class="col-md-1" style="padding-right: 0px !important;"><b>Indicator:</b></label>
+                        <span class="col-md-7" id="indicatorModalIndicatorLbl" style="padding-left: 25px  !important;"></span>
 
                         <label class="col-md-1 label-optional"><b>Target:</b></label>
                         <span class="col-md-2" id="indicatorModalTargetLbl"></span>

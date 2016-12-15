@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridMission, dataSource, missionModel,dropDownService;
+    var gridMission, dataSource, missionModel,dropDownService, serviceId;
 
     $(document).ready(function () {
         onLoadMissionPage();
@@ -23,6 +23,7 @@
 
     function onLoadMissionPage() {
         $("#rowMissions").hide();
+        serviceId = ${serviceId};
         initializeForm($("#missionForm"), onSubmitMission);
         defaultPageTile("Create Mission",null);
     }
@@ -93,13 +94,13 @@
     function emptyForm() {
         clearForm($("#missionForm"), $('#serviceId'));
         initObservable();
-        dropDownService.value('');
+        dropDownService.value(serviceId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
         clearForm($("#missionForm"), $('#serviceId'));
         initObservable();
-        dropDownService.value('');
+        dropDownService.value(serviceId);
         $('#rowMissions').hide();
     }
 
@@ -153,7 +154,7 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "service", title: "Central Service/Sector", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                {field: "service", title: "Sector/CSU", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
                 {field: "mission", title: "Mission Statement", width: 200, sortable: false, filterable: false}
             ],
             filterable: {
@@ -189,6 +190,7 @@
     }
     function addService() {
         $('#rowMissions').show();
+        dropDownService.value(serviceId);
     }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridMission, 'mission') == false) {

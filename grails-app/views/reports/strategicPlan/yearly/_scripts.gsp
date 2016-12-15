@@ -1,11 +1,12 @@
 <script type="text/x-kendo-tmpl" id="template1">
     <tr>
-        <td width='100%'>#:mission#</td>
+        <td width='5%'>#:sequence#</td>
+        <td width='90%'>#:goal#</td>
     </tr>
 </script>
 
 <script language="javascript">
-    var year,dropDownService,listViewMission,gridMission,isApplicable = false;
+    var year,serviceId,listViewGoal,gridAction,isApplicable = false;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -13,6 +14,8 @@
         initGrid();
     });
     function onLoadInfoPage() {
+        serviceId = ${serviceId};
+        dropDownService.value(serviceId);
         var str = moment().format('YYYY');
 
         $('#year').kendoDatePicker({
@@ -27,7 +30,7 @@
         defaultPageTile("Strategic Plan", 'reports/showSpPlan');
     }
     function initListView() {
-        $("#lstMission").kendoListView({
+        $("#lstGoal").kendoListView({
             autoBind: false,
             dataSource: {
                 transport: {
@@ -35,12 +38,12 @@
                         url: false, dataType: "json", type: "post"
                     }
                 },schema: {
-                    type: 'json', data: "mission"
+                    type: 'json', data: "list"
                 }
             },
             template: kendo.template($("#template1").html())
         });
-        listViewMission = $("#lstMission").data("kendoListView");
+        listViewGoal = $("#lstGoal").data("kendoListView");
     }
     function initGrid(){
         $("#grid").kendoGrid({
@@ -60,33 +63,46 @@
                 serverSorting: true
             },
             autoBind: false,
-            height: getGridHeightKendo(),
+            height: getGridHeightKendo()-50,
             sortable: false,
             pageable: false,
-            detailInit: actionsInit,
+            detailInit: actionsIndicator,
             dataBound: function() {
-                this.expandRow(this.tbody.find("tr.k-master-row").first());
+                this.expandRow(this.tbody.find("tr.k-master-row"));
             },
             columns: [
                 {
-                    field: "sequence",
-                    title: "#ID",width:"50px"
+                    field: "sequence", title: "ID#", width: 60, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {field: "actions", title: "Action", width: 120, sortable: false, filterable: false},
+                {
+                    field: "start", title: "Start Date", width: 60, sortable: false, filterable: false,
+                    template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"
                 },
                 {
-                    field: "goal",
-                    title: "Goal"
-                }
+                    field: "end", title: "End Date", width: 60, sortable: false, filterable: false,
+                    template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
+                },
+                {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false},
+                {
+                    field: "supportDepartmentStr", title: "Support Department", width: 120,
+                    sortable: false, filterable: false
+                },
+                {field: "sourceOfFundStr", title: "Source Of Fund", width: 80, sortable: false, filterable: false},
+                {field: "note", title: "Remarks", width: 80, sortable: false, filterable: false}
             ]
         });
-        gridMission = $("#grid").data("kendoGrid");
+        gridAction = $("#grid").data("kendoGrid");
     }
-    function actionsInit(e) {
+
+    function actionsIndicator(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
                 transport: {
                     read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+"&goalId="+
-                        "&year="+year+"&type=Actions",
+                        url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId
+                        +"&year="+year+"&type=Details",
                         dataType: "json",
                         type: "post"
                     }
@@ -98,60 +114,88 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
-                filter: { field: "goalId", operator: "eq", value: e.data.id }
-            },
-            scrollable: false,
-            sortable: false,
-            pageable: false,
-            detailInit: sprintsInit,
-            columns: [
-                { field: "sequence",title: "#ID", width: "50px" },
-                { field: "actions", title:"Actions" },
-                { field: "meaIndicator", title:"Indicator" },
-                { field: "target", title:"Target" },
-                { field: "resPerson", title:"Responsible Person" },
-                { field: "start", title:"Start Date",
-                    template:"#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"},
-                { field: "end", title:"End Date",
-                    template:"#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"},
-                { field: "supportDepartment", title:"Support Department" }
-            ]
-        });
-    }
-    function sprintsInit(e) {
-        $("<div/>").appendTo(e.detailCell).kendoGrid({
-            dataSource: {
-                transport: {
-                    read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+
-                        "&goalId="+e.data.goalId+"&year="+year+"&type=Sprints",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                schema: {
-                    type: 'json',
-                    data: "list"
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
+                batch: true,
+                pageSize: 50,
                 filter: { field: "actionsId", operator: "eq", value: e.data.id }
             },
+            selectable: true,
+            sortable: false,
+            resizable: false,
+            reorderable: false,
+            filterable: false,
+            pageable: false,
+            editable: false,
+            detailInit: initDetails,
+            columns: [
+                { field: "indicator",title: "Indicator", width: "220px"},
+                { field: "target", title:"Target", width: "100px",attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()} },
+                { field: "total_achievement", title:"Achievement", width: "100px",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
+                { field: "remarks", title:"Remarks", width: "250px" }
+            ]
+        });
+    }
+    function initDetails(e) {
+        $("<div/>").appendTo(e.detailCell).kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "${createLink(controller: 'pmActions', action: 'listDetailsByIndicator')}?actionsId="+ e.data.id,
+                        dataType: "json",
+                        type: "post"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "list"
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                filter: { field: "indicatorId", operator: "eq", value: e.data.ind_id }
+            },
             scrollable: false,
             sortable: false,
             pageable: false,
             columns: [
-                { field: "sequence",title: "#ID", width: "70px" },
-                { field: "sprints", title:"Sprints" },
+                { field: "monthName",title: "Month" },
+                { field: "target", title:"Monthly Target" },
+                { field: "achievement", title:"Monthly Achievement" },
+                { field: "remarks", title:"Remarks" }
+            ]
+        });
+    }
+    function indicatorDetails(e) {
+        $("<div/>").appendTo(e.detailCell).kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+"&actionsId="+e.data.serviceId+
+                        "&year="+year+"&type=IndicatorDetails",
+                        dataType: "json",
+                        type: "post"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "list"
+                },
+                serverPaging: true,
+                serverSorting: true,
+                serverFiltering: true,
+                pageSize: 10,
+                filter: { field: "indicatorId", operator: "eq", value: e.data.id }
+            },
+            scrollable: false,
+            sortable: false,
+            pageable: false,
+            columns: [
+                { field: "monthName",title: "Month", width: "50px" },
                 { field: "target", title:"Target" },
-                { field: "startDate", title:"Start Date",
-                    template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd-MM-yy')#"},
-                { field: "endDate", title:"End Date",
-                    template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd-MM-yy')#"},
-                { field: "resPerson", title:"Responsible Person" }
+                { field: "achievement", title:"Achievement" },
+                { field: "remarks", title:"Remarks" }
             ]
         });
     }
@@ -163,10 +207,10 @@
             showError('Please select any service');
             return false;
         }
-        var urlMission ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Mission";
-        var url ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Goals";
-        populateGridKendo(listViewMission,urlMission);
-        populateGridKendo(gridMission, url);
+        var urlGoal ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Goals";
+        var url ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Actions";
+        populateGridKendo(listViewGoal,urlGoal);
+        populateGridKendo(gridAction, url);
         return false;
     }
     function downloadDetails() {

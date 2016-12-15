@@ -5,16 +5,15 @@ class PmProjects {
     long version
     String name
     String shortName
-    Long typeId
     String code
-    Long serviceId
-    String donor
+    Long typeId
     String description
     Date startDate
     Date endDate
     Date createDate
+    String donor
     long createBy
-    boolean inActive
+    boolean isActive
 
     static mapping = {
         createDate sqlType: 'date'
@@ -25,11 +24,10 @@ class PmProjects {
 
     static constraints = {
         description(nullable: true)
-        serviceId(nullable: true)
         donor(nullable: true)
         startDate(nullable: true)
         endDate(nullable: true)
-        inActive(nullable: true)
+        isActive(nullable: true)
 
     }
 }

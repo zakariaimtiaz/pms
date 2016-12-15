@@ -4,10 +4,11 @@ class PmActionsIndicator {
     long id
     long version
     Long actionsId
-    Long monthlyIndicatorId
     String indicator
-    Double target
+    int target
+    String remarks
 
     static constraints = {
+        remarks nullable: true
     }
 }

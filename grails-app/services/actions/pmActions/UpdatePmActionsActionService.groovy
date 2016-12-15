@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat
 class UpdatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
     private static final String UPDATE_SUCCESS_MESSAGE = "Action has been updated successfully"
-    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String ACTIONS_OBJ = "pmAction"
 
     private Logger log = Logger.getLogger(getClass())
@@ -28,14 +27,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
             }
             long id = Long.parseLong(params.id.toString())
             long goalId = Long.parseLong(params.goalId.toString())
-            int weight = Long.parseLong(params.weight.toString())
-            int totalWeight = 0
-            List tmp = PmActions.executeQuery("SELECT SUM(weight) FROM PmActions WHERE goalId=${goalId} AND id<>${id}")
-            if(tmp[0]) totalWeight =(int) tmp[0]
-            int available = 100-totalWeight
-            if(weight>available){
-                return super.setError(params, WEIGHT_EXCEED)
-            }
             PmActions oldObject = (PmActions) PmActions.read(id)
             PmActions actions = buildObject(params, oldObject)
             params.put(ACTIONS_OBJ, actions)
@@ -115,12 +106,9 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         oldObject.supportDepartment = actions.supportDepartment
         oldObject.resPerson = actions.resPerson
         oldObject.actions = actions.actions
-        oldObject.weight = actions.weight
         oldObject.start = actions.start
         oldObject.end = actions.end
         oldObject.sourceOfFund = actions.sourceOfFund
-        oldObject.target = actions.target
-        oldObject.meaIndicator = actions.meaIndicator
         return oldObject
     }
 }

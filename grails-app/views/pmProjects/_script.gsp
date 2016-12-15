@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridProjects, dataSource, projectsModel,dropDownService,dropDownProjectsType;
+    var gridProjects, dataSource, projectsModel,dropDownProjectsType,start,end;
 
     $(document).ready(function () {
         onLoadProjectsPage();
@@ -23,29 +23,18 @@
 
     function onLoadProjectsPage() {
         $("#rowProjects").hide();
-        $("#weight").kendoNumericTextBox({
-            decimals : 0,
-            format   : "### \\%",
-            min      : 1,
-            max      : 100
-        });
-        var currentDate = moment().format('MMMM yyyy');
-
+        var currentDate = moment().format('dd/MM/yyyy');
         start = $('#startDate').kendoDatePicker({
-            format: "MMMM yyyy",
+            format: "dd/MM/yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            change: startChange,
-            start: "year",
-            depth: "year"
+            change: startChange
         }).data("kendoDatePicker");
 
         start.value(currentDate);
 
         end = $('#endDate').kendoDatePicker({
-            format: "MMMM yyyy",
-            parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"]
         }).data("kendoDatePicker");
 
         end.value(currentDate);
@@ -73,7 +62,6 @@
         if (executePreCondition() == false) {
             return false;
         }
-
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
@@ -82,7 +70,6 @@
         } else {
             actionUrl = "${createLink(controller:'pmProjects', action: 'update')}";
         }
-
         jQuery.ajax({
             type: 'post',
             data: jQuery("#projectForm").serialize(),
@@ -120,6 +107,7 @@
                 }
                 emptyForm();
                 showSuccess(result.message);
+                hideService();
             } catch (e) {
                 // Do Nothing
             }
@@ -146,17 +134,15 @@
     }
 
     function emptyForm() {
-        clearForm($("#projectForm"), $('#serviceId'));
+        clearForm($("#projectForm"), $('#typeId'));
         initObservable();
-        dropDownService.value('');
         dropDownProjectsType.value('');
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
         initObservable();
-        dropDownService.value('');
         dropDownProjectsType.value('');
-        $('#rowProjects').hide();
+        hideService();
     }
 
     function initDataSource() {
@@ -175,13 +161,13 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
+                        serviceId: { type: "number" },
+                        serviceName: { type: "string" },
                         name: { type: "string" },
                         shortName: { type: "string" },
                         typeId: { type: "number" },
                         typeName: { type: "string" },
                         code: { type: "string" },
-                        serviceId: { type: "number" },
-                        service: { type: "string" },
                         donor: { type: "string" },
                         description: { type: "string" },
                         startDate: { type: "date" },
@@ -217,18 +203,18 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "service", title: "Service", width: 100, sortable: false, filterable: false},
                 {field: "code", title: "Code", width: 50, sortable: false, filterable: false},
                 {field: "name", title: "Name", width: 120, sortable: false, filterable: false},
                 {field: "shortName", title: "Short Name", width: 80, sortable: false, filterable: false},
                 {field: "typeName", title: "Status", width: 50, sortable: false, filterable: false},
+                {field: "serviceName", title: "Service", width: 50, sortable: false, filterable: false},
                 {field: "donor", title: "donor", width: 120, sortable: false, filterable: false},
                 {field: "startDate", title: "Start Date", width: 60, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'MMMM-yy')#"},
+                    template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},
                 {field: "endDate", title: "End Date", width: 60, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'MMMM-yy')#"},
-                {field: "inActive", title: "Active", width: 60, sortable: false, filterable: false,
-                    template:"#=inActive?'No':'Yes'#"}
+                    template:"#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},
+                {field: "isActive", title: "Active", width: 60, sortable: false, filterable: false,
+                    template:"#=isActive?'Yes':'No'#"}
 
             ],
             filterable: {
@@ -251,8 +237,6 @@
                         typeId: "",
                         typeName: "",
                         code: "",
-                        serviceId: "",
-                        service: "",
                         donor: "",
                         description: "",
                         startDate: "",
@@ -290,6 +274,9 @@
     }
     function addService(){
         $("#rowProjects").show();
+    }
+    function hideService(){
+        $("#rowProjects").hide();
     }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridProjects, 'project') == false) {

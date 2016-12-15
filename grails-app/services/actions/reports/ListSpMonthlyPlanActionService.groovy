@@ -46,29 +46,28 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
             Date date = originalFormat.parse(monthStr);
             Calendar c = Calendar.getInstance();
             c.setTime(date);
+            String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
             c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
             Date start=DateUtility.getSqlDate(c.getTime())
 
             c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
             Date end=DateUtility.getSqlDate(c.getTime())
-
+            int year = c.get(Calendar.YEAR)
             long serviceId = Long.parseLong(result.serviceId.toString())
             String type = result.type
             if(type.equals("Mission")){
                 List lstVal = buildMissionList(serviceId)
                 result.put("mission", lstVal)
             }else if(type.equals("Goals")){
-                List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
+                List<PmGoals> lstGoals = PmGoals.findAllByServiceIdAndYear(serviceId,year)
                 result.put(LIST, lstGoals)
             }else if(type.equals("Actions")){
-                long goalId = Long.parseLong(result."filter[filters][0][value]")
-                List<GroovyRowResult> lstAction = buildActionsList(serviceId,goalId,start,end)
+                List<GroovyRowResult> lstAction = buildActionsList(serviceId,start,end)
                 result.put(LIST, lstAction)
                 return result
-            }else if(type.equals("Sprints")){
-                long goalId = Long.parseLong(result.goalId.toString())
+            }else if(type.equals("Details")){
                 long actionsId = Long.parseLong(result."filter[filters][0][value]")
-                List<GroovyRowResult> lstSprint = buildSprintList(serviceId,goalId,actionsId, start, end)
+                List<GroovyRowResult> lstSprint = buildIndicatorDetails(serviceId,actionsId, start, end, monthName)
                 result.put(LIST, lstSprint)
                 return result
             }
@@ -117,26 +116,30 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
         return result
     }
 
-    private List<GroovyRowResult> buildActionsList(long serviceId,long goalId,Date start, Date end) {
+    private List<GroovyRowResult> buildActionsList(long serviceId,Date start, Date end) {
         String query = """
-                SELECT id,service_id AS serviceId,goal_id AS goalId,start,end,sequence,tmp_seq AS tmpSeq,
-                        mea_indicator AS meaIndicator,target,actions,weight,res_person AS resPerson, remarks,
-                        support_department AS supportDepartment,strategy_map_ref AS strategyMapRef,source_of_fund AS sourceOfFund
-                FROM pm_actions
-                WHERE service_id = ${serviceId} AND goal_id = ${goalId}
-                AND ('${start}' <= end AND '${end}' >= start)
+                SELECT a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
+                        a.res_person AS resPerson, a.note,a.support_department AS supportDepartment,
+                        a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,
+(SELECT GROUP_CONCAT(short_name) FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) support_department_str
+                FROM pm_actions a
+                LEFT JOIN pm_service_sector sc ON sc.id = a.service_id
+                WHERE a.service_id = ${serviceId}
+                AND ('${start}' <= a.end AND '${end}' >= a.start)
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
     }
-    private List<GroovyRowResult> buildSprintList(long serviceId,long goalId,long actionsId, Date start, Date end) {
+    private List<GroovyRowResult> buildIndicatorDetails(long serviceId,long actionsId, Date start, Date end, String monthStr) {
         String query = """
-                SELECT id,service_id AS serviceId,goal_id AS goalId,actions_id AS actionsId,
-                        start_date AS startDate,end_date AS endDate,sequence,sprints,weight,tmp_seq AS tmpSeq,target,
-                        support_department AS supportDepartment,res_person AS resPerson
-                FROM pm_sprints
-                WHERE service_id = ${serviceId} AND goal_id = ${goalId} AND actions_id = ${actionsId}
-                 AND ('${start}' <= end_date AND '${end}' >= start_date)
+                SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,idd.month_name,idd.target monthly_target,
+                idd.achievement,idd.remarks,SUM(tmp.achievement) total_achievement
+                FROM pm_actions a
+                LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
+                LEFT JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id
+                LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthStr}'
+                WHERE a.id = ${actionsId}
+                GROUP BY i.id,idd.id
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue

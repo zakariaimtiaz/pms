@@ -1,4 +1,4 @@
-<div id="example">
+%{--<div id="example">
     <div class="demo-section k-content" style="width: 1100px;height: 580px;">
         <div id="chart"></div>
     </div>
@@ -65,4 +65,4 @@
         $(document).ready(createChart);
         $(document).bind("kendo:skinChange", createChart);
     </script>
-</div>
+</div>--}%

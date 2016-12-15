@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridGoal, dataSource, goalModel,dropDownService;
+    var gridGoal, dataSource, goalModel,dropDownService, serviceId;
 
     $(document).ready(function () {
         onLoadGoalPage();
@@ -23,12 +23,7 @@
 
     function onLoadGoalPage() {
         $("#rowGoals").hide();
-        $("#weight").kendoNumericTextBox({
-            decimals : 0,
-            format   : "### \\%",
-            min      : 1,
-            max      : 100
-        });
+        serviceId = ${serviceId};
         initializeForm($("#goalForm"), onSubmitGoal);
         defaultPageTile("Create Goal",null);
     }
@@ -100,12 +95,12 @@
     function emptyForm() {
         clearForm($("#goalForm"), $('#serviceId'));
         initObservable();
-        dropDownService.value('');
+        dropDownService.value(serviceId);
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
         initObservable();
-        dropDownService.value('');
+        dropDownService.value(serviceId);
         $('#rowGoals').hide();
     }
 
@@ -126,7 +121,6 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         goal: { type: "string" },
-                        weight: { type: "number" },
                         serviceId: { type: "number" },
                         service: { type: "string" },
                         serShortName: { type: "string" },
@@ -161,12 +155,9 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "serShortName", title: "Service", width: 30, sortable: false, filterable: false},
-                {field: "sequence", title: "Sequence", width: 20, sortable: false, filterable: false,
+                {field: "serShortName", title: "Sector/CSU", width: 30, sortable: false, filterable: false},
+                {field: "sequence", title: "ID#", width: 20, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
-                },
-                {field: "weight", title: "Weight", width: 20, sortable: false, filterable: false,
-                    template:"#=weight # %",attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "goal", title: "Goal Statement", width: 200, sortable: false, filterable: false}
             ],
@@ -185,7 +176,6 @@
                     goal: {
                         id: "",
                         version: "",
-                        weight: "",
                         goal: "",
                         serviceId: ""
                     }
@@ -204,6 +194,7 @@
     }
     function addService(){
         $("#rowGoals").show();
+        dropDownService.value(serviceId);
     }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridGoal, 'goal') == false) {

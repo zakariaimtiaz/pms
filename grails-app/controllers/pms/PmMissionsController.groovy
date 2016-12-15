@@ -4,6 +4,8 @@ import actions.pmMissions.CreatePmMissionsActionService
 import actions.pmMissions.DeletePmMissionsActionService
 import actions.pmMissions.ListPmMissionsActionService
 import actions.pmMissions.UpdatePmMissionsActionService
+import com.pms.SecUser
+import grails.converters.JSON
 
 class PmMissionsController  extends BaseController {
 
@@ -11,13 +13,15 @@ class PmMissionsController  extends BaseController {
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]
 
+    BaseService baseService
     CreatePmMissionsActionService createPmMissionsActionService
     UpdatePmMissionsActionService updatePmMissionsActionService
     DeletePmMissionsActionService deletePmMissionsActionService
     ListPmMissionsActionService listPmMissionsActionService
 
     def show() {
-        render(view: "/pmMissions/show")
+        SecUser user = baseService.currentUserObject()
+        render(view: "/pmMissions/show", model: [serviceId:user.serviceId])
     }
     def create() {
         renderOutput(createPmMissionsActionService, params)

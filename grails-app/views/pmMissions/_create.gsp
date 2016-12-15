@@ -13,12 +13,12 @@
                     <input type="hidden" name="version" id="version" data-bind="value: mission.version"/>
 
                     <div class="form-group">
-                        <label class="col-md-1 control-label label-required"
-                               for="serviceId">Service:</label>
+                        <label class="col-md-1 control-label label-optional"
+                               for="serviceId">Sector/CSU:</label>
 
                         <div class="col-md-6">
                             <app:dropDownService
-                                    class="kendo-drop-down"
+                                    class="kendo-drop-down"  readonly="true"
                                     required="true" validationMessage="Required"
                                     id="serviceId" name="serviceId" tabindex="1"
                                     data-bind="value: mission.serviceId"

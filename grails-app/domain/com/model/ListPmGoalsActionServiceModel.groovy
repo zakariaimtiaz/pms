@@ -7,7 +7,7 @@ class ListPmGoalsActionServiceModel {
         DROP TABLE IF EXISTS list_pm_goals_action_service_model;
         CREATE OR REPLACE VIEW list_pm_goals_action_service_model AS
         SELECT m.id, m.version, m.goal, sc.short_name AS ser_short_name, sc.id AS service_id,
-         sc.name AS service,m.sequence,m.weight
+         sc.name AS service,m.sequence
         FROM pm_goals m
         LEFT JOIN pm_service_sector sc ON sc.id = m.service_id
         ORDER BY sc.sequence,m.sequence ASC;
@@ -20,7 +20,6 @@ class ListPmGoalsActionServiceModel {
     String serShortName
     String goal
     int sequence
-    int weight
 
     static constraints = {
     }

@@ -13,12 +13,12 @@
                     <input type="hidden" name="version" id="version" data-bind="value: goal.version"/>
 
                     <div class="form-group">
-                        <label class="col-md-1 control-label label-required"
-                               for="serviceId">Service:</label>
+                        <label class="col-md-1 control-label label-optional"
+                               for="serviceId">Sector/CSU:</label>
 
                         <div class="col-md-6">
                             <app:dropDownService
-                                    class="kendo-drop-down"
+                                    class="kendo-drop-down" readonly="true"
                                     required="true" validationMessage="Required"
                                     id="serviceId" name="serviceId" tabindex="1"
                                     data-bind="value: goal.serviceId"
@@ -28,20 +28,6 @@
 
                         <div class="col-md-3 pull-left">
                             <span class="k-invalid-msg" data-for="serviceId"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-1 control-label label-required"
-                               for="weight">Weight:</label>
-
-                        <div class="col-md-6">
-                            <input type="text" class="form-control"
-                                   id="weight" name="weight" tabindex="2"
-                                   data-bind="value: goal.weight"/>
-                        </div>
-
-                        <div class="col-md-3 pull-left">
-                            <span class="k-invalid-msg" data-for="weight"></span>
                         </div>
                     </div>
 

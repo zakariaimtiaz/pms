@@ -1,8 +1,8 @@
 <script language="javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function () {
-        $('#accordion').on('show.bs.collapse', function () {
-            $('#accordion .in').collapse('hide');
-        });
+         $('#accordion').on('show.bs.collapse', function () {
+         $('#accordion .in').collapse('hide');
+         });
     });
     function togglePlus(e) {
         $(e.target)
@@ -32,14 +32,18 @@
             <h4 class="panel-title"
                 data-toggle="collapse"
                 data-target="#collapseOne">
-                Mission<i class="fa fa-plus-square-o pull-right"></i>
+                Goals<i class="fa fa-plus-square-o pull-right"></i>
             </h4>
         </div>
 
         <div id="collapseOne" class="panel-collapse collapse">
             <div class="panel-body">
                 <table class="table table-striped">
-                    <tbody id="lstMission"></tbody>
+                    <tr>
+                        <th width='5%'>#ID</th>
+                        <th width='90%'>Goal</th>
+                    </tr>
+                    <tbody id="lstGoal"></tbody>
                 </table>
             </div>
         </div>

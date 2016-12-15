@@ -645,4 +645,11 @@ class BaseService extends Tools {
         long id =(long) result[0]
         return id
     }
+    public String responsiblePersonName(long id){
+        String query = """
+            SELECT name FROM employee WHERE id = ${id}
+        """
+        List<GroovyRowResult> result = groovySql_mis.rows(query)
+        return result[0].name
+    }
 }

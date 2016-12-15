@@ -24,11 +24,10 @@ class UpdatePmProjectsActionService extends BaseService implements ActionService
 
     public Map executePreCondition(Map params) {
         try {
-            if ((!params.serviceId) || (!params.typeId)||(!params.name)|| (!params.shortName)|| (!params.code)) {
+            if ((!params.typeId)||(!params.name)|| (!params.shortName)|| (!params.code)) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            long id = Long.parseLong(params.id.toString())            
-
+            long id = Long.parseLong(params.id.toString())
             PmProjects oldObject = PmProjects.read(id)
             PmProjects projects = buildObject(params,oldObject)
             params.put(PROJECTS_OBJ, projects)
@@ -80,25 +79,10 @@ class UpdatePmProjectsActionService extends BaseService implements ActionService
     }
 
     private static PmProjects buildObject(Map parameterMap,PmProjects oldObject) {
-        String startDateStr = parameterMap.startDate.toString()
-        String endDateStr = parameterMap.endDate.toString()
-        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-        Date start = originalFormat.parse(startDateStr);
-        Calendar c = Calendar.getInstance();
-        c.setTime(start);
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-
-        Date end = originalFormat.parse(endDateStr);
-        Calendar ce = Calendar.getInstance();
-        ce.setTime(end);
-        ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        parameterMap.startDate=DateUtility.getSqlDate(c.getTime())
-        parameterMap.endDate=DateUtility.getSqlDate(ce.getTime())
+        parameterMap.startDate=DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.startDate.toString()))
+        parameterMap.endDate=DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.endDate.toString()))
 
         PmProjects projects = new PmProjects(parameterMap)
-        oldObject.serviceId = projects.serviceId
         oldObject.code = projects.code
         oldObject.name = projects.name
         oldObject.shortName = projects.shortName
@@ -107,10 +91,7 @@ class UpdatePmProjectsActionService extends BaseService implements ActionService
         oldObject.endDate = projects.endDate
         oldObject.description = projects.description
         oldObject.typeId = projects.typeId
-        oldObject.inActive=false
-
-
-
+        oldObject.isActive=true
         return oldObject
     }
 }

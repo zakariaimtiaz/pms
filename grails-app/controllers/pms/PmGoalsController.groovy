@@ -4,6 +4,7 @@ import actions.pmGoals.CreatePmGoalsActionService
 import actions.pmGoals.DeletePmGoalsActionService
 import actions.pmGoals.ListPmGoalsActionService
 import actions.pmGoals.UpdatePmGoalsActionService
+import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
 import service.PmGoalsService
@@ -25,7 +26,8 @@ class PmGoalsController  extends BaseController {
 
 
     def show() {
-        render(view: "/pmGoals/show")
+        SecUser user = baseService.currentUserObject()
+        render(view: "/pmGoals/show", model: [serviceId:user.serviceId])
     }
     def create() {
         renderOutput(createPmGoalsActionService, params)

@@ -1,6 +1,5 @@
 package actions.pmProjects
 
-import com.model.ListPmGoalsActionServiceModel
 import com.model.ListPmProjectsActionServiceModel
 import com.pms.PmProjects
 import grails.plugin.springsecurity.SpringSecurityService
@@ -10,16 +9,11 @@ import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
 
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-
 @Transactional
 class CreatePmProjectsActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Project has been saved successfully"
-    private static final String ALREADY_EXIST = "Sequence already exist"
-    private static final String WEIGHT_EXCEED = "Exceed weight measurement"
     private static final String PROJECTS_OBJECT = "pmProjects"
 
     private Logger log = Logger.getLogger(getClass())
@@ -27,7 +21,7 @@ class CreatePmProjectsActionService extends BaseService implements ActionService
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if ((!params.serviceId) || (!params.typeId)||(!params.name)|| (!params.shortName)|| (!params.code)) {
+            if ((!params.typeId)||(!params.name)|| (!params.shortName)|| (!params.code)) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             
@@ -80,29 +74,12 @@ class CreatePmProjectsActionService extends BaseService implements ActionService
     }
 
     private PmProjects buildObject(Map parameterMap) {
-
-        String startDateStr = parameterMap.startDate.toString()
-        String endDateStr = parameterMap.endDate.toString()
-        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-        Date start = originalFormat.parse(startDateStr);
-        Calendar c = Calendar.getInstance();
-        c.setTime(start);
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-
-        Date end = originalFormat.parse(endDateStr);
-        Calendar ce = Calendar.getInstance();
-        ce.setTime(end);
-        ce.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        parameterMap.startDate=DateUtility.getSqlDate(c.getTime())
-        parameterMap.endDate=DateUtility.getSqlDate(ce.getTime())
-
+        parameterMap.startDate=DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.startDate.toString()))
+        parameterMap.endDate=DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.endDate.toString()))
         PmProjects projects = new PmProjects(parameterMap)
         projects.createDate=DateUtility.getSqlDate(new Date())
         projects.createBy=springSecurityService.principal.id
-        projects.inActive=false
-
+        projects.isActive=true
         return projects
     }
 }

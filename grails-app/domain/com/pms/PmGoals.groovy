@@ -7,7 +7,7 @@ class PmGoals {
     long serviceId
     String goal
     int sequence
-    int weight
+    Integer year
 
     static mapping = {
         goal     sqlType: 'text'
@@ -15,5 +15,6 @@ class PmGoals {
 
     static constraints = {
         goal     size: 2..15000
+        year(nullable: true)
     }
 }

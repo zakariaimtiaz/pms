@@ -11,16 +11,18 @@
                 <div class="panel-body">
                     <input type="hidden" name="id" id="id" data-bind="value: actions.id"/>
                     <input type="hidden" name="version" id="version" data-bind="value: actions.version"/>
+                    <input type="hidden" name="indicatorCount" id="indicatorCount" value=""/>
+                    <input type="hidden" name="indicator" id="indicator"/>
 
                     <div class="form-group">
                         <div class="col-md-5">
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required"
-                                       for="serviceId">Service:</label>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="serviceId">Sector/CSU:</label>
 
                                 <div class="col-md-10">
                                     <app:dropDownService
-                                            class="kendo-drop-down"
+                                            class="kendo-drop-down" readonly="true"
                                             onchange="javascript:populateGoals();"
                                             id="serviceId" name="serviceId" tabindex="1"
                                             data-bind="value: actions.serviceId"
@@ -56,18 +58,15 @@
                                 <div class="col-md-10">
                                     <table class="table table-bordered table-hover" id="tab_logic">
                                         <tbody>
-                                        <tr id='addr0'>
+                                        <tr id='addr1'>
                                             <td width="60%">
-                                                <input type="text" name='indicator0' placeholder='Indicator'
-                                                     readonly="true"  class="form-control"/>
+                                                <input type="text" name='indicator1' id="indicator1" placeholder='Indicator' class="form-control" readonly="true"/>
                                             </td>
                                             <td width="40%">
-                                                <input type="text" onkeypress='validate(event)' name='target0'
-                                                       placeholder='Target' onblur ="getName(this.name,this.value)"
-                                                       readonly="true"  class="form-control"/>
+                                                <input type="text" onkeypress='return validateQty(event);' id='target1' name='target1' placeholder='Target' readonly="true"
+                                                       onblur ="getName(this.name,this.value)" class="form-control"/>
                                             </td>
                                         </tr>
-                                        <tr id='addr1'></tr>
                                         </tbody>
                                     </table>
                                     <a id="add_row" class="btn btn-default pull-left">Add</a>
@@ -78,9 +77,9 @@
 
                         <div class="col-md-7">
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="actions">Actions:</label>
+                                <label class="col-md-3 control-label label-required" for="actions">Actions:</label>
 
-                                <div class="col-md-10">
+                                <div class="col-md-9">
                                     <textarea id="actions" name="actions" cols="4" rows="3"
                                               tabindex="8" class="form-control"
                                               data-bind="value: actions.actions"
@@ -89,10 +88,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required"
-                                       for="resPersonId">Responsible:</label>
+                                <label class="col-md-3 control-label label-required"
+                                       for="resPersonId">Responsible Person:</label>
 
-                                <div class="col-md-10">
+                                <div class="col-md-9">
                                     <app:dropDownEmployee
                                             data_model_name="dropDownEmployee"
                                             required="false" class="kendo-drop-down"
@@ -104,25 +103,37 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="sourceOfFund">Fund Source:</label>
+                                <label class="col-md-3 control-label label-optional"
+                                       for="sourceOfFund">Source Of Fund:</label>
 
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="sourceOfFund" name="sourceOfFund"
-                                           placeholder="Source Of Fund"
-                                           tabindex="12" data-bind="value: actions.sourceOfFund"/>
+                                <div class="col-md-9">
+                                    <select id="sourceOfFund" name="sourceOfFund"
+                                            tabindex="12" data-placeholder="Select ..."
+                                            data-bind="value: actions.sourceOfFund">
+                                    </select>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-optional"
-                                       for="supportDepartment">Support:</label>
+                                <label class="col-md-3 control-label label-optional"
+                                       for="supportDepartment">Support Department:</label>
 
-                                <div class="col-md-10">
+                                <div class="col-md-9">
                                     <select id="supportDepartment" name="supportDepartment"
-                                            tabindex="7" data-placeholder="Select Support Department..."
+                                            tabindex="7" data-placeholder="Select ..."
                                             data-bind="value: actions.supportDepartment">
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label label-optional"
+                                       for="note">Remarks:</label>
+
+                                <div class="col-md-9">
+                                    <textarea id="note" name="note" cols="4" rows="2"
+                                              tabindex="8" class="form-control"
+                                              data-bind="value: actions.note"
+                                              placeholder="Remarks" class="kendo-drop-down"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -32,14 +32,18 @@
             <h4 class="panel-title"
                 data-toggle="collapse"
                 data-target="#collapseOne">
-                Mission<i class="fa fa-plus-square-o pull-right"></i>
+                Goals<i class="fa fa-plus-square-o pull-right"></i>
             </h4>
         </div>
 
         <div id="collapseOne" class="panel-collapse collapse">
             <div class="panel-body">
                 <table class="table table-striped">
-                    <tbody id="lstMission"></tbody>
+                    <tr>
+                        <th width='5%'>#ID</th>
+                        <th width='90%'>Goal</th>
+                    </tr>
+                    <tbody id="lstGoal"></tbody>
                 </table>
             </div>
         </div>
