@@ -48,13 +48,15 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideCreateIndicatorModal();"><span
                         aria-hidden="true">&times;</span></button>
-                <h5 class="modal-title" id="createIndicatorModalLabel">Split Indicator target into monthly basis</h5>
+                <h4 class="modal-title" id="createIndicatorModalLabel">Split Indicator target into monthly basis</h4>
             </div>
 
             <div class="modal-body">
                 <form class="form-horizontal form-widgets" id="createIndicatorForm" name="createIndicatorForm">
                     <input type="hidden" id="indicatorIdModal" name="indicatorIdModal" value=""/>
                     <input type="hidden" id="tempTargetNameModal" name="tempTargetNameModal" value=""/>
+                    <input type="hidden" id="hidTargetModal" name="hidTargetModal" value=""/>
+                    <input type="hidden" id="hidSumModal" name="hidSumModal" value=""/>
                     <input type="hidden" id="tempCountModal" name="tempCountModal" value=""/>
 
                     <div class="form-group">

@@ -67,15 +67,12 @@
             sortable: false,
             pageable: false,
             detailInit: actionsIndicator,
-            dataBound: function() {
-                this.expandRow(this.tbody.find("tr.k-master-row"));
-            },
             columns: [
                 {
-                    field: "sequence", title: "ID#", width: 60, sortable: false, filterable: false,
+                    field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "actions", title: "Action", width: 120, sortable: false, filterable: false},
+                {field: "actions", title: "Action", width: 200, sortable: false, filterable: false},
                 {
                     field: "start", title: "Start Date", width: 60, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"

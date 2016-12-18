@@ -5,9 +5,7 @@ import com.pms.PmActions
 import com.pms.PmActionsIndicator
 import com.pms.PmActionsIndicatorDetails
 import com.pms.PmGoals
-import com.pms.SecUser
 import grails.transaction.Transactional
-import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
@@ -48,6 +46,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         try {
             PmActions actions = (PmActions) result.get(ACTIONS_OBJECT)
             int count = Integer.parseInt(result.indicatorCount.toString())
+            int max = Integer.parseInt(result.indicatorMaxId.toString())
             actions.totalIndicator = count
             actions.save()
             String str = result.indicator.toString()
@@ -59,56 +58,59 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                 Calendar c = Calendar.getInstance();
                 c.setTime(date);
                 String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
+                for (int i = 0; i < max; i++) {
+                    try {
+                        PmActionsIndicator indicator = new PmActionsIndicator()
+                        indicator.actionsId = actions.id
+                        indicator.indicator = result.get("indicator" + (i + 1))
+                        indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
+                        indicator.save()
 
-                for (int i = 0; i < count; i++) {
-                    PmActionsIndicator indicator = new PmActionsIndicator()
-                    indicator.actionsId = actions.id
-                    indicator.indicator = result.get("indicator" + (i + 1))
-                    indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
-                    indicator.save()
-
-                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                    details.actionsId = actions.id
-                    details.indicatorId = indicator.id
-                    details.monthName = monthName
-                    details.target = indicator.target
-                    details.createBy = 1
-                    details.createDate = new Date()
-                    details.save()
+                        PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                        details.actionsId = actions.id
+                        details.indicatorId = indicator.id
+                        details.monthName = monthName
+                        details.target = indicator.target
+                        details.createBy = 1
+                        details.createDate = new Date()
+                        details.save()
+                    }catch (Exception e){ }
                 }
             } else {
                 String[] ind = str.split(",");
                 for (int i = 0; i < ind.length; i++) {
-                    PmActionsIndicator indicator = new PmActionsIndicator()
-                    indicator.actionsId = actions.id
-                    indicator.indicator = result.get("indicator" + (i+1))
-                    indicator.target = Integer.parseInt(result.get("target" + (i+1)).toString())
-                    indicator.save()
+                    try {
+                        PmActionsIndicator indicator = new PmActionsIndicator()
+                        indicator.actionsId = actions.id
+                        indicator.indicator = result.get("indicator" + (i+1))
+                        indicator.target = Integer.parseInt(result.get("target" + (i+1)).toString())
+                        indicator.save()
 
-                    String[] couple = ind[i].split("&");
-                    int tmpCount = Integer.parseInt(couple[2].split("=")[1].replaceAll("^\\d.]", ""))
+                        String[] couple = ind[i].split("&");
+                        int tmpCount = Integer.parseInt(couple[4].split("=")[1].replaceAll("^\\d.]", ""))
 
-                    int t = 3;
-                    for (int j = 0; j < tmpCount; j++) {
-                        PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                        details.actionsId = actions.id
-                        details.indicatorId = indicator.id
-                        String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-                        String target = couple[t+1].split("=")[1].replaceAll("[^\\d.]", "")
-                        int targetInt = 0
-                        try {
-                            targetInt = Integer.parseInt(target)
-                        }catch (Exception e){
-                            targetInt = 0
+                        int t = 5;
+                        for (int j = 0; j < tmpCount; j++) {
+                            PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                            details.actionsId = actions.id
+                            details.indicatorId = indicator.id
+                            String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
+                            String target = couple[t+1].split("=")[1].replaceAll("[^\\d.]", "")
+                            int targetInt = 0
+                            try {
+                                targetInt = Integer.parseInt(target)
+                            }catch (Exception e){
+                                targetInt = 0
+                            }
+
+                            details.monthName = name
+                            details.target = targetInt
+                            details.createBy = 1
+                            details.createDate = new Date()
+                            details.save()
+                            t += 2
                         }
-
-                        details.monthName = name
-                        details.target = targetInt
-                        details.createBy = 1
-                        details.createDate = new Date()
-                        details.save()
-                        t += 2
-                    }
+                    }catch(Exception e){}
                 }
             }
             return result

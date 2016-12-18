@@ -21,12 +21,14 @@ class PmActions {
 
     static mapping = {
         actions    sqlType: 'text'
-        start       sqlType: 'date'
-        end         sqlType: 'date'
+        note       sqlType: 'text'
+        start      sqlType: 'date'
+        end        sqlType: 'date'
     }
 
     static constraints = {
         actions     size: 2..15000
+        note        size: 2..15000
         resPersonId(nullable: true)
         resPerson(nullable: true)
         strategyMapRef(nullable: true)

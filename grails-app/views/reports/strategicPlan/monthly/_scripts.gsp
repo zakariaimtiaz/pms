@@ -66,15 +66,12 @@
             sortable: false,
             pageable: false,
             detailInit: actionsDetails,
-            dataBound: function() {
-                this.expandRow(this.tbody.find("tr.k-master-row").first());
-            },
             columns: [
                 {
-                    field: "sequence", title: "ID#", width: 60, sortable: false, filterable: false,
+                    field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "actions", title: "Action", width: 120, sortable: false, filterable: false},
+                {field: "actions", title: "Action", width: 200, sortable: false, filterable: false},
                 {
                     field: "start", title: "Start Date", width: 60, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"
@@ -88,7 +85,7 @@
                     field: "supportDepartmentStr", title: "Support Department", width: 120,
                     sortable: false, filterable: false
                 },
-                {field: "sourceOfFundStr", title: "Source Of Fund", width: 80, sortable: false, filterable: false},
+                {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
                 {field: "note", title: "Remarks", width: 80, sortable: false, filterable: false}
             ]
         });
