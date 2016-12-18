@@ -58,11 +58,11 @@
             var trCount = $('#tab_logic tr').length;
             var trIdNo = trCount + 1;
             var trId = 'addr' + trIdNo;
-
-            var trData = "<tr id='" + trId + "'><td width='60%'>" +
+            //$('#addr').remove();
+            var trData = "<tr id='" + trId + "'><td width='70%'>" +
                     "<input name='indicator" + trIdNo + "' type='text'  placeholder='Indicator' class='form-control'/>" +
                     "</td>" +
-                    "<td width='40%'>" +
+                    "<td width='20%'>" +
                     "<input  name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
                     "</td></tr>";
             $('#tab_logic').append(trData);
