@@ -83,11 +83,17 @@
                             <table class="table table-bordered table-hover" id="tab_logic">
                                 <tbody>
                                 <tr id='addr1'>
-                                    <td width="70%">
+                                    <td width="60%">
                                         <input type="text" name='indicator1' id="indicator1" placeholder='Indicator'
                                                class="form-control" readonly="true"/>
                                     </td>
-                                    <td width="20%">
+                                    <td width="15%">
+                                    <select class="form-control" id="indType1" name="indType1">
+                                        <option value="Dividable">Dividable</option>
+                                        <option value="Repeatable">Repeatable</option>
+                                    </select>
+                                    </td>
+                                    <td width="15%">
                                         <input type="text" onkeypress='return validateQty(event);' id='target1'
                                                name='target1' placeholder='Target' readonly="true"
                                                onblur="getName(this.name, this.value)" class="form-control"/>

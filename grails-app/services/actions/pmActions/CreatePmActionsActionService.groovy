@@ -50,7 +50,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             actions.totalIndicator = count
             actions.save()
             String str = result.indicator.toString()
-            if (str.isEmpty()) {
+            if (actions.start==actions.end) {
                 String monthStr = result.start.toString()
                 DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
 

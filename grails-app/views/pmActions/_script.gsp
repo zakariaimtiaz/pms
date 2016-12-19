@@ -39,14 +39,19 @@
             var index = name.slice(-1);
             var indName = 'indicator' + index;
             var tarName = 'target' + index;
+            var indType = 'indType' + index;
             var tmpInd = 'input[name=' + indName + ']';
             var tmpTar = 'input[name=' + tarName + ']';
+            var indicatorType = 'select[name=' + indType + ']';
             var indicator = $(tmpInd).val();
+            var type = $(indicatorType).val();
             var start = $('#start').val();
             var end = $('#end').val();
             var count = monthDifference(start, end);
             var list = monthNamesFromRange(start, end);
-            if (count > 1 && target > 0 && indicator != '') showIndicatorModal(indName, indicator, tmpTar, target, count, list);
+        if (count > 1 && target > 0 && indicator != ''){
+            showIndicatorModal(indName, indicator, tmpTar, target, count, list,type);
+        }
     }
 
     function add_row(tmpId){
@@ -60,10 +65,15 @@
         }
         var trIdNo = IndCount + 1;
         var trId = 'addr' + trIdNo;
-        var trData = "<tr id='" + trId + "'><td width='70%'>" +
+        var trData = "<tr id='" + trId + "'><td width='60%'>" +
                 "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' type='text'  placeholder='Indicator' class='form-control'/>" +
                 "</td>" +
-                "<td width='20%'>" +
+                "<td width='15%'>" +
+                "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "'>"+
+                "<option value='Dividable'>Dividable</option>"+
+                "<option value='Repeatable'>Repeatable</option>"+
+                "</select> " +
+                "<td width='15%'>" +
                 "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
                 "</td>" +
                 "<td>" +
@@ -486,7 +496,12 @@
                     var trData = "<tr id='" + trId + "'><td width='60%'>" +
                             "<input name='indicator" + trIdNo + "' type='text' value='" + data.list[i].indicator + "'  placeholder='Indicator' class='form-control'/>" +
                             "</td>" +
-                            "<td width='40%'>" +
+                            "<td width='15%'>" +
+                            "<select class='form-control' id='indType1' name='indType1'>"+
+                            "<option value='Dividable'>Dividable</option>"+
+                            "<option value='Repeatable'>Repeatable</option>"+
+                            "</select> " +
+                            "<td width='15%'>" +
                             "<input  name='target" + trIdNo + "' type='text' value='" + data.list[i].target + "' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
                             "</td></tr>";
                     $('#tab_logic').append(trData);
@@ -506,14 +521,17 @@
     function clearIndicatorTable(){
         $('input[name=indicator1]').val('');
         $('input[name=target1]').val('');
-        for (var i = 1; i <= IndCount; i++) {
-                var trId = '#addr' + i;
-                $(trId).remove();
-        }
-        var trData = "<tr id='" + trId + "'><td width='60%'>" +
+        $("#tab_logic tr").remove();
+        var trData = "<tr id='#addr1'><td width='60%'>" +
                 "<input id='indicator1' name='indicator1' type='text' placeholder='Indicator' class='form-control'/>" +
                 "</td>" +
-                "<td width='40%'>" +
+                "<td width='15%'>" +
+                "<select class='form-control' id='indType1' name='indType1'>"+
+                "<option value='Dividable'>Dividable</option>"+
+                "<option value='Repeatable'>Repeatable</option>"+
+                "</select> " +
+                "</td>" +
+                "<td width='15%'>" +
                 "<input id='target1' name='target1' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
                 "</td>" +
                 "<td>" +
@@ -568,20 +586,32 @@
         return true;
     }
 
-    function showIndicatorModal(indName, indicator, tmpTar, target, count, list) {
+    function showIndicatorModal(indName, indicator, tmpTar, target, count, list,indType) {
         $("#createIndicatorModal").modal('show');
         $('#indicatorIdModal').val(indName);
         $('#indicatorModalIndicatorLbl').text(indicator);
-        $('#indicatorModalTargetLbl').text('0/'+target);
-        $('#hidTargetModal').val(target);
         $('#tempTargetNameModal').val(tmpTar);
         $('#tempCountModal').val(count);
         $("#i_logic tr").remove();
-        for (var i = 0; i < count + 1; i++) {
+        if(indType=='Repeatable'){
+            $('#indicatorModalTargetLbl').text((target*count)+'/'+(target*count));
+            $('#hidTargetModal').val((target*count));
+            for (var i = 0; i < count + 1; i++) {
+                $('#iddr' + i).html("<td width='60%'><input name='month" + i + "' value ='" + list[i - 1] + "' type='text' readonly='true' class='form-control'/></td>" +
+                "<td width='40%'><input class='form-control amount'  value='"+target+"' name='tempTr" + i + "' type='text' placeholder='Target' ></td>");
+                $('#i_logic').append('<tr id="iddr' + (i + 1) + '"></tr>');
+            }
+            calculateSum();
+        }else{
+            $('#indicatorModalTargetLbl').text('0/'+target);
+            $('#hidTargetModal').val(target);
+            for (var i = 0; i < count + 1; i++) {
                 $('#iddr' + i).html("<td width='60%'><input name='month" + i + "' value ='" + list[i - 1] + "' type='text' readonly='true' class='form-control'/></td>" +
                 "<td width='40%'><input class='form-control amount'  value='' name='tempTr" + i + "' type='text' placeholder='Target' ></td>");
                 $('#i_logic').append('<tr id="iddr' + (i + 1) + '"></tr>');
+            }
         }
+
     }
     function calculateSum() {
         var target = $('#hidTargetModal').val();
