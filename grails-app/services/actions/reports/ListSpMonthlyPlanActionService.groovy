@@ -121,7 +121,9 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                 SELECT a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
                         a.res_person AS resPerson, a.note,a.support_department AS supportDepartment,
                         a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,
-(SELECT GROUP_CONCAT(short_name) FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) support_department_str
+(SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartmentStr,
+(SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) sourceOfFundStr
+
                 FROM pm_actions a
                 LEFT JOIN pm_service_sector sc ON sc.id = a.service_id
                 WHERE a.service_id = ${serviceId}

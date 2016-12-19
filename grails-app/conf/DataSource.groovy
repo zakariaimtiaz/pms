@@ -119,7 +119,6 @@ environments {
         }
         dataSource_mis {
             dbCreate    = "update"
-            dbCreate    = "update"
             url         = "jdbc:mysql://192.168.16.17:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
             username    = "root"
             password    = "hr586DB"

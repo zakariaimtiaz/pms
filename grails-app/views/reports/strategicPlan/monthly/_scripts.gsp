@@ -73,20 +73,20 @@
                 },
                 {field: "actions", title: "Action", width: 200, sortable: false, filterable: false},
                 {
-                    field: "start", title: "Start Date", width: 60, sortable: false, filterable: false,
+                    field: "start", title: "Start Date", width: 50, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"
                 },
                 {
-                    field: "end", title: "End Date", width: 60, sortable: false, filterable: false,
+                    field: "end", title: "End Date", width: 50, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
                 },
-                {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false},
+                {field: "resPerson", title: "Responsible Person", width: 90, sortable: false, filterable: false},
                 {
-                    field: "supportDepartmentStr", title: "Support Department", width: 120,
+                    field: "supportDepartmentStr", title: "Support Department", width: 90,
                     sortable: false, filterable: false
                 },
                 {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks", width: 80, sortable: false, filterable: false}
+                {field: "note", title: "Remarks",template:"#=trimTextForKendo(note,100)#", width: 120, sortable: false, filterable: false}
             ]
         });
         gridAction = $("#grid").data("kendoGrid");

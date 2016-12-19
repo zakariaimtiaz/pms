@@ -341,13 +341,13 @@
                     field: "end", title: "End Date", width: 60, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"
                 },
-                {field: "resPerson", title: "Responsible Person", width: 120, sortable: false, filterable: false},
+                {field: "resPerson", title: "Responsible Person", width: 90, sortable: false, filterable: false},
                 {
-                    field: "supportDepartmentStr", title: "Support Department", width: 120,
+                    field: "supportDepartmentStr", title: "Support Department", width: 90,
                     sortable: false, filterable: false
                 },
                 {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks", template:"#=trimTextForKendo(note,100)#", width: 80, sortable: false, filterable: false}
+                {field: "note", title: "Remarks", template:"#=trimTextForKendo(note,100)#", width: 120, sortable: false, filterable: false}
             ],
             filterable: {
                 mode: "row"
