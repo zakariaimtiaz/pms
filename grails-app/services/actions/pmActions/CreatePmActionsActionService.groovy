@@ -7,6 +7,7 @@ import com.pms.PmActionsIndicatorDetails
 import com.pms.PmGoals
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
+import org.exolab.castor.types.DateTime
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
@@ -50,7 +51,17 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             actions.totalIndicator = count
             actions.save()
             String str = result.indicator.toString()
-            if (actions.start==actions.end) {
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(actions.start);
+            int monthNoStart = cal.get(Calendar.MONTH);
+
+             cal = Calendar.getInstance();
+            cal.setTime(actions.end);
+            int monthEnd = cal.get(Calendar.MONTH);
+
+            if (monthNoStart==monthEnd) {
                 String monthStr = result.start.toString()
                 DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
 
@@ -63,6 +74,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                         PmActionsIndicator indicator = new PmActionsIndicator()
                         indicator.actionsId = actions.id
                         indicator.indicator = result.get("indicator" + (i + 1))
+                        indicator.indicatorType = result.get("indType" + (i + 1))
                         indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
                         indicator.save()
 
@@ -78,39 +90,65 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                 }
             } else {
                 String[] ind = str.split(",");
-                for (int i = 0; i < ind.length; i++) {
+                int indSplitCount=0;
+                for (int i = 0; i < max; i++) {
                     try {
                         PmActionsIndicator indicator = new PmActionsIndicator()
                         indicator.actionsId = actions.id
-                        indicator.indicator = result.get("indicator" + (i+1))
-                        indicator.target = Integer.parseInt(result.get("target" + (i+1)).toString())
+                        indicator.indicator = result.get("indicator" + (i + 1))
+                        indicator.indicatorType = result.get("indType" + (i + 1))
+                        indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
                         indicator.save()
+                        if (indicator.indicatorType == "Repeatable") {
 
-                        String[] couple = ind[i].split("&");
-                        int tmpCount = Integer.parseInt(couple[4].split("=")[1].replaceAll("^\\d.]", ""))
+                            int tmpCount = (monthEnd-monthNoStart)+1
+                            int monthCount=monthNoStart
 
-                        int t = 5;
-                        for (int j = 0; j < tmpCount; j++) {
-                            PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                            details.actionsId = actions.id
-                            details.indicatorId = indicator.id
-                            String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-                            String target = couple[t+1].split("=")[1].replaceAll("[^\\d.]", "")
-                            int targetInt = 0
-                            try {
-                                targetInt = Integer.parseInt(target)
-                            }catch (Exception e){
-                                targetInt = 0
+                            int t = 5;
+                            for (int j = 0; j < tmpCount; j++) {
+                                PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                                details.actionsId = actions.id
+                                details.indicatorId = indicator.id
+                                String name =monthCount==0?"January": monthCount==1?"February":monthCount==2? "March":monthCount==3? "April":monthCount==4? "May":monthCount==5? "June":monthCount==6?"July":monthCount==7? "August":monthCount==8? "September":monthCount==9? "October":monthCount==10? "November": "December"
+
+                                details.monthName = name
+                                details.target = indicator.target
+                                details.createBy = 1
+                                details.createDate = new Date()
+                                details.save()
+                                t += 2
+                                monthCount++
                             }
+                        } else {
+                            String[] couple = ind[indSplitCount].split("&");
+                            int tmpCount = Integer.parseInt(couple[4].split("=")[1].replaceAll("^\\d.]", ""))
 
-                            details.monthName = name
-                            details.target = targetInt
-                            details.createBy = 1
-                            details.createDate = new Date()
-                            details.save()
-                            t += 2
+                            int t = 5;
+                            for (int j = 0; j < tmpCount; j++) {
+                                PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                                details.actionsId = actions.id
+                                details.indicatorId = indicator.id
+                                String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
+                                String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
+                                int targetInt = 0
+                                try {
+                                    targetInt = Integer.parseInt(target)
+                                } catch (Exception e) {
+                                    targetInt = 0
+                                }
+
+                                details.monthName = name
+                                details.target = targetInt
+                                details.createBy = 1
+                                details.createDate = new Date()
+                                details.save()
+                                t += 2
+                            }
+                            indSplitCount++
                         }
-                    }catch(Exception e){}
+                    }catch(Exception e){
+                        indSplitCount++
+                    }
                 }
             }
             return result
