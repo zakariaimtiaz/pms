@@ -10,7 +10,7 @@
 </script>
 
 <script language="javascript">
-    var gridTimeSchedule, dataSource, spTimeScheduleModel,dropDownService;
+    var gridTimeSchedule, dataSource, spTimeScheduleModel,dropDownService,start,end,active;
 
     $(document).ready(function () {
         onLoadPage();
@@ -38,8 +38,17 @@
             depth: "decade"
         }).data("kendoDatePicker");
 
+        active = $('#activeYear').kendoDatePicker({
+            format: "yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "decade",
+            depth: "decade"
+        }).data("kendoDatePicker");
+
         end.value(currentDate);
         end.min(start.value());
+        active.min(start.value());
+        active.max(end.value());
         initializeForm($("#timeScheduleForm"), onSubmitTimeSchedule);
         defaultPageTile("SP Time Schedule",'/spTimeSchedule/show');
     }
@@ -138,8 +147,10 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
+                        activeYear: { type: "String" },
                         fromDate: { type: "date" },
                         toDate: { type: "date" },
+                        isActive: { type: "boolean" },
                         description: { type: "String" }
                     }
                 },
@@ -171,10 +182,11 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "fromDate", title: "From Date", width: 80, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(fromDate, 'yyyy-MM-dd'), 'yyyy')#"},
-                {field: "toDate", title: "To Date", width: 80, sortable: false, filterable: false,
-                    template:"#=kendo.toString(kendo.parseDate(toDate, 'yyyy-MM-dd'), 'yyyy')#"},
+                {field: "fromDate", title: "Strategic Plan", width: 80, sortable: false, filterable: false,
+                    template:"#=kendo.toString(kendo.parseDate(fromDate, 'yyyy-MM-dd'), 'yyyy')# ~ #=kendo.toString(kendo.parseDate(toDate, 'yyyy-MM-dd'), 'yyyy')#"},
+                {field: "activeYear", title: "Active Year", width: 50, sortable: false, filterable: false},
+                {field: "isActive", title: "Active", width: 50, sortable: false, filterable: false,
+                template: "#=isActive?'YES':'NO'#"},
                 {field: "description", title: "Description", width: 200, sortable: false, filterable: false}
             ],
             filterable: {
@@ -192,9 +204,11 @@
                     spTimeSchedule: {
                         id: "",
                         version: "",
+                        activeYear: "",
                         fromDate: "",
                         toDate: "",
-                        description: ""
+                        description: "",
+                        isActive: ""
                     }
                 }
         );

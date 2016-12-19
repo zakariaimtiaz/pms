@@ -50,6 +50,14 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
             }
             params.from=fromDate
             params.to=toDate
+
+            String activeYear = params.activeYear.toString()
+            Date year = originalFormat.parse(activeYear);
+            Calendar cp = Calendar.getInstance();
+            cp.setTime(year);
+            String yearStr = new SimpleDateFormat("YYYY").format(cp.getTime())
+            params.activeYear = yearStr
+
             SpTimeSchedule spTimeSchedule = buildObject(params)
             params.put(SP_TIME_SCHEDULE, spTimeSchedule)
             return params
@@ -100,8 +108,6 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
 
     private static SpTimeSchedule buildObject(Map parameterMap) {
         SpTimeSchedule service = new SpTimeSchedule(parameterMap)
-
-
         service.fromDate=DateUtility.getSqlDate(parameterMap.from)
         service.toDate=DateUtility.getSqlDate(parameterMap.to)
         return service

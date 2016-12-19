@@ -66,6 +66,9 @@
             sortable: false,
             pageable: false,
             detailInit: actionsDetails,
+            dataBound: function() {
+            this.expandRow(this.tbody.find("tr.k-master-row"));
+        },
             columns: [
                 {
                     field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
@@ -110,6 +113,11 @@
                         +"&month="+month+"&type=Details",
                         dataType: "json",
                         type: "post"
+                    },
+                    update: {
+                        url: "${createLink(controller: 'pmActions', action: 'updateAchievement')}",
+                        dataType: "json",
+                        type: "post"
                     }
                 },
                 schema: {
@@ -142,7 +150,7 @@
             reorderable: false,
             filterable: false,
             pageable: false,
-            editable: false,
+            editable: "inline",
             columns: [
                 { field: "indicator",title: "Indicator", width: "220px"},
                 { field: "target", title:"Total Target", width: "100px",attributes: {style: setAlignCenter()},
@@ -153,7 +161,8 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
                 { field: "achievement", title:"Achievement</br> (This month)", width: "100px",
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
-                { field: "remarks", title:"Remarks", width: "250px" }
+                { field: "remarks", title:"Remarks", width: "250px" },
+                {command: ["edit"], title: "&nbsp;", width: "80px"}
             ]
         });
     }
@@ -170,7 +179,6 @@
         populateGridKendo(gridAction, url);
         return false;
     }
-
     function downloadDetails() {
         if (isApplicable) {
             showLoadingSpinner(true);

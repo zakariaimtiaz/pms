@@ -87,11 +87,20 @@
                     sortable: false, filterable: false
                 },
                 {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks",template:"#=trimTextForKendo(note,100)#", width: 120, sortable: false, filterable: false}
+                {field: "note", title: "Remarks",template:"#=trimTextForKendo(note,70)#", width: 120, sortable: false, filterable: false}
             ]
         });
         gridAction = $("#grid").data("kendoGrid");
     }
+    $("#grid").kendoTooltip({
+        filter: "td:nth-child(9)",
+        width: 300,
+        position: "top",
+        content: function(e){
+            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.note;
+        }
+    }).data("kendoTooltip");
 
     function actionsIndicator(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
@@ -156,9 +165,9 @@
             sortable: false,
             pageable: false,
             columns: [
-                { field: "monthName",title: "Month" },
-                { field: "target", title:"Monthly Target" },
-                { field: "achievement", title:"Monthly Achievement" },
+                { field: "monthName",title: "Month", width: "150px" },
+                { field: "target", title:"Monthly Target", width: "100px" },
+                { field: "achievement", title:"Monthly Achievement", width: "150px" },
                 { field: "remarks", title:"Remarks" }
             ]
         });
@@ -221,7 +230,7 @@
 
             confirmDownload(msg, url);
         } else {
-            showError('this feature is under development');
+            showError('This feature is under development');
 //            showError('No record to download');
         }
         return false;

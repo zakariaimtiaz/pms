@@ -2,6 +2,7 @@ package actions.pmGoals
 
 import com.model.ListPmGoalsActionServiceModel
 import com.pms.PmGoals
+import com.pms.SpTimeSchedule
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -76,11 +77,12 @@ class CreatePmGoalsActionService extends BaseService implements ActionServiceInt
     }
 
     private static PmGoals buildObject(Map parameterMap,long serviceId) {
+        SpTimeSchedule schedule = SpTimeSchedule.findByIsActive(Boolean.TRUE)
         List<PmGoals> max = PmGoals.executeQuery("SELECT COALESCE(MAX(sequence),0) FROM PmGoals WHERE serviceId=${serviceId}")
         PmGoals goals = new PmGoals(parameterMap)
         goals.serviceId = serviceId
         goals.sequence = max[0]+1
-        goals.year = 2017
+        goals.year = Integer.parseInt(schedule.activeYear)
         return goals
     }
 }

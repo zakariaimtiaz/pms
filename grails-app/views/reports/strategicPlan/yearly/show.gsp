@@ -6,6 +6,10 @@
 .k-grid .k-hierarchy-col {
     width: 15px;
 }
+#downloadYSP {
+    height: 23px;
+    font-size: smaller;
+}
 </style>
 <g:render template='/reports/strategicPlan/yearly/view'/>
 <g:render template='/reports/strategicPlan/yearly/scripts'/>

@@ -74,6 +74,11 @@
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/pmActions/achievement">
+                                <li>
+                                    <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;Achievement</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
@@ -84,8 +89,7 @@
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmServiceSector/show">
                                 <li>
-                                    <a href="#pmServiceSector/show"><i
-                                            class="fa fa-cog"></i>&nbsp;Central Service/Sector</a>
+                                    <a href="#pmServiceSector/show"><i class="fa fa-cog"></i>&nbsp;Sector/CSU</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/systemEntity/show">
@@ -95,7 +99,7 @@
                             </sec:access>
                             <sec:access url="/spTimeSchedule/show">
                                 <li>
-                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Time Schedule</a>
+                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Schedule</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/pmProjects/show">

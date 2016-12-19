@@ -1,9 +1,14 @@
 <div class="container-fluid">
     <div class="row" id="rowGoals">
         <div id="application_top_panel" class="panel panel-primary">
-            <div class="panel-heading">
+            <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
                     Yearly Strategic Plan
+                    <button id="downloadYSP" name="downloadYSP" type="button" data-role="button"
+                            class="k-button k-button-icontext pull-right" role="button"
+                            aria-disabled="false" onclick='downloadDetails();'><span
+                            class="fa fa-file-pdf-o"></span>&nbsp;Download
+                    </button>
                 </div>
             </div>
 
@@ -36,13 +41,6 @@
                         </div>
 
                     </div>
-                </div>
-                <div class="panel-footer" style="height: 33px;">
-                    <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext pull-right" role="button" tabindex="4"
-                            aria-disabled="false" onclick='downloadDetails();'><span
-                            class="fa fa-file-pdf-o"></span>&nbsp;Download
-                    </button>
                 </div>
             </g:form>
         </div>

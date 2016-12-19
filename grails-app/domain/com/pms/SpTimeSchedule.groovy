@@ -7,10 +7,12 @@ class SpTimeSchedule {
     long version
     Date fromDate
     Date toDate
+    String activeYear
     String description
+    boolean isActive
 
     static mapping = {
-        fromDate     sqlType: 'date'
+        fromDate   sqlType: 'date'
         toDate     sqlType: 'date'
     }
 

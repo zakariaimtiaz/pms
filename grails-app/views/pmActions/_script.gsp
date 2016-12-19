@@ -347,7 +347,7 @@
                     sortable: false, filterable: false
                 },
                 {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks", template:"#=trimTextForKendo(note,100)#", width: 120, sortable: false, filterable: false}
+                {field: "note", title: "Remarks", template:"#=trimTextForKendo(note,70)#", width: 120, sortable: false, filterable: false}
             ],
             filterable: {
                 mode: "row"
@@ -357,6 +357,15 @@
         gridActions = $("#gridActions").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
+    $("#gridActions").kendoTooltip({
+        filter: "td:nth-child(9)",
+        width: 300,
+        position: "top",
+        content: function(e){
+            var dataItem = $("#gridActions").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.note;
+        }
+    }).data("kendoTooltip");
     function initIndicator(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {

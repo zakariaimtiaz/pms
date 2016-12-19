@@ -76,7 +76,6 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
     }
 
     private static SpTimeSchedule buildObject(Map parameterMap, SpTimeSchedule oldObject) {
-        SpTimeSchedule spTimeSchedule = new SpTimeSchedule(parameterMap)
         Date fromDate,toDate
         String fromStr = parameterMap.from.toString()
         Calendar c = Calendar.getInstance();
@@ -91,12 +90,20 @@ class UpdateSPTimeScheduleActionService extends BaseService implements ActionSer
         ce.set(Calendar.MONTH,ce.getActualMaximum(Calendar.MONTH));
         ce.set(Calendar.DAY_OF_MONTH, ce.getActualMaximum(Calendar.DAY_OF_MONTH));
 
+        String activeYear = parameterMap.activeYear.toString()
+        Date year = originalFormat.parse(activeYear);
+        Calendar cp = Calendar.getInstance();
+        cp.setTime(year);
+        String yearStr = new SimpleDateFormat("YYYY").format(cp.getTime())
 
         fromDate = DateUtility.getSqlDate(c.getTime())
         toDate = DateUtility.getSqlDate(ce.getTime())
 
+        SpTimeSchedule spTimeSchedule = new SpTimeSchedule(parameterMap)
         oldObject.fromDate=fromDate
         oldObject.toDate=toDate
+        oldObject.activeYear = yearStr
+        oldObject.isActive = spTimeSchedule.isActive
         oldObject.description=spTimeSchedule.description
         return oldObject
     }

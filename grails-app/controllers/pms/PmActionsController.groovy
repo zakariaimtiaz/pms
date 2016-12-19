@@ -88,4 +88,8 @@ class PmActionsController extends BaseController {
         Map result = [lstActions: lst]
         render result as JSON
     }
+    def achievement() {
+        SecUser user = baseService.currentUserObject()
+        render(view: "/pmActions/achievement/show", model: [serviceId:user.serviceId])
+    }
 }

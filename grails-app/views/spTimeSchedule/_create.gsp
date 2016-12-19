@@ -3,7 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Create Time Schedule
+                    Create Schedule
                 </div>
             </div>
 
@@ -36,24 +36,39 @@
 
                         <div class="col-md-6">
                             <textarea id="description" name="description" cols="4" rows="5"
-                                      tabindex="2" class="form-control"
+                                      tabindex="3" class="form-control"
                                       data-bind="value: spTimeSchedule.description"
                                       placeholder="Description"></textarea>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label label-required" for="activeYear">Active Year:</label>
 
+                        <div class="col-md-2">
+                            <input type='text' tabindex="4" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="activeYear" name="activeYear"
+                                   data-bind="value: spTimeSchedule.activeYear"
+                                   placeholder="Active Year" validationMessage="Required"/>
+                        </div>
+                        <label class="col-md-2 control-label label-optional"
+                                   for="isActive">Active:</label>
 
+                            <div class="col-md-3">
+                                <g:checkBox class="form-control-static" name="isActive" tabindex="5"
+                                            data-bind="checked: spTimeSchedule.isActive"/>
+                            </div>
                     </div>
                 </div>
 
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
-                            role="button" tabindex="3"
+                            role="button" tabindex="6"
                             aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
-                            class="k-button k-button-icontext" role="button" tabindex="4"
+                            class="k-button k-button-icontext" role="button" tabindex="7"
                             aria-disabled="false" onclick='resetForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>

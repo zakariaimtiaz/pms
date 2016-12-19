@@ -4,7 +4,7 @@
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
                     Monthly Strategic Plan
-                    <button id="downloadMSP" name="downloadMSP" type="button" data-role="button"
+                    <button id="downloadMSP2" name="downloadMSP2" type="button" data-role="button"
                             class="k-button k-button-icontext pull-right" role="button"
                             aria-disabled="false" onclick='downloadDetails();'><span
                             class="fa fa-file-pdf-o"></span>&nbsp;Download
@@ -43,6 +43,7 @@
 
                     </div>
                 </div>
+
             </g:form>
         </div>
     </div>

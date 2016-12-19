@@ -6,10 +6,10 @@
 .k-grid .k-hierarchy-col {
     width: 15px;
 }
-#downloadMSP {
+#downloadMSP2 {
     height: 23px;
     font-size: smaller;
 }
 </style>
-<g:render template='/reports/strategicPlan/monthly/view'/>
-<g:render template='/reports/strategicPlan/monthly/scripts'/>
+<g:render template='/pmActions/achievement/view'/>
+<g:render template='/pmActions/achievement/scripts'/>
