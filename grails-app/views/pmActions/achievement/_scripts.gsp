@@ -159,7 +159,7 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
                 { field: "monthly_target", title:"Target</br> (This month)", width: "100px",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
-                { field: "achievement", title:"Achievement</br> (This month)", width: "100px",
+                { field: "achievement", title:"Achievement</br> (This month)", width: "100px",format: "{0:d}",
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
                 { field: "remarks", title:"Remarks", width: "250px" },
                 {command: ["edit"], title: "&nbsp;", width: "80px"}
