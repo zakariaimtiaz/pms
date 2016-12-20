@@ -88,7 +88,7 @@
                                                class="form-control" readonly="true"/>
                                     </td>
                                     <td width="15%">
-                                    <select class="form-control" id="indType1" name="indType1">
+                                    <select class="form-control" id="indType1" name="indType1" onchange="resetData(1);">
                                         <option value="Dividable">Dividable</option>
                                         <option value="Repeatable">Repeatable</option>
                                     </select>
@@ -96,7 +96,7 @@
                                     <td width="15%">
                                         <input type="text" onkeypress='return validateQty(event);' id='target1'
                                                name='target1' placeholder='Target' readonly="true"
-                                               onblur="getName(this.name, this.value)" class="form-control"/>
+                                               onfocus="getName(this.name, this.value)" class="form-control"/>
                                     </td>
                                     <td>
                                         <a class="addbtn" onclick="add_row(1)"><i class="fa fa-plus"></i></a>

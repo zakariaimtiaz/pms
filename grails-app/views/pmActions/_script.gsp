@@ -3,12 +3,12 @@
     <sec:access url="/pmActions/create">
         <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
     </sec:access>
-    <sec:access url="/pmActions/update">
+%{--    <sec:access url="/pmActions/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
     <sec:access url="/pmActions/delete">
         <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>
+    </sec:access>--}%
 </ul>
 </script>
 
@@ -17,82 +17,13 @@
     var map = {};
     var IndCount = 1;
 
-
     $(document).ready(function () {
         onLoadActionPage();
         initActionsGrid();
         initObservable();
         $(document).on("keyup", ".amount", calculateSum);
     });
-    function validateQty(event) {
-        var key = window.event ? event.keyCode : event.which;
-        if (event.keyCode == 8 || event.keyCode == 46
-                || event.keyCode == 37 || event.keyCode == 39) {
-            return true;
-        }
-        else if (key < 48 || key > 57) {
-            return false;
-        }
-        else return true;
-    }
-    function getName(name, target) {
-            var index = name.slice(-1);
-            var indName = 'indicator' + index;
-            var tarName = 'target' + index;
-            var indType = 'indType' + index;
-            var tmpInd = 'input[name=' + indName + ']';
-            var tmpTar = 'input[name=' + tarName + ']';
-            var indicatorType = 'select[name=' + indType + ']';
-            var indicator = $(tmpInd).val();
-            var type = $(indicatorType).val();
-            var start = $('#start').val();
-            var end = $('#end').val();
-            var count = monthDifference(start, end);
-            var list = monthNamesFromRange(start, end);
-        if (count > 1 && target > 0 && indicator != ''){
-            showIndicatorModal(indName, indicator, tmpTar, target, count, list,type);
-        }
-    }
 
-    function add_row(tmpId){
-        var indic = "#indicator" + tmpId;
-        var targ = "#target" + tmpId;
-        var indicator = $(indic).val();
-        var target = $(targ).val();
-        if(indicator == '' || indicator == undefined || target == ''|| target == undefined){
-            showError('Please insert current indicator & target');
-            return false;
-        }
-        var trIdNo = IndCount + 1;
-        var trId = 'addr' + trIdNo;
-        var trData = "<tr id='" + trId + "'><td width='60%'>" +
-                "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' type='text'  placeholder='Indicator' class='form-control'/>" +
-                "</td>" +
-                "<td width='15%'>" +
-                "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "'>"+
-                "<option value='Dividable'>Dividable</option>"+
-                "<option value='Repeatable'>Repeatable</option>"+
-                "</select> " +
-                "<td width='15%'>" +
-                "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
-                "</td>" +
-                "<td>" +
-                "<a class='addbtn' onclick='add_row("+trIdNo+")'><i class='fa fa-plus'></i></a>" +
-                "</td>" +
-                "<td>" +
-                "<a class='delbtn' onclick='del_row("+trIdNo+")'><i class='fa fa-remove'></i></a>" +
-                "</td>" +
-                "</tr>";
-        $('#tab_logic').append(trData);
-        IndCount++;
-    }
-    function del_row(trIdNo){
-        var trCount = $('#tab_logic tr').length;
-        if (trCount > 1) {
-            var trId = '#addr' + trIdNo;
-            $(trId).remove();
-        }
-    }
     function onLoadActionPage() {
         $("#rowAction").hide();
 
@@ -113,6 +44,7 @@
         }).data("kendoDatePicker");
 
         function startChange() {
+            removeAllChildValue();
             var value = start.value();
             if (value == '' || value == null) {
                 $('#end').val('');
@@ -123,7 +55,9 @@
                 end.max(st);
             }
         }
+
         function endChange() {
+            removeAllChildValue();
             var value = end.value();
             var start = $('#start').val();
             if (start == '') {
@@ -133,6 +67,14 @@
             }
             if (value != '' || value != null) {
                 $(':input').prop('readonly', false);
+            }
+        }
+        function removeAllChildValue(){
+            for(var i=1; i<=IndCount; i++){
+                var tar = "#target"+i;
+                $(tar).val('');
+                var ii = 'indicator'+i;
+                delete map[ii];
             }
         }
 
@@ -160,6 +102,80 @@
         serviceId = ${serviceId};
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions", null);
+    }
+
+    function validateQty(event) {
+        var key = window.event ? event.keyCode : event.which;
+        if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+                || event.keyCode == 37 || event.keyCode == 39) {
+            return true;
+        }
+        else if (key < 48 || key > 57) {
+            return false;
+        }
+        else return true;
+    }
+    function getName(name, target) {
+        var index = name.slice(-1);
+        var indName = 'indicator' + index;
+        var tarName = 'target' + index;
+        var indType = 'indType' + index;
+        var tmpInd = 'input[name=' + indName + ']';
+        var tmpTar = 'input[name=' + tarName + ']';
+        var indicatorType = 'select[name=' + indType + ']';
+        var indicator = $(tmpInd).val();
+        var type = $(indicatorType).val();
+        var start = $('#start').val();
+        var end = $('#end').val();
+        var count = monthDifference(start, end);
+        var list = monthNamesFromRange(start, end);
+        if (count > 1 && indicator == '' && type == 'Dividable') {
+            $(tmpTar).val('');
+            $(tmpInd).focus();
+        }
+        if (count > 1 && indicator != '' && type == 'Dividable') {
+            showIndicatorModal(indName, indicator, tmpTar, target, count, list, type);
+        }
+    }
+
+    function add_row(tmpId) {
+        var indic = "#indicator" + tmpId;
+        var targ = "#target" + tmpId;
+        var indicator = $(indic).val();
+        var target = $(targ).val();
+        if (indicator == '' || indicator == undefined || target == '' || target == undefined) {
+            showError('Please insert current indicator & target');
+            return false;
+        }
+        var trIdNo = IndCount + 1;
+        var trId = 'addr' + trIdNo;
+        var trData = "<tr id='" + trId + "'><td width='60%'>" +
+                "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' type='text'  placeholder='Indicator' class='form-control'/>" +
+                "</td>" +
+                "<td width='15%'>" +
+                "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' onchange='resetData("+trIdNo+")'>" +
+                "<option value='Dividable'>Dividable</option>" +
+                "<option value='Repeatable'>Repeatable</option>" +
+                "</select> " +
+                "<td width='15%'>" +
+                "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
+                "</td>" +
+                "<td>" +
+                "<a class='addbtn' onclick='add_row(" + trIdNo + ")'><i class='fa fa-plus'></i></a>" +
+                "</td>" +
+                "<td>" +
+                "<a class='delbtn' onclick='del_row(" + trIdNo + ")'><i class='fa fa-remove'></i></a>" +
+                "</td>" +
+                "</tr>";
+        $('#tab_logic').append(trData);
+        IndCount++;
+    }
+    function del_row(trIdNo) {
+        var trCount = $('#tab_logic tr').length;
+        if (trCount > 1) {
+            var trId = '#addr' + trIdNo;
+            $(trId).remove();
+        }
     }
 
     function executePreCondition() {
@@ -199,9 +215,8 @@
         $("#indicatorCount").val(count);
         $("#indicatorMaxId").val(IndCount);
 
-
-/*        setButtonDisabled($('#create'), true);
-        showLoadingSpinner(true);*/
+        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
             actionUrl = "${createLink(controller:'pmActions', action: 'create')}";
@@ -357,7 +372,14 @@
                     sortable: false, filterable: false
                 },
                 {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks", template:"#=trimTextForKendo(note,70)#", width: 120, sortable: false, filterable: false}
+                {
+                    field: "note",
+                    title: "Remarks",
+                    template: "#=trimTextForKendo(note,70)#",
+                    width: 120,
+                    sortable: false,
+                    filterable: false
+                }
             ],
             filterable: {
                 mode: "row"
@@ -371,7 +393,7 @@
         filter: "td:nth-child(9)",
         width: 300,
         position: "top",
-        content: function(e){
+        content: function (e) {
             var dataItem = $("#gridActions").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.note;
         }
@@ -480,7 +502,6 @@
         addService();
         var actions = getSelectedObjectFromGridKendo(gridActions);
         showService(actions);
-
         $.ajax({
             url: "${createLink(controller: 'pmActions', action: 'listIndicatorByActions')}?actionsId=" + actions.id,
             success: function (data) {
@@ -497,9 +518,9 @@
                             "<input name='indicator" + trIdNo + "' type='text' value='" + data.list[i].indicator + "'  placeholder='Indicator' class='form-control'/>" +
                             "</td>" +
                             "<td width='15%'>" +
-                            "<select class='form-control' id='indType1' name='indType1'>"+
-                            "<option value='Dividable'>Dividable</option>"+
-                            "<option value='Repeatable'>Repeatable</option>"+
+                            "<select class='form-control' id='indType1' name='indType1'>" +
+                            "<option value='Dividable'>Dividable</option>" +
+                            "<option value='Repeatable'>Repeatable</option>" +
                             "</select> " +
                             "<td width='15%'>" +
                             "<input  name='target" + trIdNo + "' type='text' value='" + data.list[i].target + "' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
@@ -518,21 +539,21 @@
         });
     }
 
-    function clearIndicatorTable(){
+    function clearIndicatorTable() {
         $('input[name=indicator1]').val('');
         $('input[name=target1]').val('');
         $("#tab_logic tr").remove();
         var trData = "<tr id='#addr1'><td width='60%'>" +
-                "<input id='indicator1' name='indicator1' type='text' placeholder='Indicator' class='form-control'/>" +
+                "<input id='indicator1' name='indicator1' type='text' placeholder='Indicator' class='form-control' readonly='true'/>" +
                 "</td>" +
                 "<td width='15%'>" +
-                "<select class='form-control' id='indType1' name='indType1'>"+
-                "<option value='Dividable'>Dividable</option>"+
-                "<option value='Repeatable'>Repeatable</option>"+
+                "<select class='form-control' id='indType1' name='indType1' onchange='resetData(1)'>" +
+                "<option value='Dividable'>Dividable</option>" +
+                "<option value='Repeatable'>Repeatable</option>" +
                 "</select> " +
                 "</td>" +
                 "<td width='15%'>" +
-                "<input id='target1' name='target1' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
+                "<input id='target1' name='target1' type='text' onkeypress='return validateQty(event);' readonly='true' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
                 "</td>" +
                 "<td>" +
                 "<a class='addbtn' onclick='add_row(1)'><i class='fa fa-plus'></i></a>" +
@@ -586,69 +607,76 @@
         return true;
     }
 
-    function showIndicatorModal(indName, indicator, tmpTar, target, count, list,indType) {
+    function showIndicatorModal(indName, indicator, tmpTar, target, count, list, indType) {
         $("#createIndicatorModal").modal('show');
         $('#indicatorIdModal').val(indName);
         $('#indicatorModalIndicatorLbl').text(indicator);
         $('#tempTargetNameModal').val(tmpTar);
         $('#tempCountModal').val(count);
         $("#i_logic tr").remove();
-        if(indType=='Repeatable'){
-            $('#indicatorModalTargetLbl').text((target*count)+'/'+(target*count));
-            $('#hidTargetModal').val((target*count));
-            for (var i = 0; i < count + 1; i++) {
-                $('#iddr' + i).html("<td width='60%'><input name='month" + i + "' value ='" + list[i - 1] + "' type='text' readonly='true' class='form-control'/></td>" +
-                "<td width='40%'><input class='form-control amount'  value='"+target+"' name='tempTr" + i + "' type='text' placeholder='Target' ></td>");
-                $('#i_logic').append('<tr id="iddr' + (i + 1) + '"></tr>');
+        $('#indicatorModalTargetLbl').text(target);
+        var t = 0;
+        for (var i = 0; i < count; i++) {
+            var val = map[indName];
+            var tmpAmt = ''
+            if (val) {
+                tmpAmt = val.split('&')[6 + t].split('=')[1];
             }
-            calculateSum();
-        }else{
-            $('#indicatorModalTargetLbl').text('0/'+target);
-            $('#hidTargetModal').val(target);
-            for (var i = 0; i < count + 1; i++) {
-                $('#iddr' + i).html("<td width='60%'><input name='month" + i + "' value ='" + list[i - 1] + "' type='text' readonly='true' class='form-control'/></td>" +
-                "<td width='40%'><input class='form-control amount'  value='' name='tempTr" + i + "' type='text' placeholder='Target' ></td>");
-                $('#i_logic').append('<tr id="iddr' + (i + 1) + '"></tr>');
-            }
+            var trId = 'iddr' + (i + 1);
+            var trData = "<tr id='" + trId + "'>" +
+                    "<td width='60%'>" +
+                    "<input name='month" + (i + 1) + "' value='" + list[i] + "' type='text' readonly='true' class='form-control'/>" +
+                    "</td>" +
+                    "<td width='20%'>" +
+                    "<input name='tempTr" + (i + 1) + "' tabindex="+(i+8)+" onkeypress='return validateQty(event);' "+
+                    "class='form-control amount' value='" + tmpAmt + "' type='text' placeholder='Target'>" +
+                    "</td>" +
+                    "</tr>";
+            $('#i_logic').append(trData);
+            t += 2;
         }
-
     }
+
     function calculateSum() {
-        var target = $('#hidTargetModal').val();
         var sum = 0;
         $(".amount").each(function () {
             if (!isNaN(this.value) && this.value.length != 0) {
                 sum += parseInt(this.value);
             }
         });
-        $('#indicatorModalTargetLbl').text(sum+'/'+target);
+        $('#indicatorModalTargetLbl').text(sum);
         $('#hidSumModal').val(sum);
     }
 
     function hideCreateIndicatorModal() {
-        var temp = $('#tempTargetNameModal').val();
-        $(temp).val('');
         emptyModal();
     }
     function emptyModal() {
+        var target = $('#hidSumModal').val();
         clearForm("#createIndicatorForm", null);
         $('#indicatorModalIndicatorLbl').text('');
         $('#indicatorModalTargetLbl').text('');
+        $('#tempTargetNameModal').val(target);
+        $('#tempTargetNameModal').val('');
         $("#createIndicatorModal").modal('hide');
     }
 
     function onClickCreateIndicatorModal() {
-        var sum = $('#hidSumModal').val();
-        var target = $('#hidTargetModal').val();
-        if(sum!=target){
-            showError('Target split mis-calculated');
-            return false;
-        }
+        calculateSum();
+        var target = $('#hidSumModal').val();
         var values = jQuery("#createIndicatorForm").serialize();
         var index = $("#indicatorIdModal").val();
         map[index] = values;
         $("#indicator").val(JSON.stringify(map));
+        var tarName = $('#tempTargetNameModal').val();
+        $(tarName).val(target);
         emptyModal();
+    }
+    function resetData(index){
+        var indName = "indicator"+index;
+        var tar = "#target"+index;
+        $(tar).val('');
+        delete map[indName];
     }
 
 </script>

@@ -40,8 +40,7 @@
 
 
 <!-- Create Indicator Modal -->
-<div class="modal fade" id="createIndicatorModal" tabindex="-1" role="dialog"
-     aria-labelledby="createIndicatorModalLabel">
+<div class="modal fade" id="createIndicatorModal" tabindex="-1" aria-labelledby="createIndicatorModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -61,37 +60,28 @@
 
                     <div class="form-group">
                         <label class="col-md-1" style="padding-right: 0px !important;"><b>Indicator:</b></label>
-                        <span class="col-md-7" id="indicatorModalIndicatorLbl" style="padding-left: 25px  !important;"></span>
+                        <span class="col-md-7" id="indicatorModalIndicatorLbl"
+                              style="padding-left: 25px  !important;"></span>
 
                         <label class="col-md-1 label-optional"><b>Target:</b></label>
                         <span class="col-md-2" id="indicatorModalTargetLbl"></span>
-
-                        <div class="col-md-2">
-                            <span class="control-label" id=""></span>
-                        </div>
                     </div>
 
                     <div class="form-group">
                         <div class="col-md-10">
                             <table class="table table-bordered table-hover" id="i_logic">
                                 <tbody>
-                                <tr id='iddr0'>
-                                    <td width="60%"></td>
-                                    <td width="40%"></td>
-                                </tr>
-                                <tr id='iddr1'></tr>
                                 </tbody>
-                            </table></div>
+                            </table>
+                        </div>
                     </div>
-
                 </form>
             </div>
 
             <div class="modal-footer">
-                <input class="btn btn-primary" type="button" value="Split" onclick="onClickCreateIndicatorModal();"
-                       tabindex="5">
+                <input class="btn btn-primary" type="button" value="Split" onclick="onClickCreateIndicatorModal();">
                 <input class="btn btn-default" type="button" value="Close" onclick="hideCreateIndicatorModal();"
-                       data-dismiss="modal" tabindex="5">
+                       data-dismiss="modal">
             </div>
         </div>
     </div>
