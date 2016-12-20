@@ -3,12 +3,12 @@
     <sec:access url="/pmActions/create">
         <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
     </sec:access>
-%{--    <sec:access url="/pmActions/update">
+    <sec:access url="/pmActions/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
     <sec:access url="/pmActions/delete">
         <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>--}%
+    </sec:access>
 </ul>
 </script>
 
@@ -252,14 +252,16 @@
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
                     var gridData = gridActions.dataSource.data();
                     gridData.unshift(newEntry);
+                    emptyForm();
                 } else if (newEntry != null) { // updated existing
                     var selectedRow = gridActions.select();
                     var allItems = gridActions.items();
                     var selectedIndex = allItems.index(selectedRow);
                     gridActions.removeRow(selectedRow);
                     gridActions.dataSource.insert(selectedIndex, newEntry);
+                    emptyForm();
+                    $("#rowAction").hide();
                 }
-                emptyForm();
                 showSuccess(result.message);
             } catch (e) {
                 // Do Nothing
@@ -273,6 +275,7 @@
         dropDownService.value(serviceId);
         dropDownGoals.value('');
         map = {};
+        dropDownGoals.readonly(false);
         clearIndicatorTable();
     }
     function resetForm() {
@@ -280,7 +283,9 @@
         initObservable();
         dropDownService.value(serviceId);
         dropDownGoals.value('');
+        dropDownGoals.readonly(false);
         clearIndicatorTable();
+        map = {};
         $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
@@ -317,6 +322,7 @@
                         sourceOfFund: {type: "string"},
                         sourceOfFundStr: {type: "string"},
                         note: {type: "string"},
+                        indicator: {type: "string"},
                         start: {type: "date"},
                         end: {type: "date"}
                     }
@@ -473,6 +479,7 @@
                         supportDepartment: "",
                         sourceOfFund: "",
                         note: "",
+                        indicator: "",
                         start: "",
                         end: ""
                     }
@@ -508,6 +515,7 @@
                 clearIndicatorTable();
                 $(':input').prop('readonly', false);
                 $('input[name=indicator1]').val(data.list[0].indicator);
+                $('#indType1').val(data.list[0].indicatorType);
                 $('input[name=target1]').val(data.list[0].target);
 
                 for (var i = 1; i < data.count; i++) {
@@ -515,17 +523,26 @@
                     var trIdNo = trCount + 1;
                     var trId = 'addr' + trIdNo;
                     var trData = "<tr id='" + trId + "'><td width='60%'>" +
-                            "<input name='indicator" + trIdNo + "' type='text' value='" + data.list[i].indicator + "'  placeholder='Indicator' class='form-control'/>" +
+                            "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' value='" + data.list[i].indicator + "' type='text'  placeholder='Indicator' class='form-control'/>" +
                             "</td>" +
                             "<td width='15%'>" +
-                            "<select class='form-control' id='indType1' name='indType1'>" +
+                            "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' value='" + data.list[i].indicatorType + "' onchange='resetData("+trIdNo+")'>" +
                             "<option value='Dividable'>Dividable</option>" +
                             "<option value='Repeatable'>Repeatable</option>" +
                             "</select> " +
                             "<td width='15%'>" +
-                            "<input  name='target" + trIdNo + "' type='text' value='" + data.list[i].target + "' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onblur ='getName(this.name,this.value)'>" +
-                            "</td></tr>";
+                            "<input  id='target" + trIdNo + "' name='target" + trIdNo + "'  value='" + data.list[i].target + "'  type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
+                            "</td>" +
+                            "<td>" +
+                            "<a class='addbtn' onclick='add_row(" + trIdNo + ")'><i class='fa fa-plus'></i></a>" +
+                            "</td>" +
+                            "<td>" +
+                            "<a class='delbtn' onclick='del_row(" + trIdNo + ")'><i class='fa fa-remove'></i></a>" +
+                            "</td>" +
+                            "</tr>";
+
                     $('#tab_logic').append(trData);
+                    $("#indType" + trIdNo).val(data.list[i].indicatorType);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -571,6 +588,8 @@
         dropDownEmployee.value(actions.resPersonId);
         if (actions.supportDepartment) supportDepartment.value(actions.supportDepartment.split(","));
         populateGoals(actions.serviceId, actions.goalId);
+        dropDownGoals.readonly(true);
+        if($('#indicator').val()!='')map = JSON.parse($('#indicator').val());
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
@@ -608,6 +627,36 @@
     }
 
     function showIndicatorModal(indName, indicator, tmpTar, target, count, list, indType) {
+        $("#createIndicatorModal").modal('show');
+        $('#indicatorIdModal').val(indName);
+        $('#indicatorModalIndicatorLbl').text(indicator);
+        $('#tempTargetNameModal').val(tmpTar);
+        $('#tempCountModal').val(count);
+        $("#i_logic tr").remove();
+        $('#indicatorModalTargetLbl').text(target);
+
+        var t = 0;
+        for (var i = 0; i < count; i++) {
+            var val = map[indName];
+            var tmpAmt = ''
+            if (val) {
+                tmpAmt = val.split('&')[6 + t].split('=')[1];
+            }
+            var trId = 'iddr' + (i + 1);
+            var trData = "<tr id='" + trId + "'>" +
+                    "<td width='60%'>" +
+                    "<input name='month" + (i + 1) + "' value='" + list[i] + "' type='text' readonly='true' class='form-control'/>" +
+                    "</td>" +
+                    "<td width='20%'>" +
+                    "<input name='tempTr" + (i + 1) + "' tabindex="+(i+8)+" onkeypress='return validateQty(event);' "+
+                    "class='form-control amount' value='" + tmpAmt + "' type='text' placeholder='Target'>" +
+                    "</td>" +
+                    "</tr>";
+            $('#i_logic').append(trData);
+            t += 2;
+        }
+    }
+    function showEditIndicatorModal(indName, indicator, tmpTar, target, count, list, indType) {
         $("#createIndicatorModal").modal('show');
         $('#indicatorIdModal').val(indName);
         $('#indicatorModalIndicatorLbl').text(indicator);

@@ -7,7 +7,6 @@ import com.pms.PmActionsIndicatorDetails
 import com.pms.PmGoals
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
-import org.exolab.castor.types.DateTime
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
@@ -50,9 +49,8 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             int max = Integer.parseInt(result.indicatorMaxId.toString())
             actions.totalIndicator = count
             actions.save()
+
             String str = result.indicator.toString()
-
-
             Calendar cal = Calendar.getInstance();
             cal.setTime(actions.start);
             int monthNoStart = cal.get(Calendar.MONTH);

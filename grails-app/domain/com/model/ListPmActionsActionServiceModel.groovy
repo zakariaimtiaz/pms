@@ -34,6 +34,7 @@ class ListPmActionsActionServiceModel {
     String sourceOfFund
     String sourceOfFundStr
     String note
+    String indicator
     Date start
     Date end
 

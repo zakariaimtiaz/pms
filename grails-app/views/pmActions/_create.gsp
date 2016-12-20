@@ -11,9 +11,9 @@
                 <div class="panel-body">
                     <input type="hidden" name="id" id="id" data-bind="value: actions.id"/>
                     <input type="hidden" name="version" id="version" data-bind="value: actions.version"/>
-                    <input type="hidden" name="indicatorCount" id="indicatorCount" value=""/>
-                    <input type="hidden" name="indicatorMaxId" id="indicatorMaxId" value=""/>
-                    <input type="hidden" name="indicator" id="indicator"/>
+                    <input type="hidden" name="indicatorCount" id="indicatorCount" value="" data-bind="value: actions.totalIndicator"/>
+                    <input type="hidden" name="indicatorMaxId" id="indicatorMaxId" value="" data-bind="value: actions.totalIndicator"/>
+                    <input type="hidden" name="indicator" id="indicator" data-bind="value: actions.indicator"/>
 
                     <div class="form-group" style="display: none">
                         <label class="col-md-1 control-label label-optional"
