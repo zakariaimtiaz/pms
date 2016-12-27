@@ -6,7 +6,6 @@ import taglib.GetDropDownGoalTaglibActionService
 import taglib.GetDropDownProjectTypeTaglibActionService
 import taglib.GetDropDownServiceCategoryTaglibActionService
 import taglib.GetDropDownServiceTaglibActionService
-import taglib.GetDropDownUnitsTaglibActionService
 import taglib.GetDropDownSystemEntityTypeTaglibActionService
 
 class ApplicationTagLib extends BaseTagLibExecutor {
