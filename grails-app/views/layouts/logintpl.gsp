@@ -40,7 +40,7 @@
 
                         <div class="col-md-9">
                             <input type="text" class="form-control" id="username" name="j_username" tabindex="1"
-                                   placeholder="Login ID" value="admin"/>
+                                   placeholder="Login ID" value=""/>
                         </div>
                     </div>
 
@@ -51,7 +51,7 @@
 
                             <input type="password" class="form-control" id="password" name="j_password"
                                    tabindex="2"
-                                   placeholder="Password" value="123"/>
+                                   placeholder="Password" value=""/>
                         </div>
                     </div>
 

@@ -58,7 +58,7 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
                 List lstVal = buildMissionList(serviceId)
                 result.put("mission", lstVal)
             }else if(type.equals("Goals")){
-                List<PmGoals> lstGoals = PmGoals.findAllByServiceIdAndYear(serviceId,year)
+                List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
                 result.put(LIST, lstGoals)
                 return result
             }else if(type.equals("Actions")){
@@ -141,7 +141,7 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
     private List<GroovyRowResult> buildActionDetails(long serviceId,long actionsId, Date start, Date end) {
         String query = """
                 SELECT a.id,i.id AS ind_id,idd.id AS ind_details_id,i.indicator,i.remarks,i.target,
-                SUM(idd.achievement) total_achievement
+                SUM(idd.achievement) total_achievement,i.unit_id,i.unit_str,i.indicator_type
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id
@@ -154,6 +154,7 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
     private List<GroovyRowResult> buildIndicatorDetails(long serviceId,long actionsId,long indicatorId, Date start, Date end) {
         String query = """
                 SELECT a.id,idd.id AS ind_details_id,i.indicator,i.remarks,i.target,
+                i.unit_id,i.unit_str,i.indicator_type,
                 SUM(idd.achievement) total_achievement
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id

@@ -82,7 +82,7 @@ class CreatePmGoalsActionService extends BaseService implements ActionServiceInt
         PmGoals goals = new PmGoals(parameterMap)
         goals.serviceId = serviceId
         goals.sequence = max[0]+1
-        goals.year = Integer.parseInt(schedule.activeYear)
+        goals.spYearId = schedule.id
         return goals
     }
 }

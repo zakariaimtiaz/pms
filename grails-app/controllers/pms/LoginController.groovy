@@ -1,5 +1,6 @@
 package pms
 
+import com.pms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
 import org.springframework.security.authentication.AccountExpiredException
@@ -137,5 +138,8 @@ class LoginController {
     def dashBoard() {
         render(template: "../layouts/dashBoard", model: null)
     }
-
+    def resetPassword(){
+        SecUser user = SecUser.findByUsername(springSecurityService.authentication.name)
+        render(view: '/login/resetPassword', model: [userId:user.id])
+    }
 }

@@ -59,7 +59,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                 List lstVal = buildMissionList(serviceId)
                 result.put("mission", lstVal)
             }else if(type.equals("Goals")){
-                List<PmGoals> lstGoals = PmGoals.findAllByServiceIdAndYear(serviceId,year)
+                List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
                 result.put(LIST, lstGoals)
             }else if(type.equals("Actions")){
                 List<GroovyRowResult> lstAction = buildActionsList(serviceId,start,end)
@@ -134,8 +134,8 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
     }
     private List<GroovyRowResult> buildIndicatorDetails(long serviceId,long actionsId, Date start, Date end, String monthStr) {
         String query = """
-                SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,idd.month_name,idd.target monthly_target,
-                idd.achievement,idd.remarks,SUM(tmp.achievement) total_achievement
+                SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,i.unit_id,i.unit_str,i.indicator_type,idd.month_name,
+                idd.target monthly_target,idd.achievement,idd.remarks,SUM(tmp.achievement) total_achievement
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id

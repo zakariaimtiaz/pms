@@ -9,15 +9,21 @@ import pms.BaseService
 @Transactional
 class UpdateIndicatorAchievementActionService extends BaseService implements ActionServiceIntf {
 
+    private static final String COULD_NOT_BE_EMPTY = "Remarks could not be empty as target is set on %"
     private static final String UPDATE_SUCCESS_MESSAGE = "Achievement has been updated successfully"
 
     private Logger log = Logger.getLogger(getClass())
 
     public Map executePreCondition(Map params) {
         try {
+            String indicatorType = params.get("models[0][indicator_type]")
             String detailsIdStr = params.get("models[0][ind_details_id]")
             String achievementStr = params.get("models[0][achievement]")
             String remarksStr = params.get("models[0][remarks]")
+
+            if(indicatorType.indexOf("%")>-1&&remarksStr==''){
+                return super.setError(params, COULD_NOT_BE_EMPTY)
+            }
 
             if (!detailsIdStr && !achievementStr) {
                 return super.setError(params, INVALID_INPUT_MSG)

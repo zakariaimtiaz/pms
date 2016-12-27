@@ -121,6 +121,9 @@
                             id: {type: "number"},
                             ind_details_id: {type: "number"},
                             indicator: {editable: false, type: "string"},
+                            unit_id: {editable: false, type: "number"},
+                            unit_str: {editable: false, type: "string"},
+                            indicator_type: {editable: false, type: "string"},
                             target: {editable: false, type: "string"},
                             total_achievement: {editable: false, type: "string"},
                             monthly_target: {editable: false, type: "number"},
@@ -145,17 +148,28 @@
             editable: false,
             columns: [
                 { field: "indicator",title: "Indicator", width: "220px"},
-                { field: "target", title:"Total Target", width: "100px",attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()} },
-                { field: "total_achievement", title:"Total</br> Achievement", width: "100px",
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
+                { field: "unit_str",title: "Unit", width: "80px"},
+                { field: "target", title:"Total Target", width: "90px",attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()},template:"#=formatIndicator(indicator_type,target)#" },
+                { field: "total_achievement", title:"Total</br> Achievement", width: "90px",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template:"#=formatIndicator(indicator_type,total_achievement)#"},
                 { field: "monthly_target", title:"Target</br> (This month)", width: "100px",
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template:"#=formatIndicator(indicator_type,monthly_target)#"},
                 { field: "achievement", title:"Achievement</br> (This month)", width: "100px",
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
+                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
+                    template:"#=formatIndicator(indicator_type,achievement)#"},
                 { field: "remarks", title:"Remarks", width: "250px" }
             ]
         });
+    }
+    function formatIndicator(indicatorType,target){
+        if(!target) return ''
+        if(indicatorType.match('%')){
+            return target + ' % ';
+        }
+        return target
     }
     function onSubmitForm() {
         month = $('#month').val();

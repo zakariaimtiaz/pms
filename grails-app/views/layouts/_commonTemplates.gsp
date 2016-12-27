@@ -53,6 +53,7 @@
             <div class="modal-body">
                 <form class="form-horizontal form-widgets" id="createIndicatorForm" name="createIndicatorForm">
                     <input type="hidden" id="indicatorIdModal" name="indicatorIdModal" value=""/>
+                    <input type="hidden" id="indTypeIdModal" name="indTypeIdModal" value=""/>
                     <input type="hidden" id="tempTargetNameModal" name="tempTargetNameModal" value=""/>
                     <input type="hidden" id="hidTargetModal" name="hidTargetModal" value=""/>
                     <input type="hidden" id="hidSumModal" name="hidSumModal" value=""/>

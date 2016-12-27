@@ -4,6 +4,8 @@ import actions.systemEntity.CreateSystemEntityActionService
 import actions.systemEntity.DeleteSystemEntityActionService
 import actions.systemEntity.ListSystemEntityActionService
 import actions.systemEntity.UpdateSystemEntityActionService
+import com.pms.SystemEntity
+import grails.converters.JSON
 
 class SystemEntityController extends BaseController {
 
@@ -33,5 +35,9 @@ class SystemEntityController extends BaseController {
     }
     def list() {
         renderOutput(listSystemEntityActionService, params)
+    }
+    def unitsByType(){
+        List<SystemEntity> lst = SystemEntity.findAllByTypeId(2)
+        render lst as JSON
     }
 }

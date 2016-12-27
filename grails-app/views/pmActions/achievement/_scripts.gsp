@@ -6,7 +6,7 @@
 </script>
 
 <script language="javascript">
-    var month,serviceId,dropDownService,gridAction,isApplicable = false;
+    var month, serviceId, dropDownService, gridAction, isApplicable = false;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -36,7 +36,7 @@
                     read: {
                         url: false, dataType: "json", type: "post"
                     }
-                },schema: {
+                }, schema: {
                     type: 'json', data: "list"
                 }
             },
@@ -44,7 +44,7 @@
         });
         listViewGoal = $("#lstGoal").data("kendoListView");
     }
-    function initGrid(){
+    function initGrid() {
         $("#grid").kendoGrid({
             dataSource: {
                 transport: {
@@ -62,13 +62,13 @@
                 serverSorting: true
             },
             autoBind: false,
-            height: getGridHeightKendo()-50,
+            height: getGridHeightKendo() - 50,
             sortable: false,
             pageable: false,
             detailInit: actionsDetails,
-            dataBound: function() {
-            this.expandRow(this.tbody.find("tr.k-master-row"));
-        },
+            dataBound: function () {
+                this.expandRow(this.tbody.find("tr.k-master-row"));
+            },
             columns: [
                 {
                     field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
@@ -89,7 +89,14 @@
                     sortable: false, filterable: false
                 },
                 {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks",template:"#=trimTextForKendo(note,70)#", width: 120, sortable: false, filterable: false}
+                {
+                    field: "note",
+                    title: "Remarks",
+                    template: "#=trimTextForKendo(note,70)#",
+                    width: 120,
+                    sortable: false,
+                    filterable: false
+                }
             ]
         });
         gridAction = $("#grid").data("kendoGrid");
@@ -98,7 +105,7 @@
         filter: "td:nth-child(9)",
         width: 300,
         position: "top",
-        content: function(e){
+        content: function (e) {
             var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.note;
         }
@@ -109,8 +116,8 @@
             dataSource: {
                 transport: {
                     read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId="+ e.data.serviceId
-                        +"&month="+month+"&type=Details",
+                        url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + e.data.serviceId
+                        + "&month=" + month + "&type=Details",
                         dataType: "json",
                         type: "post"
                     },
@@ -120,15 +127,31 @@
                         type: "post"
                     }
                 },
+                requestEnd: function (e) {
+                    var response = e.response;
+                    if (e.type == 'update') {
+                        var isError = response["isError"];
+                        var message = response["message"];
+                        if (isError) {
+                            showError(message);
+                        }
+                        var grid = $("#grid").data("kendoGrid");
+                        var data = grid.dataSource;
+                        data.read();
+                    }
+                },
                 schema: {
                     type: 'json',
                     data: "list",
                     model: {
-                        id: "ind_details_id",    // have to set id otherwise remove row by click cancel
+                        id: "ind_details_id",    // have to set id otherwise remove row by clicking cancel
                         fields: {
                             id: {type: "number"},
                             ind_details_id: {type: "number"},
                             indicator: {editable: false, type: "string"},
+                            unit_id: {editable: false, type: "number"},
+                            unit_str: {editable: false, type: "string"},
+                            indicator_type: {editable: false, type: "string"},
                             target: {editable: false, type: "string"},
                             total_achievement: {editable: false, type: "string"},
                             monthly_target: {editable: false, type: "number"},
@@ -142,7 +165,7 @@
                 serverFiltering: true,
                 batch: true,
                 pageSize: 50,
-                filter: { field: "actionsId", operator: "eq", value: e.data.id }
+                filter: {field: "actionsId", operator: "eq", value: e.data.id}
             },
             selectable: true,
             sortable: false,
@@ -152,30 +175,47 @@
             pageable: false,
             editable: "inline",
             columns: [
-                { field: "indicator",title: "Indicator", width: "220px"},
-                { field: "target", title:"Total Target", width: "100px",attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()} },
-                { field: "total_achievement", title:"Total</br> Achievement", width: "100px",
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
-                { field: "monthly_target", title:"Target</br> (This month)", width: "100px",
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
-                { field: "achievement", title:"Achievement</br> (This month)", width: "100px",format: "{0:d}",
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
-                { field: "remarks", title:"Remarks", width: "250px" },
+                {field: "indicator", title: "Indicator", width: "220px"},
+                {
+                    field: "target", title: "Total Target", width: "100px", attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()}, template: "#=formatIndicator(indicator_type,target)#"
+                },
+                {
+                    field: "total_achievement", title: "Total</br> Achievement", width: "100px",
+                    template: "#=formatIndicator(indicator_type,total_achievement)#",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {
+                    field: "monthly_target", title: "Target</br> (This month)", width: "100px",
+                    template: "#=formatIndicator(indicator_type,monthly_target)#",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {
+                    field: "achievement", title: "Achievement</br> (This month)", width: "100px", format: "{0:d}",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {field: "remarks", title: "Remarks", width: "250px"},
                 {command: ["edit"], title: "&nbsp;", width: "80px"}
             ]
         });
     }
+    function formatIndicator(indicatorType, target) {
+        if (!target) return ''
+        if (indicatorType.match('%')) {
+            return target + ' % ';
+        }
+        return target
+    }
     function onSubmitForm() {
         month = $('#month').val();
         var serviceId = dropDownService.value();
-        if(serviceId==''){
+        if (serviceId == '') {
             showError('Please select any service');
             return false;
         }
-        var urlGoal ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Goals";
-        var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Actions";
-        populateGridKendo(listViewGoal,urlGoal);
+        var urlGoal = "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId + "&month=" + month + "&type=Goals";
+        var url = "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId + "&month=" + month + "&type=Actions";
+        populateGridKendo(listViewGoal, urlGoal);
         populateGridKendo(gridAction, url);
         return false;
     }
@@ -186,7 +226,7 @@
             var to = $('#to').val();
             var hospitalCode = dropDownHospitalCode.value();
             var params = "?from=" + from + "&to=" + to + "&hospitalCode=" + hospitalCode;
-            var  msg = 'Do you want to download the report now?',
+            var msg = 'Do you want to download the report now?',
                     url = "${createLink(controller: 'reports', action: 'downloadMonthlyPathologySummary')}" + params;
 
             confirmDownload(msg, url);

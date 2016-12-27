@@ -62,8 +62,8 @@
         if (executePreCondition() == false) {
             return false;
         }
-        setButtonDisabled($('#create'), true);
-        showLoadingSpinner(true);
+/*        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);*/
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
             actionUrl = "${createLink(controller:'pmProjects', action: 'create')}";
@@ -161,8 +161,6 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
-                        serviceId: { type: "number" },
-                        serviceName: { type: "string" },
                         name: { type: "string" },
                         shortName: { type: "string" },
                         typeId: { type: "number" },
@@ -204,10 +202,9 @@
             },
             columns: [
                 {field: "code", title: "Code", width: 50, sortable: false, filterable: false},
-                {field: "name", title: "Name", width: 120, sortable: false, filterable: false},
-                {field: "shortName", title: "Short Name", width: 80, sortable: false, filterable: false},
+                {field: "name", title: "Name", width: 120, sortable: false, filterable: true},
+                {field: "shortName", title: "Short Name", width: 80, sortable: false, filterable: true},
                 {field: "typeName", title: "Status", width: 50, sortable: false, filterable: false},
-                {field: "serviceName", title: "Service", width: 50, sortable: false, filterable: false},
                 {field: "donor", title: "donor", width: 120, sortable: false, filterable: false},
                 {field: "startDate", title: "Start Date", width: 60, sortable: false, filterable: false,
                     template:"#=kendo.toString(kendo.parseDate(startDate, 'yyyy-MM-dd'), 'dd-MMM-yyyy')#"},

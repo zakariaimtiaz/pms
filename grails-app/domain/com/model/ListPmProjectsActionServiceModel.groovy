@@ -8,11 +8,9 @@ class ListPmProjectsActionServiceModel {
         CREATE OR REPLACE VIEW list_pm_projects_action_service_model AS
 
         SELECT m.id, m.version,m.name,m.short_name,m.code,m.description,m.donor,m.end_date,
-        m.start_date,m.type_id,se.name AS type_name,m.create_date,m.create_by,m.is_active,
-        s.id AS service_id, s.short_name AS service_name
+        m.start_date,m.type_id,se.name AS type_name,m.create_date,m.create_by,m.is_active
         FROM pm_projects m
         LEFT JOIN system_entity se ON se.id=m.type_id
-        LEFT JOIN pm_service_sector s ON s.id=m.service_id
         ORDER BY id ASC;
     """
 
@@ -22,7 +20,6 @@ class ListPmProjectsActionServiceModel {
     String shortName
     String typeName
     Long typeId
-    long serviceId
     String serviceName
     String code
     String donor

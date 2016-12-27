@@ -134,14 +134,17 @@
             detailInit: initDetails,
             columns: [
                 { field: "indicator",title: "Indicator", width: "220px"},
+                {field: "unit_str", title: "Unit", width: "50px"},
                 { field: "target", title:"Target", width: "100px",attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()} },
+                    headerAttributes: {style: setAlignCenter()},template:"#=formatIndicator(indicator_type,target)#" },
                 { field: "total_achievement", title:"Achievement", width: "100px",
+                    template:"#=formatIndicator(indicator_type,total_achievement)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} }
             ]
         });
     }
     function initDetails(e) {
+        var indicator_type = e.data.indicator_type;
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
                 transport: {
@@ -166,45 +169,22 @@
             pageable: false,
             columns: [
                 { field: "monthName",title: "Month", width: "150px" },
-                { field: "target", title:"Monthly Target", width: "100px" },
-                { field: "achievement", title:"Monthly Achievement", width: "150px" },
-                { field: "remarks", title:"Remarks" }
-            ]
-        });
-    }
-    function indicatorDetails(e) {
-        $("<div/>").appendTo(e.detailCell).kendoGrid({
-            dataSource: {
-                transport: {
-                    read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId="+ e.data.serviceId+"&actionsId="+e.data.serviceId+
-                        "&year="+year+"&type=IndicatorDetails",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                schema: {
-                    type: 'json',
-                    data: "list"
-                },
-                serverPaging: true,
-                serverSorting: true,
-                serverFiltering: true,
-                pageSize: 10,
-                filter: { field: "indicatorId", operator: "eq", value: e.data.id }
-            },
-            scrollable: false,
-            sortable: false,
-            pageable: false,
-            columns: [
-                { field: "monthName",title: "Month", width: "50px" },
-                { field: "target", title:"Target" },
-                { field: "achievement", title:"Achievement" },
+                { field: "target", title:"Monthly Target", width: "100px",
+                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
+                { field: "achievement", title:"Monthly Achievement", width: "150px",
+                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
                 { field: "remarks", title:"Remarks" }
             ]
         });
     }
 
+    function formatIndicator(indicatorType,target){
+        if(!target) return ''
+        if(indicatorType.match('%')){
+            return target + ' % ';
+        }
+        return target
+    }
     function onSubmitForm() {
         year = $('#year').val();
         var serviceId = dropDownService.value();

@@ -6,27 +6,29 @@
     <sec:access url="/pmActions/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-    <sec:access url="/pmActions/delete">
-        <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>
+%{--
+<sec:access url="/pmActions/delete">
+    <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
+</sec:access>--}%
 </ul>
 </script>
 
 <script language="javascript">
-    var gridActions, dataSource, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st;
+    var gridActions, dataSource,dataSourceUnit, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st;
     var map = {};
-    var IndCount = 1;
+    var indCount = 1;
+    var deletedIndicatorIds = ''
 
     $(document).ready(function () {
         onLoadActionPage();
         initActionsGrid();
         initObservable();
-        $(document).on("keyup", ".amount", calculateSum);
+        $(document).on("input", ".amount", calculateTarget);
     });
 
     function onLoadActionPage() {
         $("#rowAction").hide();
-
+        makeKendoDropDownList('unitId1');
         var start = $('#start').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
@@ -70,15 +72,13 @@
             }
         }
         function removeAllChildValue(){
-            for(var i=1; i<=IndCount; i++){
+            for(var i=1; i<=indCount; i++){
                 var tar = "#target"+i;
                 $(tar).val('');
                 var ii = 'indicator'+i;
                 delete map[ii];
             }
         }
-
-        dropDownGoals = initKendoDropdown($('#goalId'), null, null, null);
 
         $("#supportDepartment").kendoMultiSelect({
             dataTextField: "name",
@@ -100,8 +100,26 @@
         sourceOfFund = $("#sourceOfFund").data("kendoMultiSelect");
         sourceOfFund.setDataSource(${lstProject});
         serviceId = ${serviceId};
+        $("#required").hide();
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions", null);
+    }
+
+    function makeKendoDropDownList(name){
+        var modalName = "#"+name;
+        $(modalName).kendoComboBox({
+            dataTextField   : 'name',
+            dataValueField  : 'id',
+            filter          : 'contains',
+            suggest         : true,
+            dataSource: {
+                type: "json",
+                serverFiltering: true,
+                transport: {
+                    read: "${createLink(controller:'systemEntity', action: 'unitsByType')}"
+                }
+            }
+        }).data("kendoComboBox");
     }
 
     function validateQty(event) {
@@ -114,68 +132,6 @@
             return false;
         }
         else return true;
-    }
-    function getName(name, target) {
-        var index = name.slice(-1);
-        var indName = 'indicator' + index;
-        var tarName = 'target' + index;
-        var indType = 'indType' + index;
-        var tmpInd = 'input[name=' + indName + ']';
-        var tmpTar = 'input[name=' + tarName + ']';
-        var indicatorType = 'select[name=' + indType + ']';
-        var indicator = $(tmpInd).val();
-        var type = $(indicatorType).val();
-        var start = $('#start').val();
-        var end = $('#end').val();
-        var count = monthDifference(start, end);
-        var list = monthNamesFromRange(start, end);
-        if (count > 1 && indicator == '' && type == 'Dividable') {
-            $(tmpTar).val('');
-            $(tmpInd).focus();
-        }
-        if (count > 1 && indicator != '' && type == 'Dividable') {
-            showIndicatorModal(indName, indicator, tmpTar, target, count, list, type);
-        }
-    }
-
-    function add_row(tmpId) {
-        var indic = "#indicator" + tmpId;
-        var targ = "#target" + tmpId;
-        var indicator = $(indic).val();
-        var target = $(targ).val();
-        if (indicator == '' || indicator == undefined || target == '' || target == undefined) {
-            showError('Please insert current indicator & target');
-            return false;
-        }
-        var trIdNo = IndCount + 1;
-        var trId = 'addr' + trIdNo;
-        var trData = "<tr id='" + trId + "'><td width='60%'>" +
-                "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' type='text'  placeholder='Indicator' class='form-control'/>" +
-                "</td>" +
-                "<td width='15%'>" +
-                "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' onchange='resetData("+trIdNo+")'>" +
-                "<option value='Dividable'>Dividable</option>" +
-                "<option value='Repeatable'>Repeatable</option>" +
-                "</select> " +
-                "<td width='15%'>" +
-                "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
-                "</td>" +
-                "<td>" +
-                "<a class='addbtn' onclick='add_row(" + trIdNo + ")'><i class='fa fa-plus'></i></a>" +
-                "</td>" +
-                "<td>" +
-                "<a class='delbtn' onclick='del_row(" + trIdNo + ")'><i class='fa fa-remove'></i></a>" +
-                "</td>" +
-                "</tr>";
-        $('#tab_logic').append(trData);
-        IndCount++;
-    }
-    function del_row(trIdNo) {
-        var trCount = $('#tab_logic tr').length;
-        if (trCount > 1) {
-            var trId = '#addr' + trIdNo;
-            $(trId).remove();
-        }
     }
 
     function executePreCondition() {
@@ -213,7 +169,8 @@
         }
         var count = $('#tab_logic tr').length;
         $("#indicatorCount").val(count);
-        $("#indicatorMaxId").val(IndCount);
+        $("#indicatorMaxId").val(indCount);
+        $("#deletedIndicatorIds").val(deletedIndicatorIds.slice(0,-1));
 
         setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
@@ -275,6 +232,7 @@
         dropDownService.value(serviceId);
         dropDownGoals.value('');
         map = {};
+        deletedIndicatorIds = ''
         dropDownGoals.readonly(false);
         clearIndicatorTable();
     }
@@ -286,6 +244,7 @@
         dropDownGoals.readonly(false);
         clearIndicatorTable();
         map = {};
+        deletedIndicatorIds = ''
         $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
@@ -404,6 +363,7 @@
             return dataItem.note;
         }
     }).data("kendoTooltip");
+
     function initIndicator(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
@@ -421,7 +381,7 @@
                 serverPaging: true,
                 serverSorting: true,
                 serverFiltering: true,
-                pageSize: 10,
+                pageSize: 50,
                 filter: {field: "actionsId", operator: "eq", value: e.data.id}
             },
             scrollable: false,
@@ -430,11 +390,24 @@
             detailInit: initDetails,
             columns: [
                 {field: "indicator", title: "Indicator"},
-                {field: "target", title: "Target"}
+                {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#"},
+                {field: "unit_str", title: "Unit"}
             ]
         });
     }
+    function formatIndicator(indicatorType,target){
+        if(indicatorType.match('%')){
+            return target + ' % ';
+        }
+        return target
+    }
+
     function initDetails(e) {
+        var row = e.masterRow[0];
+        var indicator = $(row).closest('tr').find('td').eq(1).text();
+        var indicatorType = e.data.indicatorType;
+        var unitStr = e.data.unitStr;
+        var target = e.data.target;
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
                 transport: {
@@ -459,9 +432,13 @@
             pageable: false,
             columns: [
                 {field: "monthName", title: "Month"},
-                {field: "target", title: "Monthly Target"}
+                {field: "target", title: "Monthly Target"},
+                {field: "target", title: "Unit",template:returnUnit(unitStr)}
             ]
         });
+    }
+    function returnUnit(unitStr){
+        return unitStr;
     }
     function initObservable() {
         actionsModel = kendo.observable(
@@ -500,37 +477,50 @@
     function addService() {
         $("#rowAction").show();
         dropDownService.value(serviceId);
-        populateGoals();
     }
     function editService() {
         if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
             return;
         }
+        clearIndicatorTable();
         addService();
         var actions = getSelectedObjectFromGridKendo(gridActions);
         showService(actions);
+        $('html,body').scrollTop(0);
         $.ajax({
             url: "${createLink(controller: 'pmActions', action: 'listIndicatorByActions')}?actionsId=" + actions.id,
             success: function (data) {
                 clearIndicatorTable();
                 $(':input').prop('readonly', false);
+                $('#indicatorId1').val(data.list[0].id);
                 $('input[name=indicator1]').val(data.list[0].indicator);
                 $('#indType1').val(data.list[0].indicatorType);
+                var myComboBox = $('#unitId1').data('kendoComboBox');
+                myComboBox.text(data.list[0].unitStr);
+                myComboBox.trigger("select");
                 $('input[name=target1]').val(data.list[0].target);
 
                 for (var i = 1; i < data.count; i++) {
                     var trCount = $('#tab_logic tr').length;
                     var trIdNo = trCount + 1;
                     var trId = 'addr' + trIdNo;
-                    var trData = "<tr id='" + trId + "'><td width='60%'>" +
+                    var trData = "<tr id='" + trId + "'><td width='50%'>" +
+                            "<input id='indicatorId" + trIdNo + "' name='indicatorId" + trIdNo + "' value='" + data.list[i].id + "' type='hidden'/>" +
                             "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' value='" + data.list[i].indicator + "' type='text'  placeholder='Indicator' class='form-control'/>" +
                             "</td>" +
-                            "<td width='15%'>" +
+                            "<td width='17%'>" +
                             "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' value='" + data.list[i].indicatorType + "' onchange='resetData("+trIdNo+")'>" +
                             "<option value='Dividable'>Dividable</option>" +
+                            "<option value='Dividable%'>Dividable(%)</option>" +
                             "<option value='Repeatable'>Repeatable</option>" +
+                            "<option value='Repeatable%'>Repeatable(%)</option>" +
+                            "<option value='Repeatable++'>Repeatable(+/-)</option>" +
+                            "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
                             "</select> " +
-                            "<td width='15%'>" +
+                            "<td width='20%'>" +
+                            "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
+                            "</td>" +
+                            "<td width='13%'>" +
                             "<input  id='target" + trIdNo + "' name='target" + trIdNo + "'  value='" + data.list[i].target + "'  type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
                             "</td>" +
                             "<td>" +
@@ -543,6 +533,13 @@
 
                     $('#tab_logic').append(trData);
                     $("#indType" + trIdNo).val(data.list[i].indicatorType);
+                    if($('#indicator').val()!=''){
+                        indCount = actions.totalIndicator;
+                    }
+                    makeKendoDropDownList('unitId'+ trIdNo);
+                    var mBox = $("#unitId" + trIdNo).data('kendoComboBox');
+                    mBox.text(data.list[i].unitStr);
+                    mBox.trigger("select");
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -560,14 +557,21 @@
         $('input[name=indicator1]').val('');
         $('input[name=target1]').val('');
         $("#tab_logic tr").remove();
-        var trData = "<tr id='#addr1'><td width='60%'>" +
+        var trData = "<tr id='addr1'><td width='50%'>" +
+                "<input id='indicatorId1' name='indicatorId1' value='' type='hidden'/>" +
                 "<input id='indicator1' name='indicator1' type='text' placeholder='Indicator' class='form-control' readonly='true'/>" +
                 "</td>" +
                 "<td width='15%'>" +
                 "<select class='form-control' id='indType1' name='indType1' onchange='resetData(1)'>" +
                 "<option value='Dividable'>Dividable</option>" +
+                "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
+                "<option value='Repeatable%'>Repeatable(%)</option>" +
+                "<option value='Repeatable++'>Repeatable(+/-)</option>" +
+                "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
                 "</select> " +
+                "<td width='20%'>" +
+                "<select class='form-control' id='unitId1' name='unitId1' type='2'></select>" +
                 "</td>" +
                 "<td width='15%'>" +
                 "<input id='target1' name='target1' type='text' onkeypress='return validateQty(event);' readonly='true' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
@@ -580,52 +584,97 @@
                 "</td>" +
                 "</tr>";
         $('#tab_logic').append(trData);
-        IndCount = 1;
+        indCount = 1;
+        deletedIndicatorIds = ''
+        makeKendoDropDownList('unitId1');
     }
 
     function showService(actions) {
+        dropDownGoals.readonly(true);
         actionsModel.set('actions', actions);
         dropDownEmployee.value(actions.resPersonId);
         if (actions.supportDepartment) supportDepartment.value(actions.supportDepartment.split(","));
-        populateGoals(actions.serviceId, actions.goalId);
-        dropDownGoals.readonly(true);
-        if($('#indicator').val()!='')map = JSON.parse($('#indicator').val());
+        if($('#indicator').val()!=''){
+            map = JSON.parse($('#indicator').val());
+        }
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
-    // To populate Goals List
-    function populateGoals(serId, goalId) {
-        var serviceId = serId ? serId : dropDownService.value();
-        if (serviceId == '') {
-            dropDownGoals.setDataSource(getKendoEmptyDataSource(dropDownGoals, null));
-            dropDownGoals.value('');
+    function getName(name, target) {
+        var index = name.slice(-1);
+        var indName = 'indicator' + index;
+        var tarName = 'target' + index;
+        var indType = 'indType' + index;
+        var tmpInd = 'input[name=' + indName + ']';
+        var tmpTar = 'input[name=' + tarName + ']';
+        var indicatorType = 'select[name=' + indType + ']';
+        var indicator = $(tmpInd).val();
+        var type = $(indicatorType).val();
+        var start = $('#start').val();
+        var end = $('#end').val();
+        var count = monthDifference(start, end);
+        var list = monthNamesFromRange(start, end);
+        if (count > 1 && indicator == '') {
+            $(tmpTar).val('');
+            $(tmpInd).focus();
+        }
+        if (count > 1 && indicator != '' && type != 'Repeatable'&& type != 'Repeatable%') {
+            showIndicatorModal(indName, indicator, tmpTar, target, count, list, type);
+        }
+    }
+    function add_row(tmpId) {
+        var indic = "#indicator" + tmpId;
+        var targ = "#target" + tmpId;
+        var indicator = $(indic).val();
+        var target = $(targ).val();
+        if (indicator == '' || indicator == undefined || target == '' || target == undefined) {
+            showError('Please insert current indicator & target');
             return false;
         }
-        showLoadingSpinner(true);
-        $.ajax({
-            url: "${createLink(controller: 'pmGoals', action: 'lstGoalsByServiceId')}?serviceId=" + serviceId,
-            success: function (data) {
-                if (data.isError) {
-                    showError(data.message);
-                    return false;
-                }
-                dropDownGoals.setDataSource(data.lstGoals);
-                if (goalId) {
-                    dropDownGoals.value(goalId);
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                afterAjaxError(XMLHttpRequest, textStatus);
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
-        return true;
+        var trIdNo = indCount + 1;
+        var trId = 'addr' + trIdNo;
+        var trData = "<tr id='" + trId + "'><td width='50%'>" +
+                "<input id='indicatorId" + trIdNo + "' name='indicatorId" + trIdNo + "' value='' type='hidden'/>" +
+                "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' type='text'  placeholder='Indicator' class='form-control'/>" +
+                "</td>" +
+                "<td width='15%'>" +
+                "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' onchange='resetData("+trIdNo+")'>" +
+                "<option value='Dividable'>Dividable</option>" +
+                "<option value='Dividable%'>Dividable(%)</option>" +
+                "<option value='Repeatable'>Repeatable</option>" +
+                "<option value='Repeatable%'>Repeatable(%)</option>" +
+                "<option value='Repeatable++'>Repeatable(+/-)</option>" +
+                "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
+                "</select> " +
+                "<td width='20%'>" +
+                "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
+                "</td>" +
+                "<td width='15%'>" +
+                "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control'  onfocus ='getName(this.name,this.value)'>" +
+                "</td>" +
+                "<td>" +
+                "<a class='addbtn' onclick='add_row(" + trIdNo + ")'><i class='fa fa-plus'></i></a>" +
+                "</td>" +
+                "<td>" +
+                "<a class='delbtn' onclick='del_row(" + trIdNo + ")'><i class='fa fa-remove'></i></a>" +
+                "</td>" +
+                "</tr>";
+        $('#tab_logic').append(trData);
+        makeKendoDropDownList('unitId'+trIdNo);
+        indCount++;
     }
-
+    function del_row(trIdNo) {
+        var trCount = $('#tab_logic tr').length;
+        if (trCount > 1) {
+            if (!$('#id').val().isEmpty()) {
+                var tt = $("#indicatorId"+trIdNo).val();
+                deletedIndicatorIds+=tt+',';
+            }
+            var trId = '#addr' + trIdNo;
+            $(trId).remove();
+            delete map["indicator"+trIdNo];
+        }
+    }
     function showIndicatorModal(indName, indicator, tmpTar, target, count, list, indType) {
         $("#createIndicatorModal").modal('show');
         $('#indicatorIdModal').val(indName);
@@ -634,13 +683,14 @@
         $('#tempCountModal').val(count);
         $("#i_logic tr").remove();
         $('#indicatorModalTargetLbl').text(target);
+        $('#indTypeIdModal').val(indType);
 
         var t = 0;
         for (var i = 0; i < count; i++) {
             var val = map[indName];
             var tmpAmt = ''
             if (val) {
-                tmpAmt = val.split('&')[6 + t].split('=')[1];
+                tmpAmt = val.split('&')[7 + t].split('=')[1];
             }
             var trId = 'iddr' + (i + 1);
             var trData = "<tr id='" + trId + "'>" +
@@ -648,7 +698,7 @@
                     "<input name='month" + (i + 1) + "' value='" + list[i] + "' type='text' readonly='true' class='form-control'/>" +
                     "</td>" +
                     "<td width='20%'>" +
-                    "<input name='tempTr" + (i + 1) + "' tabindex="+(i+8)+" onkeypress='return validateQty(event);' "+
+                    "<input id='tempTr" + (i + 1) + "' name='tempTr" + (i + 1) + "' tabindex="+(i+9)+" "+
                     "class='form-control amount' value='" + tmpAmt + "' type='text' placeholder='Target'>" +
                     "</td>" +
                     "</tr>";
@@ -656,45 +706,47 @@
             t += 2;
         }
     }
-    function showEditIndicatorModal(indName, indicator, tmpTar, target, count, list, indType) {
-        $("#createIndicatorModal").modal('show');
-        $('#indicatorIdModal').val(indName);
-        $('#indicatorModalIndicatorLbl').text(indicator);
-        $('#tempTargetNameModal').val(tmpTar);
-        $('#tempCountModal').val(count);
-        $("#i_logic tr").remove();
-        $('#indicatorModalTargetLbl').text(target);
-        var t = 0;
-        for (var i = 0; i < count; i++) {
-            var val = map[indName];
-            var tmpAmt = ''
-            if (val) {
-                tmpAmt = val.split('&')[6 + t].split('=')[1];
-            }
-            var trId = 'iddr' + (i + 1);
-            var trData = "<tr id='" + trId + "'>" +
-                    "<td width='60%'>" +
-                    "<input name='month" + (i + 1) + "' value='" + list[i] + "' type='text' readonly='true' class='form-control'/>" +
-                    "</td>" +
-                    "<td width='20%'>" +
-                    "<input name='tempTr" + (i + 1) + "' tabindex="+(i+8)+" onkeypress='return validateQty(event);' "+
-                    "class='form-control amount' value='" + tmpAmt + "' type='text' placeholder='Target'>" +
-                    "</td>" +
-                    "</tr>";
-            $('#i_logic').append(trData);
-            t += 2;
-        }
-    }
+    $('#createIndicatorModal').on('shown.bs.modal', function () {
+        $("#tempTr1").focus();
+    });
 
-    function calculateSum() {
-        var sum = 0;
-        $(".amount").each(function () {
-            if (!isNaN(this.value) && this.value.length != 0) {
-                sum += parseInt(this.value);
-            }
-        });
-        $('#indicatorModalTargetLbl').text(sum);
-        $('#hidSumModal').val(sum);
+    function calculateTarget() {
+        if($('#indTypeIdModal').val()=='Repeatable++') {
+            var max = 0;
+            $(".amount").each(function () {
+                if (!isNaN(this.value) && this.value.length != 0) {
+
+                    if (max < parseInt(this.value)) {
+                        max = parseInt(this.value);
+                    }
+                }
+                else {
+                    if(this.value!='') {
+                        this.value = 0;
+                    }
+                }
+            });
+            $('#indicatorModalTargetLbl').text(max);
+            $('#hidSumModal').val(max);
+        }
+        else {
+            var sum = 0;
+            $(".amount").each(function () {
+
+                if (!isNaN(this.value) && this.value.length != 0) {
+
+                    sum += parseInt(this.value);
+
+                }
+                else {
+                    if(this.value!='') {
+                        this.value = 0;
+                    }
+                }
+            });
+            $('#indicatorModalTargetLbl').text(sum);
+            $('#hidSumModal').val(sum);
+        }
     }
 
     function hideCreateIndicatorModal() {
@@ -711,7 +763,7 @@
     }
 
     function onClickCreateIndicatorModal() {
-        calculateSum();
+        calculateTarget();
         var target = $('#hidSumModal').val();
         var values = jQuery("#createIndicatorForm").serialize();
         var index = $("#indicatorIdModal").val();
@@ -722,6 +774,7 @@
         emptyModal();
     }
     function resetData(index){
+        var type = "#indType"+index;
         var indName = "indicator"+index;
         var tar = "#target"+index;
         $(tar).val('');
