@@ -172,8 +172,8 @@
         $("#indicatorMaxId").val(indCount);
         $("#deletedIndicatorIds").val(deletedIndicatorIds.slice(0,-1));
 
-        setButtonDisabled($('#create'), true);
-        showLoadingSpinner(true);
+/*        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);*/
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
             actionUrl = "${createLink(controller:'pmActions', action: 'create')}";
