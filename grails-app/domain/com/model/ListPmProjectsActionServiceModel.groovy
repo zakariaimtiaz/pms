@@ -20,7 +20,6 @@ class ListPmProjectsActionServiceModel {
     String shortName
     String typeName
     Long typeId
-    String serviceName
     String code
     String donor
     String description
