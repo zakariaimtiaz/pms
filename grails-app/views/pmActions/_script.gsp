@@ -120,6 +120,8 @@
                 }
             }
         }).data("kendoComboBox");
+        $(modalName).data("kendoComboBox").input.attr("placeholder", "Unit");
+
     }
 
     function validateQty(event) {
