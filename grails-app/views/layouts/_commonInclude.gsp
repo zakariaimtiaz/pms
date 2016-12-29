@@ -1,4 +1,3 @@
-<!-- Load Pako ZLIB library to enable PDF compression -->
 <script type="text/javascript" src="${resource(dir: 'js', file: 'jquery/jquery-1.11.2.min.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'jquery/iframe-post-form.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'jquery/featureList-1.0.0.js')}"></script>
@@ -8,9 +7,9 @@
 <script type="text/javascript" src="${resource(dir: 'js', file: 'application.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'dateutil.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'kendo/jszip.min.js')}"></script>
-<script type="text/javascript" src="${resource(dir: 'js', file: 'kendo/pako_deflate.min.js')}"></script>
 <script type="text/javascript" src="${resource(dir: 'js', file: 'moment.js')}"></script>
-%{--<script type="text/javascript" src="${resource(dir: 'js', file: 'angular/1.5.8-angular.min.js')}"></script>--}%
+<!-- Load Pako ZLIB library to enable PDF compression -->
+<script type="text/javascript" src="${resource(dir: 'js', file: 'kendo/pako_deflate.min.js')}"></script>
 
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'jquery/featurelist.css')}"/>
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'kendo/kendo.common.min.css')}"/>

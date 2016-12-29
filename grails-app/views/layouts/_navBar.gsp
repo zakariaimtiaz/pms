@@ -51,6 +51,12 @@
                                     </a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/reports/showSpStatus">
+                                <li>
+                                    <a href="#reports/showSpStatus"><i class="fa fa-file-powerpoint-o"></i>&nbsp;SP Status
+                                    </a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
@@ -74,6 +80,11 @@
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/pmSpLog/showSubmission">
+                                <li>
+                                    <a href="#pmSpLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;SP Submission</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/pmActions/achievement">
                                 <li>
                                     <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;Achievement</a>
@@ -83,10 +94,15 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/systemEntity/show,/pmServiceSector/show,/spTimeSchedule/show">
+                <sec:ifAnyUrls urls="/pmSpLog/show,/systemEntity/show,/pmServiceSector/show,/spTimeSchedule/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
+                            <sec:access url="/pmSpLog/show">
+                                <li>
+                                    <a href="#pmSpLog/show"><i class="fa fa-clock-o"></i>&nbsp;SP Log</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/pmServiceSector/show">
                                 <li>
                                     <a href="#pmServiceSector/show"><i class="fa fa-cog"></i>&nbsp;Sector/CSU</a>

@@ -8,6 +8,7 @@ class PmServiceSector {
     String shortName
     float sequence = 0.00f
     boolean isDisplayble = true
+    boolean isInSp = true
     String staticName
     String departmentHead
 

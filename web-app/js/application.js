@@ -718,37 +718,33 @@ function executePostConditionForDelete(data) {
     showSuccess(data.message);
 }
 
-function confirmAction(msg, url) {
+function confirmActionForEdit(msg, url, grid) {
     bootbox.confirm(msg, function (result) {
         if (result) {
-            executeAction(url);
+            showLoadingSpinner(true);
+            var id = getSelectedIdFromGridKendo(grid);
+            $.ajax({
+                url: url + "?id=" + id,
+                customData: {grid: grid},
+                success: function (data, textStatus) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                    grid.dataSource.read();
+                    showSuccess(data.message);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    afterAjaxError(XMLHttpRequest, textStatus)
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);
+                },
+                dataType: 'json',
+                type: 'post'
+            });
         }
     }).find("div.modal-content").addClass("conf-delete");
-}
-
-function executeAction(url) {
-    showLoadingSpinner(true);
-    $.ajax({
-        url: url,
-        success: executePostConditionForAction,
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            afterAjaxError(XMLHttpRequest, textStatus)
-        },
-        complete: function (XMLHttpRequest, textStatus) {
-            showLoadingSpinner(false);
-        },
-        dataType: 'json',
-        type: 'post'
-    });
-}
-
-
-function executePostConditionForAction(data) {
-    if (data.isError) {
-        showError(data.message);
-        return false;
-    }
-    showSuccess(data.message);
 }
 //********** END ----  Delete selected row from grid with custom confirmation box  ***********//
 

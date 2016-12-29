@@ -155,6 +155,9 @@
         } else if ($("#target1").val() == '') {
             showError('Please insert target.');
             return false;
+        } else if ($("#unitId1").val() == '') {
+            showError('Please insert unit.');
+            return false;
         } else if ($("#actions").val() == '') {
             showError('Please insert actions.');
             return false;

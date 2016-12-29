@@ -56,6 +56,14 @@ class PmActionsController extends BaseController {
     def list() {
         renderOutput(listPmActionsActionService, params)
     }
+    def lstActionsByServiceIdAndYear() {
+        long serviceId = Long.parseLong(params.serviceId.toString())
+        String year = params.year.toString()
+        List<GroovyRowResult> lst = pmActionsService.lstActionsByServiceIdAndYear(serviceId, year)
+        List lstValue = baseService.listForKendoDropdown(lst, null, null)
+        Map result = [lstActions: lstValue]
+        render result as JSON
+    }
     def lstActionsByGoalId() {
         long goalId = Long.parseLong(params.goalId.toString())
         List<GroovyRowResult> lst = pmActionsService.lstActionsForDropDown(goalId)

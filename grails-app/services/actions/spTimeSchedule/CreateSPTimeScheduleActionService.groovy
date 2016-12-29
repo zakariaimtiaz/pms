@@ -1,6 +1,8 @@
 package actions.spTimeSchedule
 
 import com.model.ListSpTimeScheduleActionServiceModel
+import com.pms.PmServiceSector
+import com.pms.PmSpLog
 import com.pms.SpTimeSchedule
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -72,6 +74,43 @@ class CreateSPTimeScheduleActionService extends BaseService implements ActionSer
         try {
             SpTimeSchedule spTimeSchedule = (SpTimeSchedule) result.get(SP_TIME_SCHEDULE)
             spTimeSchedule.save()
+
+
+            //update spLog
+            List<Long> lst = PmServiceSector.findAllByIsInSp(Boolean.TRUE).id
+            DateFormat formater = new SimpleDateFormat("yyyy");
+            Calendar beginCalendar = Calendar.getInstance();
+            Calendar finishCalendar = Calendar.getInstance();
+
+            try {
+                beginCalendar.setTime(formater.parse(result.from.toString()));
+                finishCalendar.setTime(formater.parse(result.to.toString()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            while (beginCalendar.before(finishCalendar)) {
+                // add one year to date per loop
+                String date = formater.format(beginCalendar.getTime()).toUpperCase();
+                for (long id : lst) {
+                    PmSpLog obj1 = new PmSpLog()
+                    obj1.serviceId = id
+                    obj1.year = Integer.parseInt(date)
+                    obj1.spTimeScheduleId = spTimeSchedule.id
+                    obj1.isEditable = Boolean.TRUE
+                    obj1.save()
+                }
+                beginCalendar.add(Calendar.YEAR, 1);
+            }
+            String date = formater.format(finishCalendar.getTime()).toUpperCase();
+            for (long id : lst) {
+                PmSpLog obj1 = new PmSpLog()
+                obj1.serviceId = id
+                obj1.year = Integer.parseInt(date)
+                obj1.spTimeScheduleId = spTimeSchedule.id
+                obj1.isEditable = Boolean.TRUE
+                obj1.save()
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

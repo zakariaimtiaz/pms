@@ -4,9 +4,12 @@ import actions.reports.ListSpMonthlyPlanActionService
 import actions.reports.ListSpPlanActionService
 import com.pms.SecUser
 import grails.converters.JSON
+import groovy.sql.GroovyRowResult
+import service.PmActionsService
 
 class ReportsController  extends BaseController  {
     BaseService baseService
+    PmActionsService pmActionsService
     ListSpPlanActionService listSpPlanActionService
     ListSpMonthlyPlanActionService listSpMonthlyPlanActionService
 
@@ -26,5 +29,9 @@ class ReportsController  extends BaseController  {
     }
     def listSpMonthlyPlan() {
         renderOutput(listSpMonthlyPlanActionService,params)
+    }
+    def showSpStatus() {
+        List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
+        render(view: "/reports/statistical/show",model: [lst: lst as JSON])
     }
 }
