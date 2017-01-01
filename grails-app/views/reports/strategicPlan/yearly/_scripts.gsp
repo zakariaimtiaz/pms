@@ -81,13 +81,19 @@
                     field: "end", title: "End Date", width: 50, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
                 },
+                {field: "target", title: "target", width: 50, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {field: "achievement", title: "Achievement", width: 50, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {field: "note", title: "Remarks",template:"#=trimTextForKendo(note,70)#", width: 120, sortable: false, filterable: false},
                 {field: "resPerson", title: "Responsible Person", width: 90, sortable: false, filterable: false},
                 {
                     field: "supportDepartmentStr", title: "Support Department", width: 90,
                     sortable: false, filterable: false
                 },
-                {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false},
-                {field: "note", title: "Remarks",template:"#=trimTextForKendo(note,70)#", width: 120, sortable: false, filterable: false}
+                {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false}
             ]
         });
         gridAction = $("#grid").data("kendoGrid");

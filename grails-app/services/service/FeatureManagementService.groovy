@@ -131,7 +131,7 @@ class FeatureManagementService extends BaseService{
         String queryStr = """
             UPDATE feature_management
             SET config_attribute = CONCAT(config_attribute, ',${roleAuthority}')
-            WHERE url LIKE '/'
+            WHERE url LIKE '/' OR url LIKE '/secUser/resetPassword'
         """
         executeUpdateSql(queryStr)
     }
@@ -145,7 +145,7 @@ class FeatureManagementService extends BaseService{
                     REPLACE(config_attribute, ',${roleAuthority}' , '')
                 ELSE NULL
                 END
-            WHERE url LIKE '/'
+            WHERE url LIKE '/' OR url LIKE '/secUser/resetPassword'
         """
         executeUpdateSql(queryStr)
     }

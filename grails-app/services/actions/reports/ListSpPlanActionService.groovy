@@ -124,7 +124,7 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
 
     private List<GroovyRowResult> buildActionsList(long serviceId,Date start, Date end) {
         String query = """
-                SELECT a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
+                SELECT a.id,a.sequence,a.start,a.end,ai.target,SUM(idd.achievement) achievement,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
                         a.res_person AS resPerson, a.note,a.support_department AS supportDepartment,
                         a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,
         (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartmentStr,
@@ -132,8 +132,11 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
 
                 FROM pm_actions a
                 LEFT JOIN pm_service_sector sc ON sc.id = a.service_id
+                LEFT JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+                LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 WHERE a.service_id = ${serviceId}
                 AND ('${start}' <= a.end AND '${end}' >= a.start)
+                GROUP BY a.id
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue

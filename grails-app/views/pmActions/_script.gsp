@@ -716,7 +716,7 @@
     });
 
     function calculateTarget() {
-        if($('#indTypeIdModal').val()=='Repeatable++') {
+        if($('#indTypeIdModal').val()=='Repeatable++'||$('#indTypeIdModal').val()=='Repeatable%++') {
             var max = 0;
             $(".amount").each(function () {
                 if (!isNaN(this.value) && this.value.length != 0) {
