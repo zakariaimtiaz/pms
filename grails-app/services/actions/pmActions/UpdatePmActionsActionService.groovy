@@ -81,6 +81,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         long unitId = 0
                         String unitIdStr = ''
                         String tempStr = result.get("unitId" + (i + 1)).toString()
+                        if(!tempStr.isEmpty()){
                         try {
                             unitId = Long.parseLong(tempStr)
                             SystemEntity se = SystemEntity.read(unitId)
@@ -98,7 +99,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                 unitId = unitx.id
                                 unitIdStr = unitx.name
                             }
-                        }
+                        }}
                         if(result.get("indicatorId" + (i + 1)).toString().isEmpty()){
                             PmActionsIndicator indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
@@ -148,22 +149,24 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         long unitId = 0
                         String unitIdStr = ''
                         String tempStr = result.get("unitId" + (i + 1)).toString()
-                        try {
-                            unitId = Long.parseLong(tempStr)
-                            SystemEntity se = SystemEntity.read(unitId)
-                            unitIdStr = se.name
-                        } catch (Exception ex) {
-                            SystemEntity unit = SystemEntity.findByNameIlikeAndTypeId(tempStr, 2L)
-                            if (unit) {
-                                unitId = unit.id
-                                unitIdStr = unit.name
-                            } else {
-                                SystemEntity unitx = new SystemEntity()
-                                unitx.typeId = 2
-                                unitx.name = tempStr
-                                unitx.save()
-                                unitId = unitx.id
-                                unitIdStr = unitx.name
+                        if(!tempStr.isEmpty()) {
+                            try {
+                                unitId = Long.parseLong(tempStr)
+                                SystemEntity se = SystemEntity.read(unitId)
+                                unitIdStr = se.name
+                            } catch (Exception ex) {
+                                SystemEntity unit = SystemEntity.findByNameIlikeAndTypeId(tempStr, 2L)
+                                if (unit) {
+                                    unitId = unit.id
+                                    unitIdStr = unit.name
+                                } else {
+                                    SystemEntity unitx = new SystemEntity()
+                                    unitx.typeId = 2
+                                    unitx.name = tempStr
+                                    unitx.save()
+                                    unitId = unitx.id
+                                    unitIdStr = unitx.name
+                                }
                             }
                         }
                         if(result.get("indicatorId" + (i + 1)).toString().isEmpty()){
