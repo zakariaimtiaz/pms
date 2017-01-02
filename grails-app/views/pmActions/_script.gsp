@@ -395,7 +395,7 @@
             columns: [
                 {field: "indicator", title: "Indicator"},
                 {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#"},
-                {field: "unit_str", title: "Unit"}
+                {field: "unitStr", title: "Unit"}
             ]
         });
     }
@@ -436,8 +436,7 @@
             pageable: false,
             columns: [
                 {field: "monthName", title: "Month"},
-                {field: "target", title: "Monthly Target"},
-                {field: "target", title: "Unit",template:returnUnit(unitStr)}
+                {field: "target", title: "Monthly Target"}
             ]
         });
     }
