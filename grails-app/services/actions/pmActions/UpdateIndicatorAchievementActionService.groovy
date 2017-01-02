@@ -28,11 +28,14 @@ class UpdateIndicatorAchievementActionService extends BaseService implements Act
             if (!detailsIdStr && !achievementStr) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            if(detailsIdStr){
+            if(detailsIdStr) {
                 long id = Long.parseLong(detailsIdStr)
                 PmActionsIndicatorDetails details = PmActionsIndicatorDetails.read(id)
                 details.remarks = remarksStr
-                details.achievement = Integer.parseInt(achievementStr)
+                if (!achievementStr.isEmpty())
+                    details.achievement = Integer.parseInt(achievementStr)
+                else
+                    details.achievement = 0
                 details.save()
             }
             return params

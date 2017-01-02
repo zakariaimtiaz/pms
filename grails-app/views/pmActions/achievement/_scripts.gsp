@@ -191,7 +191,7 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "achievement", title: "Achievement</br> (This month)", width: "100px", format: "{0:d}",
+                    field: "achievement", title: "Achievement</br> (This month)", width: "100px", format: "{0:n0}",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "remarks", title: "Remarks", width: "250px"},
