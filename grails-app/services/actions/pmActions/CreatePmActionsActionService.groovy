@@ -63,9 +63,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
 
             if (monthNoStart == monthEnd) {
                 String monthStr = result.start.toString()
-                DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
-
-                Date date = originalFormat.parse(monthStr);
+                Date date = DateUtility.parseDateForDB(monthStr);
                 Calendar c = Calendar.getInstance();
                 c.setTime(date);
                 String monthName = new SimpleDateFormat("MMMM").format(c.getTime())

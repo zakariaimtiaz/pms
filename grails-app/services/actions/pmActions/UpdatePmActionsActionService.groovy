@@ -70,12 +70,11 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
 
             if (monthNoStart == monthEnd) {
                 String monthStr = result.start.toString()
-                DateFormat originalFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
-
-                Date date = originalFormat.parse(monthStr);
+                Date date = DateUtility.parseDateForDB(monthStr);
                 Calendar c = Calendar.getInstance();
                 c.setTime(date);
                 String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
+
                 for (int i = 0; i < max; i++) {
                     try {
                         long unitId = 0
@@ -237,50 +236,69 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.unitStr = unitIdStr
                             indicator.unitId = unitId
                             indicator.save()
+                            if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
 
-                            String[] couple = ""
-                            for (int k = 0; k < max; k++) {
-                                couple = ind[k].split("&");
-                                if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
-                                    break;
-                                }
-                            }
-                            int tmpCount = Integer.parseInt(couple[5].split("=")[1].replaceAll("^\\d.]", ""))
+                                int tmpCount = (monthEnd - monthNoStart) + 1
+                                int monthCount = monthNoStart
 
-                            int t = 6;
-                            for (int j = 0; j < tmpCount; j++) {
-                                String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-                                PmActionsIndicatorDetails details = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicator.id, name)
-                                if(details){
-                                    int targetInt = 0
-                                    try {
-                                        String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
-                                        targetInt = Integer.parseInt(target)
-                                    } catch (Exception e) {
-                                        targetInt = 0
-                                    }
+                                for (int j = 0; j < tmpCount; j++) {
+                                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                                    details.actionsId = actions.id
+                                    details.indicatorId = indicator.id
+                                    String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
+
                                     details.monthName = name
-                                    details.target = targetInt
+                                    details.target = indicator.target
+                                    details.createBy = 1
+                                    details.createDate = new Date()
                                     details.save()
-                                }else{
-                                    PmActionsIndicatorDetails detailss = new PmActionsIndicatorDetails()
-                                    int targetInt = 0
-                                    try {
-                                        String targett = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
-                                        targetInt = Integer.parseInt(targett)
-                                    } catch (Exception e) {
-                                        targetInt = 0
-                                    }
-                                    detailss.actionsId=actions.id
-                                    detailss.indicatorId=indicator.id
-                                    detailss.monthName = name
-                                    detailss.target = targetInt
-                                    detailss.createBy = 1
-                                    detailss.createDate = new Date()
-                                    detailss.save()
+                                    monthCount++
                                 }
+                            } else {
+                                String[] couple = ""
+                                for (int k = 0; k < max; k++) {
+                                    couple = ind[k].split("&");
+                                    if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
+                                        break;
+                                    }
+                                }
+                                int tmpCount = Integer.parseInt(couple[5].split("=")[1].replaceAll("^\\d.]", ""))
 
-                                t += 2
+                                int t = 6;
+                                for (int j = 0; j < tmpCount; j++) {
+                                    String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
+                                    PmActionsIndicatorDetails details = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicator.id, name)
+                                    if (details) {
+                                        int targetInt = 0
+                                        try {
+                                            String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
+                                            targetInt = Integer.parseInt(target)
+                                        } catch (Exception e) {
+                                            targetInt = 0
+                                        }
+                                        details.monthName = name
+                                        details.target = targetInt
+                                        details.save()
+                                    } else {
+                                        PmActionsIndicatorDetails detailss = new PmActionsIndicatorDetails()
+                                        int targetInt = 0
+                                        try {
+                                            String targett = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
+                                            targetInt = Integer.parseInt(targett)
+                                        } catch (Exception e) {
+                                            targetInt = 0
+                                        }
+                                        detailss.actionsId = actions.id
+                                        detailss.indicatorId = indicator.id
+                                        detailss.monthName = name
+                                        detailss.target = targetInt
+                                        detailss.createBy = 1
+                                        detailss.createDate = new Date()
+                                        detailss.save()
+                                    }
+
+                                    t += 2
+                                }
                             }
                         }
                             indSplitCount++
