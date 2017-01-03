@@ -176,7 +176,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.indicatorType = result.get("indType" + (i + 1))
                             indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
                             indicator.save()
-                            if (indicator.indicatorType == "Repeatable") {
+                            if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
 
                                 int tmpCount = (monthEnd - monthNoStart) + 1
                                 int monthCount = monthNoStart

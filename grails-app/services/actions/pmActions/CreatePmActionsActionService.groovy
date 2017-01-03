@@ -150,7 +150,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                         indicator.unitId = unitId
                         indicator.unitStr = unitIdStr
                         indicator.save()
-                        if (indicator.indicatorType == "Repeatable") {
+                        if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
 
                             int tmpCount = (monthEnd - monthNoStart) + 1
                             int monthCount = monthNoStart
