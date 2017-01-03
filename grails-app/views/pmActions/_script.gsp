@@ -596,6 +596,7 @@
         dropDownGoals.readonly(true);
         actionsModel.set('actions', actions);
         dropDownEmployee.value(actions.resPersonId);
+        if (actions.sourceOfFund) sourceOfFund.value(actions.sourceOfFund.split(","));
         if (actions.supportDepartment) supportDepartment.value(actions.supportDepartment.split(","));
         if($('#indicator').val()!=''){
             map = JSON.parse($('#indicator').val());
