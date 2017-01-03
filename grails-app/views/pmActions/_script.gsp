@@ -239,6 +239,7 @@
         deletedIndicatorIds = ''
         dropDownGoals.readonly(false);
         clearIndicatorTable();
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
         clearForm($("#actionForm"), null);
