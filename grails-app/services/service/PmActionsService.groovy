@@ -51,4 +51,14 @@ class PmActionsService extends BaseService{
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
+    public List<GroovyRowResult> findAllDetailsByActionsIdAndIndicatorId(long actionsId, long indicatorId) {
+        String query = """
+            SELECT aid.*,ai.indicator_type
+                FROM pm_actions_indicator_details aid
+                LEFT JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
+                WHERE aid.actions_id = ${actionsId} AND aid.indicator_id = ${indicatorId}
+        """
+        List<GroovyRowResult> lst = executeSelectSql(query)
+        return lst
+    }
 }

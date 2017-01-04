@@ -430,14 +430,14 @@
                 serverSorting: true,
                 serverFiltering: true,
                 pageSize: 10,
-                filter: {field: "indicatorId", operator: "eq", value: e.data.id}
+                filter: {field: "indicator_id", operator: "eq", value: e.data.id}
             },
             scrollable: false,
             sortable: false,
             pageable: false,
             columns: [
-                {field: "monthName", title: "Month"},
-                {field: "target", title: "Monthly Target"}
+                {field: "month_name", title: "Month"},
+                {field: "target", title: "Monthly Target",template:"#=formatIndicator(indicator_type,target)#"}
             ]
         });
     }

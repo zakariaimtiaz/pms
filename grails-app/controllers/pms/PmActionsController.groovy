@@ -85,7 +85,7 @@ class PmActionsController extends BaseController {
     def listDetailsByIndicator() {
         long actionsId = Long.parseLong(params.actionsId.toString())
         long indicatorId = Long.parseLong(params."filter[filters][0][value]".toString())
-        List<PmActionsIndicatorDetails> lst = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorId(actionsId, indicatorId)
+        List<GroovyRowResult> lst = pmActionsService.findAllDetailsByActionsIdAndIndicatorId(actionsId, indicatorId)
         Map result = [list: lst, count:lst.size()]
         render result as JSON
     }

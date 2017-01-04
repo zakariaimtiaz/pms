@@ -66,10 +66,18 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
                 result.put(LIST, lstAction)
                 return result
             }else if(type.equals("Details")){
-                long actionsId = Long.parseLong(result."filter[filters][0][value]")
-                List<GroovyRowResult> lstSprint = buildActionDetails(serviceId,actionsId, start, end)
-                result.put(LIST, lstSprint)
-                return result
+                try{
+                    long actionsId = Long.parseLong(result."filter[filters][0][value]")
+                    List<GroovyRowResult> lstSprint = buildActionDetails(serviceId,actionsId, start, end)
+                    result.put(LIST, lstSprint)
+                    return result
+                }catch (Exception e){
+                    long actionsId = 0
+                    List<GroovyRowResult> lstSprint = buildActionDetails(serviceId,actionsId, start, end)
+                    result.put(LIST, lstSprint)
+                    return result
+                }
+
             }else if(type.equals("IndicatorDetails")){
                 long actionsId = Long.parseLong(result.actionsId.toString())
                 long indicatorId = Long.parseLong(result."filter[filters][0][value]")
@@ -142,13 +150,17 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
         return lstValue
     }
     private List<GroovyRowResult> buildActionDetails(long serviceId,long actionsId, Date start, Date end) {
+        String filterParam = EMPTY_SPACE
+        if(actionsId>0){
+            filterParam = "WHERE a.id = ${actionsId}"
+        }
         String query = """
                 SELECT a.id,i.id AS ind_id,idd.id AS ind_details_id,i.indicator,i.remarks,i.target,
                 SUM(idd.achievement) total_achievement,i.unit_id,i.unit_str,i.indicator_type
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id
-                WHERE a.id = ${actionsId}
+                ${filterParam}
                 GROUP BY i.id
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)

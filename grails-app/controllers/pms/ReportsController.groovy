@@ -2,6 +2,7 @@ package pms
 
 import actions.reports.ListSpMonthlyPlanActionService
 import actions.reports.ListSpPlanActionService
+import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
@@ -18,7 +19,8 @@ class ReportsController  extends BaseController  {
     ]
     def showSpPlan() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/reports/strategicPlan/yearly/show", model: [serviceId:user.serviceId])
+        PmServiceSector service = PmServiceSector.read(user.serviceId)
+        render(view: "/reports/strategicPlan/yearly/show", model: [serviceId:service.id,serviceName:service.name])
     }
     def showSpMonthlyPlan() {
         SecUser user = baseService.currentUserObject()

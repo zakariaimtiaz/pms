@@ -1,5 +1,6 @@
 package pms
 
+import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -8,6 +9,7 @@ import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.session.SessionInformation
 import org.springframework.security.web.WebAttributes
 
 import javax.servlet.http.HttpServletResponse
@@ -141,5 +143,41 @@ class LoginController {
     def resetPassword(){
         SecUser user = SecUser.findByUsername(springSecurityService.authentication.name)
         render(view: '/login/resetPassword', model: [userId:user.id])
+    }
+
+
+    def showOnlineUser(){
+        render(view: '/whoIsOnline/showOnlineUser')
+    }
+
+    def listOnlineUser(){
+        def cnt = 0
+        List lstUsers = []
+        sessionRegistry.getAllPrincipals().each{
+            SecUser user = SecUser.findByUsername(it.username)
+            String department = ""
+            if(user.username=="admin"){
+                department = "<b>Software Development</b>"
+            }else{
+                PmServiceSector service = PmServiceSector.read(user.serviceId)
+                department = service.name
+            }
+            List<SessionInformation> lst = sessionRegistry.getAllSessions(it, false)
+            cnt += lst.size()
+            Map eachDetails = [
+                    id           : user.id,
+                    username     : user.username,
+                    employeeName : user.fullName,
+                    department   : department,
+                    signInTime   : lst.lastRequest[0]
+            ]
+            lstUsers << eachDetails
+        }
+        Map result = new LinkedHashMap()
+        result.put("list", lstUsers)
+        result.put("count", cnt)
+        String output = result as JSON
+
+        render output
     }
 }
