@@ -16,4 +16,9 @@ class PmActionsIndicator {
         unitId  nullable: true
         unitStr nullable: true
     }
+    static mapping = {
+        remarks        size: 2..15000
+        remarks    sqlType: 'text'
+
+    }
 }
