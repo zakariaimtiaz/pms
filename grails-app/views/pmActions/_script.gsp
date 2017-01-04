@@ -278,6 +278,7 @@
                         service: {type: "string"},
                         serShortName: {type: "string"},
                         serviceId: {type: "number"},
+                        tmpSeq: {type: "number"},
                         sequence: {type: "string"},
                         resPerson: {type: "string"},
                         strategyMapRef: {type: "string"},
@@ -296,7 +297,11 @@
                     return data;
                 }
             },
-            sort: {field: 'id', dir: 'asc'},
+            sort: [{field:'serviceId', dir: 'asc'},
+                {field:'start', dir: 'asc',format: "{0:yyyy}"},
+                {field:'goalId', dir: 'asc'},
+                {field:'tmpSeq', dir: 'asc'},
+            ],
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,

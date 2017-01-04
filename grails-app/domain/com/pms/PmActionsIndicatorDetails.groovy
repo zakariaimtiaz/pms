@@ -13,6 +13,8 @@ class PmActionsIndicatorDetails {
     long createBy
 
     static mapping = {
+        remarks        size: 2..15000
+        remarks    sqlType: 'text'
     }
     static constraints = {
         remarks nullable: true
