@@ -80,6 +80,11 @@
                                     <a href="#pmActions/show"><i class="fa fa-balance-scale"></i>&nbsp;Actions</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/pmSpSummary/show">
+                                <li>
+                                    <a href="#pmSpSummary/show"><i class="fa fa-newspaper-o"></i>&nbsp;SP Summary</a>
+                                </li>
+                            </sec:access>
                             <sec:access url="/pmSpLog/showSubmission">
                                 <li>
                                     <a href="#pmSpLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;SP Submission</a>
