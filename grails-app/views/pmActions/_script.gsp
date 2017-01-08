@@ -6,10 +6,9 @@
     <sec:access url="/pmActions/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-%{--
 <sec:access url="/pmActions/delete">
     <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-</sec:access>--}%
+</sec:access>
 </ul>
 </script>
 

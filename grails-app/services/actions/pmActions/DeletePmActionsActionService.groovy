@@ -1,6 +1,9 @@
 package actions.pmActions
 
 import com.pms.PmActions
+import com.pms.PmActionsIndicator
+import com.pms.PmActionsIndicatorDetails
+import com.pms.PmGoals
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -29,7 +32,26 @@ class DeletePmActionsActionService extends BaseService implements ActionServiceI
     public Map execute(Map result) {
         try {
             PmActions actions = (PmActions) result.get(ACTIONS_OBJ)
+
+            List<PmActions> lstPmActions=PmActions.findAllByGoalId(actions.goalId)
+            PmGoals goals = PmGoals.read(actions.goalId)
+
             actions.delete()
+            List<PmActionsIndicator> lstPmActionsIndicator=PmActionsIndicator.findAllByActionsId(actions.id)
+            for(PmActionsIndicator pmActionsIndicator:lstPmActionsIndicator){
+                pmActionsIndicator.delete()
+            }
+            List<PmActionsIndicatorDetails> lst=PmActionsIndicatorDetails.findAllByActionsId(actions.id)
+            for(PmActionsIndicatorDetails pmActionsIndicatorDetails:lst){
+                pmActionsIndicatorDetails.delete()
+            }
+
+            for(int i=actions.tmpSeq;i<lstPmActions.size();i++) {
+                PmActions obj = lstPmActions[i]
+                obj.tmpSeq = i
+                obj.sequence = goals.sequence + "." + obj.tmpSeq
+                obj.save()
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
