@@ -14,7 +14,7 @@
 </script>
 
 <script language="javascript">
-    var gridActions, dataSource,dataSourceUnit, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st;
+    var gridActions, dataSource,dataSourceUnit, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st,isSubmit;
     var map = {};
     var indCount = 1;
     var deletedIndicatorIds = ''
@@ -24,6 +24,7 @@
         initActionsGrid();
         initObservable();
         $(document).on("input", ".amount", calculateTarget);
+        isSubmit=${isSubmitted};
     });
 
     function onLoadActionPage() {
@@ -359,7 +360,7 @@
             filterable: {
                 mode: "row"
             },
-            toolbar: kendo.template($("#gridToolbar").html())
+            toolbar: isSubmit!=true?kendo.template($("#gridToolbar").html()):''
         });
         gridActions = $("#gridActions").data("kendoGrid");
         $("#menuGrid").kendoMenu();

@@ -10,16 +10,13 @@ class PmSpLog {
     Date submissionDate
     boolean isSubmitted = false
     boolean isEditable = false
-    String editTypeIds
-    String editableActionIds
+
 
     static mapping = {
         submissionDate sqlType: 'date'
     }
 
     static constraints = {
-        editTypeIds nullable: true
-        editableActionIds nullable: true
         submissionDate nullable: true
     }
 }

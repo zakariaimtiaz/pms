@@ -34,8 +34,6 @@ class SubmitPmSpLogActionService extends BaseService implements ActionServiceInt
             spLog.isSubmitted = Boolean.TRUE
             spLog.submissionDate = DateUtility.getSqlDate(new Date())
             spLog.isEditable = Boolean.FALSE
-            spLog.editTypeIds = null
-            spLog.editableActionIds = null
             spLog.save()
             return result
         } catch (Exception ex) {

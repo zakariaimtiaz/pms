@@ -17,8 +17,8 @@ class PmSpLogController extends BaseController {
     ListPmSpLogActionService listPmSpLogActionService
 
     def show() {
-        List<SystemEntity> lstSpEditType = SystemEntity.findAllByTypeId(3L)
-        render(view: "/pmSpLog/show", model: [lstSpEditType:lstSpEditType as JSON])
+
+        render(view: "/pmSpLog/show")
     }
     def create() {
         renderOutput(createPmSpLogActionService, params)

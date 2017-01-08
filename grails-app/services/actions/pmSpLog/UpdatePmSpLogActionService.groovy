@@ -88,8 +88,6 @@ class UpdatePmSpLogActionService extends BaseService implements ActionServiceInt
         }
         oldObject.isSubmitted = spLog.isSubmitted
         oldObject.isEditable = spLog.isEditable
-        oldObject.editTypeIds = spLog.editTypeIds
-        oldObject.editableActionIds = spLog.editableActionIds
         return oldObject
     }
 }

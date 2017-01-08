@@ -167,7 +167,7 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
             SELECT id, CONCAT(name,' (',short_name,')') AS name
                 FROM pm_service_sector
             WHERE is_displayble = TRUE AND id IN (${param})
-            ORDER BY sequence
+            ORDER BY name ASC
         """
         List<GroovyRowResult> lstServices = executeSelectSql(queryForList)
         return lstServices

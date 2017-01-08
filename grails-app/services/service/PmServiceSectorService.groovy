@@ -13,7 +13,7 @@ class PmServiceSectorService extends BaseService{
                 SELECT s.id AS id, CONCAT(s.name,' (',s.short_name,')') AS name
                         FROM pm_service_sector s
                         WHERE s.is_displayble = TRUE
-                        ORDER BY s.sequence ASC
+                        ORDER BY s.name ASC
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
         lst = listForKendoDropdown(lst, null, null)

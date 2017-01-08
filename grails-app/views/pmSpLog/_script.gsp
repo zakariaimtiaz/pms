@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var currentYear,gridSpLog, dataSource, SpLogModel,dropDownService,editTypeIds,editableActionIds;
+    var currentYear,gridSpLog, dataSource, SpLogModel,dropDownService;
 
     $(document).ready(function () {
         onLoadSpLogPage();
@@ -27,67 +27,28 @@
             format: "yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "decade",
-            depth: "decade",
-            change: populateActionIds
+            depth: "decade"
         }).data("kendoDatePicker");
 
-        $("#editTypeIds").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "id",
-            filter: "contains",
-            suggest: true,
-            dataSource: getBlankDataSource
-        });
-        editTypeIds = $("#editTypeIds").data("kendoMultiSelect");
-        editTypeIds.setDataSource(${lstSpEditType});
-
-        $("#editableActionIds").kendoMultiSelect({
-            dataTextField: "name",
-            dataValueField: "id",
-            filter: "contains",
-            suggest: true,
-            dataSource: getBlankDataSource
-        });
-        editableActionIds = $("#editableActionIds").data("kendoMultiSelect");
 
         $("#rowSpLog").hide();
         initializeForm($("#spLogForm"), onSubmitSpLog);
         defaultPageTile("Create SP Log",null);
     }
-    function showAndHideEditing(){
-        editTypeIds.value('');
-        editableActionIds.value('');
-        var isEditable = $("#isEditable").is(":checked");
-        if(isEditable){
-            editTypeIds.readonly(false);
-            editableActionIds.readonly(false);
-        }else{
-            editTypeIds.readonly(true);
-            editableActionIds.readonly(true);
+    function checkSubmitted(){
+
+        if($("#isSubmitted").is(":checked")){
+            $("#isEditable").prop("checked",false);
         }
     }
-    function populateActionIds(){
-        editableActionIds.setDataSource('');
-        var serviceId = $('#serviceId').val();
-        var year = $('#year').val();
-        if(serviceId!='' && year!=''){
-            $.ajax({
-                url: "${createLink(controller: 'pmActions', action: 'lstActionsByServiceIdAndYear')}?serviceId=" + serviceId + "&year="+ year,
-                success: function (data) {
-                    editableActionIds.setDataSource(data.lstActions);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    editableActionIds.setDataSource('');
-                    afterAjaxError(XMLHttpRequest, textStatus);
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    showLoadingSpinner(false);
-                },
-                dataType: 'json',
-                type: 'post'
-            });
+    function checkEditable(){
+
+        if($("#isEditable").is(":checked")){
+            $("#isSubmitted").prop("checked",false);
         }
+
     }
+
     function executePreCondition() {
         if (!validateForm($("#spLogForm"))) {
             return false;
@@ -155,16 +116,12 @@
         clearForm($("#spLogForm"), $('#serviceId'));
         initObservable();
         $('#year').val(currentYear);
-        editTypeIds.readonly(true);
-        editableActionIds.readonly(true);
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
 
     function resetForm() {
         initObservable();
         $('#year').val(currentYear);
-        editTypeIds.readonly(true);
-        editableActionIds.readonly(true);
         $('#rowSpLog').hide();
     }
 
@@ -189,10 +146,7 @@
                         service: { type: "string" },
                         submissionDate: { type: "date" },
                         isSubmitted: { type: "boolean" },
-                        isEditable: { type: "boolean" },
-                        editTypeIds: { type: "string" },
-                        editTypeIdStr: { type: "string" },
-                        editableActionIds: { type: "string" }
+                        isEditable: { type: "boolean" }
                     }
                 },
                 parse: function (data) {
@@ -240,14 +194,6 @@
                     filterable: { messages: { isTrue: "YES", isFalse: "NO" }, extra: false},
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
                     template:"#=isEditable?'YES':'NO'#"
-                },
-                {field: "editTypeIds", title: "Edit Type", width: 50, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
-                    template:"#=editTypeIdStr?editTypeIdStr:''#"
-                },
-                {field: "editableActionIds", title: "Editable Actions", width: 50, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
-                    template:"#=editableActionIds?editableActionIds:''#"
                 }
             ],
             filterable: {
@@ -268,9 +214,7 @@
                         serviceId: "",
                         year: currentYear,
                         isSubmitted: "",
-                        isEditable: "",
-                        editTypeIds: "",
-                        editableActionIds: ""
+                        isEditable: ""
                     }
                 }
         );

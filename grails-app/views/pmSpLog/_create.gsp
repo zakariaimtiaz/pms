@@ -50,45 +50,21 @@
                                    for="isSubmitted">Submitted:</label>
 
                             <div class="col-md-1">
+
                                 <g:checkBox class="form-control-static" id="isSubmitted" name="isSubmitted" tabindex="3"
-                                            data-bind="checked: spLog.isSubmitted"/>
+                                            data-bind="checked: spLog.isSubmitted"  onchange="checkSubmitted();" />
                             </div>
                             <label class="col-md-2 control-label label-optional"
                                    for="isEditable">Editable:</label>
 
                             <div class="col-md-1">
                                 <g:checkBox class="form-control-static" id="isEditable" name="isEditable" tabindex="4"
-                                            onchange="showAndHideEditing();"  data-bind="checked: spLog.isEditable"/>
+                                            onchange="checkEditable();"  data-bind="checked: spLog.isEditable"/>
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="col-md-2 control-label label-optional"
-                                   for="editTypeIds">Edit Type:</label>
-
-                            <div class="col-md-8">
-                                <select id="editTypeIds" name="editTypeIds" readonly="true"
-                                        data-placeholder="Select ..." tabindex="5"
-                                        data-bind="value: spLog.editTypeIds">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-2 control-label label-optional"
-                                   for="editableActionIds">Action ID:</label>
-
-                            <div class="col-md-8">
-                                <select id="editableActionIds" name="editableActionIds" readonly="true"
-                                        data-placeholder="Select ..." tabindex="6"
-                                        data-bind="value: spLog.editableActionIds">
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
 
                 <div class="panel-footer">

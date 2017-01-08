@@ -104,18 +104,6 @@
                     field: "isEditable", title: "Editable", width: 50, sortable: false,
                     filterable: false,attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=isEditable?'YES':'NO'#"
-                },
-                {
-                    field: "editTypeIds", title: "Edit Type", width: 50, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=editTypeIdStr?editTypeIdStr:''#"
-                },
-                {
-                    field: "editableActionIds",title: "Editable Actions",
-                    width: 50, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()},
-                    template: "#=editableActionIds?editableActionIds:''#"
                 }
             ],
             filterable: {

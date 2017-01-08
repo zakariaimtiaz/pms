@@ -4,6 +4,8 @@ import actions.pmMissions.CreatePmMissionsActionService
 import actions.pmMissions.DeletePmMissionsActionService
 import actions.pmMissions.ListPmMissionsActionService
 import actions.pmMissions.UpdatePmMissionsActionService
+import com.pms.PmMissions
+import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
 
@@ -21,7 +23,10 @@ class PmMissionsController  extends BaseController {
 
     def show() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/pmMissions/show", model: [serviceId:user.serviceId])
+        Calendar now = Calendar.getInstance();   // Gets the current date and time
+        int year = now.get(Calendar.YEAR);
+        boolean isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
+        render(view: "/pmMissions/show", model: [serviceId: user.serviceId,isSubmitted:isSubmitted])
     }
     def create() {
         renderOutput(createPmMissionsActionService, params)

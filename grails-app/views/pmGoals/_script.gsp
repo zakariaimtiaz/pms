@@ -13,12 +13,13 @@
 </script>
 
 <script language="javascript">
-    var gridGoal, dataSource, goalModel,dropDownService, serviceId;
+    var gridGoal, dataSource, goalModel,dropDownService, serviceId, isSubmit;
 
     $(document).ready(function () {
         onLoadGoalPage();
         initGoalGrid();
         initObservable();
+        isSubmit=${isSubmitted};
     });
 
     function onLoadGoalPage() {
@@ -164,7 +165,7 @@
             filterable: {
                 mode: "row"
             },
-            toolbar: kendo.template($("#gridToolbar").html())
+            toolbar: isSubmit!=true?kendo.template($("#gridToolbar").html()):''
         });
         gridGoal = $("#gridGoal").data("kendoGrid");
         $("#menuGrid").kendoMenu();

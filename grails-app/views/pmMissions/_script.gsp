@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridMission, dataSource, missionModel,dropDownService, serviceId;
+    var gridMission, dataSource, missionModel,dropDownService, serviceId,isSubmit;
 
     $(document).ready(function () {
         onLoadMissionPage();
@@ -26,6 +26,7 @@
         serviceId = ${serviceId};
         initializeForm($("#missionForm"), onSubmitMission);
         defaultPageTile("Create Mission",null);
+        isSubmit=${isSubmitted};
     }
 
     function executePreCondition() {
@@ -160,10 +161,11 @@
             filterable: {
                 mode: "row"
             },
-            toolbar: kendo.template($("#gridToolbar").html())
+            toolbar: isSubmit!=true?kendo.template($("#gridToolbar").html()):''
         });
         gridMission = $("#gridMission").data("kendoGrid");
-        $("#menuGrid").kendoMenu();
+
+            $("#menuGrid").kendoMenu();
     }
 
     function initObservable() {

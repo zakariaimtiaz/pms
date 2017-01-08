@@ -4,6 +4,7 @@ import actions.pmGoals.CreatePmGoalsActionService
 import actions.pmGoals.DeletePmGoalsActionService
 import actions.pmGoals.ListPmGoalsActionService
 import actions.pmGoals.UpdatePmGoalsActionService
+import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
@@ -27,7 +28,10 @@ class PmGoalsController  extends BaseController {
 
     def show() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/pmGoals/show", model: [serviceId:user.serviceId])
+        Calendar now = Calendar.getInstance();   // Gets the current date and time
+        int year = now.get(Calendar.YEAR);
+        boolean isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
+        render(view: "/pmGoals/show", model: [serviceId:user.serviceId,isSubmitted:isSubmitted])
     }
     def create() {
         renderOutput(createPmGoalsActionService, params)
