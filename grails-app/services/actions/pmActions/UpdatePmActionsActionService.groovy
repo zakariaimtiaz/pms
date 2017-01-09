@@ -119,7 +119,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             details.save()
                         }else{
                             long id = Long.parseLong(result.get("indicatorId" + (i + 1)).toString())
-                            PmActionsIndicator indicator = PmActionsIndicator.read(id)
+                            PmActionsIndicator indicator = PmActionsIndicator.findById(id)
                             indicator.actionsId = actions.id
                             indicator.indicator = result.get("indicator" + (i + 1))
                             indicator.indicatorType = result.get("indType" + (i + 1))
@@ -242,10 +242,13 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                 int monthCount = monthNoStart
 
                                 for (int j = 0; j < tmpCount; j++) {
-                                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                                    String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
+                                    PmActionsIndicatorDetails details = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicator.id,name)
+                                    if(!details){
+                                        details =new PmActionsIndicatorDetails()
+                                    }
                                     details.actionsId = actions.id
                                     details.indicatorId = indicator.id
-                                    String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
 
                                     details.monthName = name
                                     details.target = indicator.target
