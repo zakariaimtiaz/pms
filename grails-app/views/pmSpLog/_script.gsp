@@ -116,7 +116,7 @@
         clearForm($("#spLogForm"), $('#serviceId'));
         initObservable();
         $('#year').val(currentYear);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function resetForm() {

@@ -34,7 +34,11 @@ class ListPmSpSummaryActionService extends BaseService implements ActionServiceI
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            Map resultMap = super.getSearchResult(result, ListPmSpSummaryActionServiceModel.class)
+            long serviceId = currentUserObject().serviceId
+            Closure additionalParam = {
+                'eq'('serviceId', serviceId)
+            }
+            Map resultMap = super.getSearchResult(result, ListPmSpSummaryActionServiceModel.class,additionalParam)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result

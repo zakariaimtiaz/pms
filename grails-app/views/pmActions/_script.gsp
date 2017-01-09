@@ -84,8 +84,8 @@
             dataTextField: "name",
             dataValueField: "id",
             filter: "contains",
-            suggest: true,
-            dataSource: getBlankDataSource
+            dataSource: getBlankDataSource,
+            value: [  ]
         });
         supportDepartment = $("#supportDepartment").data("kendoMultiSelect");
         supportDepartment.setDataSource(${lstService});
@@ -94,8 +94,8 @@
             dataTextField: "name",
             dataValueField: "id",
             filter: "contains",
-            suggest: true,
-            dataSource: getBlankDataSource
+            dataSource: getBlankDataSource,
+            value: [  ]
         });
         sourceOfFund = $("#sourceOfFund").data("kendoMultiSelect");
         sourceOfFund.setDataSource(${lstProject});
@@ -239,7 +239,7 @@
         deletedIndicatorIds = ''
         dropDownGoals.readonly(false);
         clearIndicatorTable();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
     function resetForm() {
         clearForm($("#actionForm"), null);
@@ -251,7 +251,7 @@
         map = {};
         deletedIndicatorIds = ''
         $("#rowAction").hide();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function initDataSource() {

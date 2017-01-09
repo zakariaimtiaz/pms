@@ -1,7 +1,7 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
     <sec:access url="/pmSpSummary/create">
-        <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>New</li>
+        <li onclick="showForm();"><i class="fa fa-plus-square-o"></i>Add</li>
     </sec:access>
     <sec:access url="/pmSpSummary/update">
         <li onclick="editForm();"><i class="fa fa-edit"></i>Edit</li>
@@ -101,7 +101,7 @@
         $("#gridPmSpSummary").data("kendoGrid").dataSource.read();
         clearForm($("#spSummaryForm"), $('#summary'));
         initObservable();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
         $("#spSummaryRow").hide();
     }
 
