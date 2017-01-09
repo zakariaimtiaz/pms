@@ -1,9 +1,6 @@
 package actions.edDashboard
 
-import com.model.ListEdDashboardActionServiceModel
-import com.model.ListPmMissionsActionServiceModel
 import com.pms.EdDashboard
-import com.pms.PmMissions
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -69,9 +66,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
-        EdDashboard edDashboard = (EdDashboard) result.get(ED_DASHBOARD)
-        ListPmMissionsActionServiceModel model = ListEdDashboardActionServiceModel.read(edDashboard.id)
-        result.put(ED_DASHBOARD, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**

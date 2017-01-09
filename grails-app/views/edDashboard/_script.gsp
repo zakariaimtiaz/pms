@@ -109,11 +109,10 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
-                        edDashboard: { type: "string" },
-                        serviceId: { type: "number" },
-                        service: { type: "string" },
-                        serShortName: { type: "string" },
-                        sequence: { type: "number" }
+                        issue_name: { type: "string" },
+                        description: { type: "string" },
+                        remarks: { type: "string" },
+                        ed_advice: { type: "string" }
                     }
                 },
                 parse: function (data) {
@@ -144,11 +143,11 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "serShortName", title: "Sector/CSU", width: 30, sortable: false, filterable: false},
-                {field: "sequence", title: "ID#", width: 20, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
-                },
-                {field: "edDashboard", title: "EdDashboard Statement", width: 200, sortable: false, filterable: false}
+                {field: "issue_name", title: "Issue", width: 70, sortable: false, filterable: false},
+                {field: "description", title: "Description", width: 150, sortable: false, filterable: false},
+                {field: "remarks", title: "Remarks", width: 100, sortable: false, filterable: false},
+                {field: "ed_advice", title: "Ed's Advice", width: 100, sortable: false, filterable: false},
+
             ],
             filterable: {
                 mode: "row"
@@ -163,7 +162,7 @@
                     edDashboard: {
                         id: "",
                         version: "",
-                        edDashboard: "",
+                        monthFor: "",
                         serviceId: ""
                     }
                 }

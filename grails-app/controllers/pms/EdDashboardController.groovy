@@ -1,16 +1,12 @@
 package pms
 
 import actions.edDashboard.CreateEdDashboardActionService
-import actions.edDashboard.ListEdDashboardActionService
 import actions.edDashboard.UpdateEdDashboardActionService
-import actions.pmMissions.CreatePmMissionsActionService
-import actions.pmMissions.DeletePmMissionsActionService
-import actions.pmMissions.ListPmMissionsActionService
-import actions.pmMissions.UpdatePmMissionsActionService
 import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
+import service.EdDashboardService
 
 class EdDashboardController extends BaseController {
 
@@ -20,9 +16,9 @@ class EdDashboardController extends BaseController {
     ]
 
     BaseService baseService
+    EdDashboardService edDashboardService
     CreateEdDashboardActionService createEdDashboardActionService
     UpdateEdDashboardActionService updateEdDashboardActionService
-    ListEdDashboardActionService listEdDashboardActionService
 
     def show() {
         SecUser user = baseService.currentUserObject()
@@ -41,11 +37,10 @@ class EdDashboardController extends BaseController {
     }
 
     def list() {
-
-        long goalId = Long.parseLong(params.goalId.toString())
-        List<GroovyRowResult> lst = pmActionsService.lstActionsForDropDown(goalId)
+        SecUser user = baseService.currentUserObject()
+        List<GroovyRowResult> lst = edDashboardService.lstEdDashboardIssue(user.serviceId)
         List lstValue = baseService.listForKendoDropdown(lst, null, null)
-        Map result = [lstActions: lstValue]
+        Map result = [list: lstValue]
         render result as JSON
     }
 }

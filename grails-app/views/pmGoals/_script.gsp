@@ -19,7 +19,6 @@
         onLoadGoalPage();
         initGoalGrid();
         initObservable();
-        isSubmit=${isSubmitted};
     });
 
     function onLoadGoalPage() {
@@ -27,6 +26,7 @@
         serviceId = ${serviceId};
         initializeForm($("#goalForm"), onSubmitGoal);
         defaultPageTile("Create Goal",null);
+        isSubmit=${isSubmitted};
     }
 
     function executePreCondition() {
