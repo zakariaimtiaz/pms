@@ -28,9 +28,13 @@ class PmGoalsController  extends BaseController {
 
     def show() {
         SecUser user = baseService.currentUserObject()
-        Calendar now = Calendar.getInstance();   // Gets the current date and time
-        int year = now.get(Calendar.YEAR);
-        boolean isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
+        boolean isAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isSubmitted = true
+        if(!isAdmin){
+            Calendar now = Calendar.getInstance();   // Gets the current date and time
+            int year = now.get(Calendar.YEAR);
+            isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
+        }
         render(view: "/pmGoals/show", model: [serviceId:user.serviceId,isSubmitted:isSubmitted])
     }
     def create() {

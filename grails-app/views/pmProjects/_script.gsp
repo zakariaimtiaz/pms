@@ -40,7 +40,7 @@
         end.value(currentDate);
         end.min(start.value());
         initializeForm($("#projectForm"), onSubmitProjects);
-        defaultPageTile("Create Projects","/pmProjects/show");
+        defaultPageTile("Save Projects","/pmProjects/show");
     }
     function startChange() {
         var startDate = start.value();
@@ -137,7 +137,7 @@
         clearForm($("#projectForm"), $('#typeId'));
         initObservable();
         dropDownProjectsType.value('');
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
     function resetForm() {
         initObservable();

@@ -96,7 +96,7 @@
         clearForm($("#missionForm"), $('#serviceId'));
         initObservable();
         dropDownService.value(serviceId);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
     function resetForm() {
         clearForm($("#missionForm"), $('#serviceId'));

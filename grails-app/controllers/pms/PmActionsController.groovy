@@ -37,10 +37,17 @@ class PmActionsController extends BaseController {
         List<GroovyRowResult> lstProject = pmProjectsService.activeList()
         lstProject.remove(0)
         SecUser user = baseService.currentUserObject()
-        Calendar now = Calendar.getInstance();   // Gets the current date and time
-        int year = now.get(Calendar.YEAR);
-        boolean isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
-        render(view: "/pmActions/show", model: [lstService: lst as JSON, lstProject: lstProject as JSON, serviceId:user.serviceId,isSubmitted:isSubmitted])
+        boolean isAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isSubmitted = true
+        if(!isAdmin){
+            Calendar now = Calendar.getInstance();   // Gets the current date and time
+            int year = now.get(Calendar.YEAR);
+            isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
+        }
+        render(view: "/pmActions/show", model: [lstService  : lst as JSON,
+                                                lstProject  : lstProject as JSON,
+                                                serviceId   : user.serviceId,
+                                                isSubmitted : isSubmitted])
     }
     def create() {
         renderOutput(createPmActionsActionService, params)

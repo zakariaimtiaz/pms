@@ -17,7 +17,6 @@ class PmSpLogController extends BaseController {
     ListPmSpLogActionService listPmSpLogActionService
 
     def show() {
-
         render(view: "/pmSpLog/show")
     }
     def create() {

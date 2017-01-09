@@ -61,7 +61,8 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmObjectives/show,/pmActions/show,/pmSprints/show">
+                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSprints/show,
+                    /pmActions/achievement,/pmSpLog/showSubmission">
                     <li>
                         <a href="#"><i class="fa fa-book"></i>&nbsp;Entry Forms<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -92,13 +93,32 @@
                             </sec:access>
                             <sec:access url="/pmActions/achievement">
                                 <li>
-                                    <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;Achievement</a>
+                                    <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;MRP</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/pmActions/achievement">
+                                <li>
+                                    <a href="#pmActions/achievement"><i class="fa fa-bar-chart"></i>&nbsp;ED'S Dashboard</a>
+                                </li>
+                            </sec:access>
+
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
+%{--                <sec:ifAnyUrls urls="/pmActions/achievement">
+                    <li>
+                        <a href="#"><i class="fa fa-bars"></i>&nbsp;SP Versions<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/pmActions/achievement">
+                                <li>
+                                    <a href="#pmActions/achievement"><i class="fa fa-sitemap"></i>&nbsp;Versions</a>
                                 </li>
                             </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
-                </sec:ifAnyUrls>
+                </sec:ifAnyUrls>--}%
                 <sec:ifAnyUrls urls="/pmSpLog/show,/systemEntity/show,/pmServiceSector/show,/spTimeSchedule/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>
