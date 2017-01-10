@@ -19,11 +19,12 @@
     var deletedIndicatorIds = ''
 
     $(document).ready(function () {
+        isSubmit=${isSubmitted};
         onLoadActionPage();
         initActionsGrid();
         initObservable();
         $(document).on("input", ".amount", calculateTarget);
-        isSubmit=${isSubmitted};
+
     });
 
     function onLoadActionPage() {
@@ -359,7 +360,7 @@
             filterable: {
                 mode: "row"
             },
-            toolbar: isSubmit!=true?kendo.template($("#gridToolbar").html()):''
+            toolbar: isSubmit!=true ? kendo.template($("#gridToolbar").html()) : ''
         });
         gridActions = $("#gridActions").data("kendoGrid");
         $("#menuGrid").kendoMenu();

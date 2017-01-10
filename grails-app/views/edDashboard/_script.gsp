@@ -1,42 +1,30 @@
-<script type="text/x-kendo-template" id="gridToolbar">
-<ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/pmGoals/create">
-        <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
-    </sec:access>
-    <sec:access url="/pmGoals/update">
-        <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
-    </sec:access>
-    <sec:access url="/pmGoals/delete">
-        <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>
-</ul>
-</script>
+
 
 <script language="javascript">
-    var gridGoal, dataSource, goalModel,dropDownService, serviceId, isSubmit;
+    var gridEdDashboard, dataSource, edDashboardModel,dropDownService, serviceId, isSubmit;
 
     $(document).ready(function () {
-        onLoadGoalPage();
-        initGoalGrid();
+        onLoadEdDashboardPage();
+        initEdDashboardGrid();
         initObservable();
+        isSubmit=${isSubmitted};
     });
 
-    function onLoadGoalPage() {
-        $("#rowGoals").hide();
+    function onLoadEdDashboardPage() {
+        $("#rowEdDashboards").hide();
         serviceId = ${serviceId};
-        initializeForm($("#goalForm"), onSubmitGoal);
-        defaultPageTile("Create Goal",null);
-        isSubmit=${isSubmitted};
+        initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
+        defaultPageTile("Create Ed Dashboard",null);
     }
 
     function executePreCondition() {
-        if (!validateForm($("#goalForm"))) {
+        if (!validateForm($("#edDashboardForm"))) {
             return false;
         }
         return true;
     }
 
-    function onSubmitGoal() {
+    function onSubmitEdDashboard() {
         if (executePreCondition() == false) {
             return false;
         }
@@ -45,14 +33,14 @@
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'pmGoals', action: 'create')}";
+            actionUrl = "${createLink(controller:'EdDashboard', action: 'create')}";
         } else {
-            actionUrl = "${createLink(controller:'pmGoals', action: 'update')}";
+            actionUrl = "${createLink(controller:'EdDashboard', action: 'update')}";
         }
 
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#goalForm").serialize(),
+            data: jQuery("#edDashboardForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -74,16 +62,16 @@
             showLoadingSpinner(false);
         } else {
             try {
-                var newEntry = result.pmGoal;
+                var newEntry = result.pmEdDashboard;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridGoal.dataSource.data();
+                    var gridData = gridEdDashboard.dataSource.data();
                     gridData.unshift(newEntry);
                 } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridGoal.select();
-                    var allItems = gridGoal.items();
+                    var selectedRow = gridEdDashboard.select();
+                    var allItems = gridEdDashboard.items();
                     var selectedIndex = allItems.index(selectedRow);
-                    gridGoal.removeRow(selectedRow);
-                    gridGoal.dataSource.insert(selectedIndex, newEntry);
+                    gridEdDashboard.removeRow(selectedRow);
+                    gridEdDashboard.dataSource.insert(selectedIndex, newEntry);
                 }
                 emptyForm();
                 showSuccess(result.message);
@@ -94,22 +82,22 @@
     }
 
     function emptyForm() {
-        clearForm($("#goalForm"), $('#serviceId'));
+        clearForm($("#edDashboardForm"), $('#serviceId'));
         initObservable();
         dropDownService.value(serviceId);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
         initObservable();
         dropDownService.value(serviceId);
-        $('#rowGoals').hide();
+        $('#rowEdDashboards').hide();
     }
 
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'pmGoals', action: 'list')}",
+                    url: "${createLink(controller: 'EdDashboard', action: 'list')}",
                     dataType: "json",
                     type: "post"
                 }
@@ -121,11 +109,10 @@
                     fields: {
                         id: { type: "number" },
                         version: { type: "number" },
-                        goal: { type: "string" },
-                        serviceId: { type: "number" },
-                        service: { type: "string" },
-                        serShortName: { type: "string" },
-                        sequence: { type: "number" }
+                        issue_name: { type: "string" },
+                        description: { type: "string" },
+                        remarks: { type: "string" },
+                        ed_advice: { type: "string" }
                     }
                 },
                 parse: function (data) {
@@ -141,9 +128,9 @@
         });
     }
 
-    function initGoalGrid() {
+    function initEdDashboardGrid() {
         initDataSource();
-        $("#gridGoal").kendoGrid({
+        $("#gridEdDashboard").kendoGrid({
             dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
@@ -156,58 +143,56 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "serShortName", title: "Sector/CSU", width: 30, sortable: false, filterable: false},
-                {field: "sequence", title: "ID#", width: 20, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
-                },
-                {field: "goal", title: "Goal Statement", width: 200, sortable: false, filterable: false}
+                {field: "issue_name", title: "Issue", width: 70, sortable: false, filterable: false},
+                {field: "description", title: "Description", width: 150, sortable: false, filterable: false},
+                {field: "remarks", title: "Remarks", width: 100, sortable: false, filterable: false},
+                {field: "ed_advice", title: "Ed's Advice", width: 100, sortable: false, filterable: false},
+
             ],
             filterable: {
                 mode: "row"
-            },
-            toolbar: isSubmit!=true?kendo.template($("#gridToolbar").html()):''
+            }
         });
-        gridGoal = $("#gridGoal").data("kendoGrid");
-        $("#menuGrid").kendoMenu();
+        gridEdDashboard = $("#gridEdDashboard").data("kendoGrid");
     }
 
     function initObservable() {
-        goalModel = kendo.observable(
+        edDashboardModel = kendo.observable(
                 {
-                    goal: {
+                    edDashboard: {
                         id: "",
                         version: "",
-                        goal: "",
+                        monthFor: "",
                         serviceId: ""
                     }
                 }
         );
-        kendo.bind($("#application_top_panel"), goalModel);
+        kendo.bind($("#application_top_panel"), edDashboardModel);
     }
 
     function deleteService() {
-        if (executeCommonPreConditionForSelectKendo(gridGoal, 'goal') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridEdDashboard, 'edDashboard') == false) {
             return;
         }
         var msg = 'Are you sure you want to delete the selected record?',
-                url = "${createLink(controller: 'pmGoals', action:  'delete')}";
-        confirmDelete(msg, url, gridGoal);
+                url = "${createLink(controller: 'pmEdDashboards', action:  'delete')}";
+        confirmDelete(msg, url, gridEdDashboard);
     }
     function addService(){
-        $("#rowGoals").show();
+        $("#rowEdDashboards").show();
         dropDownService.value(serviceId);
     }
     function editService() {
-        if (executeCommonPreConditionForSelectKendo(gridGoal, 'goal') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridEdDashboard, 'edDashboard') == false) {
             return;
         }
-        $("#rowGoals").show();
-        var goal = getSelectedObjectFromGridKendo(gridGoal);
-        showService(goal);
+        $("#rowEdDashboards").show();
+        var edDashboard = getSelectedObjectFromGridKendo(gridEdDashboard);
+        showService(edDashboard);
     }
 
-    function showService(goal) {
-        goalModel.set('goal', goal);
+    function showService(edDashboard) {
+        edDashboardModel.set('edDashboard', edDashboard);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 

@@ -5,13 +5,16 @@ class PmMissions {
     long id
     long version
     long serviceId
-    String mission
+    String goal
+    int sequence
+    Long spYearId
 
     static mapping = {
-        mission     sqlType: 'text'
+        goal     sqlType: 'text'
     }
 
     static constraints = {
-        mission     size: 2..15000
+        goal     size: 2..15000
+        spYearId(nullable: true)
     }
 }
