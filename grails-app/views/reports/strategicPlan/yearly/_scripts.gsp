@@ -282,7 +282,7 @@
             sortable: false,
             pageable: false,
             columns: [
-                { field: "monthName",title: "Month", width: "150px" },
+                { field: "month_name",title: "Month", width: "150px" },
                 { field: "target", title:"Monthly Target", width: "100px",
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}},
                 { field: "achievement", title:"Monthly Achievement", width: "150px",

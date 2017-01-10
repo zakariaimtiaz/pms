@@ -2464,7 +2464,7 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 			}
 		}
 
-		// Cache the compiled function
+		// Cache the allIndicator function
 		cached = compilerCache( selector, matcherFromGroupMatchers( elementMatchers, setMatchers ) );
 
 		// Save selector and tokenization
@@ -2474,9 +2474,9 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 };
 
 /**
- * A low-level selection function that works with Sizzle's compiled
+ * A low-level selection function that works with Sizzle's allIndicator
  *  selector functions
- * @param {String|Function} selector A selector or a pre-compiled
+ * @param {String|Function} selector A selector or a pre-allIndicator
  *  selector function built with Sizzle.compile
  * @param {Element} context
  * @param {Array} [results]

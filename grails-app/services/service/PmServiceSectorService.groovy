@@ -10,7 +10,8 @@ class PmServiceSectorService extends BaseService{
 
     def activeList() {
         String queryForList = """
-                SELECT s.id AS id, CONCAT(s.name,' (',s.short_name,')') AS name
+                SELECT s.id AS id, (CASE WHEN s.short_name IS NOT NULL THEN CONCAT(s.name,' (',s.short_name,')')
+                ELSE s.name END) AS name
                         FROM pm_service_sector s
                         WHERE s.is_displayble = TRUE
                         ORDER BY s.name ASC
