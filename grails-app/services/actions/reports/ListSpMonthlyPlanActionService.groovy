@@ -128,6 +128,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                 LEFT JOIN pm_service_sector sc ON sc.id = a.service_id
                 WHERE a.service_id = ${serviceId}
                 AND ('${start}' <= a.end AND '${end}' >= a.start)
+                ORDER  BY a.service_id ASC ,YEAR(a.start) ASC,a.goal_id,a.tmp_seq
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
