@@ -145,6 +145,7 @@ class ListSpPlanActionService extends BaseService implements ActionServiceIntf {
                 WHERE a.service_id = ${serviceId}
                 AND ('${start}' <= a.end AND '${end}' >= a.start)
                 GROUP BY a.id
+                ORDER  BY a.service_id ASC ,YEAR(a.start) ASC,a.goal_id,a.tmp_seq
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
