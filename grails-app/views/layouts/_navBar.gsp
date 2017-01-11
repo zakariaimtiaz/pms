@@ -37,7 +37,7 @@
             <ul class="nav" id="side-menu">
                 <sec:ifAnyUrls urls="/reports/showSpPlan,reports/showSpMonthlyPlan">
                     <li>
-                        <a href="#"><i class="fa fa-server"></i>&nbsp;Strategic Plan<span
+                        <a href="#"><i class="fa fa-server"></i>&nbsp;SP Views<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/reports/showSpPlan">
@@ -55,6 +55,25 @@
                                 <li>
                                     <a href="#reports/showSpStatus"><i class="fa fa-file-powerpoint-o"></i>&nbsp;SP Status
                                     </a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/reports/showCompiledSP,reports/showActionsIndicator">
+                    <li>
+                        <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;SP Reports<span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/reports/showCompiledSP">
+                                <li>
+                                    <a href="#reports/showCompiledSP"><i class="fa fa-cubes"></i>&nbsp;All Indicator</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/reports/showActionsIndicator">
+                                <li>
+                                    <a href="#reports/showActionsIndicator"><i class="fa fa-cubes"></i>&nbsp;Action Indicator</a>
                                 </li>
                             </sec:access>
                         </ul>
@@ -98,7 +117,7 @@
                             </sec:access>
                             <sec:access url="/EdDashboard/show">
                                 <li>
-                                    <a href="#EdDashboard/show"><i class="fa fa-bar-chart"></i>&nbsp;ED'S Dashboard</a>
+                                    <a href="#EdDashboard/show"><i class="fa fa-bar-chart"></i>&nbsp;ED's Dashboard</a>
                                 </li>
                             </sec:access>
 
@@ -106,19 +125,19 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-%{--                <sec:ifAnyUrls urls="/pmActions/achievement">
-                    <li>
-                        <a href="#"><i class="fa fa-bars"></i>&nbsp;SP Versions<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <sec:access url="/pmActions/achievement">
+            %{--                <sec:ifAnyUrls urls="/pmActions/achievement">
                                 <li>
-                                    <a href="#pmActions/achievement"><i class="fa fa-sitemap"></i>&nbsp;Versions</a>
+                                    <a href="#"><i class="fa fa-bars"></i>&nbsp;SP Versions<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <sec:access url="/pmActions/achievement">
+                                            <li>
+                                                <a href="#pmActions/achievement"><i class="fa fa-sitemap"></i>&nbsp;Versions</a>
+                                            </li>
+                                        </sec:access>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
                                 </li>
-                            </sec:access>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </sec:ifAnyUrls>--}%
+                            </sec:ifAnyUrls>--}%
                 <sec:ifAnyUrls urls="/pmSpLog/show,/systemEntity/show,/pmServiceSector/show,/spTimeSchedule/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>

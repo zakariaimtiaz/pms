@@ -86,8 +86,14 @@ class ListActionsIndicatorActionService extends BaseService implements ActionSer
 
                  SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
                  SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN 0 ELSE  SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN 0 ELSE  SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
+                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
+                 FLOOR(SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN 1 ELSE 0 END))
+                 ELSE
+                 SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
+                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
+                 FLOOR(SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN 1 ELSE 0 END))
+                 ELSE
+                 SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
                  SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,

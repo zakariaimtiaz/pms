@@ -72,14 +72,14 @@
                             width: 70, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,mon_tar,'mon')#"
+                            template: "#=formatIndicator(indicator_type,mon_tar)#"
                         },
                         {
                             field: "mon_acv", title: "Achievement",
                             width: 90, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,mon_acv,'mon')#"
+                            template: "#=formatIndicator(indicator_type,mon_acv)#"
                         },
                         {
                             field: "mon_acv", title: "Variance",
@@ -98,14 +98,14 @@
                             width: 70, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,cum_tar,'cum')#"
+                            template: "#=formatIndicator(indicator_type,cum_tar)#"
                         },
                         {
                             field: "cum_acv", title: "Achievement",
                             width: 90, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignRight()},
                             attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,cum_acv,'cum')#"
+                            template: "#=formatIndicator(indicator_type,cum_acv)#"
                         },
                         {
                             field: "cum_acv", title: "Variance",
@@ -150,19 +150,11 @@
         }
         return perc;
     }
-    function formatIndicator(indicatorType,target,type){
-        if(type=='cum') {
-            if(!target) return ''
-            if(indicatorType.match('%')){
-                return target + ' % ';
-            }
-            return target
-        }else{
-            if(indicatorType.match('%')){
-                return target + ' % ';
-            }
-            return target
+    function formatIndicator(indicatorType,target){
+        if(indicatorType.match('%')){
+            return target + ' % ';
         }
+        return target
     }
     function onSubmitForm() {
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
