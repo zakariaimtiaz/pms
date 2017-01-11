@@ -604,7 +604,9 @@ class BaseService extends Tools {
     public String currentUserDepartmentListStr(){
         SecUser user = currentUserObject()
         boolean isSysAdmin = isUserSystemAdmin(user.id)
-        if(!isSysAdmin){
+        boolean isTop = isUserTopManagement(user.id)
+
+        if(!isSysAdmin && !isTop){
             List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
             return Tools.buildCommaSeparatedStringOfIds(lstIds)
         }
@@ -625,6 +627,12 @@ class BaseService extends Tools {
         SecUser user = SecUser.read(userId)
         SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
+        return count > 0
+    }
+    public boolean isUserTopManagement(long userId) {
+        SecUser user = SecUser.read(userId)
+        SecRole roleMan = SecRole.findByAuthority("ROLE_TOP_MANAGEMENT")
+        int count = SecUserSecRole.countBySecRoleAndSecUser(roleMan, user)
         return count > 0
     }
 
