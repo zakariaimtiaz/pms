@@ -6,6 +6,7 @@ import com.pms.PmActionsIndicator
 import com.pms.PmActionsIndicatorDetails
 import com.pms.PmGoals
 import com.pms.SystemEntity
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
@@ -19,6 +20,7 @@ import java.text.SimpleDateFormat
 @Transactional
 class CreatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
+    SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Actions has been saved successfully"
     private static final String ACTIONS_OBJECT = "pmAction"
 
@@ -107,7 +109,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                         details.indicatorId = indicator.id
                         details.monthName = monthName
                         details.target = indicator.target
-                        details.createBy = 1
+                        details.createBy = springSecurityService.principal.id
                         details.createDate = new Date()
                         details.save()
                     } catch (Exception e) {
@@ -161,7 +163,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
 
                                 details.monthName = name
                                 details.target = indicator.target
-                                details.createBy = 1
+                                details.createBy = springSecurityService.principal.id
                                 details.createDate = new Date()
                                 details.save()
                                 monthCount++
@@ -191,7 +193,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                                 }
                                 details.monthName = name
                                 details.target = targetInt
-                                details.createBy = 1
+                                details.createBy = springSecurityService.principal.id
                                 details.createDate = new Date()
                                 details.save()
                                 t += 2
