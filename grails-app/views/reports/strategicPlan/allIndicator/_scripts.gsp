@@ -289,8 +289,10 @@
 
     function downloadALlIndicatorReport() {
         showLoadingSpinner(true);
+        var month = $('#month').val();
+        var serviceId = dropDownService.value();
         var msg = 'Do you want to download the SP report now?',
-                url = "${createLink(controller: 'reports', action:  'downloadCompiledSP')}";
+            url = "${createLink(controller: 'reports', action:  'downloadCompiledSP')}?serviceId=" + serviceId+"&month="+month;
         confirmDownload(msg, url);
         return false;
     }

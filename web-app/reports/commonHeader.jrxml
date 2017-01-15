@@ -8,9 +8,9 @@
 	<title>
 		<band height="36" splitType="Stretch">
 			<textField>
-				<reportElement x="143" y="0" width="277" height="18" forecolor="#2C2A2B" uuid="c5e4e1cb-5d9c-4976-9277-2772f715feaf"/>
+				<reportElement x="143" y="0" width="277" height="34" forecolor="#2C2A2B" uuid="c5e4e1cb-5d9c-4976-9277-2772f715feaf"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
 					<font fontName="Cambria" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>

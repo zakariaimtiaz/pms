@@ -4,11 +4,11 @@
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
                     SP Report with all Indicator
-%{--                <button id="downloadSP" name="downloadSP" type="button" data-role="button"
+                <button id="downloadSP" name="downloadSP" type="button" data-role="button"
                         class="k-button k-button-icontext pull-right" role="button"
                         aria-disabled="false" onclick='downloadALlIndicatorReport();'><span
                         class="fa fa-file-pdf-o"></span>&nbsp;Download
-                </button>--}%
+                </button>
                 </div>
             </div>
 
