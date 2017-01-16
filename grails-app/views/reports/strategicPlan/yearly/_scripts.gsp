@@ -1,12 +1,17 @@
 <script type="text/x-kendo-tmpl" id="template1">
     <tr>
+        <td>#:mission#</td>
+    </tr>
+</script>
+<script type="text/x-kendo-tmpl" id="template2">
+    <tr>
         <td width='5%'>#:sequence#</td>
         <td width='90%'>#:goal#</td>
     </tr>
 </script>
 
 <script language="javascript">
-    var year,serviceId,departmentName,dataSource,listViewGoal,gridAction,isApplicable = false,detailExportPromises=[],sheet;
+    var year,serviceId,departmentName,dataSource,listViewMission,listViewGoal,gridAction,isApplicable = false,detailExportPromises=[],sheet;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -31,6 +36,21 @@
         defaultPageTile("Strategic Plan", 'reports/showSpPlan');
     }
     function initListView() {
+        $("#lstMission").kendoListView({
+            autoBind: false,
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false, dataType: "json", type: "post"
+                    }
+                },schema: {
+                    type: 'json', data: "mission"
+                }
+            },
+            template: kendo.template($("#template1").html())
+        });
+        listViewMission = $("#lstMission").data("kendoListView");
+
         $("#lstGoal").kendoListView({
             autoBind: false,
             dataSource: {
@@ -42,7 +62,7 @@
                     type: 'json', data: "list"
                 }
             },
-            template: kendo.template($("#template1").html())
+            template: kendo.template($("#template2").html())
         });
         listViewGoal = $("#lstGoal").data("kendoListView");
     }
@@ -306,8 +326,10 @@
             showError('Please select any service');
             return false;
         }
+        var urlMission ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Mission";
         var urlGoal ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Goals";
         var url ="${createLink(controller: 'reports', action: 'listSpPlan')}?serviceId=" + serviceId+"&year="+year+"&type=Actions";
+        populateGridKendo(listViewMission,urlMission);
         populateGridKendo(listViewGoal,urlGoal);
         populateGridKendo(gridAction, url);
         initChildDataSource(serviceId,year);

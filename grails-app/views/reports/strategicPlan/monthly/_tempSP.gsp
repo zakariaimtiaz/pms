@@ -32,11 +32,32 @@
             <h4 class="panel-title"
                 data-toggle="collapse"
                 data-target="#collapseOne">
-                Goals<i class="fa fa-plus-square-o pull-right"></i>
+                Mission<i class="fa fa-plus-square-o pull-right"></i>
             </h4>
         </div>
 
         <div id="collapseOne" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Mission</th>
+                    </tr>
+                    <tbody id="lstMission"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Second Panel -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title"
+                data-toggle="collapse"
+                data-target="#collapseTwo">
+                Goals<i class="fa fa-plus-square-o pull-right"></i>
+            </h4>
+        </div>
+
+        <div id="collapseTwo" class="panel-collapse collapse">
             <div class="panel-body">
                 <table class="table table-striped">
                     <tr>

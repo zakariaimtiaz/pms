@@ -1,12 +1,17 @@
 <script type="text/x-kendo-tmpl" id="template1">
     <tr>
+        <td>#:mission#</td>
+    </tr>
+</script>
+<script type="text/x-kendo-tmpl" id="template2">
+    <tr>
         <td width='5%'>#:sequence#</td>
         <td width='90%'>#:goal#</td>
     </tr>
 </script>
 
 <script language="javascript">
-    var month,serviceId,dropDownService,gridAction,isApplicable = false;
+    var month,serviceId,dropDownService,listViewMission,listViewGoal,gridAction,isApplicable = false;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -29,6 +34,20 @@
         defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
     }
     function initListView() {
+        $("#lstMission").kendoListView({
+            autoBind: false,
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false, dataType: "json", type: "post"
+                    }
+                },schema: {
+                    type: 'json', data: "mission"
+                }
+            },
+            template: kendo.template($("#template1").html())
+        });
+        listViewMission = $("#lstMission").data("kendoListView");
         $("#lstGoal").kendoListView({
             autoBind: false,
             dataSource: {
@@ -40,7 +59,7 @@
                     type: 'json', data: "list"
                 }
             },
-            template: kendo.template($("#template1").html())
+            template: kendo.template($("#template2").html())
         });
         listViewGoal = $("#lstGoal").data("kendoListView");
     }
@@ -221,8 +240,10 @@
             showError('Please select any service');
             return false;
         }
+        var urlMission ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Mission";
         var urlGoal ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Goals";
         var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month+"&type=Actions";
+        populateGridKendo(listViewMission,urlMission);
         populateGridKendo(listViewGoal,urlGoal);
         populateGridKendo(gridAction, url);
         return false;
