@@ -1,7 +1,7 @@
 
 
 <script language="javascript">
-    var  dropDownService, serviceId;
+    var serviceId;
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
@@ -26,17 +26,13 @@
         dropDownService.value(serviceId);
     }
     function loadTableData(){
-        var actionUrl = null;
-        actionUrl = "${createLink(controller:'edDashboard', action: 'list')}";
-        serviceId=$('#serviceId').val();
+        var actionUrl = "${createLink(controller:'edDashboard', action: 'list')}";
         var month=$('#month').val();
         jQuery.ajax({
             type: 'post',
             data: {serviceId:serviceId,month:month},
             url: actionUrl,
-            //dataType: 'json',
             success: function (data, textStatus) {
-                //alert(data.tableHtml);
                 $('#tableData').html('');
                 $('#tableData').html(data.tableHtml);
             },
@@ -61,17 +57,12 @@
         if (executePreCondition() == false) {
             return false;
         }
-
-       // setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
-        var actionUrl = null;
-            actionUrl = "${createLink(controller:'EdDashboard', action: 'create')}";
-
 
         jQuery.ajax({
             type: 'post',
             data: jQuery("#edDashboardForm").serialize(),
-            url: actionUrl,
+            url: "${createLink(controller:'edDashboard', action: 'create')}",
             success: function (data, textStatus) {
                 executePostCondition(data);
                 setButtonDisabled($('#create'), false);
@@ -106,7 +97,6 @@
         $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
-
         dropDownService.value(serviceId);
     }
 

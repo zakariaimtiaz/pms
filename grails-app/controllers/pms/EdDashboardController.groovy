@@ -26,7 +26,7 @@ class EdDashboardController extends BaseController {
 
     def show() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/EdDashboard/show", model: [serviceId: user.serviceId])
+        render(view: "/edDashboard/show", model: [serviceId: user.serviceId])
     }
     def create() {
         renderOutput(createEdDashboardActionService, params)
@@ -37,31 +37,22 @@ class EdDashboardController extends BaseController {
 
     }
 
-    def list(String serviceId,String month) {
-        def gString = ''
-        def map = [:]
-        int sId
-        Date d
+    def list() {
         try {
-
             DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-            Date start = originalFormat.parse(month);
+            Date start = originalFormat.parse(params.month.toString());
             Calendar c = Calendar.getInstance();
             c.setTime(start);
             c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-            d = DateUtility.getSqlDate(c.getTime())
-            sId = Long.parseLong(serviceId)
+            Date d = DateUtility.getSqlDate(c.getTime())
+            long sId = Long.parseLong(params.serviceId.toString())
+            List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardIssue(sId,d)
+
+            def gString = g.render(template: "/edDashboard/table", model:[list:listValue])
+            Map map = new LinkedHashMap()
+            map.put('tableHtml', gString)
+            render map as JSON
         }catch (Exception ex){
-            SecUser user = baseService.currentUserObject()
-            sId=user.serviceId
         }
-
-        List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardIssue(sId,d)
-
-        gString = g.render(template: "/edDashboard/table", model:[list:listValue])
-        map.put('tableHtml', gString)
-        render map as JSON
-        //render result as JSON
     }
 }

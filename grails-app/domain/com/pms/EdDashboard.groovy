@@ -13,11 +13,11 @@ class EdDashboard {
     long createBy
 
     static mapping = {
-        createDate sqlType: 'date'
-        monthFor sqlType: 'date'
-        description     sqlType: 'text'
-        remarks     sqlType: 'text'
-        edAdvice     sqlType: 'text'
+        createDate    sqlType: 'date'
+        monthFor      sqlType: 'date'
+        description   sqlType: 'text'
+        remarks       sqlType: 'text'
+        edAdvice      sqlType: 'text'
     }
 
     static constraints = {
