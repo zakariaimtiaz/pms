@@ -10,7 +10,7 @@ class EdDashboardService  extends BaseService{
     public List<GroovyRowResult> lstEdDashboardIssue(long serviceId,Date monthFor) {
 
         String queryForList = """
-            SELECT  edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,
+            SELECT  edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,
                   CASE WHEN MONTH(DATE_FORMAT('${monthFor}' + INTERVAL 1 MONTH, '%Y-%m-01'))>=MONTH(NOW())
                   AND YEAR(DATE_FORMAT('${monthFor}' + INTERVAL 1 MONTH, '%Y-%m-01'))>=YEAR(NOW())
                   THEN FALSE ELSE TRUE END AS isReadable

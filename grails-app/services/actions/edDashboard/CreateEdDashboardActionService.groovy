@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat
 class CreateEdDashboardActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
-    private static final String SAVE_SUCCESS_MESSAGE = "Mission has been saved successfully"
-    private static final String ALREADY_EXIST = "Mission already exist"
+    private static final String SAVE_SUCCESS_MESSAGE = "Dashboard has been saved successfully"
+    private static final String ALREADY_EXIST = "Dashboard already exist"
     private static final String ED_DASHBOARD = "edDashboard"
 
     private Logger log = Logger.getLogger(getClass())
@@ -58,12 +58,15 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                 edDashboard.serviceId = serviceId
                 edDashboard.monthFor = monthFor
                 edDashboard.issueId = i
-                edDashboard.description = i != 7 ? result.get("description" + (i)) : ""
-                edDashboard.remarks = i != 7 ? result.get("remarks" + (i)) : ""
-                edDashboard.edAdvice = i != 7 ? result.get("edAdvice" + (i)) : ""
+                boolean isHeading=Boolean.parseBoolean(result.get("hfIsHeading" + (i)))
+                edDashboard.description = isHeading != true ? result.get("description" + (i)) : ""
+                edDashboard.remarks = isHeading != true ? result.get("remarks" + (i)) : ""
+                edDashboard.edAdvice = isHeading != true ? result.get("edAdvice" + (i)) : ""
                 edDashboard.createBy=springSecurityService?.principal?.id
                 edDashboard.createDate=DateUtility.getSqlDate(new Date())
-                edDashboard.save()
+                if(!edDashboard.description.trim().isEmpty()) {
+                    edDashboard.save()
+                }
             }
 
             return result

@@ -8,10 +8,12 @@
     </tr>
 
     <g:each var="item" in="${list}">
-        <g:if test="${item?.id != 7}">
+        <g:hiddenField name="hfIsHeading${item?.id}" value="${item?.is_heading}"></g:hiddenField>
+        <g:if test="${!item?.is_heading}">
             <tr>
 
                 <td style="width: 10%;">
+
                     <label id="issue${item?.id}" name="issue${item?.id}">
                         ${item?.issue_name}</label></td>
                 <td style="padding: 0 0 0 0 ! important; width: 40%;">
