@@ -1,17 +1,13 @@
-package actions.reports
+package actions.reports.yearly
 
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
-import pms.utility.DateUtility
-
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 
 @Transactional
-class ListCompiledSPActionService extends BaseService implements ActionServiceIntf {
+class ListYearlySPActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -28,18 +24,9 @@ class ListCompiledSPActionService extends BaseService implements ActionServiceIn
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            String monthStr = result.month.toString()
-            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-            Date date = originalFormat.parse(monthStr);
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
-            int year = c.get(Calendar.YEAR)
-
-            Date currentMonth = DateUtility.getSqlDate(c.getTime());
-
+            int year = Integer.parseInt(result.year.toString())
             long serviceId = Long.parseLong(result.serviceId.toString())
-            List lstVal = buildResultList(serviceId, year, currentMonth)
+            List lstVal = buildResultList(serviceId, year)
             result.put(LIST, lstVal)
             result.put(COUNT, lstVal.size())
             return result
@@ -77,26 +64,14 @@ class ListCompiledSPActionService extends BaseService implements ActionServiceIn
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth) {
+    private List<GroovyRowResult> buildResultList(long serviceId,int year) {
         String query = """
                 SELECT * FROM (SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
 
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
                  ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
 
-                 SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
-                 SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 FLOOR(SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN 1 ELSE 0 END))
-                 ELSE
-                 SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 FLOOR(SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN 1 ELSE 0 END))
-                 ELSE
-                 SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)
-                 ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
+                 SUM(COALESCE(idd.target,0)) tot_tar,
 
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
@@ -110,7 +85,7 @@ class ListCompiledSPActionService extends BaseService implements ActionServiceIn
                 JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id,
                 (SELECT @rownum := 0) r
                 GROUP BY ai.id
-                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) tmp WHERE tmp.mon_tar!=0;
+                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) tmp;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue

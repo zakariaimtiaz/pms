@@ -3,7 +3,12 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
-                    SP Report with action Indicator
+                    Monthly SP Report with action Indicator
+                    <button id="downloadSP2" name="downloadSP2" type="button" data-role="button"
+                            class="k-button k-button-icontext pull-right" role="button"
+                            aria-disabled="false" onclick='downloadActionIndicatorReport();'><span
+                            class="fa fa-file-pdf-o"></span>&nbsp;Download
+                    </button>
                 </div>
             </div>
 
@@ -41,6 +46,6 @@
         </div>
     </div>
     <div class="row">
-        <div id="grid"></div>
+        <div id="gridActionIndicator"></div>
     </div>
 </div>

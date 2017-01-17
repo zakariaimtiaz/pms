@@ -1,4 +1,4 @@
-package actions.reports
+package actions.reports.yearly
 
 import com.pms.PmServiceSector
 import grails.transaction.Transactional
@@ -13,24 +13,18 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class DownloadCompiledSPActionService extends BaseService implements ActionServiceIntf {
+class DownloadYearlySPActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
 
-    private static final String REPORT_FOLDER = 'pmActions'
+    private static final String REPORT_FOLDER = 'pmActions/yearly'
     private static final String JASPER_FILE = 'spWithAllIndicator'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = 'Strategic Plan  '
-    private static final String OUTPUT_FILE_NAME = "SP_Report_of_"
+    private static final String REPORT_TITLE = ' -Strategic Plan '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
     private static final String YEAR = "year"
-    private static final String MONTH_INT = "monthInt"
-    private static final String MONTH_STR = "monthStr"
-    private static final String CURRENT_MONTH = "currentMonth"
-    private static final String MCRS = ". MCRS_"
-
 
     /**
      * Get parameters from UI
@@ -41,25 +35,14 @@ class DownloadCompiledSPActionService extends BaseService implements ActionServi
      */
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
-        String monthStr = params.month.toString()
-        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-        Date date = originalFormat.parse(monthStr);
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        int year = c.get(Calendar.YEAR)
-        int month = c.get(Calendar.MONTH)+ 1
-        Date currentMonth = DateUtility.getSqlDate(c.getTime());
-
+        int year = Integer.parseInt(params.year.toString())
         long serviceId = Long.parseLong(params.serviceId.toString())
+
         PmServiceSector service = PmServiceSector.read(serviceId)
         params.put(SERVICE_ID, serviceId)
         params.put(SERVICE_NAME, service.name)
         params.put(SERVICE_SHORT_NAME, service.shortName)
         params.put(YEAR, year)
-        params.put(CURRENT_MONTH, currentMonth)
-        params.put(MONTH_STR, monthStr)
-        params.put(MONTH_INT, month)
 
         return params
     }
@@ -111,8 +94,8 @@ class DownloadCompiledSPActionService extends BaseService implements ActionServi
         String logoDir = result.logoDirectory + File.separator
         String reportDir = result.reportDirectory + File.separator + REPORT_FOLDER
         String subReportDir = reportDir + File.separator
-        String outputFileName = result.get(MONTH_INT)+ MCRS + result.get(SERVICE_SHORT_NAME) + UNDERSCORE + OUTPUT_FILE_NAME + result.get(MONTH_STR) + PDF_EXTENSION
-        String titleStr = REPORT_TITLE + EMPTY_SPACE + result.get(MONTH_STR) + "<br/>" + result.get(SERVICE_NAME)
+        String outputFileName = result.get(SERVICE_SHORT_NAME) + REPORT_TITLE + result.get(YEAR) + PDF_EXTENSION
+        String titleStr = result.get(SERVICE_NAME) + REPORT_TITLE + EMPTY_SPACE + result.get(YEAR)
 
         Map reportParams = new LinkedHashMap()
         reportParams.put(ROOT_DIR, rootDir)
@@ -123,7 +106,6 @@ class DownloadCompiledSPActionService extends BaseService implements ActionServi
         reportParams.put(SERVICE_ID, result.get(SERVICE_ID))
         reportParams.put(SERVICE_NAME, result.get(SERVICE_NAME))
         reportParams.put(YEAR, result.get(YEAR))
-        reportParams.put(CURRENT_MONTH, result.get(CURRENT_MONTH))
 
         JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)

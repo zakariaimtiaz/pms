@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridAction,isApplicable = false;
+    var serviceId,dataSource,gridAllIndicator,isApplicable = false;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -22,7 +22,7 @@
     }
 
     function initGrid() {
-        $("#grid").kendoGrid({
+        $("#gridAllIndicator").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -133,7 +133,7 @@
                 }
             ]
         });
-        gridAction = $("#grid").data("kendoGrid");
+        gridAllIndicator = $("#gridAllIndicator").data("kendoGrid");
     }
 
     function calculateVariance(tar,ach){
@@ -164,20 +164,20 @@
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listCompiledSP')}?serviceId=" + serviceId+"&month="+month;
-        populateGridKendo(gridAction, url);
+        var url ="${createLink(controller: 'reports', action: 'listAllIndicator')}?serviceId=" + serviceId+"&month="+month;
+        populateGridKendo(gridAllIndicator, url);
         return false;
     }
-    $("#grid").kendoTooltip({
+    $("#gridAllIndicator").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.goal;
         }
     }).data("kendoTooltip");
-    $("#grid").kendoTooltip({
+    $("#gridAllIndicator").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 3){
                 this.content.parent().css("visibility", "visible");
@@ -190,11 +190,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.ind_remarks;
         }
     }).data("kendoTooltip");
-    $("#grid").kendoTooltip({
+    $("#gridAllIndicator").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 70){
                 this.content.parent().css("visibility", "visible");
@@ -207,12 +207,12 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.remarks;
         }
     }).data("kendoTooltip");
 
-    $("#grid").kendoTooltip({
+    $("#gridAllIndicator").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -225,11 +225,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.supportDepartment;
         }
     }).data("kendoTooltip");
-    $("#grid").kendoTooltip({
+    $("#gridAllIndicator").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -242,7 +242,7 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.project;
         }
     }).data("kendoTooltip");
@@ -288,11 +288,15 @@
     }
 
     function downloadALlIndicatorReport() {
-        showLoadingSpinner(true);
         var month = $('#month').val();
         var serviceId = dropDownService.value();
+        if(month==''||serviceId==''){
+            showError('Please select month & service');
+            return false;
+        }
+        showLoadingSpinner(true);
         var msg = 'Do you want to download the SP report now?',
-            url = "${createLink(controller: 'reports', action:  'downloadCompiledSP')}?serviceId=" + serviceId+"&month="+month;
+            url = "${createLink(controller: 'reports', action:  'downloadAllIndicator')}?serviceId=" + serviceId+"&month="+month;
         confirmDownload(msg, url);
         return false;
     }

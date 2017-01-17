@@ -1,10 +1,13 @@
 package pms
 
-import actions.reports.DownloadCompiledSPActionService
+import actions.reports.DownloadActionsIndicatorSPActionService
+import actions.reports.DownloadAllIndicatorSPActionService
 import actions.reports.ListActionsIndicatorActionService
-import actions.reports.ListCompiledSPActionService
+import actions.reports.ListAllIndicatorSPActionService
 import actions.reports.ListSpMonthlyPlanActionService
 import actions.reports.ListSpPlanActionService
+import actions.reports.yearly.DownloadYearlySPActionService
+import actions.reports.yearly.ListYearlySPActionService
 import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.converters.JSON
@@ -16,9 +19,13 @@ class ReportsController  extends BaseController  {
     PmActionsService pmActionsService
     ListSpPlanActionService listSpPlanActionService
     ListSpMonthlyPlanActionService listSpMonthlyPlanActionService
-    ListCompiledSPActionService listCompiledSPActionService
+    ListAllIndicatorSPActionService listAllIndicatorSPActionService
     ListActionsIndicatorActionService listActionsIndicatorActionService
-    DownloadCompiledSPActionService downloadCompiledSPActionService
+    DownloadAllIndicatorSPActionService downloadAllIndicatorSPActionService
+    DownloadActionsIndicatorSPActionService downloadActionsIndicatorSPActionService
+
+    ListYearlySPActionService listYearlySPActionService
+    DownloadYearlySPActionService downloadYearlySPActionService
 
     static allowedMethods = [
             showSpPlan: "POST", listSpPlan: "POST"
@@ -42,15 +49,25 @@ class ReportsController  extends BaseController  {
         List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
         render(view: "/reports/statistical/show",model: [lst: lst as JSON])
     }
-    def showCompiledSP() {
+    def showYearlySP() {
+        render(view: "/reports/strategicPlan/yearly/sp/show")
+    }
+    def listYearlySP() {
+        renderOutput(listYearlySPActionService,params)
+    }
+    def downloadYearlySP() {
+        Map result = (Map) getReportResponse(downloadYearlySPActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    def showAllIndicator() {
         List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
         render(view: "/reports/strategicPlan/allIndicator/show",model: [lst: lst as JSON])
     }
-    def listCompiledSP() {
-        renderOutput(listCompiledSPActionService,params)
+    def listAllIndicator() {
+        renderOutput(listAllIndicatorSPActionService,params)
     }
-    def downloadCompiledSP() {
-        Map result = (Map) getReportResponse(downloadCompiledSPActionService, params).report
+    def downloadAllIndicator() {
+        Map result = (Map) getReportResponse(downloadAllIndicatorSPActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     def showActionsIndicator() {
@@ -59,5 +76,9 @@ class ReportsController  extends BaseController  {
     }
     def listActionsIndicator() {
         renderOutput(listActionsIndicatorActionService,params)
+    }
+    def downloadActionsIndicator() {
+        Map result = (Map) getReportResponse(downloadActionsIndicatorSPActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
 }

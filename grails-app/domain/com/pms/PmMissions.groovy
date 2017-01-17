@@ -8,10 +8,10 @@ class PmMissions {
     String mission
 
     static mapping = {
-        mission     sqlType: 'text'
+        mission  sqlType: 'text'
     }
 
     static constraints = {
-        mission     size: 2..15000
+        mission  size: 2..15000
     }
 }
