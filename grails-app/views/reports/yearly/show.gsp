@@ -5,6 +5,6 @@
     font-size: smaller;
 }
 </style>
-<g:render template='/reports/strategicPlan/yearly/sp/view'/>
-<g:render template='/reports/strategicPlan/yearly/sp/scripts'/>
+<g:render template='/reports/yearly/view'/>
+<g:render template='/reports/yearly/scripts'/>
 

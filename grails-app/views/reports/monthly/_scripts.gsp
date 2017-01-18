@@ -18,7 +18,7 @@
         $('#month').val(str);
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showMcrs');
+        defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
     }
 
     function initGrid() {
@@ -164,26 +164,8 @@
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listMcrs')}?serviceId=" + serviceId+"&month="+month;
-        var dashboard ="${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+"&month="+month+
-                "&template=/reports/mcrs/viewED";
+        var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month;
         populateGridKendo(gridMRP, url);
-
-        jQuery.ajax({
-            type: 'post',
-            url: dashboard,
-            success: function (data, textStatus) {
-                $('#tableData').html('');
-                $('#tableData').html(data.tableHtml);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.info('error');
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                console.info('complete');
-            }
-
-        });
         return false;
     }
     $("#gridMRP").kendoTooltip({
@@ -313,8 +295,8 @@
             return false;
         }
         showLoadingSpinner(true);
-        var msg = 'Do you want to download the MCRS report now?',
-            url = "${createLink(controller: 'reports', action:  'downloadMcrs')}?serviceId=" + serviceId+"&month="+month;
+        var msg = 'Do you want to download the Monthly SP report now?',
+            url = "${createLink(controller: 'reports', action:  'downloadMonthlySP')}?serviceId=" + serviceId+"&month="+month;
         confirmDownload(msg, url);
         return false;
     }

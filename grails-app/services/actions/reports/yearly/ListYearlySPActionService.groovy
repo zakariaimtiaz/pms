@@ -66,26 +66,26 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
 
     private List<GroovyRowResult> buildResultList(long serviceId,int year) {
         String query = """
-                SELECT * FROM (SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+        SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+        a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+        ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
 
-                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
-                 ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END tot_tar,
+        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END tot_acv,
 
-                 SUM(COALESCE(idd.target,0)) tot_tar,
+        a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
+        (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
+        (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
 
-                 a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
-                 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
-                 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
-
-                FROM (SELECT * FROM pm_actions  WHERE  YEAR(DATE(`start`))=${year}) a
-                JOIN pm_goals g ON g.id = a.goal_id
-                JOIN pm_actions_indicator ai ON ai.actions_id = a.id
-                JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
-                JOIN custom_month cm ON cm.name=idd.month_name
-                JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id,
-                (SELECT @rownum := 0) r
-                GROUP BY ai.id
-                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) tmp;
+        FROM (SELECT * FROM pm_actions  WHERE  YEAR(DATE(`start`))=${year}) a
+        JOIN pm_goals g ON g.id = a.goal_id
+        JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+        JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
+        JOIN custom_month cm ON cm.name=idd.month_name
+        JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id,
+        (SELECT @rownum := 0) r
+        GROUP BY ai.id
+        ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
