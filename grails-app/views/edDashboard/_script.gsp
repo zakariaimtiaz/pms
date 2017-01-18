@@ -94,7 +94,7 @@
     function emptyForm() {
         clearForm($("#edDashboardForm"), $('#serviceId'));
         dropDownService.value(serviceId);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+       // $('#create').html("<span class='k-icon k-i-plus'></span>Create");
     }
     function resetForm() {
         dropDownService.value(serviceId);

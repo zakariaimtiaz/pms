@@ -30,7 +30,7 @@
                         <button id="view" name="view" type="button" data-role="button"
                                 class="k-button k-button-icontext" onclick="loadTableData();"
                                 role="button" tabindex="3"
-                                aria-disabled="false"><span class="k-icon k-i-search"></span>View/Edit
+                                aria-disabled="false"><span class="k-icon k-i-search"></span>View
                         </button>
                     </div>
                     </div>
@@ -46,7 +46,7 @@
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext"
                             role="button" tabindex="4"
-                            aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
+                            aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"

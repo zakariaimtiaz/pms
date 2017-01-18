@@ -27,7 +27,7 @@
                         <textarea id="description${item?.id}" name="description${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control"
-                                  placeholder="${item?.issue_name} Description">${item?.description}</textarea>
+                                  placeholder="">${item?.description}</textarea>
                     </g:else>
 
                 </td>
@@ -41,14 +41,14 @@
                         <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control"
-                                  placeholder="${item?.issue_name} Remarks">${item?.remarks}</textarea>
+                                  placeholder="">${item?.remarks}</textarea>
                     </g:else>
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
                     <textarea id="edAdvice${item?.id}" name="edAdvice${item?.id}" rows="3"
                               style="padding: 0 0 0 0 ! important;"
                               class="form-control"
-                              placeholder="${item?.issue_name} ED's Advice">${item?.ed_advice}</textarea>
+                              placeholder="">${item?.ed_advice}</textarea>
 
                 </td>
 
