@@ -116,7 +116,7 @@
             dataSource: {
                 transport: {
                     read: {
-                        url: "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + e.data.serviceId
+                        url: "${createLink(controller: 'pmActions', action: 'listAchievement')}?serviceId=" + e.data.serviceId
                         + "&month=" + month + "&type=Details",
                         dataType: "json",
                         type: "post"
@@ -213,8 +213,8 @@
             showError('Please select any service');
             return false;
         }
-        var urlGoal = "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId + "&month=" + month + "&type=Goals";
-        var url = "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId + "&month=" + month + "&type=Actions";
+        var urlGoal = "${createLink(controller: 'pmActions', action: 'listAchievement')}?serviceId=" + serviceId + "&month=" + month + "&type=Goals";
+        var url = "${createLink(controller: 'pmActions', action: 'listAchievement')}?serviceId=" + serviceId + "&month=" + month + "&type=Actions";
         populateGridKendo(listViewGoal, urlGoal);
         populateGridKendo(gridAction, url);
         return false;
