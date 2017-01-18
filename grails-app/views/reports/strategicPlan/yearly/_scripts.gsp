@@ -68,7 +68,6 @@
     }
     function initGrid() {
         $("#grid").kendoGrid({
-            toolbar: ["excel"],
             dataSource: {
                 transport: {
                     read: {
@@ -85,153 +84,50 @@
                 serverSorting: true
             },
             autoBind: false,
-            height: getGridHeightKendo() - 50,
+            height: getGridHeightKendo() - 80,
             sortable: false,
             pageable: false,
             detailInit: actionsIndicator,
-            excel: {
-                allPages: true
-            },
-            dataBound: function () {
-                detailExportPromises = [];
-            },
-            excelExport: function (e) {
-                e.preventDefault();
-                var rows = e.workbook.sheets[0].rows;
-                rows.unshift({
-                    cells: [{width: 150}, { value: "Annual Strategic Report "+ year + "\n"+
-                    "Department :" +departmentName+ "\n"+ "Printed On : "+ moment(new Date()).format('DD-MM-YYYY'), background: "#d3d3d3",wrap:true  }]
-                });
-                var sheet = e.workbook.sheets[0];
-                sheet.columns[0].width = 150;
-                sheet.columns[1].width = 350;
-                sheet.columns[2].width = 80;
-                sheet.columns[3].width = 80;
-                sheet.columns[4].width = 80;
-                sheet.columns[5].width = 90;
-                sheet.columns[6].width = 200;
-                sheet.columns[7].width = 200;
-                sheet.columns[8].width = 100;
-                sheet.columns[9].width = 100;
-
-                var workbook = e.workbook;
-                detailExportPromises = [];
-                var masterData = e.data;
-                for (var rowIndex = 0; rowIndex < masterData.length; rowIndex++) {
-                    exportChildData(masterData[rowIndex].id, rowIndex);
-                }
-
-                $.when.apply(null, detailExportPromises)
-                        .then(function () {
-                            // get the export results
-                            var detailExports = $.makeArray(arguments);
-
-                            // sort by masterRowIndex
-                            detailExports.sort(function (a, b) {
-                                return a.masterRowIndex - b.masterRowIndex;
-                            });
-
-                            // add an empty column
-                            workbook.sheets[0].columns.unshift({
-                                width: 30
-                            });
-
-                            // prepend an empty cell to each row
-                            for (var i = 0; i < workbook.sheets[0].rows.length; i++) {
-                                workbook.sheets[0].rows[i].cells.unshift({});
-                            }
-
-                            // merge the detail export sheet rows with the master sheet rows
-                            // loop backwards so the masterRowIndex doesn't need to be updated
-                            for (var i = detailExports.length - 1; i >= 0; i--) {
-                                var masterRowIndex = detailExports[i].masterRowIndex + 1; // compensate for the header row
-
-                                var sheet = detailExports[i].sheet;
-
-                                // prepend an empty cell to each row
-                                for (var ci = 0; ci < sheet.rows.length; ci++) {
-                                    if (sheet.rows[ci].cells[0].value) {
-                                        sheet.rows[ci].cells.unshift({});
-                                    }
-                                }
-
-                                // insert the detail sheet rows after the master row
-                                [].splice.apply(workbook.sheets[0].rows, [masterRowIndex + 1, 0].concat(sheet.rows));
-                            }
-
-                            // save the workbook
-                            kendo.saveAs({
-                                dataURI: new kendo.ooxml.Workbook(workbook).toDataURL(),
-                                fileName: "SP_"+departmentName+"_"+year+".xlsx"
-                            });
-
-                        });
-            },
             columns: [
                 {
                     field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "actions", title: "Action", width: 200, sortable: false, filterable: false},
+                {field: "actions", title: "Action", width: 270, sortable: false, filterable: false},
                 {
-                    field: "start", title: "Start Date", width: 50, sortable: false, filterable: false,
+                    field: "start", title: "Start", width: 80, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"
                 },
                 {
-                    field: "end", title: "End Date", width: 50, sortable: false, filterable: false,
+                    field: "end", title: "End", width: 80, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
                 },
                 {
-                    field: "target", title: "target", width: 50, sortable: false, filterable: false,
+                    field: "target", title: "target", width: 80, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "achievement", title: "Achievement", width: 50, sortable: false, filterable: false,
+                    field: "achievement", title: "Achievement", width: 100, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
                     field: "note",
                     title: "Remarks",
                     template: "#=trimTextForKendo(note,70)#",
-                    width: 120,
+                    width: 190,
                     sortable: false,
                     filterable: false
                 },
-                {field: "resPerson", title: "Responsible Person", width: 90, sortable: false, filterable: false},
+                {field: "resPerson", title: "Responsible Person", width: 150, sortable: false, filterable: false},
                 {
-                    field: "supportDepartmentStr", title: "Support Department", width: 90,
+                    field: "supportDepartmentStr", title: "Support Department", width: 150,
                     sortable: false, filterable: false
                 },
-                {field: "sourceOfFundStr", title: "Project", width: 80, sortable: false, filterable: false}
+                {field: "sourceOfFundStr", title: "Project", width: 150, sortable: false, filterable: false}
             ]
         });
         gridAction = $("#grid").data("kendoGrid");
     }
-
-    function exportChildData(actionsId, rowIndex) {
-        var deferred = $.Deferred();
-        detailExportPromises.push(deferred);
-        dataSource.filter({ field: "id", operator: "eq", value: actionsId});
-
-        var exporter = new kendo.ExcelExporter({
-            columns: [{
-                field: "indicator",title:"Indicator",width: 200,wrapText:true
-            }, {
-                field: "unit_str",title:"Unit",width: 100
-            }, {
-                field: "target",title:"Target"
-            }],
-            dataSource: dataSource
-        });
-
-        exporter.workbook().then(function(book, data) {
-            deferred.resolve({
-                masterRowIndex: rowIndex+1,
-                sheet: book.sheets[0]
-            });
-        });
-    }
-
 
     function actionsIndicator(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
@@ -255,9 +151,6 @@
                 pageSize: 50,
                 filter: { field: "actionsId", operator: "eq", value: e.data.id }
             },
-            excelExport: function (e) {
-                e.preventDefault();
-            },
             selectable: true,
             sortable: false,
             resizable: false,
@@ -267,18 +160,17 @@
             editable: false,
             detailInit: initDetails,
             columns: [
-                { field: "indicator",title: "Indicator", width: "220px"},
-                {field: "unit_str", title: "Unit", width: "50px"},
+                { field: "indicator",title: "Indicator", width: "190px"},
                 { field: "target", title:"Target", width: "100px",attributes: {style: setAlignCenter()},
                     headerAttributes: {style: setAlignCenter()},template:"#=formatIndicator(indicator_type,target)#" },
                 { field: "total_achievement", title:"Achievement", width: "100px",
                     template:"#=formatIndicator(indicator_type,total_achievement)#",
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} }
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()} },
+                {field: "unit_str", title: "Unit", width: "50px"}
             ]
         });
     }
     function initDetails(e) {
-        var indicator_type = e.data.indicator_type;
         $("<div/>").appendTo(e.detailCell).kendoGrid({
             dataSource: {
                 transport: {
@@ -352,25 +244,9 @@
             serverSorting: true
         });
     }
-    function downloadDetails() {
-        if (isApplicable) {
-            showLoadingSpinner(true);
-            var from = $('#from').val();
-            var to = $('#to').val();
-            var hospitalCode = dropDownHospitalCode.value();
-            var params = "?from=" + from + "&to=" + to + "&hospitalCode=" + hospitalCode;
-            var  msg = 'Do you want to download the report now?',
-                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyPathologySummary')}" + params;
 
-            confirmDownload(msg, url);
-        } else {
-            showError('This feature is under development');
-//            showError('No record to download');
-        }
-        return false;
-    }
     $("#grid").kendoTooltip({
-        filter: "td:nth-child(9)",
+        filter: "td:nth-child(8)",
         width: 300,
         position: "top",
         content: function(e){

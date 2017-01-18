@@ -61,19 +61,24 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/reports/showCompiledSP,reports/showActionsIndicator">
+                <sec:ifAnyUrls urls="/reports/showAllIndicator,reports/showActionsIndicator">
                     <li>
                         <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;SP Reports<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <sec:access url="/reports/showCompiledSP">
+                            <sec:access url="/reports/showYearlySP">
                                 <li>
-                                    <a href="#reports/showCompiledSP"><i class="fa fa-cubes"></i>&nbsp;All Indicator</a>
+                                    <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Yearly SP</a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/reports/showAllIndicator">
+                                <li>
+                                    <a href="#reports/showAllIndicator"><i class="fa fa-object-ungroup"></i>&nbsp;All Indicator</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showActionsIndicator">
                                 <li>
-                                    <a href="#reports/showActionsIndicator"><i class="fa fa-cubes"></i>&nbsp;Action Indicator</a>
+                                    <a href="#reports/showActionsIndicator"><i class="fa fa-object-group"></i>&nbsp;Action Indicator</a>
                                 </li>
                             </sec:access>
                         </ul>
