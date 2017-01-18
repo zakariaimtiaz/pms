@@ -41,8 +41,9 @@ class EdDashboardController extends BaseController {
             Date d = DateUtility.getSqlDate(c.getTime())
             long sId = Long.parseLong(params.serviceId.toString())
             List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardIssue(sId,d)
+            String template = params.template?params.template:'/edDashboard/table'
 
-            def gString = g.render(template: "/edDashboard/table", model:[list:listValue])
+            def gString = g.render(template: template, model:[list:listValue])
             Map map = new LinkedHashMap()
             map.put('tableHtml', gString)
             render map as JSON

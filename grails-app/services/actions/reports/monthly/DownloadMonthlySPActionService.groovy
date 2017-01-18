@@ -1,4 +1,4 @@
-package actions.reports
+package actions.reports.monthly
 
 import com.pms.PmServiceSector
 import grails.transaction.Transactional
@@ -13,14 +13,14 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class DownloadAllIndicatorSPActionService extends BaseService implements ActionServiceIntf {
+class DownloadMonthlySPActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
 
-    private static final String REPORT_FOLDER = 'pmActions/allIndicator'
+    private static final String REPORT_FOLDER = 'pmActions/monthly'
     private static final String JASPER_FILE = 'spWithAllIndicator'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' -MCRS Report of '
+    private static final String REPORT_TITLE = ' -SP Report of '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"

@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridActionIndicator,isApplicable = false;
+    var serviceId,dataSource,gridSP,isApplicable = false;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -7,22 +7,22 @@
         initGrid();
     });
     function onLoadInfoPage() {
-        var str = moment().format('MMMM YYYY');
+        var str = moment().format('YYYY');
 
-        $('#month').kendoDatePicker({
-            format: "MMMM yyyy",
+        $('#year').kendoDatePicker({
+            format: "yyyy",
             parseFormats: ["yyyy-MM-dd"],
-            start: "year",
-            depth: "year"
+            start: "decade",
+            depth: "decade"
         }).data("kendoDatePicker");
-        $('#month').val(str);
+        $('#year').val(str);
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showSpPlan');
+        defaultPageTile("Strategic Plan", '/reports/listYearlySp');
     }
 
     function initGrid() {
-        $("#gridActionIndicator").kendoGrid({
+        $("#gridSP").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -60,61 +60,23 @@
                     template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
                 },
                 {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
-                {field: "tot_tar", title: "Total<br/>Target", width: 80, sortable: false, filterable: false,
+                {field: "tot_tar", title: "Target", width: 80, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
                     template:"#=formatIndicator(indicator_type,tot_tar)#"
                 },
                 {
-                    title: "Monthly", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "mon_tar", title: "Target",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,mon_tar)#"
-                        },
-                        {
-                            field: "mon_acv", title: "Achievement",
-                            width: 90, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,mon_acv)#"
-                        },
-                        {
-                            field: "mon_acv", title: "Variance",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=calculateVariance(mon_tar,mon_acv)#"
-                        }
-                    ]
+                    field: "tot_acv", title: "Achievement",
+                    width: 90, sortable: false, filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=formatIndicator(indicator_type,tot_acv)#"
                 },
                 {
-                    title: "Cumulative", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "cum_tar", title: "Target",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,cum_tar)#"
-                        },
-                        {
-                            field: "cum_acv", title: "Achievement",
-                            width: 90, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,cum_acv)#"
-                        },
-                        {
-                            field: "cum_acv", title: "Variance",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=calculateVariance(cum_tar,cum_acv)#"
-                        }
-                    ]
+                    field: "total_acv", title: "Variance",
+                    width: 90, sortable: false, filterable: false,
+                    headerAttributes: {style: setAlignRight()},
+                    attributes: {style: setAlignRight()},
+                    template: "#=calculateVariance(tot_tar,tot_acv)#"
                 },
                 {
                     field: "remarks", title: "Remarks",
@@ -133,7 +95,7 @@
                 }
             ]
         });
-        gridActionIndicator = $("#gridActionIndicator").data("kendoGrid");
+        gridSP = $("#gridSP").data("kendoGrid");
     }
 
     function calculateVariance(tar,ach){
@@ -158,43 +120,26 @@
     }
     function onSubmitForm() {
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
-        var month = $('#month').val();
+        var year = $('#year').val();
         var serviceId = dropDownService.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listActionsIndicator')}?serviceId=" + serviceId+"&month="+month;
-        populateGridKendo(gridActionIndicator, url);
+        var url ="${createLink(controller: 'reports', action: 'listYearlySP')}?serviceId=" + serviceId+"&year="+year;
+        populateGridKendo(gridSP, url);
         return false;
     }
-    $("#gridActionIndicator").kendoTooltip({
+    $("#gridSP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridActionIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.goal;
         }
     }).data("kendoTooltip");
-    $("#gridActionIndicator").kendoTooltip({
-        show: function(e){
-            if(this.content.text().length > 3){
-                this.content.parent().css("visibility", "visible");
-            }
-        },
-        hide:function(e){
-            this.content.parent().css("visibility", "hidden");
-        },
-        filter: "td:nth-child(8)",
-        width: 300,
-        position: "top",
-        content: function(e){
-            var dataItem = $("#gridActionIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
-            return dataItem.ind_remarks;
-        }
-    }).data("kendoTooltip");
-    $("#gridActionIndicator").kendoTooltip({
+    $("#gridSP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 70){
                 this.content.parent().css("visibility", "visible");
@@ -203,16 +148,15 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(13)",
+        filter: "td:nth-child(9)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridActionIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.remarks;
         }
     }).data("kendoTooltip");
-
-    $("#gridActionIndicator").kendoTooltip({
+    $("#gridSP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -221,15 +165,15 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(15)",
+        filter: "td:nth-child(11)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridActionIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.supportDepartment;
         }
     }).data("kendoTooltip");
-    $("#gridActionIndicator").kendoTooltip({
+    $("#gridSP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -238,11 +182,11 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(16)",
+        filter: "td:nth-child(12)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridActionIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.project;
         }
     }).data("kendoTooltip");
@@ -287,16 +231,12 @@
         return val;
     }
 
-    function downloadActionIndicatorReport() {
-        var month = $('#month').val();
-        var serviceId = dropDownService.value();
-        if(month==''||serviceId==''){
-            showError('Please select month & service');
-            return false;
-        }
+    function downloadYearlySpReport() {
         showLoadingSpinner(true);
+        var year = $('#year').val();
+        var serviceId = dropDownService.value();
         var msg = 'Do you want to download the SP report now?',
-                url = "${createLink(controller: 'reports', action:  'downloadActionsIndicator')}?serviceId=" + serviceId+"&month="+month;
+            url = "${createLink(controller: 'reports', action:  'downloadYearlySP')}?serviceId=" + serviceId+"&year="+year;
         confirmDownload(msg, url);
         return false;
     }

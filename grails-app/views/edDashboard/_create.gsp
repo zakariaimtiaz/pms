@@ -35,9 +35,6 @@
                     </div>
                     </div>
 
-                <div  class="form-group" style="display: none;">
-                    <div id="gridEdDashboard"></div>
-                </div>
                     <div class="form-group" id="tableData">
                     &nbsp;
                     </div>

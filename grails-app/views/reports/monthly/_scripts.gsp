@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridAllIndicator,isApplicable = false;
+    var serviceId,dataSource,gridMRP,isApplicable = false;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -18,11 +18,11 @@
         $('#month').val(str);
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showSpPlan');
+        defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
     }
 
     function initGrid() {
-        $("#gridAllIndicator").kendoGrid({
+        $("#gridMRP").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -133,7 +133,7 @@
                 }
             ]
         });
-        gridAllIndicator = $("#gridAllIndicator").data("kendoGrid");
+        gridMRP = $("#gridMRP").data("kendoGrid");
     }
 
     function calculateVariance(tar,ach){
@@ -164,20 +164,20 @@
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listAllIndicator')}?serviceId=" + serviceId+"&month="+month;
-        populateGridKendo(gridAllIndicator, url);
+        var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month;
+        populateGridKendo(gridMRP, url);
         return false;
     }
-    $("#gridAllIndicator").kendoTooltip({
+    $("#gridMRP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.goal;
         }
     }).data("kendoTooltip");
-    $("#gridAllIndicator").kendoTooltip({
+    $("#gridMRP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 3){
                 this.content.parent().css("visibility", "visible");
@@ -190,11 +190,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.ind_remarks;
         }
     }).data("kendoTooltip");
-    $("#gridAllIndicator").kendoTooltip({
+    $("#gridMRP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 70){
                 this.content.parent().css("visibility", "visible");
@@ -207,12 +207,12 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.remarks;
         }
     }).data("kendoTooltip");
 
-    $("#gridAllIndicator").kendoTooltip({
+    $("#gridMRP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -225,11 +225,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.supportDepartment;
         }
     }).data("kendoTooltip");
-    $("#gridAllIndicator").kendoTooltip({
+    $("#gridMRP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -242,7 +242,7 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridAllIndicator").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.project;
         }
     }).data("kendoTooltip");
@@ -287,7 +287,7 @@
         return val;
     }
 
-    function downloadALlIndicatorReport() {
+    function downloadMcrsReport() {
         var month = $('#month').val();
         var serviceId = dropDownService.value();
         if(month==''||serviceId==''){
@@ -295,8 +295,8 @@
             return false;
         }
         showLoadingSpinner(true);
-        var msg = 'Do you want to download the SP report now?',
-            url = "${createLink(controller: 'reports', action:  'downloadAllIndicator')}?serviceId=" + serviceId+"&month="+month;
+        var msg = 'Do you want to download the Monthly SP report now?',
+            url = "${createLink(controller: 'reports', action:  'downloadMonthlySP')}?serviceId=" + serviceId+"&month="+month;
         confirmDownload(msg, url);
         return false;
     }

@@ -2,6 +2,7 @@ package pms
 
 import actions.pmActions.CreatePmActionsActionService
 import actions.pmActions.DeletePmActionsActionService
+import actions.pmActions.ListPmActionsAchievementActionService
 import actions.pmActions.ListPmActionsActionService
 import actions.pmActions.UpdateIndicatorAchievementActionService
 import actions.pmActions.UpdatePmActionsActionService
@@ -30,6 +31,7 @@ class PmActionsController extends BaseController {
     DeletePmActionsActionService deletePmActionsActionService
     ListPmActionsActionService listPmActionsActionService
     UpdateIndicatorAchievementActionService updateIndicatorAchievementActionService
+    ListPmActionsAchievementActionService listPmActionsAchievementActionService
 
     def show() {
         List<GroovyRowResult> lst = pmServiceSectorService.activeList()
@@ -110,5 +112,8 @@ class PmActionsController extends BaseController {
     def achievement() {
         SecUser user = baseService.currentUserObject()
         render(view: "/pmActions/achievement/show", model: [serviceId:user.serviceId])
+    }
+    def listAchievement(){
+        renderOutput(listPmActionsAchievementActionService, params)
     }
 }

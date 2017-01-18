@@ -35,19 +35,14 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/reports/showAllIndicator,reports/showActionsIndicator">
+                <sec:ifAnyUrls urls="/reports/showMcrs,reports/showYearlySP">
                     <li>
                         <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;Reports<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-%{--                            <sec:access url="/reports/showYearlySP">
+                            <sec:access url="/reports/showYearlySP">
                                 <li>
-                                    <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Yearly SP</a>
-                                </li>
-                            </sec:access>--}%
-                            <sec:access url="/reports/showSpPlan">
-                                <li>
-                                    <a href="#reports/showSpPlan"><i class="fa fa-cubes"></i>&nbsp;Annual SP</a>
+                                    <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Annual SP</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSpMonthlyPlan">
@@ -56,9 +51,9 @@
                                     </a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/reports/showAllIndicator">
+                            <sec:access url="/reports/showMcrs">
                                 <li>
-                                    <a href="#reports/showAllIndicator"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
+                                    <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSpStatus">
@@ -67,11 +62,6 @@
                                     </a>
                                 </li>
                             </sec:access>
-%{--                            <sec:access url="/reports/showActionsIndicator">
-                                <li>
-                                    <a href="#reports/showActionsIndicator"><i class="fa fa-object-group"></i>&nbsp;Action Indicator</a>
-                                </li>
-                            </sec:access>--}%
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>

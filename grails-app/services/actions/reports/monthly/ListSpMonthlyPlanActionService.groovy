@@ -1,4 +1,4 @@
-package actions.reports
+package actions.reports.monthly
 
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -11,7 +11,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class ListAllIndicatorSPActionService extends BaseService implements ActionServiceIntf {
+class ListSpMonthlyPlanActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -114,5 +114,4 @@ class ListAllIndicatorSPActionService extends BaseService implements ActionServi
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
-    }
-}
+    }}

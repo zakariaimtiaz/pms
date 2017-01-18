@@ -5,6 +5,6 @@
     font-size: smaller;
 }
 </style>
-<g:render template='/reports/strategicPlan/allIndicator/view'/>
-<g:render template='/reports/strategicPlan/allIndicator/scripts'/>
+<g:render template='/reports/mcrs/view'/>
+<g:render template='/reports/mcrs/scripts'/>
 

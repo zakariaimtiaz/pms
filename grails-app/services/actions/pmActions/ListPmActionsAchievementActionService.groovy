@@ -1,19 +1,19 @@
-package actions.reports
+package actions.pmActions
 
 import com.pms.PmGoals
 import com.pms.PmMissions
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
-import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import org.apache.log4j.Logger
 
 @Transactional
-class ListSpMonthlyPlanActionService extends BaseService implements ActionServiceIntf {
+class ListPmActionsAchievementActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -46,6 +46,8 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
             Date date = originalFormat.parse(monthStr);
             Calendar c = Calendar.getInstance();
             c.setTime(date);
+            Date currentMonth = DateUtility.getSqlDate(c.getTime());
+
             String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
             c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
             Date start=DateUtility.getSqlDate(c.getTime())
@@ -62,7 +64,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                 List<PmGoals> lstGoals = PmGoals.findAllByServiceId(serviceId)
                 result.put(LIST, lstGoals)
             }else if(type.equals("Actions")){
-                List<GroovyRowResult> lstAction = buildActionsList(serviceId,start,end)
+                List<GroovyRowResult> lstAction = buildActionsList(serviceId,start,end,currentMonth)
                 result.put(LIST, lstAction)
                 return result
             }else if(type.equals("Details")){
@@ -116,19 +118,24 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
         return result
     }
 
-    private List<GroovyRowResult> buildActionsList(long serviceId,Date start, Date end) {
+    private List<GroovyRowResult> buildActionsList(long serviceId,Date start, Date end, Date currentMonth) {
         String query = """
-                SELECT a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
+                SELECT * FROM (SELECT g.goal,a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
                         a.res_person AS resPerson, a.note,a.support_department AS supportDepartment,
-                        a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,
+                        a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,COALESCE(idd.target,0) mon_tar,
 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartmentStr,
 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) sourceOfFundStr
 
                 FROM pm_actions a
-                LEFT JOIN pm_service_sector sc ON sc.id = a.service_id
+                LEFT JOIN pm_goals g ON g.id = a.goal_id
+                JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+                JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
+                JOIN custom_month cm ON cm.name=idd.month_name
+                JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id
                 WHERE a.service_id = ${serviceId}
                 AND ('${start}' <= a.end AND '${end}' >= a.start)
-                ORDER  BY a.service_id ASC ,YEAR(a.start) ASC,a.goal_id,a.tmp_seq
+                GROUP BY ai.id
+                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) ttt WHERE ttt.mon_tar!=0
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
@@ -148,3 +155,4 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
         return lstValue
     }
 }
+

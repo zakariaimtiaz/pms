@@ -3,12 +3,12 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
-                    Monthly Strategic Plan
-                    <button id="downloadMSP" name="downloadMSP" type="button" data-role="button"
-                            class="k-button k-button-icontext pull-right" role="button"
-                            aria-disabled="false" onclick='downloadDetails();'><span
-                            class="fa fa-file-pdf-o"></span>&nbsp;Download
-                    </button>
+                    Management Change Reporting System (MCRS)
+                <button id="downloadSP" name="downloadSP" type="button" data-role="button"
+                        class="k-button k-button-icontext pull-right" role="button"
+                        aria-disabled="false" onclick='downloadMcrsReport();'><span
+                        class="fa fa-file-pdf-o"></span>&nbsp;Download
+                </button>
                 </div>
             </div>
 
@@ -32,7 +32,6 @@
                                     data_model_name="dropDownService">
                             </app:dropDownService>
                         </div>
-
                         <div class="col-md-2">
                             <button id="create" name="create" type="submit" data-role="button"
                                     class="k-button k-button-icontext"
@@ -46,13 +45,25 @@
             </g:form>
         </div>
     </div>
-
     <div class="row">
-        <g:render template='/reports/strategicPlan/monthly/tempSP'/>
-    </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#menu1">MRP</a></li>
+            <li><a data-toggle="tab" href="#menu2">ED's Dashboard</a></li>
+        </ul>
 
-    <div class="row">
-        <div id="grid"></div>
+        <div class="tab-content">
+            <div id="menu1" class="tab-pane fade in active">
+                <div class="panel-primary">
+                    <div id="gridMRP"></div>
+                </div>
+            </div>
+            <div id="menu2" class="tab-pane fade">
+                <div class="panel-primary">
+                    <div class="form-group" id="tableData">
+                        <g:render template='/reports/mcrs/ViewED'/>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
