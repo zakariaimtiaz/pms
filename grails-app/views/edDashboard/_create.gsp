@@ -3,7 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    Create Ed Dashboard
+                    ED's Dashboard
                 </div>
             </div>
 

@@ -27,6 +27,7 @@
     }
     function loadTableData(){
         var actionUrl = "${createLink(controller:'edDashboard', action: 'list')}";
+        serviceId=$('#serviceId').val();
         var month=$('#month').val();
         jQuery.ajax({
             type: 'post',
