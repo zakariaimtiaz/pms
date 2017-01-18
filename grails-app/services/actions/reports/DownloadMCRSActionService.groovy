@@ -13,11 +13,11 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class DownloadAllIndicatorSPActionService extends BaseService implements ActionServiceIntf {
+class DownloadMCRSActionService extends BaseService implements ActionServiceIntf {
 
     JasperService jasperService
 
-    private static final String REPORT_FOLDER = 'pmActions/allIndicator'
+    private static final String REPORT_FOLDER = 'pmActions/mcrs'
     private static final String JASPER_FILE = 'spWithAllIndicator'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -MCRS Report of '

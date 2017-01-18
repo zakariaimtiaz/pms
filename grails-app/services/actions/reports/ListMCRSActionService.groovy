@@ -11,7 +11,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
-class ListAllIndicatorSPActionService extends BaseService implements ActionServiceIntf {
+class ListMCRSActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 

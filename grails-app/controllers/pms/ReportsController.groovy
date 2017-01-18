@@ -1,9 +1,9 @@
 package pms
 
 import actions.reports.DownloadActionsIndicatorSPActionService
-import actions.reports.DownloadAllIndicatorSPActionService
+import actions.reports.DownloadMCRSActionService
 import actions.reports.ListActionsIndicatorActionService
-import actions.reports.ListAllIndicatorSPActionService
+import actions.reports.ListMCRSActionService
 import actions.reports.ListSpMonthlyPlanActionService
 import actions.reports.ListSpPlanActionService
 import actions.reports.yearly.DownloadYearlySPActionService
@@ -19,16 +19,16 @@ class ReportsController  extends BaseController  {
     PmActionsService pmActionsService
     ListSpPlanActionService listSpPlanActionService
     ListSpMonthlyPlanActionService listSpMonthlyPlanActionService
-    ListAllIndicatorSPActionService listAllIndicatorSPActionService
+    ListMCRSActionService listMCRSActionService
     ListActionsIndicatorActionService listActionsIndicatorActionService
-    DownloadAllIndicatorSPActionService downloadAllIndicatorSPActionService
+    DownloadMCRSActionService downloadMCRSActionService
     DownloadActionsIndicatorSPActionService downloadActionsIndicatorSPActionService
 
     ListYearlySPActionService listYearlySPActionService
     DownloadYearlySPActionService downloadYearlySPActionService
 
     static allowedMethods = [
-            showSpPlan: "POST", listSpPlan: "POST"
+            showSpPlan: "POST", listSpPlan: "POST", showMcrs: "POST"
     ]
     def showSpPlan() {
         SecUser user = baseService.currentUserObject()
@@ -59,15 +59,15 @@ class ReportsController  extends BaseController  {
         Map result = (Map) getReportResponse(downloadYearlySPActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
-    def showAllIndicator() {
+    def showMcrs() {
         List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
-        render(view: "/reports/strategicPlan/allIndicator/show",model: [lst: lst as JSON])
+        render(view: "/reports/mcrs/show",model: [lst: lst as JSON])
     }
-    def listAllIndicator() {
-        renderOutput(listAllIndicatorSPActionService,params)
+    def listMcrs() {
+        renderOutput(listMCRSActionService,params)
     }
-    def downloadAllIndicator() {
-        Map result = (Map) getReportResponse(downloadAllIndicatorSPActionService, params).report
+    def downloadMcrs() {
+        Map result = (Map) getReportResponse(downloadMCRSActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     def showActionsIndicator() {

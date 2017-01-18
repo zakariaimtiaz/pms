@@ -35,7 +35,7 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/reports/showAllIndicator,reports/showActionsIndicator">
+                <sec:ifAnyUrls urls="/reports/showMcrs,/reports/showSpPlan">
                     <li>
                         <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;Reports<span
                                 class="fa arrow"></span></a>
@@ -56,9 +56,9 @@
                                     </a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/reports/showAllIndicator">
+                            <sec:access url="/reports/showMcrs">
                                 <li>
-                                    <a href="#reports/showAllIndicator"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
+                                    <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSpStatus">
