@@ -123,9 +123,9 @@
                                     <a href="#edDashboard/show"><i class="fa fa-bar-chart"></i>&nbsp;ED's Dashboard</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/pmMcrsLog/showSubmission">
+                            <sec:access url="/pmMcrsLog/show">
                                 <li>
-                                    <a href="#pmMcrsLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;Submission</a>
+                                    <a href="#pmMcrsLog/show"><i class="fa fa-clock-o"></i>&nbsp;Submission</a>
                                 </li>
                             </sec:access>
                         </ul>
