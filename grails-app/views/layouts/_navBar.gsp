@@ -35,20 +35,30 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/reports/showSpPlan,reports/showSpMonthlyPlan">
+                <sec:ifAnyUrls urls="/reports/showAllIndicator,reports/showActionsIndicator">
                     <li>
-                        <a href="#"><i class="fa fa-server"></i>&nbsp;SP Views<span
+                        <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;Reports<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
+%{--                            <sec:access url="/reports/showYearlySP">
+                                <li>
+                                    <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Yearly SP</a>
+                                </li>
+                            </sec:access>--}%
                             <sec:access url="/reports/showSpPlan">
                                 <li>
-                                    <a href="#reports/showSpPlan"><i class="fa fa-cubes"></i>&nbsp;Yearly</a>
+                                    <a href="#reports/showSpPlan"><i class="fa fa-cubes"></i>&nbsp;Annual SP</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSpMonthlyPlan">
                                 <li>
-                                    <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly
+                                    <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly SP
                                     </a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/reports/showAllIndicator">
+                                <li>
+                                    <a href="#reports/showAllIndicator"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSpStatus">
@@ -57,38 +67,18 @@
                                     </a>
                                 </li>
                             </sec:access>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/reports/showAllIndicator,reports/showActionsIndicator">
-                    <li>
-                        <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;SP Reports<span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <sec:access url="/reports/showYearlySP">
-                                <li>
-                                    <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Yearly SP</a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/reports/showAllIndicator">
-                                <li>
-                                    <a href="#reports/showAllIndicator"><i class="fa fa-object-ungroup"></i>&nbsp;All Indicator</a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/reports/showActionsIndicator">
+%{--                            <sec:access url="/reports/showActionsIndicator">
                                 <li>
                                     <a href="#reports/showActionsIndicator"><i class="fa fa-object-group"></i>&nbsp;Action Indicator</a>
                                 </li>
-                            </sec:access>
+                            </sec:access>--}%
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSprints/show,
-                    /pmActions/achievement,/pmSpLog/showSubmission">
+                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show,/pmSpLog/showSubmission">
                     <li>
-                        <a href="#"><i class="fa fa-book"></i>&nbsp;Entry Forms<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-book"></i>&nbsp;SP<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmMissions/show">
                                 <li>
@@ -112,9 +102,17 @@
                             </sec:access>
                             <sec:access url="/pmSpLog/showSubmission">
                                 <li>
-                                    <a href="#pmSpLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;SP Submission</a>
+                                    <a href="#pmSpLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;Submission</a>
                                 </li>
                             </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/pmActions/achievement,/edDashboard/show,/pmMcrsLog/showSubmission">
+                    <li>
+                        <a href="#"><i class="fa fa-bars"></i>&nbsp;MCRS<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
                             <sec:access url="/pmActions/achievement">
                                 <li>
                                     <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;MRP</a>
@@ -125,24 +123,15 @@
                                     <a href="#edDashboard/show"><i class="fa fa-bar-chart"></i>&nbsp;ED's Dashboard</a>
                                 </li>
                             </sec:access>
-
+                            <sec:access url="/pmMcrsLog/showSubmission">
+                                <li>
+                                    <a href="#pmMcrsLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;Submission</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-            %{--                <sec:ifAnyUrls urls="/pmActions/achievement">
-                                <li>
-                                    <a href="#"><i class="fa fa-bars"></i>&nbsp;SP Versions<span class="fa arrow"></span></a>
-                                    <ul class="nav nav-second-level">
-                                        <sec:access url="/pmActions/achievement">
-                                            <li>
-                                                <a href="#pmActions/achievement"><i class="fa fa-sitemap"></i>&nbsp;Versions</a>
-                                            </li>
-                                        </sec:access>
-                                    </ul>
-                                    <!-- /.nav-second-level -->
-                                </li>
-                            </sec:ifAnyUrls>--}%
                 <sec:ifAnyUrls urls="/pmSpLog/show,/systemEntity/show,/pmServiceSector/show,/spTimeSchedule/show">
                     <li>
                         <a href="#"><i class="fa fa-wrench fa-fw"></i>&nbsp;Setting<span class="fa arrow"></span></a>

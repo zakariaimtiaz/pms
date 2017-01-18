@@ -67,7 +67,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                 return result
             }else if(type.equals("Details")){
                 long actionsId = Long.parseLong(result."filter[filters][0][value]")
-                List<GroovyRowResult> lstSprint = buildIndicatorDetails(serviceId,actionsId, start, end, monthName)
+                List<GroovyRowResult> lstSprint = buildIndicatorDetails(actionsId, monthName)
                 result.put(LIST, lstSprint)
                 return result
             }
@@ -133,7 +133,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
     }
-    private List<GroovyRowResult> buildIndicatorDetails(long serviceId,long actionsId, Date start, Date end, String monthStr) {
+    private List<GroovyRowResult> buildIndicatorDetails(long actionsId, String monthStr) {
         String query = """
                 SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,i.unit_id,i.unit_str,i.indicator_type,idd.month_name,
                 idd.target monthly_target,idd.achievement,idd.remarks,SUM(tmp.achievement) total_achievement

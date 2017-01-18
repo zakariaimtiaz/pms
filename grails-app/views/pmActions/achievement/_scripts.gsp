@@ -6,7 +6,7 @@
 </script>
 
 <script language="javascript">
-    var month, serviceId, dropDownService, gridAction, isApplicable = false;
+    var month, serviceId, dropDownService,listViewGoal, gridAction, isApplicable = false;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -217,23 +217,6 @@
         var url = "${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId + "&month=" + month + "&type=Actions";
         populateGridKendo(listViewGoal, urlGoal);
         populateGridKendo(gridAction, url);
-        return false;
-    }
-    function downloadDetails() {
-        if (isApplicable) {
-            showLoadingSpinner(true);
-            var from = $('#from').val();
-            var to = $('#to').val();
-            var hospitalCode = dropDownHospitalCode.value();
-            var params = "?from=" + from + "&to=" + to + "&hospitalCode=" + hospitalCode;
-            var msg = 'Do you want to download the report now?',
-                    url = "${createLink(controller: 'reports', action: 'downloadMonthlyPathologySummary')}" + params;
-
-            confirmDownload(msg, url);
-        } else {
-            showError('This feature is under development');
-//            showError('No record to download');
-        }
         return false;
     }
 </script>
