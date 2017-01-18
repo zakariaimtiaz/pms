@@ -3,12 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
-                    Monthly Achievement
-                    <button id="downloadMSP2" name="downloadMSP2" type="button" data-role="button"
-                            class="k-button k-button-icontext pull-right" role="button"
-                            aria-disabled="false" onclick='downloadDetails();'><span
-                            class="fa fa-file-pdf-o"></span>&nbsp;Download
-                    </button>
+                    Monthly Reporting Pack
                 </div>
             </div>
 
@@ -49,7 +44,7 @@
     </div>
 
     <div class="row">
-        <g:render template='/reports/strategicPlan/monthly/tempSP'/>
+        <g:render template='/pmActions/achievement/tempSP'/>
     </div>
 
     <div class="row">
