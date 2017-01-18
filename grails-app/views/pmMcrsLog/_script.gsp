@@ -39,7 +39,7 @@
         $('#month').val(str);
 
         initializeForm($("#mcrsLogForm"), onSubmitMcrsLog);
-        defaultPageTile("Management Change Report System(MCRS) Submission",'/pmMcrsLog/show');
+        defaultPageTile("Management Control Report System(MCRS) Submission",'/pmMcrsLog/show');
         dropDownService.value(serviceId);
     }
     function executePreCondition() {
