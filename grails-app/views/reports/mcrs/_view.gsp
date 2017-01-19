@@ -9,6 +9,8 @@
                         aria-disabled="false" onclick='downloadMcrsReport();'><span
                         class="fa fa-file-pdf-o"></span>&nbsp;Download
                 </button>
+                    <input type="checkbox" name="downloadType" id="downloadType"
+                           checked="checked" class="pull-right"/>
                 </div>
             </div>
 
@@ -33,9 +35,12 @@
                             </app:dropDownService>
                         </div>
                         <div class="col-md-2">
+                            <select class="kendo-drop-down" id="indicatorType" name="indicatorType" tabindex="3"></select>
+                        </div>
+                        <div class="col-md-2">
                             <button id="create" name="create" type="submit" data-role="button"
                                     class="k-button k-button-icontext"
-                                    role="button" tabindex="3"
+                                    role="button" tabindex="4"
                                     aria-disabled="false"><span class="k-icon k-i-search"></span>View Result
                             </button>
                         </div>

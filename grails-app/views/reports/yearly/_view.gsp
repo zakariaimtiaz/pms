@@ -1,14 +1,16 @@
 <div class="container-fluid">
-    <div class="row" id="rowGoals">
+    <div class="row">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
                     Annual SP
-                <button id="downloadSP" name="downloadSP" type="button" data-role="button"
-                        class="k-button k-button-icontext pull-right" role="button"
-                        aria-disabled="false" onclick='downloadYearlySpReport();'><span
-                        class="fa fa-file-pdf-o"></span>&nbsp;Download
-                </button>
+                    <button id="downloadSP" name="downloadSP" type="button" data-role="button"
+                            class="k-button k-button-icontext pull-right" role="button"
+                            aria-disabled="false" onclick='downloadYearlySpReport();'><span
+                            class="fa fa-file-pdf-o"></span>&nbsp;Download
+                    </button>
+                    <input type="checkbox" name="downloadType" id="downloadType"
+                           checked="checked" class="pull-right"/>
                 </div>
             </div>
 
@@ -33,9 +35,12 @@
                             </app:dropDownService>
                         </div>
                         <div class="col-md-2">
+                            <select class="kendo-drop-down" id="indicatorType" name="indicatorType" tabindex="3"></select>
+                        </div>
+                        <div class="col-md-2">
                             <button id="create" name="create" type="submit" data-role="button"
                                     class="k-button k-button-icontext"
-                                    role="button" tabindex="3"
+                                    role="button" tabindex="4"
                                     aria-disabled="false"><span class="k-icon k-i-search"></span>View Result
                             </button>
                         </div>
@@ -46,6 +51,6 @@
         </div>
     </div>
     <div class="row">
-        <div id="gridSP"></div>
+        <div id="gridYearlySP"></div>
     </div>
 </div>

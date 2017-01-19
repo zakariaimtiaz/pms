@@ -17,8 +17,15 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
 
     JasperService jasperService
 
-    private static final String REPORT_FOLDER = 'pmActions/monthly'
-    private static final String JASPER_FILE = 'spWithAllIndicator'
+    private static final String REPORT_FOLDER_ALL_IND = 'pmActions/monthly/allIndicator'
+    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/monthly/actionIndicator'
+    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/monthly/preference'
+    private static final String JASPER_FILE_ALL_IND = 'spWithAllIndicator'
+    private static final String JASPER_FILE_ALL_IND_EXC = 'spWithAllIndicatorExc'
+    private static final String JASPER_FILE_ACTION_IND = 'spActionIndicator'
+    private static final String JASPER_FILE_ACTION_IND_EXC = 'spActionIndicatorExc'
+    private static final String JASPER_FILE_PREFERENCE = 'spPreference'
+    private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceExc'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -SP Report of '
     private static final String SERVICE_ID = "serviceId"
@@ -108,9 +115,31 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
         return result
     }
     private Map getReport(Map result) {
+        boolean isChecked = Boolean.parseBoolean(result.checked.toString())
+        String reportFolder = REPORT_FOLDER_ALL_IND
+        String jesperFile = JASPER_FILE_ALL_IND
+        if(isChecked){
+            if(result.indicatorType.equals("Action Indicator")){
+                reportFolder = REPORT_FOLDER_ACTION_IND
+                jesperFile = JASPER_FILE_ACTION_IND
+            }else if(result.indicatorType.equals("Preference")){
+                reportFolder = REPORT_FOLDER_PREFERENCE
+                jesperFile = JASPER_FILE_PREFERENCE
+            }
+        }else{
+            if(result.indicatorType.equals("Action Indicator")){
+                reportFolder = REPORT_FOLDER_ACTION_IND
+                jesperFile = JASPER_FILE_ACTION_IND_EXC
+            }else if(result.indicatorType.equals("Preference")){
+                reportFolder = REPORT_FOLDER_PREFERENCE
+                jesperFile = JASPER_FILE_PREFERENCE_EXC
+            }else{
+                jesperFile = JASPER_FILE_ALL_IND_EXC
+            }
+        }
         String rootDir = result.reportDirectory + File.separator
         String logoDir = result.logoDirectory + File.separator
-        String reportDir = result.reportDirectory + File.separator + REPORT_FOLDER
+        String reportDir = result.reportDirectory + File.separator + reportFolder
         String subReportDir = reportDir + File.separator
         String outputFileName = result.get(MONTH_INT)+ DOT_STR + result.get(SERVICE_SHORT_NAME) + REPORT_TITLE + result.get(MONTH_STR) + SINGLE_SPACE + result.get(YEAR) + PDF_EXTENSION
         String titleStr = result.get(SERVICE_NAME) + REPORT_TITLE + EMPTY_SPACE + result.get(MONTH_STR) + SINGLE_SPACE + result.get(YEAR)
@@ -127,7 +156,7 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
         reportParams.put(MONTH_STR, result.get(MONTH_STR))
         reportParams.put(CURRENT_MONTH, result.get(CURRENT_MONTH))
 
-        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+        JasperReportDef reportDef = new JasperReportDef(name: jesperFile, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)
         return [report: report, reportFileName: outputFileName, format: REPORT_FILE_FORMAT]

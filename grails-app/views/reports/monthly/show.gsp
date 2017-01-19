@@ -1,6 +1,6 @@
 <script type="application/javascript"> var dropDownService;</script>
 <style type="text/css">
-#downloadSP {
+#downloadMSP {
     height: 23px;
     font-size: smaller;
 }

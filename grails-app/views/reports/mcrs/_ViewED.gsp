@@ -2,7 +2,7 @@
 
     <tr style="background-color: #c0c0c0">
         <td style="width: 10%;"><label class=" control-label">Issue</label></td>
-        <td style="width: 40%;"><label class=" control-label">Description</label></td>
+        <td style="width: 40%;"><label class=" control-label">Crisis & Highlights</label></td>
         <td style="width: 25%;"><label class=" control-label">Remarks</label></td>
         <td style="width: 25%;"><label class=" control-label">Ed's Advice</label></td>
     </tr>

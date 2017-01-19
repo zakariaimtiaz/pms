@@ -1,9 +1,9 @@
 package pms
 
 import actions.reports.DownloadActionsIndicatorSPActionService
-import actions.reports.DownloadMCRSActionService
+import actions.reports.mcrs.DownloadMCRSActionService
 import actions.reports.ListActionsIndicatorActionService
-import actions.reports.ListMCRSActionService
+import actions.reports.mcrs.ListMCRSActionService
 import actions.reports.monthly.DownloadMonthlySPActionService
 import actions.reports.monthly.ListSpMonthlyPlanActionService
 import actions.reports.ListSpPlanActionService
@@ -51,7 +51,11 @@ class ReportsController  extends BaseController  {
     /////////////Monthly Start/////////////////////
     def showSpMonthlyPlan() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/reports/monthly/show", model: [serviceId:user.serviceId])
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        render(view: "/reports/monthly/show", model: [isSysAdmin:isSysAdmin,
+                                                      isTopMan: isTopMan,
+                                                      serviceId:user.serviceId])
     }
     def listSpMonthlyPlan() {
         renderOutput(listSpMonthlyPlanActionService,params)
@@ -65,7 +69,12 @@ class ReportsController  extends BaseController  {
 
     /////////////Yearly Start/////////////////////
     def showYearlySP() {
-        render(view: "/reports/yearly/show")
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        render(view: "/reports/yearly/show", model: [isSysAdmin:isSysAdmin,
+                                                     isTopMan: isTopMan,
+                                                     serviceId:user.serviceId])
     }
     def listYearlySP() {
         renderOutput(listYearlySPActionService,params)
@@ -78,8 +87,12 @@ class ReportsController  extends BaseController  {
 
     /////////////MCRS Start/////////////////////
     def showMcrs() {
-        List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
-        render(view: "/reports/mcrs/show",model: [lst: lst as JSON])
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        render(view: "/reports/mcrs/show", model: [isSysAdmin:isSysAdmin,
+                                                     isTopMan: isTopMan,
+                                                     serviceId:user.serviceId])
     }
     def listMcrs() {
         renderOutput(listMCRSActionService,params)

@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridMRP,isApplicable = false;
+    var serviceId,dataSource,gridMonthlySP,dropDownIndicatorType;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -7,6 +7,10 @@
         initGrid();
     });
     function onLoadInfoPage() {
+        if(!${isSysAdmin} && !${isTopMan}){
+            dropDownService.value(${serviceId});
+            dropDownService.readonly(true);
+        }
         var str = moment().format('MMMM YYYY');
 
         $('#month').kendoDatePicker({
@@ -17,12 +21,19 @@
         }).data("kendoDatePicker");
         $('#month').val(str);
 
+        $('#indicatorType').kendoDropDownList({
+            dataSource: {
+                data: ["All Indicator", "Action Indicator"]
+            }
+        });
+        dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
+
         initializeForm($("#detailsForm"), onSubmitForm);
         defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
     }
 
     function initGrid() {
-        $("#gridMRP").kendoGrid({
+        $("#gridMonthlySP").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -133,7 +144,7 @@
                 }
             ]
         });
-        gridMRP = $("#gridMRP").data("kendoGrid");
+        gridMonthlySP = $("#gridMonthlySP").data("kendoGrid");
     }
 
     function calculateVariance(tar,ach){
@@ -160,24 +171,26 @@
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var month = $('#month').val();
         var serviceId = dropDownService.value();
+        var indicatorType = dropDownIndicatorType.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}?serviceId=" + serviceId+"&month="+month;
-        populateGridKendo(gridMRP, url);
+        var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType;
+        var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}" + params;
+        populateGridKendo(gridMonthlySP, url);
         return false;
     }
-    $("#gridMRP").kendoTooltip({
+    $("#gridMonthlySP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMonthlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.goal;
         }
     }).data("kendoTooltip");
-    $("#gridMRP").kendoTooltip({
+    $("#gridMonthlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 3){
                 this.content.parent().css("visibility", "visible");
@@ -190,11 +203,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMonthlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.ind_remarks;
         }
     }).data("kendoTooltip");
-    $("#gridMRP").kendoTooltip({
+    $("#gridMonthlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 70){
                 this.content.parent().css("visibility", "visible");
@@ -207,12 +220,12 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMonthlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.remarks;
         }
     }).data("kendoTooltip");
 
-    $("#gridMRP").kendoTooltip({
+    $("#gridMonthlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -225,11 +238,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMonthlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.supportDepartment;
         }
     }).data("kendoTooltip");
-    $("#gridMRP").kendoTooltip({
+    $("#gridMonthlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -242,7 +255,7 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridMonthlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.project;
         }
     }).data("kendoTooltip");
@@ -287,16 +300,19 @@
         return val;
     }
 
-    function downloadMcrsReport() {
+    function downloadMonthlySPReport() {
+        var checked = $('#downloadType').is(":checked");
         var month = $('#month').val();
         var serviceId = dropDownService.value();
+        var indicatorType = dropDownIndicatorType.value();
         if(month==''||serviceId==''){
             showError('Please select month & service');
             return false;
         }
         showLoadingSpinner(true);
         var msg = 'Do you want to download the Monthly SP report now?',
-            url = "${createLink(controller: 'reports', action:  'downloadMonthlySP')}?serviceId=" + serviceId+"&month="+month;
+            params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&checked="+checked,
+            url = "${createLink(controller: 'reports', action:  'downloadMonthlySP')}" + params;
         confirmDownload(msg, url);
         return false;
     }

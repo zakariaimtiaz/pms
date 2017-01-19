@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridSP,isApplicable = false;
+    var serviceId,dataSource,dropDownIndicatorType,gridYearlySP;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -7,8 +7,16 @@
         initGrid();
     });
     function onLoadInfoPage() {
+        var data = [];
+        if(!${isSysAdmin} && !${isTopMan}){
+            dropDownService.value(${serviceId});
+            dropDownService.readonly(true);
+//            data = ["All Indicator", "Action Indicator", "Preference"];
+            data = ["All Indicator", "Action Indicator"];
+        }else{
+            data = ["All Indicator", "Action Indicator", "Without Achievement"];
+        }
         var str = moment().format('YYYY');
-
         $('#year').kendoDatePicker({
             format: "yyyy",
             parseFormats: ["yyyy-MM-dd"],
@@ -17,12 +25,19 @@
         }).data("kendoDatePicker");
         $('#year').val(str);
 
+        $('#indicatorType').kendoDropDownList({
+            dataSource: {
+                data: data
+            }
+        });
+        dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
+
         initializeForm($("#detailsForm"), onSubmitForm);
         defaultPageTile("Strategic Plan", '/reports/listYearlySp');
     }
 
     function initGrid() {
-        $("#gridSP").kendoGrid({
+        $("#gridYearlySP").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -95,7 +110,7 @@
                 }
             ]
         });
-        gridSP = $("#gridSP").data("kendoGrid");
+        gridYearlySP = $("#gridYearlySP").data("kendoGrid");
     }
 
     function calculateVariance(tar,ach){
@@ -122,24 +137,33 @@
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var year = $('#year').val();
         var serviceId = dropDownService.value();
+        var indicatorType = dropDownIndicatorType.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listYearlySP')}?serviceId=" + serviceId+"&year="+year;
-        populateGridKendo(gridSP, url);
+        if(indicatorType=='Without Achievement') {
+            gridYearlySP.hideColumn(6);
+            gridYearlySP.hideColumn(7);
+        }else {
+            gridYearlySP.showColumn(6);
+            gridYearlySP.showColumn(7);
+        }
+        var params = "?serviceId=" +serviceId+"&year="+year+"&indicatorType="+indicatorType;
+        var url ="${createLink(controller: 'reports', action: 'listYearlySP')}" + params;
+        populateGridKendo(gridYearlySP, url);
         return false;
     }
-    $("#gridSP").kendoTooltip({
+    $("#gridYearlySP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridYearlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.goal;
         }
     }).data("kendoTooltip");
-    $("#gridSP").kendoTooltip({
+    $("#gridYearlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 70){
                 this.content.parent().css("visibility", "visible");
@@ -152,11 +176,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridYearlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.remarks;
         }
     }).data("kendoTooltip");
-    $("#gridSP").kendoTooltip({
+    $("#gridYearlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -169,11 +193,11 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridYearlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.supportDepartment;
         }
     }).data("kendoTooltip");
-    $("#gridSP").kendoTooltip({
+    $("#gridYearlySP").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 50){
                 this.content.parent().css("visibility", "visible");
@@ -186,7 +210,7 @@
         width: 300,
         position: "top",
         content: function(e){
-            var dataItem = $("#gridSP").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridYearlySP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.project;
         }
     }).data("kendoTooltip");
@@ -232,11 +256,18 @@
     }
 
     function downloadYearlySpReport() {
-        showLoadingSpinner(true);
+        var checked = $('#downloadType').is(":checked");
         var year = $('#year').val();
         var serviceId = dropDownService.value();
-        var msg = 'Do you want to download the SP report now?',
-            url = "${createLink(controller: 'reports', action:  'downloadYearlySP')}?serviceId=" + serviceId+"&year="+year;
+        var indicatorType = dropDownIndicatorType.value();
+        if(serviceId==''){
+            showError('Please select any service');
+            return false;
+        }
+        showLoadingSpinner(true);
+        var msg = 'Do you want to download the yearly SP report now?',
+            params = "?serviceId=" +serviceId+"&year="+year+"&indicatorType="+indicatorType+"&checked="+checked,
+            url = "${createLink(controller: 'reports', action:  'downloadYearlySP')}" + params;
         confirmDownload(msg, url);
         return false;
     }

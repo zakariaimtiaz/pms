@@ -39,7 +39,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
             Date currentMonth = DateUtility.getSqlDate(c.getTime());
 
             long serviceId = Long.parseLong(result.serviceId.toString())
-            List lstVal = buildResultList(serviceId, year, currentMonth)
+            List lstVal = buildResultList(serviceId, year, currentMonth,result.indicatorType.toString())
             result.put(LIST, lstVal)
             result.put(COUNT, lstVal.size())
             return result
@@ -77,7 +77,13 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth) {
+    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth,String type) {
+        String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id"
+        if(type.equals("Action Indicator")){
+            actionIndicatorJoin = "JOIN (SELECT pai.* FROM pm_actions_indicator pai " +
+            "JOIN (SELECT MIN(id) id  FROM pm_actions_indicator GROUP BY actions_id ) tmp ON pai.id=tmp.id) ai ON ai.actions_id = a.id"
+        }
+
         String query = """
                 SELECT * FROM (SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
 
@@ -104,7 +110,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
 
                 FROM (SELECT * FROM pm_actions  WHERE  YEAR(DATE(`start`))=${year}) a
                 JOIN pm_goals g ON g.id = a.goal_id
-                JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+                ${actionIndicatorJoin}
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id,

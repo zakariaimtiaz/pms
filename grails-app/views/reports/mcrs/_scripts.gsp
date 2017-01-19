@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridMRP,isApplicable = false;
+    var serviceId,dataSource,gridMRP,dropDownIndicatorType;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -7,6 +7,10 @@
         initGrid();
     });
     function onLoadInfoPage() {
+        if(!${isSysAdmin} && !${isTopMan}){
+            dropDownService.value(${serviceId});
+            dropDownService.readonly(true);
+        }
         var str = moment().format('MMMM YYYY');
 
         $('#month').kendoDatePicker({
@@ -16,6 +20,13 @@
             depth: "year"
         }).data("kendoDatePicker");
         $('#month').val(str);
+
+        $('#indicatorType').kendoDropDownList({
+            dataSource: {
+                data: ["All Indicator", "Action Indicator"]
+            }
+        });
+        dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
 
         initializeForm($("#detailsForm"), onSubmitForm);
         defaultPageTile("Strategic Plan", 'reports/showMcrs');
@@ -160,11 +171,13 @@
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var month = $('#month').val();
         var serviceId = dropDownService.value();
+        var indicatorType = dropDownIndicatorType.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
-        var url ="${createLink(controller: 'reports', action: 'listMcrs')}?serviceId=" + serviceId+"&month="+month;
+        var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType;
+        var url ="${createLink(controller: 'reports', action: 'listMcrs')}" + params;
         var dashboard ="${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+"&month="+month+
                 "&template=/reports/mcrs/viewED";
         populateGridKendo(gridMRP, url);
@@ -306,15 +319,18 @@
     }
 
     function downloadMcrsReport() {
+        var checked = $('#downloadType').is(":checked");
         var month = $('#month').val();
         var serviceId = dropDownService.value();
+        var indicatorType = dropDownIndicatorType.value();
         if(month==''||serviceId==''){
             showError('Please select month & service');
             return false;
         }
         showLoadingSpinner(true);
         var msg = 'Do you want to download the MCRS report now?',
-            url = "${createLink(controller: 'reports', action:  'downloadMcrs')}?serviceId=" + serviceId+"&month="+month;
+            params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&checked="+checked,
+            url = "${createLink(controller: 'reports', action:  'downloadMcrs')}" + params;
         confirmDownload(msg, url);
         return false;
     }

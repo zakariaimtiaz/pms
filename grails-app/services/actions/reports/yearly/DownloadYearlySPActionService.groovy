@@ -17,8 +17,17 @@ class DownloadYearlySPActionService extends BaseService implements ActionService
 
     JasperService jasperService
 
-    private static final String REPORT_FOLDER = 'pmActions/yearly'
-    private static final String JASPER_FILE = 'spWithAchievement'
+    private static final String REPORT_FOLDER_ALL_IND = 'pmActions/yearly/allIndicator'
+    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/yearly/actionIndicator'
+    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/yearly/preference'
+    private static final String REPORT_FOLDER_WITHOUT_ACV = 'pmActions/yearly/withoutAchievement'
+    private static final String JASPER_FILE_ALL_IND = 'spWithAchievement'
+    private static final String JASPER_FILE_ALL_IND_EXC = 'spWithAchievementExc'
+    private static final String JASPER_FILE_ACTION_IND = 'spActionIndicatorWithAchievement'
+    private static final String JASPER_FILE_ACTION_IND_EXC = 'spActionIndicatorWithAchievementExc'
+    private static final String JASPER_FILE_PREFERENCE = 'spPreferenceWithAchievement'
+    private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceWithAchievementExc'
+    private static final String JASPER_FILE_WITHOUT_ACV = 'spWithoutAchievement'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -Strategic Plan '
     private static final String SERVICE_ID = "serviceId"
@@ -90,9 +99,38 @@ class DownloadYearlySPActionService extends BaseService implements ActionService
         return result
     }
     private Map getReport(Map result) {
+        boolean isChecked = Boolean.parseBoolean(result.checked.toString())
+        String reportFolder = REPORT_FOLDER_ALL_IND
+        String jesperFile = JASPER_FILE_ALL_IND
+        if(isChecked){
+            if(result.indicatorType.equals("Action Indicator")){
+                reportFolder = REPORT_FOLDER_ACTION_IND
+                jesperFile = JASPER_FILE_ACTION_IND
+            }else if(result.indicatorType.equals("Preference")){
+                reportFolder = REPORT_FOLDER_PREFERENCE
+                jesperFile = JASPER_FILE_PREFERENCE
+            }else if(result.indicatorType.equals("Without Achievement")){
+                reportFolder = REPORT_FOLDER_WITHOUT_ACV
+                jesperFile = JASPER_FILE_WITHOUT_ACV
+            }
+        }else{
+            if(result.indicatorType.equals("Action Indicator")){
+                reportFolder = REPORT_FOLDER_ACTION_IND
+                jesperFile = JASPER_FILE_ACTION_IND_EXC
+            }else if(result.indicatorType.equals("Preference")){
+                reportFolder = REPORT_FOLDER_PREFERENCE
+                jesperFile = JASPER_FILE_PREFERENCE_EXC
+            }else if(result.indicatorType.equals("Without Achievement")){
+                reportFolder = REPORT_FOLDER_WITHOUT_ACV
+                jesperFile = JASPER_FILE_WITHOUT_ACV
+            }else{
+                jesperFile = JASPER_FILE_ALL_IND_EXC
+            }
+        }
+
         String rootDir = result.reportDirectory + File.separator
         String logoDir = result.logoDirectory + File.separator
-        String reportDir = result.reportDirectory + File.separator + REPORT_FOLDER
+        String reportDir = result.reportDirectory + File.separator + reportFolder
         String subReportDir = reportDir + File.separator
         String outputFileName = result.get(SERVICE_SHORT_NAME) + REPORT_TITLE + result.get(YEAR) + PDF_EXTENSION
         String titleStr = result.get(SERVICE_NAME) + REPORT_TITLE + EMPTY_SPACE + result.get(YEAR)
@@ -107,7 +145,7 @@ class DownloadYearlySPActionService extends BaseService implements ActionService
         reportParams.put(SERVICE_NAME, result.get(SERVICE_NAME))
         reportParams.put(YEAR, result.get(YEAR))
 
-        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+        JasperReportDef reportDef = new JasperReportDef(name: jesperFile, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)
         return [report: report, reportFileName: outputFileName, format: REPORT_FILE_FORMAT]
