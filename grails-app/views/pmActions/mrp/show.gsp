@@ -11,5 +11,5 @@
     font-size: smaller;
 }
 </style>
-<g:render template='/pmActions/achievement/view'/>
-<g:render template='/pmActions/achievement/scripts'/>
+<g:render template='/pmActions/mrp/view'/>
+<g:render template='/pmActions/mrp/scripts'/>

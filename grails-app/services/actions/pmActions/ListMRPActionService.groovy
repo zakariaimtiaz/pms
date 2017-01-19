@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import org.apache.log4j.Logger
 
 @Transactional
-class ListPmActionsAchievementActionService extends BaseService implements ActionServiceIntf {
+class ListMRPActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -120,22 +120,17 @@ class ListPmActionsAchievementActionService extends BaseService implements Actio
 
     private List<GroovyRowResult> buildActionsList(long serviceId,Date start, Date end, Date currentMonth) {
         String query = """
-                SELECT * FROM (SELECT g.goal,a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
-                        a.res_person AS resPerson, a.note,a.support_department AS supportDepartment,
-                        a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,COALESCE(idd.target,0) mon_tar,
+                SELECT g.goal,a.id,a.sequence,a.start,a.end,a.actions,a.service_id AS serviceId,a.goal_id AS goalId,a.tmp_seq AS tmpSeq,
+                        a.res_person AS resPerson, a.note,a.support_department AS supportDepartment,a.strategy_map_ref AS strategyMapRef,a.source_of_fund AS sourceOfFund,
 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartmentStr,
 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) sourceOfFundStr
 
                 FROM pm_actions a
                 LEFT JOIN pm_goals g ON g.id = a.goal_id
-                JOIN pm_actions_indicator ai ON ai.actions_id = a.id
-                JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
-                JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id
                 WHERE a.service_id = ${serviceId}
                 AND ('${start}' <= a.end AND '${end}' >= a.start)
-                GROUP BY ai.id
-                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) ttt WHERE ttt.mon_tar!=0
+                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
@@ -148,6 +143,7 @@ class ListPmActionsAchievementActionService extends BaseService implements Actio
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id
                 LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthStr}'
+                    AND idd.target > 0
                 WHERE a.id = ${actionsId}
                 GROUP BY i.id,idd.id
         """

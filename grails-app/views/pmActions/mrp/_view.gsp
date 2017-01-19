@@ -3,7 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
-                    Monthly Reporting Pack
+                    Monthly Reporting Pack (MRP)
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
     </div>
 
     <div class="row">
-        <g:render template='/pmActions/achievement/tempSP'/>
+        <g:render template='/pmActions/mrp/tempSP'/>
     </div>
 
     <div class="row">

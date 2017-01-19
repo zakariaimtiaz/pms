@@ -7,7 +7,7 @@ import pms.ActionServiceIntf
 import pms.BaseService
 
 @Transactional
-class UpdateIndicatorAchievementActionService extends BaseService implements ActionServiceIntf {
+class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
 
     private static final String COULD_NOT_BE_EMPTY = "Remarks could not be empty as target is set on %"
     private static final String UPDATE_SUCCESS_MESSAGE = "Achievement has been updated successfully"

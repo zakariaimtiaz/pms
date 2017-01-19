@@ -1,14 +1,8 @@
 package pms
 
-import actions.pmActions.CreatePmActionsActionService
-import actions.pmActions.DeletePmActionsActionService
-import actions.pmActions.ListPmActionsAchievementActionService
-import actions.pmActions.ListPmActionsActionService
-import actions.pmActions.UpdateIndicatorAchievementActionService
-import actions.pmActions.UpdatePmActionsActionService
+import actions.pmActions.*
 import com.pms.PmActions
 import com.pms.PmActionsIndicator
-import com.pms.PmActionsIndicatorDetails
 import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
@@ -30,8 +24,8 @@ class PmActionsController extends BaseController {
     UpdatePmActionsActionService updatePmActionsActionService
     DeletePmActionsActionService deletePmActionsActionService
     ListPmActionsActionService listPmActionsActionService
-    UpdateIndicatorAchievementActionService updateIndicatorAchievementActionService
-    ListPmActionsAchievementActionService listPmActionsAchievementActionService
+    UpdateMRPActionService updateMRPActionService
+    ListMRPActionService listMRPActionService
 
     def show() {
         List<GroovyRowResult> lst = pmServiceSectorService.activeList()
@@ -64,7 +58,7 @@ class PmActionsController extends BaseController {
 
     }
     def updateAchievement(){
-        renderOutput(updateIndicatorAchievementActionService, params)
+        renderOutput(updateMRPActionService, params)
     }
     def list() {
         renderOutput(listPmActionsActionService, params)
@@ -109,11 +103,12 @@ class PmActionsController extends BaseController {
         Map result = [lstActions: lst]
         render result as JSON
     }
+    ////////////MRP///////////////
     def achievement() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/pmActions/achievement/show", model: [serviceId:user.serviceId])
+        render(view: "/pmActions/mrp/show", model: [serviceId:user.serviceId])
     }
     def listAchievement(){
-        renderOutput(listPmActionsAchievementActionService, params)
+        renderOutput(listMRPActionService, params)
     }
 }
