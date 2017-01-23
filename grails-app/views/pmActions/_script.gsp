@@ -41,8 +41,8 @@
         jQuery.ajax({
             type: 'post',
             url: "${createLink(controller: 'pmSpLog', action: 'retrieveSpLog')}?year=" + calYear,
-            success: function (data, textStatus) {
-                  if(data.isSubmitted){
+            success: function (isSubmitted, textStatus) {
+                  if(isSubmitted){
                       $("#actionCreate").hide();
                       $("#actionUpdate").hide();
                       $("#actionDelete").hide();

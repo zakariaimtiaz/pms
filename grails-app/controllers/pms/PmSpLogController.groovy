@@ -31,7 +31,7 @@ class PmSpLogController extends BaseController {
     def retrieveSpLog() {
         SecUser user = baseService.currentUserObject()
         PmSpLog spLog = PmSpLog.findByServiceIdAndYear(user.serviceId, Integer.parseInt(params.year.toString()))
-        render spLog as JSON
+        render spLog.isSubmitted
     }
     def list() {
         renderOutput(listPmSpLogActionService, params)
