@@ -142,6 +142,9 @@
         sourceOfFund.setDataSource(${lstProject});
         serviceId = ${serviceId};
         $("#required").hide();
+        $("#actionCreate").hide();
+        $("#actionUpdate").hide();
+        $("#actionDelete").hide();
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions", null);
     }
