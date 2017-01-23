@@ -4,6 +4,7 @@ import actions.pmSpLog.CreatePmSpLogActionService
 import actions.pmSpLog.SubmitPmSpLogActionService
 import actions.pmSpLog.ListPmSpLogActionService
 import actions.pmSpLog.UpdatePmSpLogActionService
+import com.pms.PmSpLog
 import com.pms.SecUser
 import com.pms.SystemEntity
 import grails.converters.JSON
@@ -27,8 +28,10 @@ class PmSpLogController extends BaseController {
         renderOutput(updatePmSpLogActionService, params)
 
     }
-    def delete() {
-
+    def retrieveSpLog() {
+        SecUser user = baseService.currentUserObject()
+        PmSpLog spLog = PmSpLog.findByServiceIdAndYear(user.serviceId, Integer.parseInt(params.year.toString()))
+        render spLog as JSON
     }
     def list() {
         renderOutput(listPmSpLogActionService, params)

@@ -1,13 +1,13 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
     <sec:access url="/pmActions/create">
-        <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
+        <li onclick="addService();" id="actionCreate"><i class="fa fa-plus-square"></i>Add</li>
     </sec:access>
     <sec:access url="/pmActions/update">
-        <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
+        <li onclick="editService();" id="actionUpdate"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
     <sec:access url="/pmActions/delete">
-        <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
+        <li onclick="deleteService();" id="actionDelete"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>
     <li class="pull-right" onclick="showCalender();">
     <i class="fa fa-calendar-check-o"></i><span id="calYear"></span>
@@ -30,10 +30,41 @@
         $("#calYear").text(calYear);
         $(document).on("input", ".amount", calculateTarget);
         initialLoadGrid();
+        isSpSubmitted();
     });
     function initialLoadGrid(){
         var url="${createLink(controller: 'pmActions', action: 'list')}?year=" + calYear;
         populateGridKendo(gridActions, url);
+    }
+
+    function isSpSubmitted(){
+        jQuery.ajax({
+            type: 'post',
+            url: "${createLink(controller: 'pmSpLog', action: 'retrieveSpLog')}?year=" + calYear,
+            success: function (data, textStatus) {
+                  if(data.isSubmitted){
+                      $("#actionCreate").hide();
+                      $("#actionUpdate").hide();
+                      $("#actionDelete").hide();
+                  }else{
+                      $("#actionCreate").show();
+                      $("#actionUpdate").show();
+                      $("#actionDelete").show();
+                  }
+            var st = new Date(moment(calYear).startOf('year'));
+            var ed = new Date(moment(calYear).endOf('year'));
+            $('#start').data("kendoDatePicker").min(st);
+            $('#start').data("kendoDatePicker").max(ed);
+            $('#end').data("kendoDatePicker").min(st);
+            $('#end').data("kendoDatePicker").max(ed);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
     }
 
     function onLoadActionPage() {
@@ -129,6 +160,7 @@
         $("#calYear").text(moment(calYear).format('YYYY'));
         $('#modalCalYear').val('');
         initialLoadGrid();
+        isSpSubmitted();
         $("#myCalModal").modal('hide');
     }
     function makeKendoDropDownList(name){
@@ -386,7 +418,7 @@
             filterable: {
                 mode: "row"
             },
-            toolbar: isSubmit!=true ? kendo.template($("#gridToolbar").html()) : ''
+            toolbar: kendo.template($("#gridToolbar").html())
         });
         gridActions = $("#gridActions").data("kendoGrid");
         $("#menuGrid").kendoMenu();

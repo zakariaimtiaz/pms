@@ -1,6 +1,5 @@
 package taglib
 
-import com.pms.PmGoals
 import com.pms.SecUser
 import grails.converters.JSON
 import grails.transaction.Transactional
@@ -66,7 +65,7 @@ class GetDropDownGoalTaglibActionService extends BaseService implements ActionSe
     public Map execute(Map result) {
         try {
             SecUser user = currentUserObject()
-            List<PmGoals> lstGoal = PmGoals.findAllByServiceId(user.serviceId)
+            List<GroovyRowResult> lstGoal = (List<GroovyRowResult>) listGoals(user.serviceId)
             String html = buildDropDown(lstGoal, result)
             result.html = html
             return result
@@ -114,7 +113,7 @@ class GetDropDownGoalTaglibActionService extends BaseService implements ActionSe
      * @param dropDownAttributes - a map containing the attributes of drop down
      * @return - html string for select
      */
-    private String buildDropDown(List<PmGoals> lstGoals, Map dropDownAttributes) {
+    private String buildDropDown(List<GroovyRowResult> lstGoals, Map dropDownAttributes) {
         // read map values
         String name = dropDownAttributes.get(NAME)
         String dataModelName = dropDownAttributes.get(DATA_MODEL_NAME)
@@ -160,12 +159,11 @@ class GetDropDownGoalTaglibActionService extends BaseService implements ActionSe
         return html + script
     }
 
-    private List<GroovyRowResult> listServices() {
-        String param = currentUserDepartmentListStr()
+    private List<GroovyRowResult> listGoals(long serviceId) {
         String queryForList = """
-            SELECT id, CONCAT(name,' (',short_name,')') AS name
-                FROM pm_service_sector
-            WHERE is_displayble = TRUE AND id IN (${param})
+            SELECT id, CONCAT(sequence ,'. ',goal) AS goal
+                FROM pm_goals
+            WHERE service_id = ${serviceId}
             ORDER BY sequence
         """
         List<GroovyRowResult> lstServices = executeSelectSql(queryForList)
