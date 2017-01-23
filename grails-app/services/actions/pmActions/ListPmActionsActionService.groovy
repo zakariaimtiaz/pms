@@ -5,6 +5,9 @@ import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
+import pms.utility.DateUtility
+
+import java.text.SimpleDateFormat
 
 @Transactional
 class ListPmActionsActionService extends BaseService implements ActionServiceIntf {
@@ -18,9 +21,20 @@ class ListPmActionsActionService extends BaseService implements ActionServiceInt
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
+            String tmpDate = result.year.toString()+"-01-01";
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date convertedDate = dateFormat.parse(tmpDate);
+            Calendar c = Calendar.getInstance();
+            c.setTime(convertedDate);
+            c.set(Calendar.DAY_OF_YEAR, c.getActualMinimum(Calendar.DAY_OF_YEAR));
+            Date date1 = DateUtility.getSqlDate(c.getTime());
+            c.set(Calendar.DAY_OF_YEAR, c.getActualMaximum(Calendar.DAY_OF_YEAR));
+            Date date2 = DateUtility.getSqlDate(c.getTime());
+
             List<Long> lst = currentUserDepartmentList()
             Closure additionalParam = {
                 'in'('serviceId', lst)
+                'between'("start", date1, date2)
             }
             Map resultMap = super.getSearchResult(result, ListPmActionsActionServiceModel.class,additionalParam)
             result.put(LIST, resultMap.list)

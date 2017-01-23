@@ -9,8 +9,10 @@
                         aria-disabled="false" onclick='downloadMcrsReport();'><span
                         class="fa fa-file-pdf-o"></span>&nbsp;Download
                 </button>
-                    <input type="checkbox" name="downloadType" id="downloadType"
-                           checked="checked" class="pull-right"/>
+                    <label class="control-label label-optional pull-right" style="font-size: 10px;">
+                        <input type="radio" name="downloadType" value="true" checked> All column
+                        <input type="radio" name="downloadType" value="false">Selected column
+                    &nbsp;</label>
                 </div>
             </div>
 

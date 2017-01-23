@@ -256,7 +256,7 @@
     }
 
     function downloadYearlySpReport() {
-        var checked = $('#downloadType').is(":checked");
+        var checked = document.querySelector('input[name="downloadType"]:checked').value;
         var year = $('#year').val();
         var serviceId = dropDownService.value();
         var indicatorType = dropDownIndicatorType.value();

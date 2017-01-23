@@ -8,6 +8,9 @@ import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
+import pms.utility.DateUtility
+
+import java.text.SimpleDateFormat
 
 @Transactional
 class DeletePmActionsActionService extends BaseService implements ActionServiceIntf {
@@ -33,7 +36,14 @@ class DeletePmActionsActionService extends BaseService implements ActionServiceI
         try {
             PmActions actions = (PmActions) result.get(ACTIONS_OBJ)
 
-            List<PmActions> lstPmActions=PmActions.findAllByGoalId(actions.goalId)
+            Calendar c = Calendar.getInstance();
+            c.setTime(actions.start);
+            c.set(Calendar.DAY_OF_YEAR, c.getActualMinimum(Calendar.DAY_OF_YEAR));
+            Date start = DateUtility.getSqlDate(c.getTime());
+            c.set(Calendar.DAY_OF_YEAR, c.getActualMaximum(Calendar.DAY_OF_YEAR));
+            Date end = DateUtility.getSqlDate(c.getTime());
+
+            List<PmActions> lstPmActions= PmActions.findAllByGoalIdAndStartBetween(actions.goalId,start,end)
             PmGoals goals = PmGoals.read(actions.goalId)
 
             actions.delete()

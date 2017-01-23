@@ -6,26 +6,35 @@
     <sec:access url="/pmActions/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-<sec:access url="/pmActions/delete">
-    <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-</sec:access>
+    <sec:access url="/pmActions/delete">
+        <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
+    </sec:access>
+    <li class="pull-right" onclick="showCalender();">
+    <i class="fa fa-calendar-check-o"></i><span id="calYear"></span>
+    </li>
 </ul>
 </script>
 
 <script language="javascript">
-    var gridActions, dataSource,dataSourceUnit, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st,isSubmit;
+    var gridActions, dataSource,dataSourceUnit,calYear, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st,isSubmit;
     var map = {};
     var indCount = 1;
     var deletedIndicatorIds = ''
 
     $(document).ready(function () {
+        calYear = moment().format('YYYY');
         isSubmit=${isSubmitted};
         onLoadActionPage();
         initActionsGrid();
         initObservable();
+        $("#calYear").text(calYear);
         $(document).on("input", ".amount", calculateTarget);
-
+        initialLoadGrid();
     });
+    function initialLoadGrid(){
+        var url="${createLink(controller: 'pmActions', action: 'list')}?year=" + calYear;
+        populateGridKendo(gridActions, url);
+    }
 
     function onLoadActionPage() {
         $("#rowAction").hide();
@@ -105,7 +114,23 @@
         initializeForm($("#actionForm"), onSubmitAction);
         defaultPageTile("Create Actions", null);
     }
-
+    function showCalender(){
+        $("#myCalModal").modal('show');
+        $('#modalCalYear').kendoDatePicker({
+            format: "yyyy",
+            parseFormats: ["yyyy"],
+            start: "decade",
+            depth: "decade"
+        }).data("kendoDatePicker");
+        $('#modalCalYear').val(calYear);
+    }
+    function onClickCalModal(){
+        calYear = $('#modalCalYear').val();
+        $("#calYear").text(moment(calYear).format('YYYY'));
+        $('#modalCalYear').val('');
+        initialLoadGrid();
+        $("#myCalModal").modal('hide');
+    }
     function makeKendoDropDownList(name){
         var modalName = "#"+name;
         $(modalName).kendoComboBox({
@@ -259,7 +284,7 @@
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'pmActions', action: 'list')}",
+                    url: false,
                     dataType: "json",
                     type: "post"
                 }
@@ -314,6 +339,7 @@
         initDataSource();
         $("#gridActions").kendoGrid({
             dataSource: dataSource,
+            autoBind: false,
             height: getGridHeightKendo(),
             selectable: true,
             sortable: true,

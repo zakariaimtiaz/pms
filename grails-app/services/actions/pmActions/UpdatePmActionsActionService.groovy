@@ -340,8 +340,9 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         return params
     }
 
-    private static PmActions buildObject(Map params, PmActions oldObject) {
+    private PmActions buildObject(Map params, PmActions oldObject) {
         long resPersonId = Long.parseLong(params.resPersonId.toString())
+        String resName = responsiblePersonName(resPersonId)
 
         String startDateStr = params.start.toString()
         String endDateStr = params.end.toString()
@@ -361,7 +362,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         PmActions actions = new PmActions(params)
         oldObject.resPersonId = resPersonId
         oldObject.supportDepartment = actions.supportDepartment
-        oldObject.resPerson = actions.resPerson
+        oldObject.resPerson = resName
         oldObject.actions = actions.actions
         oldObject.start = actions.start
         oldObject.end = actions.end

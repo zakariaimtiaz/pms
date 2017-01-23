@@ -88,4 +88,32 @@
     </div>
 </div>
 
+<!-- Calendar Modal -->
+<div class="modal fade" id="myCalModal" tabindex="-1" aria-labelledby="myCalModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Select Year</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal form-widgets" id="createCalModalForm" name="createCalModalForm">
+
+                    <div class="form-group">
+                        <label class="col-md-1"><b>Year:</b></label>
+                        <div style="padding-left: 55px;width: 150px;!important;"><input id="modalCalYear" name="modalCalYear"></div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Select" onclick="onClickCalModal();">
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 

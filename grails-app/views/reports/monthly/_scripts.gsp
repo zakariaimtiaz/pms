@@ -301,7 +301,7 @@
     }
 
     function downloadMonthlySPReport() {
-        var checked = $('#downloadType').is(":checked");
+        var checked = document.querySelector('input[name="downloadType"]:checked').value;
         var month = $('#month').val();
         var serviceId = dropDownService.value();
         var indicatorType = dropDownIndicatorType.value();
