@@ -5,6 +5,7 @@
     $(document).ready(function () {
         onLoadInfoPage();
         initGrid();
+        $("#gridMonthlySP .k-grid-toolbar").hide();
     });
     function onLoadInfoPage() {
         if(!${isSysAdmin} && !${isTopMan}){
@@ -23,13 +24,21 @@
 
         $('#indicatorType').kendoDropDownList({
             dataSource: {
-                data: ["All Indicator", "Action Indicator"]
+                data: ["All Indicator", "Action Indicator", "Preferred Indicator"]
             }
         });
         dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
 
-        initializeForm($("#detailsForm"), onSubmitForm);
+        initializeForm($("#detailsForm"), null);
         defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
+    }
+    function showResetPreference(){
+        var indicatorType = dropDownIndicatorType.value();
+        if(indicatorType=='Preferred Indicator'){
+            $("#reset").show();
+        }else{
+            $("#reset").hide();
+        }
     }
 
     function initGrid() {
@@ -44,7 +53,29 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "list",
+                    model: {
+                        id: "indicator_id",    // have to set id otherwise remove row by clicking cancel
+                        fields: {
+                            id: {editable: false, type: "number"},
+                            indicator_id: {editable: false, type: "number"},
+                            sequence: {editable: false,type: "string"},
+                            actions: {editable: false,type: "string"},
+                            start: {editable: false,type: "date"},
+                            end: {editable: false,type: "date"},
+                            is_preference: {editable: true,type: "boolean"},
+                            indicator: {editable: false, type: "string"},
+                            tot_tar: {editable: false, type: "number"},
+                            mon_tar: {editable: false, type: "string"},
+                            mon_acv: {editable: false, type: "string"},
+                            cum_tar: {editable: false, type: "string"},
+                            cum_acv: {editable: false, type: "string"},
+                            remarks: {editable: false, type: "string"},
+                            responsiblePerson: {editable: false, type: "string"},
+                            supportDepartment: {editable: false, type: "string"},
+                            project: {editable: false, type: "string"}
+                        }
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -69,6 +100,10 @@
                 {
                     field: "end", title: "End Date", width: 80, sortable: false, filterable: false,
                     template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
+                },
+                {
+                    field: "is_preference",title: " ",width: 30,
+                    template: '<input type="checkbox" class="chkbx" #= is_preference ? "checked=checked" : "" #></input>'
                 },
                 {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
                 {field: "tot_tar", title: "Total<br/>Target", width: 80, sortable: false, filterable: false,
@@ -142,11 +177,30 @@
                 {field: "project", title: "Project", width: 150, sortable: false, filterable: false,
                     template:"#=trimTextForKendo(omitRepeated7(sequence,project),50)#"
                 }
-            ]
+            ],
+            editable: "inline"
         });
         gridMonthlySP = $("#gridMonthlySP").data("kendoGrid");
     }
-
+    $("#gridMonthlySP .k-grid-content").on("change", "input.chkbx", function(e) {
+        var grid = $("#gridMonthlySP").data("kendoGrid"),
+        dataItem = grid.dataItem($(e.target).closest("tr"));
+        dataItem.set("is_preference", this.checked);
+        var param = "?indicatorId="+dataItem.indicator_id+"&isPreference="+dataItem.is_preference;
+        jQuery.ajax({
+            type: 'post',
+            url: "${createLink(controller: 'pmActions', action: 'updatePreference')}" + param,
+            success: function (data, textStatus) {
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    });
     function calculateVariance(tar,ach){
         var perc="";
         if(isNaN(tar) || isNaN(ach) || tar == 0){
@@ -167,7 +221,9 @@
         }
         return target
     }
-    function onSubmitForm() {
+
+    $("button").click(function() {
+        var filterType = this.id;
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var month = $('#month').val();
         var serviceId = dropDownService.value();
@@ -176,11 +232,17 @@
             showError('Please select any service');
             return false;
         }
-        var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType;
+        if(filterType=='reset' && indicatorType=='Preferred Indicator'){
+            gridMonthlySP.showColumn(4);
+        }else{
+            gridMonthlySP.hideColumn(4);
+        }
+        var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&filterType="+filterType;
         var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}" + params;
         populateGridKendo(gridMonthlySP, url);
         return false;
-    }
+    });
+
     $("#gridMonthlySP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
@@ -216,7 +278,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(13)",
+        filter: "td:nth-child(14)",
         width: 300,
         position: "top",
         content: function(e){
@@ -234,7 +296,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(15)",
+        filter: "td:nth-child(16)",
         width: 300,
         position: "top",
         content: function(e){
@@ -251,7 +313,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(16)",
+        filter: "td:nth-child(17)",
         width: 300,
         position: "top",
         content: function(e){

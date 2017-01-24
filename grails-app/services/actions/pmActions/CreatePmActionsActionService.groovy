@@ -97,6 +97,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
 
                         PmActionsIndicator indicator = new PmActionsIndicator()
                         indicator.actionsId = actions.id
+                        indicator.year = actions.year
                         indicator.indicator = result.get("indicator" + (i + 1))
                         indicator.indicatorType = result.get("indType" + (i + 1))
                         indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
@@ -144,6 +145,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                         }
                         PmActionsIndicator indicator = new PmActionsIndicator()
                         indicator.actionsId = actions.id
+                        indicator.year = actions.year
                         indicator.indicator = result.get("indicator" + (i + 1))
                         indicator.indicatorType = result.get("indType" + (i + 1))
                         indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
@@ -158,6 +160,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                             for (int j = 0; j < tmpCount; j++) {
                                 PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
                                 details.actionsId = actions.id
+                                indicator.year = actions.year
                                 details.indicatorId = indicator.id
                                 String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
 
@@ -271,6 +274,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
         PmActions actions = new PmActions(parameterMap)
         actions.serviceId = serviceId
         actions.goalId = goalId
+        actions.year = year
         actions.resPerson = resName
         actions.sequence = goals.sequence + "." + con
         actions.tmpSeq = con

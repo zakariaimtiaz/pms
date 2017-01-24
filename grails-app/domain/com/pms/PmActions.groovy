@@ -17,10 +17,14 @@ class PmActions {
     String sourceOfFund
     String note
     String indicator
+    Integer year
     Date start
     Date end
 
     static mapping = {
+        serviceId index: 'service_id_idx'
+        goalId    index: 'goal_id_idx'
+        year      index: 'year_idx'
         actions    sqlType: 'text'
         note       sqlType: 'text'
         indicator  sqlType: 'text'
@@ -39,5 +43,6 @@ class PmActions {
         sourceOfFund(nullable: true)
         note(nullable: true)
         indicator(nullable: true)
+        year(nullable: true)
     }
 }

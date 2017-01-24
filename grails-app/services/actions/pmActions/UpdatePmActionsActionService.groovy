@@ -107,6 +107,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
 
                             indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
+                            indicator.year = actions.year
                             indicator.indicator = result.get("indicator" + (i + 1))
                             indicator.indicatorType = result.get("indType" + (i + 1))
                             indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
@@ -118,6 +119,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             long id = Long.parseLong(result.get("indicatorId" + (i + 1)).toString())
                             indicator = PmActionsIndicator.findById(id)
                             indicator.actionsId = actions.id
+                            indicator.year = actions.year
                             indicator.indicator = result.get("indicator" + (i + 1))
                             indicator.indicatorType = result.get("indType" + (i + 1))
                             indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
@@ -174,6 +176,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         if(result.get("indicatorId" + (i + 1)).toString().isEmpty()){
                             PmActionsIndicator indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
+                            indicator.year = actions.year
                             indicator.indicator = result.get("indicator" + (i + 1))
                             indicator.indicatorType = result.get("indType" + (i + 1))
                             indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
@@ -234,6 +237,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             Long id = Long.parseLong(result.get("indicatorId" + (i + 1)).toString())
                             PmActionsIndicator indicator = PmActionsIndicator.read(id)
                             indicator.actionsId = actions.id
+                            indicator.year = actions.year
                             indicator.indicator = result.get("indicator" + (i + 1))
                             indicator.indicatorType = result.get("indType" + (i + 1))
                             indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
@@ -354,12 +358,15 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         params.start = DateUtility.getSqlDate(c.getTime())
 
+        int year = c.get(Calendar.YEAR);
+
         Date end = originalFormat.parse(endDateStr);
         c.setTime(end);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
         params.end = DateUtility.getSqlDate(c.getTime())
 
         PmActions actions = new PmActions(params)
+        oldObject.year = year
         oldObject.resPersonId = resPersonId
         oldObject.supportDepartment = actions.supportDepartment
         oldObject.resPerson = resName

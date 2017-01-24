@@ -39,7 +39,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
             Date currentMonth = DateUtility.getSqlDate(c.getTime());
 
             long serviceId = Long.parseLong(result.serviceId.toString())
-            List lstVal = buildResultList(serviceId, year, currentMonth,result.indicatorType.toString())
+            List lstVal = buildResultList(serviceId, year, currentMonth,result.indicatorType.toString(),result.filterType.toString())
             result.put(LIST, lstVal)
             result.put(COUNT, lstVal.size())
             return result
@@ -77,18 +77,19 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth,String type) {
-        String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id"
-        if(type.equals("Action Indicator")){
+    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth,String type,String filterType) {
+        String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id AND ai.year = ${year}"
+        if(type.equals("Action Indicator")) {
             actionIndicatorJoin = "JOIN (SELECT pai.* FROM pm_actions_indicator pai " +
-            "JOIN (SELECT MIN(id) id  FROM pm_actions_indicator GROUP BY actions_id ) tmp ON pai.id=tmp.id) ai ON ai.actions_id = a.id"
+                    "JOIN (SELECT MIN(id) id  FROM pm_actions_indicator GROUP BY actions_id ) tmp ON pai.id=tmp.id) ai ON ai.actions_id = a.id AND ai.year = ${year}"
+        }else if(type.equals("Preferred Indicator") && filterType.equals("create")){
+            actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.year = ${year} AND ai.actions_id = a.id AND ai.is_preference = TRUE"
         }
 
         String query = """
-                SELECT * FROM (SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
-
+                SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
-                 ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+                 ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,ai.is_preference,
 
                  SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
                  SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
@@ -108,16 +109,19 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
 
-                FROM (SELECT * FROM pm_actions  WHERE  YEAR(DATE(`start`))=${year}) a
+                FROM pm_actions a
                 JOIN pm_goals g ON g.id = a.goal_id
                 ${actionIndicatorJoin}
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
-                JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id,
+                JOIN pm_service_sector sc ON sc.id = a.service_id,
                 (SELECT @rownum := 0) r
+                WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
                 GROUP BY ai.id
-                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) tmp WHERE tmp.mon_tar!=0;
+                HAVING mon_tar!=0
+                ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
-    }}
+    }
+}

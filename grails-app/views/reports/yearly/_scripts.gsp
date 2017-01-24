@@ -11,10 +11,9 @@
         if(!${isSysAdmin} && !${isTopMan}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
-//            data = ["All Indicator", "Action Indicator", "Preference"];
-            data = ["All Indicator", "Action Indicator"];
+            data = ["All Indicator", "Action Indicator", "Preferred Indicator"];
         }else{
-            data = ["All Indicator", "Action Indicator", "Without Achievement"];
+            data = ["All Indicator", "Action Indicator", "Preferred Indicator", "Without Achievement"];
         }
         var str = moment().format('YYYY');
         $('#year').kendoDatePicker({
