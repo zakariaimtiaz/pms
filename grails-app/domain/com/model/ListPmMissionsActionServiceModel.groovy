@@ -16,7 +16,8 @@ class ListPmMissionsActionServiceModel {
                   `sc`.`short_name` AS `service_short_name`,
                   `sc`.`id`         AS `service_id`,
                   `sc`.`name`       AS `service`,
-                  `sc`.`sequence`   AS `sequence`
+                  `sc`.`sequence`   AS `sequence`,
+                  CONCAT(`sc`.`name`,' (',`sc`.`short_name`,')')  AS `display_name`
                 FROM (`pms`.`pm_missions` `m`
                    LEFT JOIN `pms`.`pm_service_sector` `sc`
                      ON ((`sc`.`id` = `m`.`service_id`)))
@@ -27,6 +28,7 @@ class ListPmMissionsActionServiceModel {
     long version
     long serviceId
     String service
+    String displayName
     String mission
     float sequence
 

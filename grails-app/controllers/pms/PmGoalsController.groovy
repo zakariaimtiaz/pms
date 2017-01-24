@@ -35,7 +35,7 @@ class PmGoalsController  extends BaseController {
             int year = now.get(Calendar.YEAR);
             isSubmitted = PmSpLog.findByServiceIdAndYear(user.serviceId, year).isSubmitted
         }
-        render(view: "/pmGoals/show", model: [serviceId:user.serviceId,isSubmitted:isSubmitted])
+        render(view: "/pmGoals/show", model: [serviceId:user.serviceId,isAdmin: isAdmin,isSubmitted:isSubmitted])
     }
     def create() {
         renderOutput(createPmGoalsActionService, params)

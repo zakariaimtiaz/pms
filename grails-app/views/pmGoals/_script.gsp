@@ -156,7 +156,12 @@
                 buttonCount: 4
             },
             columns: [
+            <g:if test="${isAdmin}">
+                {field: "serShortName", title: "Sector/CSU", width: 30, sortable: false, filterable: kendoCommonFilterable(97)},
+            </g:if>
+            <g:else>
                 {field: "serShortName", title: "Sector/CSU", width: 30, sortable: false, filterable: false},
+            </g:else>
                 {field: "sequence", title: "ID#", width: 20, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },

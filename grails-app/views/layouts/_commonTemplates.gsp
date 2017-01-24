@@ -17,6 +17,11 @@
     display: table-cell;
     padding-left: 5px;
 }
+
+#myCalModal .modal-dialog  {
+    width:20%;
+    left: 20%;
+}
 </style>
 <script id="tmplKendoSuccess" type="text/x-kendo-template">
 <div class="alert-success notification">

@@ -42,6 +42,7 @@ class PmActionsController extends BaseController {
         }
         render(view: "/pmActions/show", model: [lstService  : lst as JSON,
                                                 lstProject  : lstProject as JSON,
+                                                isAdmin     : isAdmin,
                                                 serviceId   : user.serviceId,
                                                 isSubmitted : isSubmitted])
     }

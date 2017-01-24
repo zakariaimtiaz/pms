@@ -122,6 +122,7 @@
                         id: { type: "number" },
                         version: { type: "number" },
                         mission: { type: "string" },
+                        displayName: { type: "string" },
                         serviceId: { type: "number" },
                         service: { type: "string" },
                         sequence: { type: "number" }
@@ -155,7 +156,12 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "service", title: "Sector/CSU", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                <g:if test="${isAdmin}">
+                {field: "displayName", title: "Sector/CSU", width: 100, sortable: false, filterable: kendoCommonFilterable(97)},
+                </g:if>
+                <g:else>
+                {field: "service", title: "Sector/CSU", width: 100, sortable: false, filterable: false},
+                </g:else>
                 {field: "mission", title: "Mission Statement", width: 200, sortable: false, filterable: false}
             ],
             filterable: {
