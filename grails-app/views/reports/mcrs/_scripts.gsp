@@ -175,12 +175,13 @@
                 {field: "project", title: "Project", width: 150, sortable: false, filterable: false,
                     template:"#=trimTextForKendo(omitRepeated7(sequence,project),50)#"
                 }
-            ]
+            ],
+            editable: "inline"
         });
         gridMRP = $("#gridMRP").data("kendoGrid");
     }
-    $("#gridMonthlySP .k-grid-content").on("change", "input.chkbx", function(e) {
-        var grid = $("#gridMonthlySP").data("kendoGrid"),
+    $("#gridMRP .k-grid-content").on("change", "input.chkbx", function(e) {
+        var grid = $("#gridMRP").data("kendoGrid"),
                 dataItem = grid.dataItem($(e.target).closest("tr"));
         dataItem.set("is_preference", this.checked);
         var param = "?indicatorId="+dataItem.indicator_id+"&isPreference="+dataItem.is_preference;

@@ -28,17 +28,21 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            String monthStr = result.month.toString()
-            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date currentMonth = DateUtility.getSqlDate(new Date());
+            long serviceId = currentUserObject().serviceId
+            if(result.containsKey("month")){
+                String monthStr = result.month.toString()
+                DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-            Date date = originalFormat.parse(monthStr);
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
-            int year = c.get(Calendar.YEAR)
+                Date date = originalFormat.parse(monthStr);
+                Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                year = c.get(Calendar.YEAR)
+                currentMonth = DateUtility.getSqlDate(c.getTime());
+                serviceId = Long.parseLong(result.serviceId.toString())
+            }
 
-            Date currentMonth = DateUtility.getSqlDate(c.getTime());
-
-            long serviceId = Long.parseLong(result.serviceId.toString())
             List lstVal = buildResultList(serviceId, year, currentMonth,result.indicatorType.toString(),result.filterType.toString())
             result.put(LIST, lstVal)
             result.put(COUNT, lstVal.size())

@@ -14,7 +14,9 @@
 <div id="wrapper">
 	<g:render template='/layouts/navBar'/>
 	<div id="page-wrapper">
+	<sec:isForDashboard>
 		<g:render template='/layouts/dashBoard'/>
+	</sec:isForDashboard>
 	</div>
 </div>
 </body>
