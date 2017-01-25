@@ -106,7 +106,7 @@ class DownloadYearlySPActionService extends BaseService implements ActionService
             if(result.indicatorType.equals("Action Indicator")){
                 reportFolder = REPORT_FOLDER_ACTION_IND
                 jesperFile = JASPER_FILE_ACTION_IND
-            }else if(result.indicatorType.equals("Preference")){
+            }else if(result.indicatorType.equals("Preferred Indicator")){
                 reportFolder = REPORT_FOLDER_PREFERENCE
                 jesperFile = JASPER_FILE_PREFERENCE
             }else if(result.indicatorType.equals("Without Achievement")){
@@ -117,7 +117,7 @@ class DownloadYearlySPActionService extends BaseService implements ActionService
             if(result.indicatorType.equals("Action Indicator")){
                 reportFolder = REPORT_FOLDER_ACTION_IND
                 jesperFile = JASPER_FILE_ACTION_IND_EXC
-            }else if(result.indicatorType.equals("Preference")){
+            }else if(result.indicatorType.equals("Preferred Indicator")){
                 reportFolder = REPORT_FOLDER_PREFERENCE
                 jesperFile = JASPER_FILE_PREFERENCE_EXC
             }else if(result.indicatorType.equals("Without Achievement")){

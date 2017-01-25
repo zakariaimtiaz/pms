@@ -24,8 +24,8 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
     private static final String JASPER_FILE_ALL_IND_EXC = 'mcrsAllIndicatorExc'
     private static final String JASPER_FILE_ACTION_IND = 'mcrsActionIndicator'
     private static final String JASPER_FILE_ACTION_IND_EXC = 'mcrsActionIndicatorExc'
-    private static final String JASPER_FILE_PREFERENCE = 'mcrsPreference'
-    private static final String JASPER_FILE_PREFERENCE_EXC = 'mcrsPreferenceExc'
+    private static final String JASPER_FILE_PREFERENCE = 'mcrsPreferenceIndicator'
+    private static final String JASPER_FILE_PREFERENCE_EXC = 'mcrsPreferenceIndicatorExc'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -MCRS Report of '
     private static final String SERVICE_ID = "serviceId"
@@ -122,7 +122,7 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
             if(result.indicatorType.equals("Action Indicator")){
                 reportFolder = REPORT_FOLDER_ACTION_IND
                 jesperFile = JASPER_FILE_ACTION_IND
-            }else if(result.indicatorType.equals("Preference")){
+            }else if(result.indicatorType.equals("Preferred Indicator")){
                 reportFolder = REPORT_FOLDER_PREFERENCE
                 jesperFile = JASPER_FILE_PREFERENCE
             }
@@ -130,7 +130,7 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
             if(result.indicatorType.equals("Action Indicator")){
                 reportFolder = REPORT_FOLDER_ACTION_IND
                 jesperFile = JASPER_FILE_ACTION_IND_EXC
-            }else if(result.indicatorType.equals("Preference")){
+            }else if(result.indicatorType.equals("Preferred Indicator")){
                 reportFolder = REPORT_FOLDER_PREFERENCE
                 jesperFile = JASPER_FILE_PREFERENCE_EXC
             }else{

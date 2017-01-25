@@ -67,8 +67,8 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
     private List<GroovyRowResult> buildResultList(long serviceId,int year,String type) {
         String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id"
         if(type.equals("Action Indicator")){
-            actionIndicatorJoin = "JOIN (SELECT pai.* FROM pm_actions_indicator pai " +
-            "JOIN (SELECT MIN(id) id  FROM pm_actions_indicator GROUP BY actions_id ) tmp ON pai.id=tmp.id) ai ON ai.actions_id = a.id"
+            actionIndicatorJoin = "JOIN pm_actions_indicator ai ON a.id = ai.actions_id " +
+                    "AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.id GROUP BY actions_id)"
         }else if(type.equals("Preferred Indicator")){
             actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.year = ${year} AND ai.actions_id = a.id AND ai.is_preference = TRUE"
         }

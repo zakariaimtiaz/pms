@@ -24,8 +24,8 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
     private static final String JASPER_FILE_ALL_IND_EXC = 'spWithAllIndicatorExc'
     private static final String JASPER_FILE_ACTION_IND = 'spActionIndicator'
     private static final String JASPER_FILE_ACTION_IND_EXC = 'spActionIndicatorExc'
-    private static final String JASPER_FILE_PREFERENCE = 'spPreference'
-    private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceExc'
+    private static final String JASPER_FILE_PREFERENCE = 'spPreferenceIndicator'
+    private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceIndicatorExc'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -SP Report of '
     private static final String SERVICE_ID = "serviceId"
@@ -122,7 +122,7 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
             if(result.indicatorType.equals("Action Indicator")){
                 reportFolder = REPORT_FOLDER_ACTION_IND
                 jesperFile = JASPER_FILE_ACTION_IND
-            }else if(result.indicatorType.equals("Preference")){
+            }else if(result.indicatorType.equals("Preferred Indicator")){
                 reportFolder = REPORT_FOLDER_PREFERENCE
                 jesperFile = JASPER_FILE_PREFERENCE
             }
@@ -130,7 +130,7 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
             if(result.indicatorType.equals("Action Indicator")){
                 reportFolder = REPORT_FOLDER_ACTION_IND
                 jesperFile = JASPER_FILE_ACTION_IND_EXC
-            }else if(result.indicatorType.equals("Preference")){
+            }else if(result.indicatorType.equals("Preferred Indicator")){
                 reportFolder = REPORT_FOLDER_PREFERENCE
                 jesperFile = JASPER_FILE_PREFERENCE_EXC
             }else{

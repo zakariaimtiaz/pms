@@ -41,14 +41,16 @@ CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) support_depart
 
-                FROM (SELECT * FROM pm_actions  WHERE  YEAR(DATE(`start`))=$P{year} AND goal_id = $P{goalId}) a
+                FROM pm_actions a
                 JOIN pm_goals g ON g.id = $P{goalId}
-                JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+JOIN pm_actions_indicator ai ON a.id = ai.actions_id AND ai.year = $P{year}
+ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.id GROUP BY actions_id)
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
-                JOIN (SELECT * FROM pm_service_sector WHERE id = $P{serviceId}) sc ON sc.id = a.service_id
+                JOIN pm_service_sector sc ON sc.id = a.service_id
+WHERE a.year = $P{year} AND a.service_id = $P{serviceId} AND ai.year = $P{year} AND sc.id =$P{serviceId}
                 GROUP BY ai.id
-                ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq) tmp,
+                ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0) r
  WHERE tmp.t_mon_var!=0;]]>
 	</queryString>

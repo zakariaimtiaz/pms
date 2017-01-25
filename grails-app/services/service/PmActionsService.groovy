@@ -46,7 +46,7 @@ class PmActionsService extends BaseService{
                         CASE WHEN l.is_submitted IS TRUE THEN '#00FF00' ELSE '#FF6666' END col_color
                             FROM pm_service_sector ss
                             LEFT JOIN pm_actions a ON ss.id=a.service_id
-                            LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND year = YEAR(NOW())
+                            LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = YEAR(NOW())
                             WHERE ss.is_in_sp = TRUE
                             GROUP BY ss.id
             ORDER BY ss.name;

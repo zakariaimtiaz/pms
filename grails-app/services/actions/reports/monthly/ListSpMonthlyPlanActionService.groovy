@@ -78,12 +78,12 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
     }
 
     private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth,String type,String filterType) {
-        String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id AND ai.year = ${year}"
+        String indicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id AND ai.year = ${year}"
         if(type.equals("Action Indicator")) {
-            actionIndicatorJoin = "JOIN (SELECT pai.* FROM pm_actions_indicator pai " +
-                    "JOIN (SELECT MIN(id) id  FROM pm_actions_indicator GROUP BY actions_id ) tmp ON pai.id=tmp.id) ai ON ai.actions_id = a.id AND ai.year = ${year}"
+            indicatorJoin = "JOIN pm_actions_indicator ai ON a.id = ai.actions_id AND ai.year = ${year} " +
+                    " AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.id GROUP BY actions_id)"
         }else if(type.equals("Preferred Indicator") && filterType.equals("create")){
-            actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.year = ${year} AND ai.actions_id = a.id AND ai.is_preference = TRUE"
+            indicatorJoin = "JOIN pm_actions_indicator ai ON ai.year = ${year} AND ai.actions_id = a.id AND ai.is_preference = TRUE"
         }
 
         String query = """
@@ -91,18 +91,18 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,ai.is_preference,
 
-                 SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
-                 SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
+                 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
+                 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 FLOOR(SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN 1 ELSE 0 END))
+                 FLOOR(SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=@curmon THEN 1 ELSE 0 END))
                  ELSE
-                 SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
+                 SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 FLOOR(SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN 1 ELSE 0 END))
+                 FLOOR(SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=@curmon THEN 1 ELSE 0 END))
                  ELSE
-                 SUM(CASE WHEN  cm.sl_index<=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
+                 SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 SUM(CASE WHEN  cm.sl_index=MONTH(DATE('${currentMonth}')) THEN COALESCE(idd.target,0) ELSE 0 END)
+                 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
@@ -111,11 +111,11 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
 
                 FROM pm_actions a
                 JOIN pm_goals g ON g.id = a.goal_id
-                ${actionIndicatorJoin}
+                ${indicatorJoin}
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN pm_service_sector sc ON sc.id = a.service_id,
-                (SELECT @rownum := 0) r
+                (SELECT @rownum := 0, @curmon := MONTH(DATE('${currentMonth}'))) r
                 WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
                 GROUP BY ai.id
                 HAVING mon_tar!=0
