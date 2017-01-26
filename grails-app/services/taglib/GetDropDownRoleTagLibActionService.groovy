@@ -160,6 +160,8 @@ class GetDropDownRoleTagLibActionService extends BaseService implements ActionSe
                     \$('#${escapeChar(name)}').kendoDropDownList({
                         dataTextField  : 'name',
                         dataValueField : 'id',
+                        filter         : "contains",
+                        suggest        : true,
                         dataSource     : ${jsonData},
                         value          : '${strDefaultValue}'
                         ${strOnChange}

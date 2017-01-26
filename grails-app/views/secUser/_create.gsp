@@ -23,7 +23,7 @@
                                             data_model_name="dropDownEmployee"
                                             placeholder="Login ID" is_for_login="true"
                                             required="false" class="kendo-drop-down"
-                                            sort_by_department="false" tabindex="1"
+                                            sort_by_department="true" tabindex="1"
                                             id="username" name="username"
                                             data-bind="value: secUser.username">
                                     </app:dropDownEmployee>
@@ -38,7 +38,7 @@
 
                                 <div class="col-md-6">
                                     <app:dropDownService
-                                            class="kendo-drop-down"
+                                            class="kendo-drop-down" is_in_sp="true"
                                             id="serviceId" name="serviceId" tabindex="2"
                                             data-bind="value: secUser.serviceId"
                                             data_model_name="dropDownService">

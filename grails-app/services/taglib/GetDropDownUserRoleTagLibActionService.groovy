@@ -124,10 +124,17 @@ class GetDropDownUserRoleTagLibActionService extends BaseService implements Acti
      * @return lstAppUser - List of User
      */
     private List<GroovyRowResult> listAppUser(long roleId) {
+        String serviceStr = EMPTY_SPACE
+        SecUser user = currentUserObject()
+        boolean isAdmin = isUserSystemAdmin(user.id)
+        long serviceId = user.serviceId
+        if(!isAdmin){
+            serviceStr = "AND service_id = ${serviceId}"
+        }
         String queryForList = """
             SELECT id, CONCAT(full_name,' (',username,')') AS name
             FROM sec_user
-            WHERE enabled = true
+            WHERE enabled = true ${serviceStr}
             AND id NOT IN
             (
                 SELECT sec_user_id
@@ -192,6 +199,8 @@ class GetDropDownUserRoleTagLibActionService extends BaseService implements Acti
                         \$('#${name}').kendoDropDownList({
                             dataTextField  : 'name',
                             dataValueField : 'id',
+                            filter         : "contains",
+                            suggest        : true,
                             dataSource     : ${jsonData},
                             value          : '${strDefaultValue}',
                             ${strOnChange}

@@ -19,6 +19,7 @@ class SecUserSecRoleController extends BaseController {
     DownloadSecUserSecRoleActionService downloadSecUserSecRoleActionService
 
     def show() {
+
         render(view: "/secUserSecRole/show", model:[roleId:params.roleId])
     }
     def create() {

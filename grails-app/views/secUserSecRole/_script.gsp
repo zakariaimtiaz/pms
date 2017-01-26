@@ -124,7 +124,7 @@
                     return data;
                 }
             },
-            pageSize: 10,
+            pageSize: getDefaultPageSize(),
             sort: {field: 'username', dir: 'asc'},
             serverPaging: true,
             serverFiltering: true,

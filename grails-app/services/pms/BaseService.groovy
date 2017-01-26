@@ -90,7 +90,8 @@ class BaseService extends Tools {
     }
 
     public boolean executeSql(String query) {
-//        Sql sql = new Sql(dataSource)
+        consolePrint(query, null)
+
         return groovySql.execute(query)
     }
 
@@ -633,6 +634,12 @@ class BaseService extends Tools {
         SecUser user = SecUser.read(userId)
         SecRole roleMan = SecRole.findByAuthority("ROLE_TOP_MANAGEMENT")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleMan, user)
+        return count > 0
+    }
+    public boolean isUserHOD(long userId) {
+        SecUser user = SecUser.read(userId)
+        SecRole roleHead = SecRole.findByAuthority("ROLE_DEPARTMENT_HEAD")
+        int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
         return count > 0
     }
 

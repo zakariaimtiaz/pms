@@ -157,14 +157,18 @@ class GetDropDownEmployeeTaglibActionService extends BaseService implements Acti
         String queryForLoginId = """
             SELECT e.employee_id AS id, CONCAT(e.name,' (',e.employee_id,')') AS name
                 FROM employee e
+                ${left_join}
                 WHERE e.employee_status_id = 1
+                ${sort_dept_str}
                 ORDER BY e.name
         """
         if(isForLogin){
             List<GroovyRowResult> lstAppUser = groovySql_mis.rows(queryForLoginId)
+            consolePrint(queryForLoginId, null)
             return lstAppUser
         }
         List<GroovyRowResult> lstAppUser = groovySql_mis.rows(queryForList)
+        consolePrint(queryForList, null)
         return lstAppUser
     }
 

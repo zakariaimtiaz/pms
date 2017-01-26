@@ -4,9 +4,11 @@ import actions.secRole.CreateSecRoleActionService
 import actions.secRole.DeleteSecRoleActionService
 import actions.secRole.ListSecRoleActionService
 import actions.secRole.UpdateSecRoleActionService
+import com.pms.SecUser
 
 class SecRoleController extends BaseController {
 
+    BaseService baseService
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
     ]

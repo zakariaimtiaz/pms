@@ -1,7 +1,10 @@
 package actions.secRole
 
+import com.model.ListPmGoalsActionServiceModel
 import com.model.ListSecRoleActionServiceModel
+import com.pms.SecUser
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
@@ -34,6 +37,14 @@ class ListSecRoleActionService extends BaseService implements ActionServiceIntf 
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
+            SecUser user = currentUserObject()
+            boolean isHOD = isUserHOD(user.id)
+            if(isHOD){
+                List lstVal = buildResultList(user.serviceId)
+                result.put(LIST, lstVal)
+                result.put(COUNT, lstVal.size())
+                return result
+            }
             Map resultMap = super.getSearchResult(result, ListSecRoleActionServiceModel.class)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
@@ -70,5 +81,19 @@ class ListSecRoleActionService extends BaseService implements ActionServiceIntf 
      */
     public Map buildFailureResultForUI(Map result) {
         return result
+    }
+
+    private List<GroovyRowResult> buildResultList(long serviceId) {
+        String query = """
+            SELECT role.id, role.version, role.name,role.authority, COUNT(au.id) AS count
+                FROM sec_role AS role
+                    LEFT JOIN sec_user_sec_role ur ON ur.sec_role_id = role.id
+                    LEFT JOIN sec_user au ON au.id = ur.sec_user_id AND au.enabled = TRUE
+                              AND au.service_id = ${serviceId}
+                WHERE role.id IN (3,5)
+                    GROUP BY role.id,role.name,role.authority,role.version;
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
     }
 }

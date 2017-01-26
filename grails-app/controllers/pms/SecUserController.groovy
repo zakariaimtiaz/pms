@@ -40,6 +40,11 @@ class SecUserController extends BaseController {
         Map result = [lstUser: lstUser,count: lstUser.size()]
         render result as JSON
     }
+    def syncUser() {
+        String message = secUserService.syncHrUsers()
+        Map result = [message: message]
+        render result as JSON
+    }
 
     def reloadDropDown() {
         render sec.dropDownAppUserRole(params)

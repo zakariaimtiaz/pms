@@ -1,6 +1,7 @@
 package actions.secUserSecRole
 
 import com.model.ListSecUserSecRoleActionServiceModel
+import com.pms.SecUser
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -34,9 +35,21 @@ class ListSecUserSecRoleActionService extends BaseService implements ActionServi
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
+            SecUser user = currentUserObject()
+            boolean isAdmin = isUserSystemAdmin(user.id)
             long roleId = Long.parseLong(result.roleId.toString())
+            if(isAdmin){
+                Closure additionalParam = {
+                    eq("roleId", roleId)
+                }
+                Map resultMap = super.getSearchResult(result, ListSecUserSecRoleActionServiceModel.class, additionalParam)
+                result.put(LIST, resultMap.list)
+                result.put(COUNT, resultMap.count)
+                return result
+            }
             Closure additionalParam = {
                 eq("roleId", roleId)
+                eq("serviceId", user.serviceId)
             }
             Map resultMap = super.getSearchResult(result, ListSecUserSecRoleActionServiceModel.class, additionalParam)
             result.put(LIST, resultMap.list)
