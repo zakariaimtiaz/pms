@@ -237,7 +237,8 @@
                         showLoadingSpinner(false);
                     },
                     dataType: 'json'
-                });            }else {
+                });            }
+            else {
                 return "no";
             }
         }).find("div.modal-content").addClass("conf-download");

@@ -61,6 +61,11 @@ class CreateSecUserSecRoleActionService extends BaseService implements ActionSer
         try {
             SecUserSecRole userRole = (SecUserSecRole) result.get(USER_ROLE)
             secUserSecRoleService.create(userRole)
+
+            SecUser user = SecUser.read(userRole.secUser.id)
+            user.accountLocked = Boolean.FALSE
+            user.save()
+
             return result
         } catch (Exception e) {
             log.error(e.getMessage())

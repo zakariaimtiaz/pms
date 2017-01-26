@@ -47,6 +47,12 @@ class DeleteSecUserSecRoleActionService extends BaseService implements ActionSer
         try {
             SecUserSecRole userSecRole = (SecUserSecRole) result.get(USER_ROLE)
             secUserSecRoleService.delete(userSecRole)
+            int count = SecUserSecRole.countBySecUser(userSecRole.secUser)
+            if(count==0){
+                SecUser user = SecUser.read(userSecRole.secUser.id)
+                user.accountLocked = Boolean.TRUE
+                user.save()
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
