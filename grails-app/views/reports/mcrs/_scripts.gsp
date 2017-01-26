@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,gridMRP,dropDownIndicatorType;
+    var serviceId,dataSource,gridMRP,dropDownIndicatorType,isApplicable=false;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
@@ -10,6 +10,9 @@
         if(!${isSysAdmin} && !${isTopMan}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
+        }
+        if(${isHOD}){
+            isApplicable = true;
         }
         var str = moment().format('MMMM YYYY');
 
@@ -33,7 +36,7 @@
     }
     function showResetPreference(){
         var indicatorType = dropDownIndicatorType.value();
-        if(indicatorType=='Preferred Indicator'){
+        if(indicatorType=='Preferred Indicator' && isApplicable){
             $("#reset").show();
         }else{
             $("#reset").hide();

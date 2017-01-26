@@ -38,13 +38,33 @@ class ReportsController  extends BaseController  {
         renderOutput(listSpPlanActionService,params)
     }
 
-    /////////////Monthly Start/////////////////////
+    //################## MCRS Start ###########################
+    def showMcrs() {
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isHOD = baseService.isUserHOD(user.id)
+        render(view: "/reports/mcrs/show", model: [isSysAdmin:isSysAdmin,
+                                                   isTopMan: isTopMan,isHOD: isHOD,
+                                                   serviceId:user.serviceId])
+    }
+    def listMcrs() {
+        renderOutput(listMCRSActionService,params)
+    }
+    def downloadMcrs() {
+        Map result = (Map) getReportResponse(downloadMCRSActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    //##################    MCRS End ###########################
+
+    //################## Monthly Start #########################
     def showSpMonthlyPlan() {
         SecUser user = baseService.currentUserObject()
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isHOD = baseService.isUserHOD(user.id)
         render(view: "/reports/monthly/show", model: [isSysAdmin:isSysAdmin,
-                                                      isTopMan: isTopMan,
+                                                      isTopMan: isTopMan,isHOD: isHOD,
                                                       serviceId:user.serviceId])
     }
     def listSpMonthlyPlan() {
@@ -54,10 +74,9 @@ class ReportsController  extends BaseController  {
         Map result = (Map) getReportResponse(downloadMonthlySPActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
-    /////////////Monthly End/////////////////////
+    //################## Monthly End ###########################
 
-
-    /////////////Yearly Start/////////////////////
+    //################## Yearly Start ##########################
     def showYearlySP() {
         SecUser user = baseService.currentUserObject()
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
@@ -73,23 +92,5 @@ class ReportsController  extends BaseController  {
         Map result = (Map) getReportResponse(downloadYearlySPActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
-    /////////////Yearly End/////////////////////
-
-    /////////////MCRS Start/////////////////////
-    def showMcrs() {
-        SecUser user = baseService.currentUserObject()
-        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
-        boolean isTopMan = baseService.isUserTopManagement(user.id)
-        render(view: "/reports/mcrs/show", model: [isSysAdmin:isSysAdmin,
-                                                     isTopMan: isTopMan,
-                                                     serviceId:user.serviceId])
-    }
-    def listMcrs() {
-        renderOutput(listMCRSActionService,params)
-    }
-    def downloadMcrs() {
-        Map result = (Map) getReportResponse(downloadMCRSActionService, params).report
-        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
-    }
-    /////////////MCRS End/////////////////////
+    //################## Yearly End ###########################
 }
