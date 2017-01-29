@@ -4,6 +4,7 @@ import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
+import groovy.sql.GroovyRowResult
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.security.authentication.DisabledException
@@ -11,10 +12,12 @@ import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.session.SessionInformation
 import org.springframework.security.web.WebAttributes
+import service.PmActionsService
 
 import javax.servlet.http.HttpServletResponse
 
 class LoginController {
+    PmActionsService pmActionsService
 
     def SessionRegistry
 
@@ -138,7 +141,11 @@ class LoginController {
     }
 
     def dashBoard() {
-        render(template: "../layouts/dashBoard", model: null)
+        render(template: "../layouts/dashBoard")
+    }
+    def lstDataForDashboard(){
+        List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus()
+        render lst as JSON
     }
     def resetPassword(){
         SecUser user = SecUser.findByUsername(springSecurityService.authentication.name)
