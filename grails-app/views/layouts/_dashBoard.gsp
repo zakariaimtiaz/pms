@@ -1,8 +1,11 @@
-<div id="example">
+<sec:isForDashboard>
+    <div id="example">
     <div class="centered">
         <div id="chart"></div>
     </div>
 </div>
+</sec:isForDashboard>
+
 <style type="text/css">
 .centered {
     margin: 0 auto;
