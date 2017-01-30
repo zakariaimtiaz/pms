@@ -81,7 +81,7 @@
     function createManagementChart() {
         $('#chartManagement').kendoChart({
             title: {
-                text: "CSU/Sector Wise Goal Completion Status"+" ("+moment(new Date()).format("MMMM")+")"
+                text: "CSU/Sector Wise Action Completion Status"+" ("+moment(new Date()).format("MMMM")+")"
             },
             dataSource: {
                 transport: {
