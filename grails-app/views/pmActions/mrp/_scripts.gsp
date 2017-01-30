@@ -17,12 +17,15 @@
         serviceId = ${serviceId};
         dropDownService.value(serviceId);
         var str = moment().format('MMMM YYYY');
-        $('#month').kendoDatePicker({
+        var start = $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year"
         }).data("kendoDatePicker");
+        st = new Date(moment('${submissionDate}').endOf('year'));
+        start.min('${submissionDate}');
+        start.max(st);
         $('#month').val(str);
 
         initializeForm($("#detailsForm"), onSubmitForm);
