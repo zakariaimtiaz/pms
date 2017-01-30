@@ -2,7 +2,6 @@ package pms
 
 import com.pms.PmServiceSector
 import com.pms.SecUser
-import com.pms.SecUserSecRole
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
 import groovy.sql.GroovyRowResult
@@ -138,12 +137,15 @@ class LoginController {
         render([error: 'access denied'] as JSON)
     }
 
-    def dashBoard() {
-        render(template: "../layouts/dashBoard")
+    def userDashboard() {
+        render(template: "../layouts/dashboard")
     }
-
-    def lstDataForDashboard() {
+    def lstUserDashboard() {
         List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus()
+        render lst as JSON
+    }
+    def lstManagementDashboard() {
+        List<GroovyRowResult> lst = pmActionsService.lstServiceWiseActionStatus()
         render lst as JSON
     }
 

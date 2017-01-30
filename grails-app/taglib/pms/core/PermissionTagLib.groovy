@@ -27,9 +27,15 @@ class PermissionTagLib {
         }
     }
 
-    def isForDashboard = {attrs, body ->
+    def isDashboardForUser = {attrs, body ->
         long id = SecUser.read(springSecurityService.principal.id).id
         if(!baseService.isUserSystemAdmin(id)&&!baseService.isUserTopManagement(id)){
+            out << body()
+        }
+    }
+    def isDashboardForManagement = {attrs, body ->
+        long id = SecUser.read(springSecurityService.principal.id).id
+        if(baseService.isUserSystemAdmin(id)||baseService.isUserTopManagement(id)){
             out << body()
         }
     }
