@@ -33,6 +33,8 @@ class EdDashboardController extends BaseController {
 
     def list() {
         try {
+            SecUser user = baseService.currentUserObject()
+            boolean isEdAssistant = baseService.isEdAssistantRole(user.id)
             DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
             Date start = originalFormat.parse(params.month.toString());
             Calendar c = Calendar.getInstance();
@@ -43,7 +45,7 @@ class EdDashboardController extends BaseController {
             List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardIssue(sId,d)
             String template = params.template?params.template:'/edDashboard/table'
 
-            def gString = g.render(template: template, model:[list:listValue])
+            def gString = g.render(template: template, model:[list:listValue,isEdAssistant:isEdAssistant])
             Map map = new LinkedHashMap()
             map.put('tableHtml', gString)
             render map as JSON

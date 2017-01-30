@@ -18,7 +18,7 @@
                         ${item?.issue_name}</label></td>
                 <td style="padding: 0 0 0 0 ! important; width: 40%;">
 
-                    <g:if test="${item?.isReadable}">
+                    <g:if test="${item?.isReadable && isEdAssistant}">
                         <textarea id="description${item?.id}" name="description${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control" readonly>${item?.description}</textarea>
@@ -32,7 +32,7 @@
 
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
-                    <g:if test="${item?.isReadable}">
+                    <g:if test="${item?.isReadable && isEdAssistant}">
                         <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control" readonly>${item?.remarks}</textarea>
@@ -45,11 +45,18 @@
                     </g:else>
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
-                    <textarea id="edAdvice${item?.id}" name="edAdvice${item?.id}" rows="3"
-                              style="padding: 0 0 0 0 ! important;"
-                              class="form-control"
-                              placeholder="">${item?.ed_advice}</textarea>
-
+                    <g:if test="${!isEdAssistant}">
+                        <textarea id="edAdvice${item?.id}" name="edAdvice${item?.id}" rows="3"
+                                  style="padding: 0 0 0 0 ! important;"
+                                  class="form-control" readonly
+                                  placeholder="">${item?.ed_advice}</textarea>
+                    </g:if>
+                    <g:else>
+                        <textarea id="edAdvice${item?.id}" name="edAdvice${item?.id}" rows="3"
+                                  style="padding: 0 0 0 0 ! important;"
+                                  class="form-control"
+                                  placeholder="">${item?.ed_advice}</textarea>
+                    </g:else>
                 </td>
 
             </tr>

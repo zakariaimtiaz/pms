@@ -1,6 +1,7 @@
 package actions.edDashboard
 
 import com.pms.EdDashboard
+import com.pms.EdDashboardIssues
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -50,7 +51,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             Date monthFor = DateUtility.getSqlDate(c.getTime())
             long serviceId = Long.parseLong(result.serviceId.toString())
 
-            for (int i = 1; i <= 13;i++) {
+            for (int i = 1; i <= EdDashboardIssues.count();i++) {
                 EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId,monthFor,i)
                 if(!edDashboard) {
                     edDashboard = new EdDashboard()
@@ -64,7 +65,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                 edDashboard.edAdvice = isHeading != true ? result.get("edAdvice" + (i)) : ""
                 edDashboard.createBy=springSecurityService?.principal?.id
                 edDashboard.createDate=DateUtility.getSqlDate(new Date())
-                if(!edDashboard.description.trim().isEmpty()) {
+                if(!edDashboard.description.isEmpty()) {
                     edDashboard.save()
                 }
             }
