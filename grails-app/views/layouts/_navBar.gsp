@@ -2,7 +2,7 @@
 <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation"
      style="margin-bottom: 0;height: 2px;">
     <div class="navbar-header">
-        <a style="padding-right: 2px;padding-top: 0;" class="navbar-brand" href="#login/dashboard"><img
+        <a style="padding-right: 2px;padding-top: 0;" class="navbar-brand" href="#login/dashBoard"><img
                 src="images/logo.png" style="height: inherit;"/></a>
         <a style="padding-left: 120px;padding-top: 2px;" href=""><i id="spinner" class="fa fa-2x fa-refresh fa-spin"
                                                                     style="margin: 2px 4px;color:#9F9F9F"></i></a>

@@ -137,8 +137,8 @@ class LoginController {
         render([error: 'access denied'] as JSON)
     }
 
-    def dashboard() {
-        render(template: "../layouts/dashboard")
+    def dashBoard() {
+        render(template: "../layouts/dashBoard")
     }
     def lstUserDashboard() {
         List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus()
