@@ -312,10 +312,10 @@ GROUP BY a.goal_id]]>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{sequence}]]></textFieldExpression>
+				<textFieldExpression><![CDATA['Goal '+$F{sequence}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="30" y="0" width="802" height="20" uuid="c5d73277-1fd1-4b2f-8f65-fbc13ffdc9c8"/>
@@ -325,8 +325,8 @@ GROUP BY a.goal_id]]>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement>
-					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{goal}]]></textFieldExpression>
 			</textField>

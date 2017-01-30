@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="spActionIndicator_subreport1Exc" language="groovy" pageWidth="832" pageHeight="572" orientation="Landscape" columnWidth="832" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6fdbea04-6465-4ee7-8c30-265e7b8be426">
-	<property name="ireport.zoom" value="1.610510000000005"/>
-	<property name="ireport.x" value="505"/>
+	<property name="ireport.zoom" value="1.0000000000000029"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="serviceId" class="java.lang.Long"/>
 	<parameter name="year" class="java.lang.Integer"/>
@@ -48,7 +48,7 @@ JOIN pm_actions_indicator ai ON a.id = ai.actions_id AND ai.year = $P{year}
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN pm_service_sector sc ON sc.id = a.service_id
-WHERE a.year = $P{year} AND a.service_id = $P{serviceId} AND ai.year = $P{year} AND sc.id =$P{serviceId}
+WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND a.service_id = $P{serviceId} AND ai.year = $P{year} AND sc.id =$P{serviceId}
                 GROUP BY ai.id
                 ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0) r

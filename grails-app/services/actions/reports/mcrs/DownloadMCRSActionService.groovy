@@ -18,14 +18,17 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
     JasperService jasperService
 
     private static final String REPORT_FOLDER_ALL_IND = 'pmActions/mcrs/allIndicator'
-    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/mcrs/actionIndicator'
-    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/mcrs/preference'
     private static final String JASPER_FILE_ALL_IND = 'mcrsAllIndicator'
     private static final String JASPER_FILE_ALL_IND_EXC = 'mcrsAllIndicatorExc'
+
+    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/mcrs/actionIndicator'
     private static final String JASPER_FILE_ACTION_IND = 'mcrsActionIndicator'
     private static final String JASPER_FILE_ACTION_IND_EXC = 'mcrsActionIndicatorExc'
+
+    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/mcrs/preference'
     private static final String JASPER_FILE_PREFERENCE = 'mcrsPreferenceIndicator'
     private static final String JASPER_FILE_PREFERENCE_EXC = 'mcrsPreferenceIndicatorExc'
+
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -MCRS Report of '
     private static final String SERVICE_ID = "serviceId"

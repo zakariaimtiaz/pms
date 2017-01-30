@@ -18,16 +18,20 @@ class DownloadYearlySPActionService extends BaseService implements ActionService
     JasperService jasperService
 
     private static final String REPORT_FOLDER_ALL_IND = 'pmActions/yearly/allIndicator'
-    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/yearly/actionIndicator'
-    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/yearly/preference'
-    private static final String REPORT_FOLDER_WITHOUT_ACV = 'pmActions/yearly/withoutAchievement'
     private static final String JASPER_FILE_ALL_IND = 'spWithAchievement'
     private static final String JASPER_FILE_ALL_IND_EXC = 'spWithAchievementExc'
+
+    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/yearly/actionIndicator'
     private static final String JASPER_FILE_ACTION_IND = 'spActionIndicatorWithAchievement'
     private static final String JASPER_FILE_ACTION_IND_EXC = 'spActionIndicatorWithAchievementExc'
+
+    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/yearly/preference'
     private static final String JASPER_FILE_PREFERENCE = 'spPreferenceWithAchievement'
     private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceWithAchievementExc'
+
+    private static final String REPORT_FOLDER_WITHOUT_ACV = 'pmActions/yearly/withoutAchievement'
     private static final String JASPER_FILE_WITHOUT_ACV = 'spWithoutAchievement'
+
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -Strategic Plan '
     private static final String SERVICE_ID = "serviceId"
