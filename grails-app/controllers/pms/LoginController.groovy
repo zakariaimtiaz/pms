@@ -138,7 +138,7 @@ class LoginController {
     }
 
     def userDashboard() {
-        render(template: "../layouts/dashboard")
+        render(template: "../layouts/dashBoard")
     }
     def lstUserDashboard() {
         List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus()
