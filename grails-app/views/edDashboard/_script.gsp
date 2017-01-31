@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,currentMonth;
+    var serviceId,currentMonth,isReadyForSave=true;
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
@@ -21,6 +21,12 @@
         defaultPageTile("Create Ed Dashboard",null);
         dropDownService.value(serviceId);
     }
+    function makeNonEditable(){
+        $('input[type="text"], textarea').attr('readonly','readonly');
+        $('input[type="text"], textarea').val('');
+        $('#month').val(currentMonth);
+        isReadyForSave = false;
+    }
     function loadTableData(){
         var actionUrl = "${createLink(controller:'edDashboard', action: 'list')}";
         serviceId=$('#serviceId').val();
@@ -32,6 +38,7 @@
             success: function (data, textStatus) {
                 $('#tableData').html('');
                 $('#tableData').html(data.tableHtml);
+                isReadyForSave = true;
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.info('error');
@@ -52,6 +59,10 @@
 
     function onSubmitEdDashboard() {
         if (executePreCondition() == false) {
+            return false;
+        }
+        if(!isReadyForSave){
+            showError("First press View button then press Save");
             return false;
         }
         showLoadingSpinner(true);
