@@ -1,6 +1,5 @@
 package actions.pmAdditionalActions
 
-import com.model.ListPmActionsActionServiceModel
 import com.model.ListPmAdditionalActionsActionServiceModel
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
