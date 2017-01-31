@@ -122,9 +122,9 @@ class PmActionsController extends BaseController {
         if(d[0]) {
             try {
                 Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
-                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month
+                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
                 year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
-                submissionDate= (month>=12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>=12?'01':month).toString()+'-'+'01'
+                submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
 
             }catch(Exception ex){}
         }

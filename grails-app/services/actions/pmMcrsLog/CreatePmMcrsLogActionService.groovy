@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 class CreatePmMcrsLogActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "MCRS has been saved successfully"
-    private static final String ALREADY_EXIST = "CSU/Sector for this year and month already submitted"
+    private static final String ALREADY_EXIST = "CSU/Sector for this month already submitted"
     private static final String PM_MCRS_LOG = "pmMcrsLog"
 
     private Logger log = Logger.getLogger(getClass())
