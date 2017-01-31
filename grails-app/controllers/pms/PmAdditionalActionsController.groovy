@@ -39,12 +39,20 @@ class PmAdditionalActionsController extends BaseController {
         lstProject.remove(0)
         SecUser user = baseService.currentUserObject()
         Long serviceId=user.serviceId
+
+        Long month=1
+        Long year=1900
         String submissionDate=""
         def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
-       if(d[0])
-            submissionDate=DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString())).toString()
+       if(d[0]) {
+           try {
+               Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+               month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month
+               year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
+               submissionDate= (month>=12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>=12?'01':month).toString()+'-'+'01'
 
-
+           }catch(Exception ex){}
+       }
         render(view: "/pmAdditionalActions/show", model: [lstService  : lst as JSON,
                                                 lstProject  : lstProject as JSON,
                                                 serviceId   : serviceId,submissionDate:submissionDate])

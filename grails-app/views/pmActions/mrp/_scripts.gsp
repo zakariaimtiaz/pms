@@ -26,15 +26,19 @@
         var value='${submissionDate}';
 
         if(value!='') {
-            st = new Date(moment('${submissionDate}').endOf('year'));
-            start.min('${submissionDate}');
+            st = new Date(moment(value));
+            start.min(value);
+            start.max(st);
+            $('#month').val(moment(value).format('MMMM YYYY'));
         }
         else{
-            st = new Date(moment(new Date()).endOf('year'));
+            st = new Date(moment(new Date()));
             start.min(new Date(moment(new Date()).startOf('year')))
+            start.max(st);
+            $('#month').val(str);
         }
-        start.max(st);
-        $('#month').val(str);
+
+
 
         initializeForm($("#detailsForm"), onSubmitForm);
         defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
