@@ -13,7 +13,8 @@
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
-            depth: "year"
+            depth: "year",
+            change: makeNonEditable
         }).data("kendoDatePicker");
         $('#month').val(currentMonth);
 
@@ -22,11 +23,13 @@
         dropDownService.value(serviceId);
     }
     function makeNonEditable(){
+        var mon = $('#month').val();
         $('input[type="text"], textarea').attr('readonly','readonly');
         $('input[type="text"], textarea').val('');
-        $('#month').val(currentMonth);
+        $('#month').val(mon);
         isReadyForSave = false;
     }
+
     function loadTableData(){
         var actionUrl = "${createLink(controller:'edDashboard', action: 'list')}";
         serviceId=$('#serviceId').val();
