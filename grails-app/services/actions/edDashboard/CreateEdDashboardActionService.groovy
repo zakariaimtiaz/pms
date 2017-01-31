@@ -2,6 +2,7 @@ package actions.edDashboard
 
 import com.pms.EdDashboard
 import com.pms.EdDashboardIssues
+import com.pms.PmMcrsLog
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -30,7 +31,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             if (!params.serviceId&&!params.month) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -50,6 +50,14 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
             Date monthFor = DateUtility.getSqlDate(c.getTime())
             long serviceId = Long.parseLong(result.serviceId.toString())
+
+            int month = c.get(Calendar.MONTH);
+            int year = c.get(Calendar.YEAR);
+
+            PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndMonthAndYear(serviceId,month+1,year)
+            if(pmMcrsLog?.isSubmitted){
+                return super.setError(result, 'Already submitted for this month');
+            }
 
             for (int i = 1; i <= EdDashboardIssues.count();i++) {
                 EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId,monthFor,i)
