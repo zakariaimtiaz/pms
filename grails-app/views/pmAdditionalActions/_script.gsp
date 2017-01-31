@@ -411,7 +411,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
 
         var actions = getSelectedObjectFromGridKendo(gridActions);
         var value=$('#hfSubmissionDate').val();
-        if(actions.start.getMonth()<value.getMonth() || actions.start.getYear() < value.getYear()){
+        if(actions.start.getMonth()<new Date(value).getMonth() && actions.start.getYear() <= new Date(value).getYear()){
             showError("This additional MRP already submitted.");
             return;
         }
@@ -429,12 +429,17 @@ $('#hfSubmissionDate').val('${submissionDate}');
         if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
             return;
         }
-        clearIndicatorTable();
-        addService();
         var actions = getSelectedObjectFromGridKendo(gridActions);
 
         var value=$('#hfSubmissionDate').val();
-        if(actions.start.getMonth()<value.getMonth() || actions.start.getYear() < value.getYear())
+        if(actions.start.getMonth()<new Date(value).getMonth() && actions.start.getYear() <= new Date(value).getYear()){
+            showError("This additional MRP already submitted.");
+            return;
+        }
+
+        clearIndicatorTable();
+        addService();
+
 
         showService(actions);
         $('html,body').scrollTop(0);
