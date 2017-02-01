@@ -141,11 +141,11 @@ class LoginController {
         render(template: "../layouts/dashBoard")
     }
     def lstUserDashboard() {
-        List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus()
+        List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus(params.month.toString())
         render lst as JSON
     }
     def lstManagementDashboard() {
-        List<GroovyRowResult> lst = pmActionsService.lstServiceWiseActionStatus()
+        List<GroovyRowResult> lst = pmActionsService.lstServiceWiseActionStatus(params.month.toString())
         render lst as JSON
     }
 

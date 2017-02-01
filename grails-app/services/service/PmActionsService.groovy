@@ -6,6 +6,9 @@ import groovy.sql.GroovyRowResult
 import pms.BaseService
 import pms.utility.DateUtility
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 @Transactional
 class PmActionsService extends BaseService{
 
@@ -56,9 +59,15 @@ class PmActionsService extends BaseService{
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
-    public List<GroovyRowResult> lstGoalWiseActionStatus() {
+    public List<GroovyRowResult> lstGoalWiseActionStatus(String monthStr) {
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        Date date = originalFormat.parse(monthStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH)+1
+        int year = c.get(Calendar.YEAR)
         SecUser user = currentUserObject();
-        Date date = DateUtility.getSqlDate(new Date());
+
         String query = """
             SELECT cat_axe,ac_count,ac_count-a_col t_col,a_col,a_color,t_color,goal,ROUND(a_col/ac_count*100) a_pert
             FROM
@@ -70,16 +79,22 @@ class PmActionsService extends BaseService{
             LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
             LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
             JOIN custom_month cm ON cm.name=aid.month_name,
-            (SELECT @curmon := MONTH(DATE('${date}'))) r
-            WHERE g.service_id = ${user.serviceId} AND a.year = YEAR(DATE('${date}')) AND cm.sl_index=@curmon AND aid.target > 0
+            (SELECT @curmon := ${month}) r
+            WHERE g.service_id = ${user.serviceId} AND a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
             GROUP BY g.id
             ORDER BY g.sequence,a.id,ai.id,aid.id) tmp;
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
-    public List<GroovyRowResult> lstServiceWiseActionStatus() {
-        Date date = DateUtility.getSqlDate(new Date());
+    public List<GroovyRowResult> lstServiceWiseActionStatus(String monthStr) {
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        Date date = originalFormat.parse(monthStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH)+1
+        int year = c.get(Calendar.YEAR)
+
         String query = """
             SELECT service_id,service,short_name,ac_count,ac_count-a_col t_col,a_col,t_color,a_color,ROUND(a_col/ac_count*100) a_pert
             FROM
@@ -92,8 +107,8 @@ class PmActionsService extends BaseService{
             LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
             LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
             JOIN custom_month cm ON cm.name=aid.month_name,
-            (SELECT @curmon := MONTH(DATE('${date}'))) r
-            WHERE a.year = YEAR(DATE('${date}')) AND cm.sl_index=@curmon AND aid.target > 0
+            (SELECT @curmon := ${month}) r
+            WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
             GROUP BY g.service_id
             ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp;
         """
