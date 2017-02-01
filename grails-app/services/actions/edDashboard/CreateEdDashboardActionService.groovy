@@ -60,7 +60,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             }
 
             List<EdDashboardIssues> lstEdDashboardIssues=EdDashboardIssues.findAll()
-            //for (int i = 1; i <= EdDashboardIssues.count();i++) {
             for(EdDashboardIssues edDashboardIssues:lstEdDashboardIssues){
                 Long i=edDashboardIssues.id
                 EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId,monthFor,i)
