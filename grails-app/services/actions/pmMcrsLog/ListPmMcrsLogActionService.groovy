@@ -2,10 +2,14 @@ package actions.pmMcrsLog
 
 import com.model.ListPmMcrsLogActionServiceModel
 import com.model.ListPmSpLogActionServiceModel
+import com.pms.SecUser
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 @Transactional
 class ListPmMcrsLogActionService extends BaseService implements ActionServiceIntf {
@@ -19,20 +23,22 @@ class ListPmMcrsLogActionService extends BaseService implements ActionServiceInt
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            try {
-
-                long serviceId =0
-                if(result.serviceId)
-                 serviceId = Long.parseLong(result.serviceId.toString())
+            if (result.containsKey("serviceId")&&result.containsKey("year")) {
+                long serviceId = Long.parseLong(result.serviceId.toString())
                 Closure param = {
                     'eq'('serviceId', serviceId)
+                    'like'('year', result.year.toString())
                 }
-                Map resultMap = super.getSearchResult(result, ListPmMcrsLogActionServiceModel,param)
+                Map resultMap = super.getSearchResult(result, ListPmMcrsLogActionServiceModel, param)
                 result.put(LIST, resultMap.list)
                 result.put(COUNT, resultMap.count)
                 return result
-            }catch (Exception ex){
-                Map resultMap = super.getSearchResult(result, ListPmMcrsLogActionServiceModel)
+            } else {
+                SecUser user = currentUserObject()
+                Closure param = {
+                    'eq'('serviceId', user.serviceId)
+                }
+                Map resultMap = super.getSearchResult(result, ListPmMcrsLogActionServiceModel, param)
                 result.put(LIST, resultMap.list)
                 result.put(COUNT, resultMap.count)
                 return result

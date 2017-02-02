@@ -12,7 +12,7 @@ import pms.utility.DateUtility
 @Transactional
 class UpdatePmMcrsLogActionService extends BaseService implements ActionServiceIntf {
 
-    private static final String UPDATE_SUCCESS_MESSAGE = "MCRS has been updated successfully"
+    private static final String UPDATE_SUCCESS_MESSAGE = "MCRS Log has been updated successfully"
     private static final String MCRS_LOG_OBJ = "pmMcrsLog"
 
     private Logger log = Logger.getLogger(getClass())
@@ -23,7 +23,6 @@ class UpdatePmMcrsLogActionService extends BaseService implements ActionServiceI
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            
             PmMcrsLog oldObject = PmMcrsLog.read(id)
             PmMcrsLog pmMcrsLog = buildObject(params,oldObject)
             params.put(MCRS_LOG_OBJ, pmMcrsLog)
@@ -74,11 +73,11 @@ class UpdatePmMcrsLogActionService extends BaseService implements ActionServiceI
         return params
     }
 
-    private static PmMcrsLog buildObject(Map parameterMap,PmMcrsLog oldObject) {
-        PmMcrsLog pmMcrsLog = new PmMcrsLog()
-
-        oldObject.isSubmitted = false
-        oldObject.isEditable = true
+    private static PmMcrsLog buildObject(Map params, PmMcrsLog oldObject) {
+        PmMcrsLog pmMcrsLog = new PmMcrsLog(params)
+        oldObject.isSubmitted = pmMcrsLog.isSubmitted
+        oldObject.isEditable = pmMcrsLog.isEditable
+        oldObject.submissionDate = DateUtility.getSqlDate(new Date())
         return oldObject
     }
 }

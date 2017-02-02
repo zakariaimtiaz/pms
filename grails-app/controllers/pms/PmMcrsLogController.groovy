@@ -2,8 +2,10 @@ package pms
 
 import actions.pmMcrsLog.CreatePmMcrsLogActionService
 import actions.pmMcrsLog.ListPmMcrsLogActionService
+import actions.pmMcrsLog.SubmitPmMcrsLogActionService
 import actions.pmMcrsLog.UpdatePmMcrsLogActionService
 import com.pms.PmMcrsLog
+import com.pms.PmServiceSector
 import com.pms.SecUser
 
 class PmMcrsLogController extends BaseController{
@@ -11,13 +13,17 @@ class PmMcrsLogController extends BaseController{
     BaseService baseService
     CreatePmMcrsLogActionService createPmMcrsLogActionService
     UpdatePmMcrsLogActionService updatePmMcrsLogActionService
+    SubmitPmMcrsLogActionService submitPmMcrsLogActionService
 
     ListPmMcrsLogActionService listPmMcrsLogActionService
 
-    def show() {SecUser user = baseService.currentUserObject()
+    def show() {
+        SecUser user = baseService.currentUserObject()
+        long serviceId = user.serviceId
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
-
-        render(view: "/pmMcrsLog/show", model: [serviceId:user.serviceId,isAdmin:isAdmin])
+        PmServiceSector service = PmServiceSector.findByShortName("MIS")
+        if(isAdmin){ serviceId = service.id}
+        render(view: "/pmMcrsLog/show", model: [serviceId:serviceId,isAdmin:isAdmin])
     }
     def create() {
         renderOutput(createPmMcrsLogActionService, params)
@@ -27,8 +33,14 @@ class PmMcrsLogController extends BaseController{
         renderOutput(updatePmMcrsLogActionService, params)
 
     }
-
     def list() {
         renderOutput(listPmMcrsLogActionService, params)
+    }
+    def showSubmission() {
+        SecUser user = baseService.currentUserObject()
+        render(view: "/pmMcrsLog/showSubmission", model: [serviceId:user.serviceId])
+    }
+    def submission() {
+        renderOutput(submitPmMcrsLogActionService, params)
     }
 }

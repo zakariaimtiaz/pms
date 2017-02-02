@@ -1,23 +1,21 @@
 package actions.pmMcrsLog
 
 import com.model.ListPmMcrsLogActionServiceModel
-import com.model.ListPmSpLogActionServiceModel
 import com.pms.PmMcrsLog
-import com.pms.PmSpLog
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
-import pms.utility.DateUtility
 
 import java.text.DateFormat
+import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 
 @Transactional
 class CreatePmMcrsLogActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "MCRS has been saved successfully"
-    private static final String ALREADY_EXIST = "CSU/Sector for this month already submitted"
+    private static final String ALREADY_EXIST = "Entry already submitted"
     private static final String PM_MCRS_LOG = "pmMcrsLog"
 
     private Logger log = Logger.getLogger(getClass())
@@ -35,17 +33,14 @@ class CreatePmMcrsLogActionService extends BaseService implements ActionServiceI
             Date start = originalFormat.parse(startDateStr);
             Calendar c = Calendar.getInstance();
             c.setTime(start);
-            //c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-            //Date monthFor = DateUtility.getSqlDate(c.getTime())
-
             int month = c.get(Calendar.MONTH);
             int year = c.get(Calendar.YEAR);
 
-            int count = PmMcrsLog.countByServiceIdAndYearAndMonthAndIsSubmitted(serviceId, year, month+1,true)
+            int count = PmMcrsLog.countByServiceIdAndYearAndMonth(serviceId, year, month + 1)
             if (count > 0) {
                 return super.setError(params, ALREADY_EXIST)
             }
-            PmMcrsLog pmMcrsLog = buildObject(params, serviceId, year, month+1)
+            PmMcrsLog pmMcrsLog = buildObject(params, serviceId, year, month)
             params.put(PM_MCRS_LOG, pmMcrsLog)
             return params
         } catch (Exception ex) {
@@ -79,6 +74,9 @@ class CreatePmMcrsLogActionService extends BaseService implements ActionServiceI
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
+        PmMcrsLog log = (PmMcrsLog) result.get(PM_MCRS_LOG)
+        ListPmMcrsLogActionServiceModel model = ListPmMcrsLogActionServiceModel.read(log.id)
+        result.put(PM_MCRS_LOG, model)
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**
@@ -91,21 +89,14 @@ class CreatePmMcrsLogActionService extends BaseService implements ActionServiceI
     }
 
     private static PmMcrsLog buildObject(Map parameterMap, long serviceId, int year, int month) {
-        PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndYearAndMonth(serviceId, year, month)
-        if(!pmMcrsLog){
-            pmMcrsLog = new PmMcrsLog()
-            pmMcrsLog.serviceId = serviceId
-            pmMcrsLog.year = year
-            pmMcrsLog.month = month
-            SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-            String month_name = month_date.format(month);
-            pmMcrsLog.monthStr = month_name
-        }
-
-        pmMcrsLog.isSubmitted = true
-        pmMcrsLog.isEditable = false
-        pmMcrsLog.submissionDate = DateUtility.getSqlDate(new Date())
-
+        String monthString = new DateFormatSymbols().getMonths()[month]
+        parameterMap.year = year
+        parameterMap.month = month + 1
+        PmMcrsLog pmMcrsLog = new PmMcrsLog(parameterMap)
+        pmMcrsLog.serviceId = serviceId
+        pmMcrsLog.monthStr = monthString
+        pmMcrsLog.isSubmitted = false
+        pmMcrsLog.isEditable = true
         return pmMcrsLog
     }
 }

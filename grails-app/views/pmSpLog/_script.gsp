@@ -1,26 +1,29 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-    <sec:access url="/pmSpLog/create">
-        <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
-    </sec:access>
     <sec:access url="/pmSpLog/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-%{--    <sec:access url="/pmSpLog/delete">
-        <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-    </sec:access>--}%
 </ul>
 </script>
 
 <script language="javascript">
-    var currentYear,gridSpLog, dataSource, SpLogModel,dropDownService;
+    var currentYear,gridSpLog, dataSource, SpLogModel;
 
     $(document).ready(function () {
         onLoadSpLogPage();
         initSpLogGrid();
         initObservable();
+        populateGrid();
     });
-
+    function populateGrid(){
+        var year = $('#yearGrid').val();
+        if(year==''){
+            showError("Please select year from grid menu");
+            return false;
+        }
+        var url = "${createLink(controller: 'pmSpLog', action: 'list')}?&year=" + year;
+        populateGridKendo(gridSpLog,url);
+    }
     function onLoadSpLogPage() {
         currentYear = moment().format('YYYY');
         $('#year').kendoDatePicker({
@@ -30,8 +33,16 @@
             depth: "decade"
         }).data("kendoDatePicker");
 
+        $('#yearGrid').kendoDatePicker({
+            format: "yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "decade",
+            depth: "decade",
+            change: populateGrid
+        }).data("kendoDatePicker");
+        $('#yearGrid').val(currentYear);
+        $(".k-datepicker input").prop("readonly", true);
 
-        $("#rowSpLog").hide();
         initializeForm($("#spLogForm"), onSubmitSpLog);
         defaultPageTile("Create SP Log",null);
     }
@@ -122,14 +133,13 @@
     function resetForm() {
         initObservable();
         $('#year').val(currentYear);
-        $('#rowSpLog').hide();
     }
 
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'pmSpLog', action: 'list')}",
+                    url: false,
                     dataType: "json",
                     type: "post"
                 }
@@ -171,6 +181,7 @@
             sortable: true,
             resizable: true,
             reorderable: true,
+            autoBind: false,
             pageable: {
                 refresh: true,
                 pageSizes: getDefaultPageSizes(),
@@ -178,9 +189,6 @@
             },
             columns: [
                 {field: "service", title: "Sector/CSU", width: 50, sortable: false, filterable: kendoCommonFilterable(98)},
-                {field: "year", title: "SP Year", width: 50, sortable: false, filterable: {extra: false},
-                    attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
-                },
                 {field: "isSubmitted", title: "Submitted", width: 50, sortable: false,
                     filterable: { messages: { isTrue: "YES", isFalse: "NO" }},
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
@@ -221,14 +229,10 @@
         kendo.bind($("#application_top_panel"), SpLogModel);
     }
 
-    function addService(){
-        $("#rowSpLog").show();
-    }
     function editService(){
         if (executeCommonPreConditionForSelectKendo(gridSpLog, 'spLog') == false) {
             return;
         }
-        $("#rowSpLog").show();
         var spLog = getSelectedObjectFromGridKendo(gridSpLog);
         showService(spLog);
     }
