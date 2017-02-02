@@ -61,7 +61,7 @@
                     return data;
                 }
             },
-            sort: {field: 'id', dir: 'asc'},
+            sort: {field: 'year', dir: 'asc'},
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
