@@ -133,7 +133,10 @@
                 }
             ],
             categoryAxis: {
-                field: 'cat_axe'
+                field: 'cat_axe',
+                labels: {
+                    rotation: -45
+                }
             },
             tooltip: {
                 visible: true,
