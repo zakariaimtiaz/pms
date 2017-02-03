@@ -3,10 +3,12 @@ package pms
 import actions.pmActions.*
 import com.pms.PmActions
 import com.pms.PmActionsIndicator
+import com.pms.PmMcrsLog
 import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
+import pms.utility.DateUtility
 import service.PmActionsService
 import service.PmProjectsService
 import service.PmServiceSectorService
@@ -111,7 +113,12 @@ class PmActionsController extends BaseController {
     ////////////MRP///////////////
     def achievement() {
         SecUser user = baseService.currentUserObject()
-        render(view: "/pmActions/mrp/show", model: [serviceId:user.serviceId])
+        Long serviceId=user.serviceId
+        Date submissionDate= DateUtility.getSqlDate(new Date())
+        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'")
+        if(d[0])
+            submissionDate=DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+        render(view: "/pmActions/mrp/show", model: [serviceId:serviceId,submissionDate:submissionDate])
     }
     def listAchievement(){
         renderOutput(listMRPActionService, params)
