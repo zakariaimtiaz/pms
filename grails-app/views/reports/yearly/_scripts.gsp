@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,dataSource,dropDownIndicatorType,gridYearlySP;
+    var serviceId,dataSource,gridYearlySP;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {

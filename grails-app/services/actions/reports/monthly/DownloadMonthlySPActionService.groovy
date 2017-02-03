@@ -18,14 +18,17 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
     JasperService jasperService
 
     private static final String REPORT_FOLDER_ALL_IND = 'pmActions/monthly/allIndicator'
-    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/monthly/actionIndicator'
-    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/monthly/preference'
     private static final String JASPER_FILE_ALL_IND = 'spWithAllIndicator'
     private static final String JASPER_FILE_ALL_IND_EXC = 'spWithAllIndicatorExc'
+
+    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/monthly/actionIndicator'
     private static final String JASPER_FILE_ACTION_IND = 'spActionIndicator'
     private static final String JASPER_FILE_ACTION_IND_EXC = 'spActionIndicatorExc'
+
+    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/monthly/preference'
     private static final String JASPER_FILE_PREFERENCE = 'spPreferenceIndicator'
     private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceIndicatorExc'
+
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = ' -SP Report of '
     private static final String SERVICE_ID = "serviceId"

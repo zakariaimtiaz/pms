@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsPreferenceIndicatorExc" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="10" bottomMargin="20" isSummaryNewPage="true" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
+	<property name="ireport.zoom" value="1.000000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="ROOT_DIR" class="java.lang.String"/>
+	<parameter name="LOGO_DIR" class="java.lang.String"/>
+	<parameter name="serviceId" class="java.lang.Long"/>
+	<parameter name="year" class="java.lang.Integer"/>
+	<parameter name="currentMonth" class="java.util.Date"/>
+	<parameter name="monthStr" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT g.id,g.sequence,TRIM(g.goal) goal,COUNT(ad.id) AS total_count
+FROM pm_goals g
+LEFT JOIN pm_actions a ON a.goal_id = g.id
+AND ($P{year} <= year(a.end) AND $P{year} >= year(a.start))
+LEFT JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+LEFT JOIN pm_actions_indicator_details ad ON ad.actions_id = a.id
+ AND month_name =$P{monthStr} AND ad.target > 0
+WHERE g.service_id=$P{serviceId} AND ai.is_preference = TRUE
+GROUP BY a.goal_id]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="sequence" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="goal" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_count" class="java.lang.Long"/>
+	<pageHeader>
+		<band height="85">
+			<staticText>
+				<reportElement x="436" y="55" width="88" height="14" uuid="ef7ff1ac-9ecd-47d2-af64-97c3c76c8de3"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Monthly]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="524" y="55" width="88" height="14" uuid="a9711414-98c2-4f48-829a-78722da3a517"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cumulative]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="554" y="69" width="29" height="16" uuid="71d9f920-286b-4d0c-bfb3-66bce2a67862"/>
+				<box topPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[A]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="495" y="69" width="29" height="16" uuid="2f17c734-87e9-4938-b937-957dc3b1f34b"/>
+				<box topPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[V]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="55" width="150" height="30" uuid="3219aba6-61c5-40ff-9a32-c5fa3ca2f5e8"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Actions]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="524" y="69" width="30" height="16" uuid="ad4e10c7-fd48-49d0-ac6e-dbabbd1f8833"/>
+				<box topPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[T]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="55" width="45" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Start]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="583" y="69" width="29" height="16" uuid="60b01b6b-a780-4472-84c8-5eb8f6197858"/>
+				<box topPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[V]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="225" y="55" width="46" height="30" uuid="32d11800-54e1-4fd5-9e12-41ad5b087e8c"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[End]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="436" y="69" width="30" height="16" uuid="ca28850f-a9c2-4f20-b415-02e5cfdd653e"/>
+				<box topPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[T]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="398" y="55" width="38" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Total Target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="55" width="30" height="30" uuid="c98b6557-43eb-4d6b-863a-952a6a4d5979"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[ID#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="271" y="55" width="127" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Indicator]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="466" y="69" width="29" height="16" uuid="c317b734-7dd7-4f74-9b10-eaa18561dbb2"/>
+				<box topPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[A]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="101" height="32" uuid="fa09bae0-1cb6-4fd9-982b-c66eb4c4a6a9"/>
+				<imageExpression><![CDATA[$P{LOGO_DIR}+"logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="146" y="2" width="510" height="30" forecolor="#2C2A2B" uuid="670cbecd-f0fe-45e6-8a5f-90ba5d6c1e87"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Cambria" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="32" width="832" height="1" uuid="c8fa575f-1a5c-4ba3-8e5d-56fda5122ab3"/>
+				<box>
+					<bottomPen lineWidth="0.1" lineColor="#939597"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="667" y="0" width="165" height="12" uuid="81bc3b5a-9d84-43cc-9471-56b27c8e1adb"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Legend:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="667" y="12" width="165" height="12" uuid="3a84c34a-c3c7-49b0-9350-de0a4ae07e16"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[T : Target;   A: Achievement; V: Variance          ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="33" width="225" height="22" uuid="cc22f948-b524-49fd-be13-85f1622a82bd"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#939597"/>
+					<leftPen lineWidth="0.0" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[A. Monthly Reporting Pack (MRP)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="612" y="55" width="110" height="30" uuid="a298031a-2107-4c86-8c29-041beea5293d"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Action Remarks]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="722" y="55" width="110" height="30" uuid="a14c543c-4c90-4467-a27e-2f7bf5f32ec6"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Indicator Remarks]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{total_count}>0]]></printWhenExpression>
+			<subreport>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="20" width="832" height="20" uuid="ca326888-1e22-4d0d-acfb-2c9e57e738c7"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROOT_DIR">
+					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="serviceId">
+					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="goalId">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="currentMonth">
+					<subreportParameterExpression><![CDATA[$P{currentMonth}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="year">
+					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mcrsPreferenceIndicator_subreport1Exc.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="30" height="20" uuid="fda4ee4a-8501-4019-88c9-8c34976052bf"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA['Goal '+$F{sequence}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="30" y="0" width="802" height="20" uuid="c5d73277-1fd1-4b2f-8f65-fbc13ffdc9c8"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{goal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="40" width="832" height="0" uuid="3165cf85-f98b-40e6-b048-025094e9931e"/>
+				<box>
+					<leftPen lineWidth="0.0" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="19">
+			<subreport>
+				<reportElement x="0" y="0" width="832" height="19" uuid="2e3c1c3d-28d0-43ad-a28b-1578e0fefcfd"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{ROOT_DIR} + "commonFooterLandscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<subreport>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="2b454f7f-8997-4b14-97f7-20e06904e544"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO_DIR">
+					<subreportParameterExpression><![CDATA[$P{LOGO_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROOT_DIR">
+					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="serviceId">
+					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="currentMonth">
+					<subreportParameterExpression><![CDATA[$P{currentMonth}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="year">
+					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mcrsPreferenceIndicator_subreport2Exc.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

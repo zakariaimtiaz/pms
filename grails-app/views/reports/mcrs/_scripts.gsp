@@ -222,7 +222,9 @@
         }
         return target
     }
-    $("button").click(function() {
+    $("#create").click(onSubmitMCRSForm);
+    $("#reset").click(onSubmitMCRSForm);
+    function onSubmitMCRSForm(e) {
         var filterType = this.id;
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var month = $('#month').val();
@@ -259,7 +261,7 @@
 
         });
         return false;
-    });
+    };
 
     $("#gridMRP").kendoTooltip({
         filter: "td:nth-child(1)",

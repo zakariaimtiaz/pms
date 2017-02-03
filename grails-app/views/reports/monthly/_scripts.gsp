@@ -224,8 +224,9 @@
         }
         return target
     }
-
-    $("button").click(function() {
+    $("#create").click(onSubmitMonForm);
+    $("#reset").click(onSubmitMonForm);
+    function onSubmitMonForm(e) {
         var filterType = this.id;
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var month = $('#month').val();
@@ -244,7 +245,7 @@
         var url ="${createLink(controller: 'reports', action: 'listSpMonthlyPlan')}" + params;
         populateGridKendo(gridMonthlySP, url);
         return false;
-    });
+    };
 
     $("#gridMonthlySP").kendoTooltip({
         filter: "td:nth-child(1)",

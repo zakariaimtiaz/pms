@@ -1,4 +1,4 @@
-<script type="application/javascript"> var dropDownService;</script>
+<script type="application/javascript"> var dropDownService,dropDownIndicatorType;</script>
 <style type="text/css">
 #downloadSP {
     height: 23px;
