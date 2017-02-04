@@ -1,7 +1,5 @@
-
-
 <script language="javascript">
-    var serviceId;
+    var serviceId,currentMonth;
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
@@ -10,15 +8,14 @@
 
     function onLoadEdDashboardPage() {
         serviceId = ${serviceId};
-
-        var str = moment().format('MMMM YYYY');
-        var months = $('#month').kendoDatePicker({
+        currentMonth = moment().format('MMMM YYYY');
+        $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year"
         }).data("kendoDatePicker");
-        $('#month').val(str);
+        $('#month').val(currentMonth);
 
         initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
         defaultPageTile("Create Ed Dashboard",null);
@@ -94,7 +91,7 @@
     function emptyForm() {
         clearForm($("#edDashboardForm"), $('#serviceId'));
         dropDownService.value(serviceId);
-       // $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#month').val(currentMonth);
     }
     function resetForm() {
         dropDownService.value(serviceId);

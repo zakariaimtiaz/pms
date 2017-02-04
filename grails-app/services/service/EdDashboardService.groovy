@@ -1,5 +1,6 @@
 package service
 
+import com.pms.SecUser
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import pms.BaseService
@@ -8,6 +9,7 @@ import pms.BaseService
 class EdDashboardService  extends BaseService{
 
     public List<GroovyRowResult> lstEdDashboardIssue(long serviceId,Date monthFor) {
+        SecUser user = currentUserObject()
 
         String queryForList = """
 
@@ -22,9 +24,7 @@ class EdDashboardService  extends BaseService{
                 LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id
                  ORDER BY edi.id
         """
-
-            List<GroovyRowResult>  lst = executeSelectSql(queryForList)
-
+        List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
 }
