@@ -16,8 +16,7 @@
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
-            depth: "year",
-            max:new Date()
+            depth: "year"
         }).data("kendoDatePicker");
         $('#month').val(str);
 

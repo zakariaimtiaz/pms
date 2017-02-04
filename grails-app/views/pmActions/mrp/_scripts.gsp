@@ -23,8 +23,16 @@
             start: "year",
             depth: "year"
         }).data("kendoDatePicker");
-        st = new Date(moment('${submissionDate}').endOf('year'));
-        start.min('${submissionDate}');
+        var value='${submissionDate}';
+
+        if(value!='') {
+            st = new Date(moment('${submissionDate}').endOf('year'));
+            start.min('${submissionDate}');
+        }
+        else{
+            st = new Date(moment(new Date()).endOf('year'));
+            start.min(new Date(moment(new Date()).startOf('year')))
+        }
         start.max(st);
         $('#month').val(str);
 

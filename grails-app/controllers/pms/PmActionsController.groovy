@@ -114,10 +114,12 @@ class PmActionsController extends BaseController {
     def achievement() {
         SecUser user = baseService.currentUserObject()
         Long serviceId=user.serviceId
-        Date submissionDate= DateUtility.getSqlDate(new Date())
-        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'")
+
+        String submissionDate=""
+        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
         if(d[0])
-            submissionDate=DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+            submissionDate=DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString())).toString()
+
         render(view: "/pmActions/mrp/show", model: [serviceId:serviceId,submissionDate:submissionDate])
     }
     def listAchievement(){

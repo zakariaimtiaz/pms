@@ -14,7 +14,7 @@
                             <label class="col-md-2 control-label label-optional"
                                    for="serviceId">Sector/CSU:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <app:dropDownService
                                         class="kendo-drop-down" is_in_sp="true"
                                         required="true" validationMessage="Required"
@@ -30,7 +30,7 @@
                         <div class="form-group"  id="divMonth">
                             <label class="col-md-2 control-label label-optional" for="month">Month:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <input type='text' tabindex="2" required="required" onkeydown="return false;"
                                        class="kendo-date-picker" id="month" name="month"
                                        placeholder="Year" validationMessage="Required"/>
@@ -40,17 +40,16 @@
                                 <span class="k-invalid-msg" data-for="month"></span>
                             </div>
                         </div>
-                        <div class="form-group" id="btnView">
-                            <div class="col-md-6" align="center" >
-                                <button id="view" name="view" type="button" data-role="button"
-                                        class="k-button k-button-icontext" onclick="initMcrsLogGrid();"
-                                        role="button" tabindex="3"
-                                        aria-disabled="false"><span class="k-icon k-i-search"></span>View
-                                </button>
-                            </div>
+
+                    </div>
+                    <div class="col-md-6" id="btnView" align="left" >
+                        <div  class="form-group" >
+                            <button id="view" name="view" type="button" data-role="button"
+                                    class="k-button k-button-icontext" onclick="initMcrsLogGrid();"
+                                    role="button" tabindex="3"
+                                    aria-disabled="false"><span class="k-icon k-i-search"></span>View
+                            </button>
                         </div>
-
-
                     </div>
 
                 </div>

@@ -35,10 +35,18 @@
             start: "year",
             depth: "year"
         }).data("kendoDatePicker");
-        st = new Date(moment('${submissionDate}').endOf('year'));
-        start.min('${submissionDate}');
-        start.max(st);
 
+        var value='${submissionDate}';
+$('#hfSubmissionDate').val('${submissionDate}');
+        if(value!='') {
+            st = new Date(moment('${submissionDate}').endOf('year'));
+            start.min('${submissionDate}');
+        }
+        else{
+            st = new Date(moment(new Date()).endOf('year'));
+            start.min(new Date(moment(new Date()).startOf('year')))
+        }
+        start.max(st);
 
         $("#supportDepartment").kendoMultiSelect({
             dataTextField: "name",
@@ -400,7 +408,15 @@
         if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
             return;
         }
-        var msg = 'Are you sure you want to delete the selected action?',
+
+        var actions = getSelectedObjectFromGridKendo(gridActions);
+        var value=$('#hfSubmissionDate').val();
+        if(actions.start.getMonth()<value.getMonth() || actions.start.getYear() < value.getYear()){
+            showError("This additional MRP already submitted.");
+            return;
+        }
+
+            var msg = 'Are you sure you want to delete the selected action?',
                 url = "${createLink(controller: 'pmAdditionalActions', action:  'delete')}";
         confirmDelete(msg, url, gridActions);
     }
@@ -416,6 +432,10 @@
         clearIndicatorTable();
         addService();
         var actions = getSelectedObjectFromGridKendo(gridActions);
+
+        var value=$('#hfSubmissionDate').val();
+        if(actions.start.getMonth()<value.getMonth() || actions.start.getYear() < value.getYear())
+
         showService(actions);
         $('html,body').scrollTop(0);
         $.ajax({
