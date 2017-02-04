@@ -17,6 +17,7 @@ class EdDashboardService  extends BaseService{
                 @submission_date:=COALESCE((SELECT MAX(submission_date) FROM pm_mcrs_log WHERE service_id=9 AND is_submitted=TRUE),'1901-01-01'),
                   CASE WHEN MONTH('${monthFor}')<MONTH(@submission_date)
                   AND YEAR('${monthFor}')<=YEAR(@submission_date)
+                  AND ${user.serviceId} = ${serviceId}
                   THEN TRUE ELSE FALSE END AS isReadable
                 FROM ed_dashboard_issues edi LEFT JOIN ed_dashboard ed  ON ed.issue_id=edi.id AND
                 ed.service_id=${serviceId} AND MONTH(ed.month_for)=MONTH('${monthFor}')
