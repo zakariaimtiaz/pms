@@ -91,7 +91,7 @@ class CreatePmMcrsLogActionService extends BaseService implements ActionServiceI
     }
 
     private static PmMcrsLog buildObject(Map parameterMap, long serviceId, int year, int month) {
-        PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndYearAndMonthAndIsSubmitted(serviceId, year, month,true)
+        PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndYearAndMonth(serviceId, year, month)
         if(!pmMcrsLog){
             pmMcrsLog = new PmMcrsLog()
             pmMcrsLog.serviceId = serviceId
