@@ -33,9 +33,15 @@
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
-            depth: "year"
+            depth: "year",
+            change: startChange
         }).data("kendoDatePicker");
 
+        function startChange() {
+            if (start.value() != '' || start.value() != null) {
+                $(':input').prop('readonly', false);
+            }
+        }
         var value='${submissionDate}';
 $('#hfSubmissionDate').val('${submissionDate}');
         if(value!='') {
