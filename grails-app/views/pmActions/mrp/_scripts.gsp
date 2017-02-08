@@ -215,7 +215,7 @@
         });
     }
     function formatIndicator(indicatorType, target) {
-        if (!target) return ''
+        if (!target) return '0'
         if (indicatorType.match('%')) {
             return target + ' % ';
         }

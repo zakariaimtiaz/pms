@@ -143,7 +143,7 @@ class ListMRPActionService extends BaseService implements ActionServiceIntf {
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id
                 LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthStr}'
-                    AND idd.target > 0
+                 --   AND idd.target > 0
                 WHERE a.id = ${actionsId}
                 GROUP BY i.id,idd.id
         """
