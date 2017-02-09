@@ -109,7 +109,7 @@
                                     </td>
                                     <td width="13%">
                                         <input type="text" onkeypress='return validateQty(event);' id='target1'
-                                               name='target1' placeholder='Target' readonly="true"
+                                               name='target1' placeholder='Achievement' readonly="true"
                                                class="form-control"/>
                                     </td>
                                     <td>
