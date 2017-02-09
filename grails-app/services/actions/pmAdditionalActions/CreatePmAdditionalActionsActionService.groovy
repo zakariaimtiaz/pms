@@ -144,12 +144,13 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
         c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
         parameterMap.end = DateUtility.getSqlDate(c.getTime())
         String query = """
-        SELECT COALESCE(MAX(tmp_seq)+1,1) AS count FROM pm_actions
+        SELECT COALESCE(MAX(tmp_seq)+1,1) AS count FROM pm_additional_actions
         WHERE service_id=${serviceId} AND goal_id=${goalId}  AND
         EXTRACT(YEAR FROM start) = ${year} AND EXTRACT(YEAR FROM end)=${year}
         """
         List<GroovyRowResult> max = executeSelectSql(query)
         int con = (int) max[0].count
+
         PmGoals goals = PmGoals.read(goalId)
 
         long responsibleId = Long.parseLong(parameterMap.resPersonId.toString())
