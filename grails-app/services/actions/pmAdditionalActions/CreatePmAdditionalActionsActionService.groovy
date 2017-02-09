@@ -158,8 +158,6 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
         PmAdditionalActions actions = new PmAdditionalActions(parameterMap)
         actions.serviceId = serviceId
         actions.goalId = goalId
-        //actions.start= new Date() //DateUtility.getSqlDate(c.getTime())
-       // actions.end=new Date() //DateUtility.getSqlDate(c.getTime())
         actions.resPerson = resName
         actions.sequence = goals.sequence + "." + con
         actions.tmpSeq = con
