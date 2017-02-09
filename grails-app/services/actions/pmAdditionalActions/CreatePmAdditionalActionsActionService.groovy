@@ -50,18 +50,7 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
             actions.totalIndicator = count
             actions.save()
 
-            String str = result.indicator.toString()
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(actions.start);
-            int monthNoStart = cal.get(Calendar.MONTH);
-
-            cal = Calendar.getInstance();
-            cal.setTime(actions.end);
-            int monthEnd = cal.get(Calendar.MONTH);
-
-            if (monthNoStart == monthEnd) {
-                String monthStr = result.start.toString()
-                Date date = DateUtility.parseDateForDB(monthStr);
+                Date date = actions.start
                 Calendar c = Calendar.getInstance();
                 c.setTime(date);
                 String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
@@ -103,7 +92,7 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
                     } catch (Exception e) {
                     }
                 }
-            }
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -140,7 +129,6 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
 
     private PmAdditionalActions buildObject(Map parameterMap, long serviceId, long goalId) {
         String startDateStr = parameterMap.start.toString()
-        String endDateStr = parameterMap.end.toString()
         DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date start = originalFormat.parse(startDateStr);
@@ -151,11 +139,10 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
 
         int year = c.get(Calendar.YEAR);
 
-        Date end = originalFormat.parse(endDateStr);
+        Date end = originalFormat.parse(startDateStr);
         c.setTime(end);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
         parameterMap.end = DateUtility.getSqlDate(c.getTime())
-
         String query = """
         SELECT COALESCE(MAX(tmp_seq)+1,1) AS count FROM pm_actions
         WHERE service_id=${serviceId} AND goal_id=${goalId}  AND
@@ -171,6 +158,8 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
         PmAdditionalActions actions = new PmAdditionalActions(parameterMap)
         actions.serviceId = serviceId
         actions.goalId = goalId
+        //actions.start= new Date() //DateUtility.getSqlDate(c.getTime())
+       // actions.end=new Date() //DateUtility.getSqlDate(c.getTime())
         actions.resPerson = resName
         actions.sequence = goals.sequence + "." + con
         actions.tmpSeq = con
