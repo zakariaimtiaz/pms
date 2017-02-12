@@ -121,6 +121,7 @@ class ListSpMonthlyPlanActionService extends BaseService implements ActionServic
                 JOIN pm_service_sector sc ON sc.id = a.service_id,
                 (SELECT @rownum := 0, @curmon := MONTH(DATE('${currentMonth}'))) r
                 WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
+                AND (@curmon <= MONTH(a.end) AND @curmon >= MONTH(a.start))
                 GROUP BY ai.id
                 HAVING mon_tar!=0
                 ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq;

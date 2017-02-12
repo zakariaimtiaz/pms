@@ -18,7 +18,7 @@ class EdDashboardService  extends BaseService{
         LEFT JOIN ed_dashboard ed ON ed.service_id = ${serviceId} AND ed.issue_id=edi.id AND MONTH(ed.month_for)=MONTH('${month}') AND YEAR(ed.month_for)=YEAR('${month}')
         LEFT JOIN pm_mcrs_log lg ON lg.service_id = ${serviceId} AND lg.month =MONTH('${month}') AND lg.year = YEAR('${month}')
         LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id
-        ORDER BY edi.id;;
+        ORDER BY edi.id;
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst

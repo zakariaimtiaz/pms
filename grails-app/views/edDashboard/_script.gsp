@@ -91,25 +91,10 @@
     function executePostCondition(result) {
         if (result.isError) {
             showError(result.message);
-            showLoadingSpinner(false);
         } else {
-            try {
-                emptyForm();
-                showSuccess(result.message);
-            } catch (e) {
-                // Do Nothing
-            }
+            showSuccess(result.message);
         }
+        showLoadingSpinner(false);
     }
-
-    function emptyForm() {
-        clearForm($("#edDashboardForm"), $('#serviceId'));
-        dropDownService.value(serviceId);
-        $('#month').val(currentMonth);
-    }
-    function resetForm() {
-        dropDownService.value(serviceId);
-    }
-
 
 </script>
