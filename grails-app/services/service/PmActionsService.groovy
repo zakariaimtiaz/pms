@@ -69,7 +69,7 @@ class PmActionsService extends BaseService{
         SecUser user = currentUserObject();
 
         String query = """
-            SELECT cat_axe,ac_count,ac_count-a_col t_col,a_col,a_color,t_color,goal,ROUND(a_col/ac_count*100) a_pert
+            SELECT cat_axe,ac_count,IF((ac_count-a_col)<0,0.00,ac_count-a_col) t_col,a_col,a_color,t_color,goal,ROUND(a_col/ac_count*100) a_pert
             FROM
             (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,
             ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col,
@@ -96,7 +96,7 @@ class PmActionsService extends BaseService{
         int year = c.get(Calendar.YEAR)
 
         String query = """
-            SELECT service_id,service,short_name,ac_count,ac_count-a_col t_col,a_col,t_color,a_color,ROUND(a_col/ac_count*100) a_pert
+            SELECT service_id,service,short_name,ac_count,IF((ac_count-a_col)<0,0.00,ac_count-a_col) t_col,a_col,t_color,a_color,ROUND(a_col/ac_count*100) a_pert
             FROM
             (SELECT sc.id service_id,sc.name service,sc.short_name,COUNT(a.id) ac_count,
             ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col,
