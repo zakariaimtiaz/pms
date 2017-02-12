@@ -7,7 +7,7 @@
                 </div>
             </div>
 
-            <g:form name='actionForm' id='actionForm' class="form-horizontal form-widgets" role="form">
+            <g:form name='additionalMRPForm' id='additionalMRPForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <input type="hidden" name="id" id="id" data-bind="value: actions.id"/>
                     <input type="hidden" name="version" id="version" data-bind="value: actions.version"/>
@@ -176,7 +176,7 @@
     </div>
 
     <div class="row">
-        <div id="gridActions"></div>
+        <div id="gridAdditionalMRP"></div>
     </div>
 </div>
 

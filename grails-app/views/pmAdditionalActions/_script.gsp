@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridActions, dataSource,dataSourceUnit, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st ;
+    var gridAdditionalMRP, dataSource,dataSourceUnit, actionsModel, dropDownService, serviceId, dropDownGoals, supportDepartment, sourceOfFund, dropDownEmployee, st ;
     var map = {};
     var indCount = 1;
     var deletedIndicatorIds = '';
@@ -75,7 +75,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
         sourceOfFund.setDataSource(${lstProject});
         serviceId = ${serviceId};
         $("#required").hide();
-        initializeForm($("#actionForm"), onSubmitAction);
+        initializeForm($("#additionalMRPForm"), onSubmitAction);
         defaultPageTile("Create Actions", null);
     }
 
@@ -158,7 +158,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
         var resPerson = $("#resPersonId").data("kendoDropDownList").text();
         jQuery.ajax({
             type: 'post',
-            data: jQuery("#actionForm").serialize() + '&resPerson=' + resPerson,
+            data: jQuery("#additionalMRPForm").serialize() + '&resPerson=' + resPerson,
             url: actionUrl,
             success: function (data, textStatus) {
                 executePostCondition(data);
@@ -182,15 +182,15 @@ $('#hfSubmissionDate').val('${submissionDate}');
             try {
                 var newEntry = result.pmAdditionalAction;
                 if ($('#id').val().isEmpty() && newEntry != null) { // newly created
-                    var gridData = gridActions.dataSource.data();
+                    var gridData = gridAdditionalMRP.dataSource.data();
                     gridData.unshift(newEntry);
                     emptyForm();
                 } else if (newEntry != null) { // updated existing
-                    var selectedRow = gridActions.select();
-                    var allItems = gridActions.items();
+                    var selectedRow = gridAdditionalMRP.select();
+                    var allItems = gridAdditionalMRP.items();
                     var selectedIndex = allItems.index(selectedRow);
-                    gridActions.removeRow(selectedRow);
-                    gridActions.dataSource.insert(selectedIndex, newEntry);
+                    gridAdditionalMRP.removeRow(selectedRow);
+                    gridAdditionalMRP.dataSource.insert(selectedIndex, newEntry);
                     emptyForm();
                     $("#rowAction").hide();
                 }
@@ -202,7 +202,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
     }
 
     function emptyForm() {
-        clearForm($("#actionForm"), null);
+        clearForm($("#additionalMRPForm"), null);
         initObservable();
         dropDownService.value(serviceId);
         dropDownGoals.value('');
@@ -213,7 +213,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
     function resetForm() {
-        clearForm($("#actionForm"), null);
+        clearForm($("#additionalMRPForm"), null);
         initObservable();
         dropDownService.value(serviceId);
         dropDownGoals.value('');
@@ -283,7 +283,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
 
     function initActionsGrid() {
         initDataSource();
-        $("#gridActions").kendoGrid({
+        $("#gridAdditionalMRP").kendoGrid({
             dataSource: dataSource,
             height: getGridHeightKendo(),
             selectable: true,
@@ -333,15 +333,15 @@ $('#hfSubmissionDate').val('${submissionDate}');
             },
             toolbar:  kendo.template($("#gridToolbar").html())
         });
-        gridActions = $("#gridActions").data("kendoGrid");
+        gridAdditionalMRP = $("#gridAdditionalMRP").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
-    $("#gridActions").kendoTooltip({
+    $("#gridAdditionalMRP").kendoTooltip({
         filter: "td:nth-child(9)",
         width: 300,
         position: "top",
         content: function (e) {
-            var dataItem = $("#gridActions").data("kendoGrid").dataItem(e.target.closest("tr"));
+            var dataItem = $("#gridAdditionalMRP").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.note;
         }
     }).data("kendoTooltip");
@@ -412,11 +412,11 @@ $('#hfSubmissionDate').val('${submissionDate}');
     }
 
     function deleteService() {
-        if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridAdditionalMRP, 'action') == false) {
             return;
         }
 
-        var actions = getSelectedObjectFromGridKendo(gridActions);
+        var actions = getSelectedObjectFromGridKendo(gridAdditionalMRP);
         var value=$('#hfSubmissionDate').val();
         if(actions.start.getMonth()<=new Date(value).getMonth() && actions.start.getYear() <= new Date(value).getYear()){
             showError("This additional MRP already submitted.");
@@ -425,7 +425,8 @@ $('#hfSubmissionDate').val('${submissionDate}');
 
             var msg = 'Are you sure you want to delete the selected action?',
                 url = "${createLink(controller: 'pmAdditionalActions', action:  'delete')}";
-        confirmDelete(msg, url, gridActions);
+        confirmDelete(msg, url, gridAdditionalMRP);
+        gridAdditionalMRP.dataSource.data.read();
     }
 
     function addService() {
@@ -433,10 +434,10 @@ $('#hfSubmissionDate').val('${submissionDate}');
         dropDownService.value(serviceId);
     }
     function editService() {
-        if (executeCommonPreConditionForSelectKendo(gridActions, 'action') == false) {
+        if (executeCommonPreConditionForSelectKendo(gridAdditionalMRP, 'action') == false) {
             return;
         }
-        var actions = getSelectedObjectFromGridKendo(gridActions);
+        var actions = getSelectedObjectFromGridKendo(gridAdditionalMRP);
 
         var value=$('#hfSubmissionDate').val();
         if(actions.start.getMonth()<=new Date(value).getMonth() && actions.start.getYear() <= new Date(value).getYear()){
