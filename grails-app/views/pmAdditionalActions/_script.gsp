@@ -221,6 +221,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
         clearIndicatorTable();
         map = {};
         deletedIndicatorIds = ''
+
         $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }

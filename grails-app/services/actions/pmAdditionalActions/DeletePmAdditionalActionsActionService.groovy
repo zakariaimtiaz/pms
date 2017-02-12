@@ -33,7 +33,7 @@ class DeletePmAdditionalActionsActionService extends BaseService implements Acti
         try {
             PmAdditionalActions actions = (PmAdditionalActions) result.get(ADDITIONAL_ACTION_OBJ)
 
-            List<PmAdditionalActions> lstPmAdditionalActions=PmAdditionalActions.findAllByGoalIdAndStartBetween(actions.goalId,start,end)
+            List<PmAdditionalActions> lstPmAdditionalActions=PmAdditionalActions.findAllByGoalIdAndStartBetween(actions.goalId,actions.start,actions.end)
             PmGoals goals = PmGoals.read(actions.goalId)
 
             actions.delete()

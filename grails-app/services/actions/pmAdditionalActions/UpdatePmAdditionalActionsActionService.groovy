@@ -173,7 +173,6 @@ class UpdatePmAdditionalActionsActionService extends BaseService implements Acti
         long resPersonId = Long.parseLong(params.resPersonId.toString())
 
         String startDateStr = params.start.toString()
-        String endDateStr = params.end.toString()
         DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date start = originalFormat.parse(startDateStr);
@@ -182,7 +181,7 @@ class UpdatePmAdditionalActionsActionService extends BaseService implements Acti
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         params.start = DateUtility.getSqlDate(c.getTime())
 
-        Date end = originalFormat.parse(endDateStr);
+        Date end = originalFormat.parse(startDateStr);
         c.setTime(end);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
         params.end = DateUtility.getSqlDate(c.getTime())
