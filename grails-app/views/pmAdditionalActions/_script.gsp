@@ -214,6 +214,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
     }
     function resetForm() {
         clearForm($("#additionalMRPForm"), null);
+        initActionsGrid();
         initObservable();
         dropDownService.value(serviceId);
         dropDownGoals.value('');
@@ -426,7 +427,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
             var msg = 'Are you sure you want to delete the selected action?',
                 url = "${createLink(controller: 'pmAdditionalActions', action:  'delete')}";
         confirmDelete(msg, url, gridAdditionalMRP);
-       // gridAdditionalMRP.dataSource.data.read();
+
     }
 
     function addService() {
