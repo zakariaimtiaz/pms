@@ -173,7 +173,7 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
                 FROM pm_service_sector
             WHERE is_displayble = TRUE AND id IN (${param})
             ${spStr}
-            ORDER BY sequence ASC
+            ORDER BY name ASC
         """
         List<GroovyRowResult> lstServices = executeSelectSql(queryForList)
         return lstServices
