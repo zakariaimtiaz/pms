@@ -124,7 +124,7 @@
             showInfo('MCRS already submitted');
             return false;
         }
-        var msg = 'Are you sure you want to submit the selected MCRS?',
+        var msg = 'Are you sure you want to submit the selected MCRS(MRP and ED Dashboard)?',
                 url = "${createLink(controller: 'pmMcrsLog', action:  'submission')}";
         confirmActionForEdit(msg, url, gridMCRSSubmission);
     }
