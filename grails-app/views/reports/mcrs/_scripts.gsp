@@ -242,7 +242,7 @@
         var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&filterType="+filterType;
         var url ="${createLink(controller: 'reports', action: 'listMcrs')}" + params;
         var dashboard ="${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+"&month="+month+
-                "&template=/reports/mcrs/viewED";
+                "&template=/reports/mcrs/ViewED";
         populateGridKendo(gridMRP, url);
 
         jQuery.ajax({
