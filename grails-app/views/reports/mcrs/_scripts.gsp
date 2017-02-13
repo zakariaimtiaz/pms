@@ -1,10 +1,11 @@
 <script language="javascript">
-    var serviceId,dataSource,gridMRP,dropDownIndicatorType,isApplicable=false;
+    var serviceId,dataSource,gridMRP,gridMRPAddi,dropDownIndicatorType,isApplicable=false;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
         onLoadInfoPage();
         initGrid();
+        initGridAdditional();
     });
     function onLoadInfoPage() {
         if(!${isSysAdmin} && !${isTopMan}){
@@ -41,6 +42,75 @@
         }else{
             $("#reset").hide();
         }
+    }
+    function initGridAdditional() {
+        $("#gridMRPAddi").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false,
+                        dataType: "json",
+                        type: "post"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "lstAddi",
+                    model: {
+                        fields: {
+                            id: {type: "number"},
+                            indicator_id: {type: "number"},
+                            sequence: {type: "string"},
+                            actions: {type: "string"},
+                            remarks: {type: "string"},
+                            start: {type: "date"},
+                            end: {type: "date"},
+                            indicator: {type: "string"},
+                            responsiblePerson: {type: "string"},
+                            supportDepartment: {type: "string"},
+                            project: {type: "string"}
+                        }
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true
+            },
+            autoBind: false,
+            height: getGridHeightKendo() - 50,
+            sortable: false,
+            pageable: false,
+            columns: [
+                {
+                    field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template:"#=omitRepeated1(sequence,sequence)#"
+                },
+                {field: "actions", title: "Action", width: 250, sortable: false, filterable: false,
+                    template:"#=omitRepeated2(sequence,actions)#"
+                },
+                {field: "indicator", title: "Indicator", width: 200, sortable: false, filterable: false},
+                {field: "target,", title: "Achievement", width: 100, sortable: false, filterable: false,
+                    headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
+                    template:"#=formatIndicator(indicator_type,target)#"
+                },
+                {
+                    field: "remarks", title: "Remarks",
+                    template: "#=trimTextForKendo(omitRepeated3(sequence,remarks),70)#",
+                    width: 200, sortable: false,filterable: false
+                },
+                {field: "responsiblePerson", title: "Responsible Person", width: 200, sortable: false, filterable: false,
+                    template:"#=omitRepeated4(sequence,responsiblePerson)#"
+                },
+                {
+                    field: "supportDepartment", title: "Support Department", width: 150,
+                    sortable: false, filterable: false,template:"#=trimTextForKendo(omitRepeated5(sequence,supportDepartment),50)#"
+                },
+                {field: "project", title: "Project", width: 150, sortable: false, filterable: false,
+                    template:"#=omitRepeated6(sequence,project)#"
+                }
+            ]
+        });
+        gridMRPAddi = $("#gridMRPAddi").data("kendoGrid");
     }
     function initGrid() {
         $("#gridMRP").kendoGrid({
@@ -244,6 +314,7 @@
         var dashboard ="${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+"&month="+month+
                 "&template=/reports/mcrs/ViewED";
         populateGridKendo(gridMRP, url);
+        populateGridKendo(gridMRPAddi, url);
 
         jQuery.ajax({
             type: 'post',
@@ -263,6 +334,32 @@
         return false;
     };
 
+    $("#gridMRPAddi").kendoTooltip({
+        filter: "td:nth-child(1)",
+        width: 300,
+        position: "top",
+        content: function(e){
+            var dataItem = $("#gridMRPAddi").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.goal;
+        }
+    }).data("kendoTooltip");
+    $("#gridMRPAddi").kendoTooltip({
+        show: function(e){
+            if(this.content.text().length > 70){
+                this.content.parent().css("visibility", "visible");
+            }
+        },
+        hide:function(e){
+            this.content.parent().css("visibility", "hidden");
+        },
+        filter: "td:nth-child(5)",
+        width: 300,
+        position: "top",
+        content: function(e){
+            var dataItem = $("#gridMRPAddi").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.remarks;
+        }
+    }).data("kendoTooltip");
     $("#gridMRP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
