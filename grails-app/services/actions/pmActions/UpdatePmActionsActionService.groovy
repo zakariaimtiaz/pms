@@ -180,6 +180,8 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.indicator = result.get("indicator" + (i + 1))
                             indicator.indicatorType = result.get("indType" + (i + 1))
                             indicator.target = Integer.parseInt(result.get("target" + (i + 1)).toString())
+                            indicator.unitStr = unitIdStr
+                            indicator.unitId = unitId
                             indicator.save()
 
                             if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
