@@ -56,17 +56,34 @@
                                     <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/reports/showSpStatus">
+                            <sec:ifAnyUrls urls="/reports/showSpStatus,reports/showMcrsStatus">
                                 <li>
-                                    <a href="#reports/showSpStatus"><i class="fa fa-file-powerpoint-o"></i>&nbsp;SP Status
-                                    </a>
+                                    <a href="#"><i class="fa fa-bar-chart-o"></i>&nbsp;Submission<span
+                                            class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <sec:access url="/reports/showMcrsStatus">
+                                            <li>
+                                                <a href="#reports/showMcrsStatus"><i
+                                                        class="fa fa-file-text-o"></i>&nbsp;MCRS
+                                                </a>
+                                            </li>
+                                        </sec:access>
+                                        <sec:access url="/reports/showSpStatus">
+                                            <li>
+                                                <a href="#reports/showSpStatus"><i
+                                                        class="fa fa-file-powerpoint-o"></i>&nbsp;SP
+                                                </a>
+                                            </li>
+                                        </sec:access>
+                                    </ul>
                                 </li>
-                            </sec:access>
+                            </sec:ifAnyUrls>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show,/pmSpLog/showSubmission">
+                <sec:ifAnyUrls
+                        urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show,/pmSpLog/showSubmission">
                     <li>
                         <a href="#"><i class="fa fa-book"></i>&nbsp;SP<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -110,7 +127,8 @@
                             </sec:access>
                             <sec:access url="/pmAdditionalActions/show">
                                 <li>
-                                    <a href="#pmAdditionalActions/show"><i class="fa fa-hand-peace-o"></i>&nbsp;MRP Additional</a>
+                                    <a href="#pmAdditionalActions/show"><i
+                                            class="fa fa-hand-peace-o"></i>&nbsp;MRP Additional</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/edDashboard/show">
@@ -120,7 +138,8 @@
                             </sec:access>
                             <sec:access url="/pmMcrsLog/showSubmission">
                                 <li>
-                                    <a href="#pmMcrsLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;Submission</a>
+                                    <a href="#pmMcrsLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;Submission
+                                    </a>
                                 </li>
                             </sec:access>
                         </ul>
@@ -187,7 +206,8 @@
                             </sec:access>
                             <sec:access url="/login/showOnlineUser">
                                 <li>
-                                    <a href="#login/showOnlineUser"><i class="fa fa-binoculars"></i>&nbsp;Who is online</a>
+                                    <a href="#login/showOnlineUser"><i class="fa fa-binoculars"></i>&nbsp;Who is online
+                                    </a>
                                 </li>
                             </sec:access>
                         </ul>

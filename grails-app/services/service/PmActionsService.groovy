@@ -45,13 +45,38 @@ class PmActionsService extends BaseService{
         }
         return isWithin
     }
-    public List<GroovyRowResult> lstDepartmentSpStatus() {
+    public List<GroovyRowResult> lstDepartmentSpStatus(String dateStr) {
+        int year = Integer.parseInt(dateStr)
+
         String query = """
             SELECT ss.name,LEFT(ss.short_name,6) short_name,COUNT(DISTINCT(a.id)) AS count,l.is_submitted,
+                        CASE WHEN l.is_submitted THEN CONCAT('Submitted On : ',l.submission_date) ELSE '' END submission_date,
                         CASE WHEN l.is_submitted IS TRUE THEN '#00FF00' ELSE '#FF6666' END col_color
                             FROM pm_service_sector ss
                             LEFT JOIN pm_actions a ON ss.id=a.service_id
-                            LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = YEAR(NOW())
+                            LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = ${year}
+                            WHERE ss.is_in_sp = TRUE
+                            GROUP BY ss.id
+            ORDER BY ss.name;
+        """
+        List<GroovyRowResult> lst = executeSelectSql(query)
+        return lst
+    }
+    public List<GroovyRowResult> lstDepartmentMcrsStatus(String monthStr) {
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        Date date = originalFormat.parse(monthStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int year = c.get(Calendar.YEAR)
+        int month = c.get(Calendar.MONTH) + 1
+
+        String query = """
+            SELECT ss.name,LEFT(ss.short_name,6) short_name,COUNT(DISTINCT(a.id)) AS count,l.is_submitted,l.month_str,
+                        CASE WHEN l.is_submitted THEN CONCAT('Submitted On : ',l.submission_date) ELSE '' END submission_date,
+                        CASE WHEN l.is_submitted IS TRUE THEN '#00FF00' ELSE '#FF6666' END col_color
+                            FROM pm_service_sector ss
+                            LEFT JOIN pm_actions a ON ss.id=a.service_id
+                            LEFT JOIN pm_mcrs_log l ON l.service_id = ss.id AND l.year = ${year} AND l.month = ${month}
                             WHERE ss.is_in_sp = TRUE
                             GROUP BY ss.id
             ORDER BY ss.name;
