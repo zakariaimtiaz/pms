@@ -148,7 +148,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
             } else {
                 String[] ind = str.split(",");
                 int indSplitCount = 0;
-                for (int i = 0; i < max; i++) {
+                for (int i = 0; i < count; i++) {
                     try {
                         long unitId = 0
                         String unitIdStr = ''
