@@ -35,12 +35,14 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
             Calendar c = Calendar.getInstance();
             c.setTime(date);
             int year = c.get(Calendar.YEAR)
+            int month = c.get(Calendar.MONTH) + 1
 
             Date currentMonth = DateUtility.getSqlDate(c.getTime());
-
             long serviceId = Long.parseLong(result.serviceId.toString())
             List lstVal = buildResultList(serviceId, year, currentMonth,result.indicatorType.toString(),result.filterType.toString())
+            List lstValAdditional = buildResultListAdditional(serviceId, year, month)
             result.put(LIST, lstVal)
+            result.put("lstAddi", lstValAdditional)
             result.put(COUNT, lstVal.size())
             return result
         } catch (Exception e) {
@@ -121,6 +123,29 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 GROUP BY ai.id
                 HAVING mon_tar!=0
                 ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq;
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
+    }
+
+    private List<GroovyRowResult> buildResultListAdditional(long serviceId,int year, int month) {
+        String query = """
+                SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+                 ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks remarks,ai.target,
+                 a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
+
+                 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
+                 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
+
+                FROM pm_additional_actions a
+                JOIN pm_goals g ON g.id = a.goal_id
+                JOIN pm_additional_actions_indicator ai ON ai.actions_id = a.id
+                JOIN pm_service_sector sc ON sc.id = a.service_id,
+                (SELECT @rownum := 0) r
+                WHERE sc.id = ${serviceId} AND YEAR(a.start) = ${year} and MONTH(a.start) = ${month}
+                GROUP BY ai.id
+                ORDER BY sc.id,a.goal_id, a.tmp_seq;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue

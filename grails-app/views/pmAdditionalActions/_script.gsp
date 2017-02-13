@@ -372,7 +372,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
             pageable: false,
             columns: [
                 {field: "indicator", title: "Indicator"},
-                {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#"},
+                {field: "target", title: "Achievement",template:"#=formatIndicator(indicatorType,target)#"},
                 {field: "unitStr", title: "Unit"}
             ]
         });

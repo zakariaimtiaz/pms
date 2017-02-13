@@ -4,11 +4,11 @@
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
                     Management Change Reporting System (MCRS)
-                <button id="downloadSP" name="downloadSP" type="button" data-role="button"
-                        class="k-button k-button-icontext pull-right" role="button"
-                        aria-disabled="false" onclick='downloadMcrsReport();'><span
-                        class="fa fa-file-pdf-o"></span>&nbsp;Download
-                </button>
+                    <button id="downloadSP" name="downloadSP" type="button" data-role="button"
+                            class="k-button k-button-icontext pull-right" role="button"
+                            aria-disabled="false" onclick='downloadMcrsReport();'><span
+                            class="fa fa-file-pdf-o"></span>&nbsp;Download
+                    </button>
                     <label class="control-label label-optional pull-right" style="font-size: 10px;">
                         <input type="radio" name="downloadType" value="true" checked> All column
                         <input type="radio" name="downloadType" value="false">Selected column
@@ -62,7 +62,8 @@
     <div class="row">
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#menu1">MRP</a></li>
-            <li><a data-toggle="tab" href="#menu2">ED's Dashboard</a></li>
+            <li><a data-toggle="tab" href="#menu2">MRP Additional</a></li>
+            <li><a data-toggle="tab" href="#menu3">ED's Dashboard</a></li>
         </ul>
 
         <div class="tab-content">
@@ -71,7 +72,12 @@
                     <div id="gridMRP"></div>
                 </div>
             </div>
-            <div id="menu2" class="tab-pane fade">
+            <div id="menu2" class="tab-pane fade in active">
+                <div class="panel-primary">
+                    <div id="gridMRPAddi"></div>
+                </div>
+            </div>
+            <div id="menu3" class="tab-pane fade">
                 <div class="panel-primary">
                     <div class="form-group" id="tableData">
                         <g:render template='/reports/mcrs/ViewED'/>
