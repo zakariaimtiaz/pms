@@ -12,6 +12,7 @@
 	<parameter name="year" class="java.lang.Integer"/>
 	<parameter name="currentMonth" class="java.util.Date"/>
 	<parameter name="monthStr" class="java.lang.String"/>
+	<parameter name="specificIssueCount" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[SELECT g.id,g.sequence,TRIM(g.goal) goal,COUNT(ad.id) AS total_count
 FROM pm_goals g
@@ -399,14 +400,17 @@ GROUP BY a.goal_id]]>
 				<subreportParameter name="LOGO_DIR">
 					<subreportParameterExpression><![CDATA[$P{LOGO_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
+				<subreportParameter name="monthStr">
+					<subreportParameterExpression><![CDATA[$P{monthStr}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="ROOT_DIR">
 					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="serviceId">
-					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="serviceId">
+					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
@@ -416,6 +420,9 @@ GROUP BY a.goal_id]]>
 				</subreportParameter>
 				<subreportParameter name="year">
 					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="specificIssueCount">
+					<subreportParameterExpression><![CDATA[$P{specificIssueCount}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mcrsActionIndicator_subreport2.jasper"]]></subreportExpression>
