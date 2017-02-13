@@ -74,7 +74,7 @@
 <script language="javascript">
     var dropDownService, chartUser, chartManagement;
     $(document).ready(function () {
-        var str = moment().format('MMMM YYYY');
+        var str = moment().subtract(1,'months').format('MMMM YYYY');
 
         $('#month').kendoDatePicker({
             format: "MMMM yyyy",
@@ -151,7 +151,7 @@
     function createManagementChart() {
         $('#chartManagement').kendoChart({
             title: {
-                text: "CSU/Sector Wise Action Completion Status"
+                text: "CSU/Sector Wise Action Achievement Status"
             },
             autoBind: false,
             dataSource: {
@@ -174,7 +174,7 @@
                     colorField: "a_color"
                 },
                 {
-                    name: 'Completed',
+                    name: 'Achieved',
                     field: 't_col',
                     colorField: "t_color"
                 }
@@ -191,7 +191,7 @@
                 format: "{0}",
                 width: 400,
                 height: 200,
-                template: "#= dataItem.service # <br/> <strong> Completed: #= dataItem.a_pert# % </strong>"
+                template: "#= dataItem.service # <br/> <strong> Achieved: #= dataItem.a_pert# % </strong>"
             }
         });
         chartManagement = $("#chartManagement").data("kendoChart");

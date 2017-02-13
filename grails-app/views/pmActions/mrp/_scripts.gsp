@@ -196,12 +196,12 @@
                     headerAttributes: {style: setAlignCenter()}, template: "#=formatIndicator(indicator_type,target)#"
                 },
                 {
-                    field: "total_achievement", title: "Total</br> Achievement", width: "100px",
+                    field: "total_achievement", title: "Total</br> Achievement", width: "80px",
                     template: "#=formatIndicator(indicator_type,total_achievement)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "monthly_target", title: "Target</br> (This month)", width: "100px",
+                    field: "monthly_target", title: "Target</br> (This month)", width: "80px",
                     template: "#=formatIndicator(indicator_type,monthly_target)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
@@ -209,11 +209,17 @@
                     field: "achievement", title: "Achievement</br> (This month)", width: "100px", format: "{0:n0}",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "remarks", title: "Remarks", width: "250px"},
-                {command: ["edit"], title: "&nbsp;", width: "80px"}
+                {field: "remarks", title: "Remarks", width: "280px",editor: textEditorInitialize },
+                {command: [{name:"edit",text:{edit: "Achievement",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "100px"}
             ]
         });
     }
+
+    var textEditorInitialize = function(container, options) {
+        $('<textarea name="' + options.field + '" style="width: ' + container.width() + 'px;height:' + container.height() + 'px" />')
+                .appendTo(container);
+    };
+
     function formatIndicator(indicatorType, target) {
         if (!target) return '0'
         if (indicatorType.match('%')) {

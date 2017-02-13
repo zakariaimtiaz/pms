@@ -2,6 +2,7 @@ package actions.reports.mcrs
 
 import com.pms.PmServiceSector
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
 import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
 import org.codehaus.groovy.grails.plugins.jasper.JasperService
@@ -39,7 +40,7 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
     private static final String DOT_STR = ". "
     private static final String MONTH_STR = "monthStr"
     private static final String CURRENT_MONTH = "currentMonth"
-
+    private static final String SPECIFIC_ISSUE_COUNT = "specificIssueCount"
 
     /**
      * Get parameters from UI
@@ -64,11 +65,13 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
 
         long serviceId = Long.parseLong(params.serviceId.toString())
         PmServiceSector service = PmServiceSector.read(serviceId)
+        int count = countSpecificIssues(serviceId,year,monthInt)
         params.put(SERVICE_ID, serviceId)
         params.put(SERVICE_NAME, service.name)
         params.put(SERVICE_SHORT_NAME, service.shortName)
         params.put(YEAR, year)
         params.put(CURRENT_MONTH, currentMonth)
+        params.put(SPECIFIC_ISSUE_COUNT, count)
         params.put(MONTH_STR, monthName)
         params.put(MONTH_INT, monthInt)
 
@@ -119,6 +122,7 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
     }
     private Map getReport(Map result) {
         boolean isChecked = Boolean.parseBoolean(result.checked.toString())
+        int count = Integer.parseInt(result.get(SPECIFIC_ISSUE_COUNT).toString())
         String reportFolder = REPORT_FOLDER_ALL_IND
         String jesperFile = JASPER_FILE_ALL_IND
         if(isChecked){
@@ -158,10 +162,23 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
         reportParams.put(YEAR, result.get(YEAR))
         reportParams.put(MONTH_STR, result.get(MONTH_STR))
         reportParams.put(CURRENT_MONTH, result.get(CURRENT_MONTH))
+        reportParams.put(SPECIFIC_ISSUE_COUNT, count)
 
         JasperReportDef reportDef = new JasperReportDef(name: jesperFile, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream report = jasperService.generateReport(reportDef)
         return [report: report, reportFileName: outputFileName, format: REPORT_FILE_FORMAT]
+    }
+
+    private int countSpecificIssues(long serviceId,int year,int month) {
+        String query = """
+            SELECT COUNT(ed.id) count
+                FROM ed_dashboard ed
+                LEFT JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
+            WHERE ed.service_id=${serviceId} AND MONTH(ed.month_for)=${month}
+                AND YEAR(ed.month_for)=${year} AND edi.is_additional = TRUE;
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue[0].count
     }
 }

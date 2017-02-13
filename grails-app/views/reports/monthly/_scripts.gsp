@@ -209,7 +209,7 @@
         if(isNaN(tar) || isNaN(ach) || tar == 0){
             perc="N/A";
         }else{
-            perc = (((ach/tar) * 100).toFixed(1)-100);
+            perc = Math.round(((ach/tar) * 100).toFixed(1)-100);
             if(perc < 0) {
                 return '<span style="color: #ff0000" >'+ perc + ' %' + '</span>';
             }else{

@@ -1,6 +1,5 @@
 package pms
 
-import actions.reports.ListSpPlanActionService
 import actions.reports.mcrs.DownloadMCRSActionService
 import actions.reports.mcrs.ListMCRSActionService
 import actions.reports.monthly.DownloadMonthlySPActionService
@@ -15,7 +14,6 @@ import service.PmActionsService
 class ReportsController  extends BaseController  {
     BaseService baseService
     PmActionsService pmActionsService
-    ListSpPlanActionService listSpPlanActionService
 
     ListMCRSActionService listMCRSActionService
     DownloadMCRSActionService downloadMCRSActionService
@@ -27,16 +25,27 @@ class ReportsController  extends BaseController  {
     DownloadYearlySPActionService downloadYearlySPActionService
 
     static allowedMethods = [
-            showSpStatus: "POST", listSpPlan: "POST", showMcrs: "POST", showSpMonthlyPlan: "POST", showYearlySP: "POST"
+            showSpStatus: "POST", showMcrsStatus: "POST", showMcrs: "POST", showSpMonthlyPlan: "POST", showYearlySP: "POST"
     ]
+    //################## Submission Status Start ###########################
 
     def showSpStatus() {
-        List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
-        render(view: "/reports/statistical/show",model: [lst: lst as JSON])
+        render(view: "/reports/statistical/showSP")
     }
-    def listSpPlan() {
-        renderOutput(listSpPlanActionService,params)
+    def listSpStatus() {
+        List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus(params.year.toString())
+        render lst as JSON
     }
+
+    def showMcrsStatus() {
+        render(view: "/reports/statistical/showMcrs")
+    }
+    def listMcrsStatus() {
+        List<GroovyRowResult> lst = pmActionsService.lstDepartmentMcrsStatus(params.month.toString())
+        render lst as JSON
+    }
+
+    //##################  Submission Status End ###########################
 
     //################## MCRS Start ###########################
     def showMcrs() {
