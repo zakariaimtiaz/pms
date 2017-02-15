@@ -84,6 +84,49 @@ class PmActionsService extends BaseService{
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
+    public List<GroovyRowResult> lstServiceWiseAcvStatus(String monthStr) {
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        Date date = originalFormat.parse(monthStr);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH)+1
+        int year = c.get(Calendar.YEAR)
+        SecUser user = currentUserObject();
+
+        String query = """
+        (SELECT ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Achieved" act_name,"#00FF00" act_color FROM
+                (SELECT cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
+                (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,aid.target,aid.achievement,
+                ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
+                                FROM pm_goals g
+                LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
+                LEFT JOIN pm_actions a ON a.goal_id = g.id
+                LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
+                LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
+                JOIN custom_month cm ON cm.name=aid.month_name,
+                (SELECT @curmon := ${month}) r
+                WHERE g.service_id=  ${user.serviceId}  AND  a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
+                GROUP BY g.id
+                ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2)
+        UNION ALL
+            (SELECT 100-ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Remaining" act_name,"#FF6666" act_color FROM
+                (SELECT cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
+                (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,aid.target,aid.achievement,
+                ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
+                                FROM pm_goals g
+                LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
+                LEFT JOIN pm_actions a ON a.goal_id = g.id
+                LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
+                LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
+                JOIN custom_month cm ON cm.name=aid.month_name,
+                (SELECT @curmon := ${month}) r
+                WHERE g.service_id=  ${user.serviceId}  AND  a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
+                GROUP BY g.id
+                ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2);
+        """
+        List<GroovyRowResult> lst = executeSelectSql(query)
+        return lst
+    }
     public List<GroovyRowResult> lstGoalWiseActionStatus(String monthStr) {
         DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
         Date date = originalFormat.parse(monthStr);
@@ -121,12 +164,14 @@ class PmActionsService extends BaseService{
         int year = c.get(Calendar.YEAR)
 
         String query = """
-            SELECT service_id,service,short_name,ac_count,IF((ac_count-a_col)<0,0.00,ac_count-a_col) t_col,a_col,t_color,a_color,ROUND(a_col/ac_count*100) a_pert
+            SELECT service_id,service,short_name,ROUND(SUM(a_pert)/COUNT(cat_axe)) a_pert,'#00FF00' a_color,
+            100-ROUND(SUM(a_pert)/COUNT(cat_axe)) r_pert,'#FF6666' r_color
             FROM
-            (SELECT sc.id service_id,sc.name service,sc.short_name,COUNT(a.id) ac_count,
-            ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col,
-            '#FF6666' t_color, '#00FF00' a_color
-                        FROM pm_goals g
+            (SELECT service_id,service,short_name,cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
+            (SELECT sc.id service_id,g.id AS goal_id,sc.name service,sc.short_name,
+            CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,
+            ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
+            FROM pm_goals g
             LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
             LEFT JOIN pm_actions a ON a.goal_id = g.id
             LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
@@ -134,8 +179,8 @@ class PmActionsService extends BaseService{
             JOIN custom_month cm ON cm.name=aid.month_name,
             (SELECT @curmon := ${month}) r
             WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
-            GROUP BY g.service_id
-            ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp;
+            GROUP BY g.id
+            ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2 GROUP BY service_id;
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst

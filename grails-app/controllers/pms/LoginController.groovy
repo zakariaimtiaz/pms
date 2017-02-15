@@ -144,6 +144,10 @@ class LoginController {
         List<GroovyRowResult> lst = pmActionsService.lstGoalWiseActionStatus(params.month.toString())
         render lst as JSON
     }
+    def lstUserPieDashboard() {
+        List<GroovyRowResult> lst = pmActionsService.lstServiceWiseAcvStatus(params.month.toString())
+        render lst as JSON
+    }
     def lstManagementDashboard() {
         List<GroovyRowResult> lst = pmActionsService.lstServiceWiseActionStatus(params.month.toString())
         render lst as JSON

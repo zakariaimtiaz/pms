@@ -85,7 +85,7 @@
                 <sec:ifAnyUrls
                         urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show,/pmSpLog/showSubmission">
                     <li>
-                        <a href="#"><i class="fa fa-book"></i>&nbsp;SP<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-book"></i>&nbsp;SP Entry<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmMissions/show">
                                 <li>
@@ -118,7 +118,7 @@
                 </sec:ifAnyUrls>
                 <sec:ifAnyUrls urls="/pmActions/achievement,/edDashboard/show,/pmMcrsLog/showSubmission">
                     <li>
-                        <a href="#"><i class="fa fa-bars"></i>&nbsp;MCRS<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-bars"></i>&nbsp;MCRS Entry<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmActions/achievement">
                                 <li>

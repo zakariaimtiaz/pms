@@ -16,14 +16,14 @@
 
 <sec:isDashboardForUser>
     <div class="container-fluid">
-        <div class="row centered">
+        <div class="row">
             <div class="panel panel-primary">
                 <div class="panel-body">
                     <div class="form-group">
                         <label class="col-md-1 control-label label-optional"
                                for="month">Month:</label>
 
-                        <div class="col-md-5">
+                        <div class="col-md-2">
                             <input type='text' tabindex="1" required="required" onkeydown="return false;"
                                    class="kendo-date-picker" id="month" name="month"
                                    placeholder="Month" validationMessage="Required"/>
@@ -34,10 +34,9 @@
         </div>
 
         <div class="row">
-            <div id="divUser">
-                <div class="centered">
-                    <div id="chartUser"></div>
-                </div>
+            <div class="form-group" id="divUser">
+                <div class="col-md-6" id="chartUser"></div>
+                <div class="col-md-6" id="chartUser2"></div>
             </div>
         </div>
     </div>
@@ -72,9 +71,9 @@
 
 
 <script language="javascript">
-    var dropDownService, chartUser, chartManagement;
+    var dropDownService, chartUser, chartUser2, chartManagement;
     $(document).ready(function () {
-        var str = moment().subtract(1,'months').format('MMMM YYYY');
+        var str = moment().subtract(1, 'months').format('MMMM YYYY');
 
         $('#month').kendoDatePicker({
             format: "MMMM yyyy",
@@ -86,6 +85,7 @@
         $('#month').val(str);
 
         createUserChart();
+        createUserPieChart();
         createManagementChart();
         populateKendoChart();
     });
@@ -99,6 +99,9 @@
             var user = "${createLink(controller: 'login', action: 'lstUserDashboard')}?month=" + month;
             chartUser.dataSource.transport.options.read.url = user;
             chartUser.dataSource.read();
+            var user2 = "${createLink(controller: 'login', action: 'lstUserPieDashboard')}?month=" + month;
+            chartUser2.dataSource.transport.options.read.url = user2;
+            chartUser2.dataSource.read();
         }
     }
     function createUserChart() {
@@ -114,6 +117,9 @@
                         dataType: "json"
                     }
                 }
+            },
+            chartArea: {
+                background: ""
             },
             seriesDefaults: {
                 type: "column",
@@ -148,10 +154,49 @@
         });
         chartUser = $("#chartUser").data("kendoChart");
     }
+    function createUserPieChart() {
+        $('#chartUser2').kendoChart({
+            title: {
+                text: "Goal Achievement Status"
+            },
+            legend: {
+                visible: false
+            },
+            autoBind: false,
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false,
+                        dataType: "json"
+                    }
+                }
+            },
+            chartArea: {
+                background: ""
+            },
+            seriesDefaults: {
+                type: "pie",
+                labels: {
+                    visible: true,
+                    background: "transparent",
+                    template: "#= category #: \n #= value#%"
+                }
+            },
+            series: [{
+                field: "act_val",
+                categoryField: "act_name",
+                colorField: "act_color"
+            }],
+            tooltip: {
+                visible: true
+            }
+        });
+        chartUser2 = $("#chartUser2").data("kendoChart");
+    }
     function createManagementChart() {
         $('#chartManagement').kendoChart({
             title: {
-                text: "CSU/Sector Wise Action Achievement Status"
+                text: "CSU/Sector Wise Goal Achievement Status"
             },
             autoBind: false,
             dataSource: {
@@ -169,20 +214,23 @@
             seriesColors: ["#FF6666", "#00FF00"],
             series: [
                 {
-                    name: 'No. of Actions',
-                    field: 'a_col',
+                    name: 'Remaining',
+                    field: 'a_pert',
                     colorField: "a_color"
                 },
                 {
                     name: 'Achieved',
-                    field: 't_col',
-                    colorField: "t_color"
+                    field: 'r_pert',
+                    colorField: "r_color"
                 }
             ],
             categoryAxis: {
                 field: 'short_name',
                 labels: {
-                    rotation: -45
+                    rotation: -90
+                },
+                majorGridLines: {
+                    visible: true
                 }
 
             },
