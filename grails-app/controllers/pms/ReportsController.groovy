@@ -41,7 +41,7 @@ class ReportsController  extends BaseController  {
         render(view: "/reports/statistical/showMcrs")
     }
     def listMcrsStatus() {
-        List<GroovyRowResult> lst = pmActionsService.lstDepartmentMcrsStatus(params.month.toString())
+        List<GroovyRowResult> lst = pmActionsService.lstDepartmentMcrsStatus(params.year.toString())
         render lst as JSON
     }
 
