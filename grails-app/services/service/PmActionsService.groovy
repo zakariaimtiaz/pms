@@ -48,15 +48,33 @@ class PmActionsService extends BaseService {
         int year = Integer.parseInt(dateStr)
 
         String query = """
-            SELECT ss.name,LEFT(ss.short_name,6) short_name,COUNT(DISTINCT(a.id)) AS count,l.is_submitted,
-                        CASE WHEN l.is_submitted THEN CONCAT('Submitted On : ',l.submission_date) ELSE '' END submission_date,
-                        CASE WHEN l.is_submitted IS TRUE THEN '#00FF00' ELSE '#FF6666' END col_color
-                            FROM pm_service_sector ss
-                            LEFT JOIN pm_actions a ON ss.id=a.service_id
-                            LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = ${year}
-                            WHERE ss.is_in_sp = TRUE
-                            GROUP BY ss.id
-            ORDER BY ss.name;
+            SELECT ss.short_name service,
+                CASE WHEN l.year=2017 THEN l.submission_date ELSE NULL END 'YEAR_2017',
+                CASE WHEN l.year=2017 THEN l.dead_line ELSE NULL END 'YEAR_2017D',
+                CASE WHEN l.year=2018 THEN l.submission_date ELSE NULL END 'YEAR_2018',
+                CASE WHEN l.year=2018 THEN l.dead_line ELSE NULL END 'YEAR_2018D',
+                CASE WHEN l.year=2019 THEN l.submission_date ELSE NULL END 'YEAR_2019',
+                CASE WHEN l.year=2019 THEN l.dead_line ELSE NULL END 'YEAR_2019D',
+                CASE WHEN l.year=2020 THEN l.submission_date ELSE NULL END 'YEAR_2020',
+                CASE WHEN l.year=2020 THEN l.dead_line ELSE NULL END 'YEAR_2020D',
+                CASE WHEN l.year=2021 THEN l.submission_date ELSE NULL END 'YEAR_2021',
+                CASE WHEN l.year=2021 THEN l.dead_line ELSE NULL END 'YEAR_2021D',
+                CASE WHEN l.year=2022 THEN l.submission_date ELSE NULL END 'YEAR_2022',
+                CASE WHEN l.year=2022 THEN l.dead_line ELSE NULL END 'YEAR_2022D',
+                CASE WHEN l.year=2023 THEN l.submission_date ELSE NULL END 'YEAR_2023',
+                CASE WHEN l.year=2023 THEN l.dead_line ELSE NULL END 'YEAR_2023D',
+                CASE WHEN l.year=2024 THEN l.submission_date ELSE NULL END 'YEAR_2024',
+                CASE WHEN l.year=2024 THEN l.dead_line ELSE NULL END 'YEAR_2024D',
+                CASE WHEN l.year=2025 THEN l.submission_date ELSE NULL END 'YEAR_2025',
+                CASE WHEN l.year=2025 THEN l.dead_line ELSE NULL END 'YEAR_2025D',
+                CASE WHEN l.year=2026 THEN l.submission_date ELSE NULL END 'YEAR_2026',
+                CASE WHEN l.year=2026 THEN l.dead_line ELSE NULL END 'YEAR_2026D',
+                CASE WHEN l.year=2027 THEN l.submission_date ELSE NULL END 'YEAR_2027',
+                CASE WHEN l.year=2027 THEN l.dead_line ELSE NULL END 'YEAR_2027D'
+                FROM pm_service_sector ss
+                LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = ${year}
+                WHERE ss.is_in_sp = TRUE
+                ORDER BY ss.name,l.year;
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst

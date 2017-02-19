@@ -1,6 +1,5 @@
-
 <div class="container-fluid">
-    <div class="row" id="roleRow">
+    <div class="row">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
@@ -8,26 +7,21 @@
                 </div>
             </div>
 
-            <g:form name='roleForm' id='roleForm' class="form-horizontal form-widgets" role="form">
-                <div class="panel-body">
-                    <input type="hidden" name="id" id="id" data-bind="value: secRole.id"/>
-                    <input type="hidden" name="version" id="version" data-bind="value: secRole.version"/>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-1 control-label label-optional" for="year">Year:</label>
 
-                    <div class="form-group">
-                        <label class="col-md-1 control-label label-optional" for="year">Year:</label>
+                    <div class="col-md-2">
+                        <input type='text' tabindex="1" required="required" onkeydown="return false;"
+                               class="kendo-date-picker" id="year" name="year"
+                               placeholder="Year" validationMessage="Required"/>
+                    </div>
 
-                        <div class="col-md-2">
-                            <input type='text' tabindex="1" required="required" onkeydown="return false;"
-                                   class="kendo-date-picker" id="year" name="year"
-                                   placeholder="Year" validationMessage="Required"/>
-                        </div>
-
-                        <div class="col-md-2 pull-left">
-                            <span class="k-invalid-msg" data-for="year"></span>
-                        </div>
+                    <div class="col-md-2 pull-left">
+                        <span class="k-invalid-msg" data-for="year"></span>
                     </div>
                 </div>
-            </g:form>
+            </div>
         </div>
     </div>
 
