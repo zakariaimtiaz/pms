@@ -11,6 +11,8 @@
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="REPORT_DIR" class="java.lang.String"/>
 	<parameter name="specificIssueCount" class="java.lang.Integer"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="LOGO_DIR" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT edi.issue_name,ed.description,ed.remarks,ed.ed_advice,edi.is_heading
 FROM ed_dashboard_issues edi
@@ -54,6 +56,18 @@ ORDER BY edi.id]]>
 				</textElement>
 				<text><![CDATA[B. ED's Dashboard]]></text>
 			</staticText>
+			<image>
+				<reportElement x="731" y="3" width="101" height="32" uuid="05a5c52c-2779-48a4-98d3-97545712078b"/>
+				<imageExpression><![CDATA[$P{LOGO_DIR}+"logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="155" y="3" width="510" height="30" forecolor="#2C2A2B" uuid="ff3fc63e-a945-462e-8133-2812ffea60c1"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+					<font fontName="Cambria" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<columnHeader>

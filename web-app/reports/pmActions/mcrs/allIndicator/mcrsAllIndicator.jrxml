@@ -14,10 +14,13 @@
 	<parameter name="monthStr" class="java.lang.String"/>
 	<parameter name="specificIssueCount" class="java.lang.Integer"/>
 	<queryString>
-		<![CDATA[SELECT g.id,g.sequence,TRIM(g.goal) goal,COUNT(ad.id) AS total_count
+		<![CDATA[SELECT g.id,g.sequence,TRIM(g.goal) goal,COUNT(ad.id) AS total_count,
+COUNT(DISTINCT(addi.id)) AS addi_count
 FROM pm_goals g
 LEFT JOIN pm_actions a ON a.goal_id = g.id AND ($P{year} <= year(a.end) AND $P{year} >= year(a.start))
 LEFT JOIN pm_actions_indicator_details ad ON ad.actions_id = a.id AND month_name =$P{monthStr} AND target > 0
+LEFT JOIN pm_additional_actions addi ON addi.goal_id = g.id AND ($P{year} <= YEAR(addi.end) AND $P{year} >= YEAR(addi.start)) AND addi.service_id
+
 WHERE g.service_id=$P{serviceId}
 GROUP BY a.goal_id]]>
 	</queryString>
@@ -31,6 +34,7 @@ GROUP BY a.goal_id]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="total_count" class="java.lang.Long"/>
+	<field name="addi_count" class="java.lang.Long"/>
 	<pageHeader>
 		<band height="85">
 			<staticText>
@@ -393,7 +397,7 @@ GROUP BY a.goal_id]]>
 	<summary>
 		<band height="20">
 			<subreport>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="2b454f7f-8997-4b14-97f7-20e06904e544"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="9ab5f642-197c-46ac-8f45-eba388692079"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -406,11 +410,11 @@ GROUP BY a.goal_id]]>
 				<subreportParameter name="ROOT_DIR">
 					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
-				<subreportParameter name="reportTitle">
-					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
-				</subreportParameter>
 				<subreportParameter name="serviceId">
 					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
