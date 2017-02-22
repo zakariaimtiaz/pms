@@ -354,6 +354,46 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 		</band>
+		<band height="20">
+			<subreport>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="db9a0d10-27fb-4cee-880a-b5c1b9e281c9"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO_DIR">
+					<subreportParameterExpression><![CDATA[$P{LOGO_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="monthStr">
+					<subreportParameterExpression><![CDATA[$P{monthStr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROOT_DIR">
+					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="serviceId">
+					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="goalId">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="currentMonth">
+					<subreportParameterExpression><![CDATA[$P{currentMonth}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="year">
+					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="specificIssueCount">
+					<subreportParameterExpression><![CDATA[$P{specificIssueCount}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mcrsAllIndicator_subreport1ExcAddi.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
 	<pageFooter>
 		<band height="19">
@@ -362,6 +402,20 @@ GROUP BY a.goal_id]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{ROOT_DIR} + "commonFooterLandscape.jasper"]]></subreportExpression>
 			</subreport>
+			<textField evaluationTime="Report">
+				<reportElement x="416" y="0" width="40" height="19" uuid="1e75330c-0d66-427a-b97f-483b216a9a54"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="336" y="0" width="80" height="19" uuid="54ca790f-28d6-4659-8d70-20fd1383c08e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
