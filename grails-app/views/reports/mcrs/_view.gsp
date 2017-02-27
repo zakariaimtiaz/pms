@@ -61,7 +61,7 @@
     </div>
     <div class="row">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#menu1">MRP</a></li>
+            <li><a data-toggle="tab" href="#menu1">MRP</a></li>
             <li><a data-toggle="tab" href="#menu2">MRP Additional</a></li>
             <li><a data-toggle="tab" href="#menu3">ED's Dashboard</a></li>
         </ul>

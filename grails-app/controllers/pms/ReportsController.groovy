@@ -1,5 +1,8 @@
 package pms
 
+import actions.reports.dashboard.DownloadEdDashBoardActionService
+import actions.reports.dashboard.IssueCounterEdDashBoardActionService
+import actions.reports.dashboard.ListEdDashBoardActionService
 import actions.reports.mcrs.DownloadMCRSActionService
 import actions.reports.mcrs.ListMCRSActionService
 import actions.reports.monthly.DownloadMonthlySPActionService
@@ -23,6 +26,10 @@ class ReportsController  extends BaseController  {
 
     ListYearlySPActionService listYearlySPActionService
     DownloadYearlySPActionService downloadYearlySPActionService
+
+    ListEdDashBoardActionService listEdDashBoardActionService
+    IssueCounterEdDashBoardActionService issueCounterEdDashBoardActionService
+    DownloadEdDashBoardActionService downloadEdDashBoardActionService
 
     static allowedMethods = [
             showSpStatus: "POST", showMcrsStatus: "POST", showMcrs: "POST", showSpMonthlyPlan: "POST", showYearlySP: "POST"
@@ -102,4 +109,20 @@ class ReportsController  extends BaseController  {
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     //################## Yearly End ###########################
+
+    //################## Dashboard Start ###########################
+    def showEdDashBoard() {
+        render(view: "/reports/dashboard/show")
+    }
+    def listEdDashBoard() {
+        renderOutput(listEdDashBoardActionService,params)
+    }
+    def issuesCounterEdDashBoard() {
+        renderOutput(issueCounterEdDashBoardActionService,params)
+    }
+    def downloadEdDashBoard() {
+        Map result = (Map) getReportResponse(downloadEdDashBoardActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    //################## Dashboard End   ###########################
 }

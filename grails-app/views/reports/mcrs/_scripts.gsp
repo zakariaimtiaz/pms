@@ -6,6 +6,7 @@
         onLoadInfoPage();
         initGrid();
         initGridAdditional();
+        activaTab('menu1');
     });
     function onLoadInfoPage() {
         if(!${isSysAdmin} && !${isTopMan}){
@@ -35,6 +36,9 @@
         initializeForm($("#detailsForm"), null);
         defaultPageTile("Strategic Plan", 'reports/showMcrs');
     }
+    function activaTab(tab){
+        $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+    };
     function showResetPreference(){
         var indicatorType = dropDownIndicatorType.value();
         if(indicatorType=='Preferred Indicator' && isApplicable){
