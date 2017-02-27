@@ -60,23 +60,34 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             }
 
             List<EdDashboardIssues> lstEdDashboardIssues=EdDashboardIssues.findAll()
-            for(EdDashboardIssues edDashboardIssues:lstEdDashboardIssues){
-                Long i=edDashboardIssues.id
-                EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId,monthFor,i)
-                if(!edDashboard) {
+            for(EdDashboardIssues edDashboardIssues:lstEdDashboardIssues) {
+                Long i = edDashboardIssues.id
+                EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId, monthFor, i)
+                if (!edDashboard) {
                     edDashboard = new EdDashboard()
                 }
 
                 edDashboard.serviceId = serviceId
                 edDashboard.monthFor = monthFor
                 edDashboard.issueId = i
-                boolean isHeading=Boolean.parseBoolean(result.get("hfIsHeading" + (i)))
+                boolean isHeading = Boolean.parseBoolean(result.get("hfIsHeading" + (i)))
                 edDashboard.description = isHeading != true ? result.get("description" + (i)) : ""
                 edDashboard.remarks = isHeading != true ? result.get("remarks" + (i)) : ""
                 edDashboard.edAdvice = isHeading != true ? result.get("edAdvice" + (i)) : ""
-                edDashboard.createBy=springSecurityService?.principal?.id
-                edDashboard.createDate=DateUtility.getSqlDate(new Date())
-                if(!edDashboard.description.isEmpty()) {
+                edDashboard.createBy = springSecurityService?.principal?.id
+                edDashboard.createDate = DateUtility.getSqlDate(new Date())
+                edDashboard.isFollowup = isHeading != true && result.get("selection" + (i)) != 'New' ? true : false
+                if(edDashboard.isFollowup){
+                    String followupDateStr = result.get("followupMonth" + (i))
+
+                    start = originalFormat.parse(followupDateStr);
+                    c = Calendar.getInstance();
+                    c.setTime(start);
+                    c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+                    edDashboard.followupMonthFor = DateUtility.getSqlDate(c.getTime())
+                }
+
+                if (!edDashboard.description.isEmpty()) {
                     edDashboard.save()
                 }
             }

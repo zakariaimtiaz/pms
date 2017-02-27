@@ -2,7 +2,8 @@
 
     <tr style="background-color: #c0c0c0">
         <td style="width: 10%;"><label class=" control-label">Issue</label></td>
-        <td style="width: 40%;"><label class=" control-label">Crisis & Highlights</label></td>
+        <td style="width: 10%;"><label class=" control-label"></label></td>
+        <td style="width: 30%;"><label class=" control-label">Crisis & Highlights</label></td>
         <td style="width: 25%;"><label class=" control-label">Remarks</label></td>
         <td style="width: 25%;"><label class=" control-label">Ed's Advice</label></td>
     </tr>
@@ -16,9 +17,23 @@
 
                     <label id="issue${item?.id}" name="issue${item?.id}">
                         ${item?.issue_name}</label></td>
-                <td style="padding: 0 0 0 0 ! important; width: 40%;">
+                <td style="width: 10%;">
 
-                    <g:if test="${!isEdAssistant?item?.crisis_remarks_g : item?.crisis_remarks_s}">
+                    <input type="radio" name="selection${item?.id}" id="selection${item?.id}"
+                           onchange="loadFollowupMonth(this);" value="New" checked><label>New</label><br/>
+
+                    <input type="radio" name="selection${item?.id}" id="selection${item?.id}"
+                           onchange="loadFollowupMonth(this);" value="Followup"><label>Followup</label><br/>
+
+                    <div id="divfollowupMonth${item?.id}" style="display: none;">
+                        <input type="text" id="followupMonth${item?.id}" name="followupMonth${item?.id}"
+                               placeholder="Select month" style="width: 100px;">
+                    </div>
+
+                </td>
+                <td style="padding: 0 0 0 0 ! important; width: 30%;">
+
+                    <g:if test="${!isEdAssistant ? item?.crisis_remarks_g : item?.crisis_remarks_s}">
                         <textarea id="description${item?.id}" name="description${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control" readonly>${item?.description}</textarea>
@@ -32,20 +47,25 @@
 
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
-                    <g:if test="${!isEdAssistant?item?.crisis_remarks_g : item?.crisis_remarks_s}">
+                    <g:if test="${!isEdAssistant ? item?.crisis_remarks_g : item?.crisis_remarks_s}">
                         <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control" readonly>${item?.remarks}</textarea>
                     </g:if>
                     <g:else>
-                        <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
+                       %{-- <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control"
-                                  placeholder="">${item?.remarks}</textarea>
+                                  placeholder="">${item?.remarks}</textarea>--}%
+
+                        <input type="text" id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
+                                  style="padding: 0 0 0 0 ! important;"
+                                  class="form-control"
+                                  placeholder="" value="${item?.remarks}"  >
                     </g:else>
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
-                    <g:if test="${!isEdAssistant?item?.advice_g : item?.advice_s}">
+                    <g:if test="${!isEdAssistant ? item?.advice_g : item?.advice_s}">
                         <textarea id="edAdvice${item?.id}" name="edAdvice${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
                                   class="form-control" readonly

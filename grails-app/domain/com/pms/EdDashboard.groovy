@@ -9,12 +9,15 @@ class EdDashboard {
     String remarks
     String edAdvice
     Date monthFor
+    Date followupMonthFor
+    Boolean isFollowup
     Date createDate
     long createBy
 
     static mapping = {
         createDate    sqlType: 'date'
         monthFor      sqlType: 'date'
+        followupMonthFor      sqlType: 'date'
         description   sqlType: 'text'
         remarks       sqlType: 'text'
         edAdvice      sqlType: 'text'
@@ -27,5 +30,7 @@ class EdDashboard {
         description(nullable: true)
         remarks(nullable: true)
         edAdvice(nullable: true)
+        followupMonthFor(nullable: true)
+        isFollowup(nullable: true)
     }
 }
