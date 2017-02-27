@@ -56,6 +56,11 @@
                                     <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/reports/showEdDashBoard">
+                                <li>
+                                    <a href="#reports/showEdDashBoard"><i class="fa fa-object-group"></i>&nbsp;Dashboard</a>
+                                </li>
+                            </sec:access>
                             <sec:ifAnyUrls urls="/reports/showSpStatus,reports/showMcrsStatus">
                                 <li>
                                     <a href="#"><i class="fa fa-bar-chart-o"></i>&nbsp;Submission<span

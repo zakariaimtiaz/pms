@@ -1,11 +1,15 @@
 package pms
 
+import actions.reports.dashboard.DownloadEdDashBoardActionService
+import actions.reports.dashboard.IssueCounterEdDashBoardActionService
+import actions.reports.dashboard.ListEdDashBoardActionService
 import actions.reports.mcrs.DownloadMCRSActionService
 import actions.reports.mcrs.ListMCRSActionService
 import actions.reports.monthly.DownloadMonthlySPActionService
 import actions.reports.monthly.ListSpMonthlyPlanActionService
 import actions.reports.yearly.DownloadYearlySPActionService
 import actions.reports.yearly.ListYearlySPActionService
+import com.google.common.base.CaseFormat
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
@@ -23,6 +27,10 @@ class ReportsController  extends BaseController  {
 
     ListYearlySPActionService listYearlySPActionService
     DownloadYearlySPActionService downloadYearlySPActionService
+
+    ListEdDashBoardActionService listEdDashBoardActionService
+    IssueCounterEdDashBoardActionService issueCounterEdDashBoardActionService
+    DownloadEdDashBoardActionService downloadEdDashBoardActionService
 
     static allowedMethods = [
             showSpStatus: "POST", showMcrsStatus: "POST", showMcrs: "POST", showSpMonthlyPlan: "POST", showYearlySP: "POST"
@@ -102,4 +110,20 @@ class ReportsController  extends BaseController  {
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     //################## Yearly End ###########################
+
+    //################## Dashboard Start ###########################
+    def showEdDashBoard() {
+        render(view: "/reports/dashboard/show")
+    }
+    def listEdDashBoard() {
+        renderOutput(listEdDashBoardActionService,params)
+    }
+    def issuesCounterEdDashBoard() {
+        renderOutput(issueCounterEdDashBoardActionService,params)
+    }
+    def downloadEdDashBoard() {
+        Map result = (Map) getReportResponse(downloadEdDashBoardActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    //################## Dashboard End   ###########################
 }

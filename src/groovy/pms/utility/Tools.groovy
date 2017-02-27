@@ -1,5 +1,8 @@
 package pms.utility
 
+import com.google.common.base.CaseFormat
+import groovy.sql.GroovyRowResult
+
 class Tools {
     public static final int PLEASE_SELECT_VALUE = -1
     public static final String PLZ_SELECT_VALUE = '-1'
@@ -99,6 +102,39 @@ class Tools {
             lstIds << (Long) lstObjects[i].id
         }
         return lstIds
+    }
+
+    public static def getObjectPropertiesFromDbRowsKeyMapping(ArrayList<String> grrObjectKeyList) {
+        def map = [:]
+        grrObjectKeyList.each { item ->
+            if (item?.contains('_')) {
+                map.putAt(item, CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,item?.toLowerCase()))
+            } else {
+                map.putAt(item, item)
+            }
+        }
+        return map
+    }
+
+    public static def dynamicallyConvertGrrListToObjectList(ArrayList<GroovyRowResult> grrList, ArrayList<String> grrObjectKeyList) {
+        //pojoList[0]?.expandoProperties as grails.converters.JSON
+        //pojoList?.collect {it?.expandoProperties} as grails.converters.JSON
+
+
+        def pojoList = []
+        def objectPropertiesFromGrrList = [:]
+
+        objectPropertiesFromGrrList = getObjectPropertiesFromDbRowsKeyMapping(grrObjectKeyList);
+
+        grrList?.each { rowItem ->
+            def dynamicObject = new Expando()
+            grrObjectKeyList.each { itKey ->
+                dynamicObject."${objectPropertiesFromGrrList.get(itKey)}" = rowItem?.get(itKey)
+            }
+            pojoList << dynamicObject
+        }
+
+        return pojoList
     }
 }
 
