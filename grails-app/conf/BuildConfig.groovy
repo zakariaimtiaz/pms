@@ -64,6 +64,7 @@ grails.project.dependency.resolution = {
         runtime 'javax.mail:javax.mail-api:1.5.1'
         runtime 'com.sun.mail:javax.mail:1.5.1'
         runtime 'com.jcraft:jsch:0.1.52'
+        compile group: 'com.google.guava', name: 'guava', version: '19.0'
     }
 
     plugins {

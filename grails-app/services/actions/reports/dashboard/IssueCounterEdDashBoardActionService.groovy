@@ -6,6 +6,7 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import pms.utility.Tools
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -104,8 +105,8 @@ class IssueCounterEdDashBoardActionService extends BaseService implements Action
         GROUP BY ss.id
         ORDER BY ss.short_name) tmp GROUP BY tmp_id;
         """
-        List<GroovyRowResult> lstValue = executeSelectSql(query)
-        return lstValue[0]
+        List<GroovyRowResult> grrList = executeSelectSql(query)
+        return grrList[0]
     }
 
     private int buildResult2List(Date month) {
