@@ -1,6 +1,7 @@
 package pms
 
 import actions.edDashboard.CreateEdDashboardActionService
+import com.pms.EdDashboard
 import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
@@ -49,6 +50,25 @@ class EdDashboardController extends BaseController {
             Map map = new LinkedHashMap()
             map.put('tableHtml', gString)
             render map as JSON
+        }catch (Exception ex){
+        }
+    }
+    def retrieveIssueAndMonthData() {
+        try {
+            SecUser user = baseService.currentUserObject()
+            boolean isEdAssistant = baseService.isEdAssistantRole(user.id)
+            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+            Date start = originalFormat.parse(params.month.toString());
+            Calendar c = Calendar.getInstance();
+            c.setTime(start);
+            c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+            Date d = DateUtility.getSqlDate(c.getTime())
+            long sId = Long.parseLong(params.serviceId.toString())
+            long issuesId = Long.parseLong(params.issueId.toString())
+
+            EdDashboard edDashboard=EdDashboard.findByServiceIdAndMonthForAndIssueId(sId,d,issuesId)
+            Map result = [lst: edDashboard]
+            render result as JSON
         }catch (Exception ex){
         }
     }
