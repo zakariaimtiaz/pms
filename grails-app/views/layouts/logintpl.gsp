@@ -32,39 +32,76 @@
             </div>
 
             <div class="panel-body">
-                <form action='${postUrl}' autocomplete='on'
-                      method="post" class="form-horizontal form-widgets" role="form" id='loginForm'>
+                <g:if env="development">
+                    <form action='${postUrl}' autocomplete='on'
+                          method="post" class="form-horizontal form-widgets" role="form" id='loginForm'>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label" for="username">Login ID:</label>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="username">Login ID:</label>
 
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" id="username" name="j_username" tabindex="1"
-                                   placeholder="Login ID" value=""/>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="username" name="j_username" tabindex="1"
+                                       placeholder="Login ID" value="admin"/>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="col-md-3 control-label" for="password">Password:</label>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="password">Password:</label>
 
-                        <div class="col-md-9">
+                            <div class="col-md-9">
 
-                            <input type="password" class="form-control" id="password" name="j_password"
-                                   tabindex="2"
-                                   placeholder="Password" value=""/>
+                                <input type="password" class="form-control" id="password" name="j_password"
+                                       tabindex="2"
+                                       placeholder="Password" value="fsadmin@123"/>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <div class="col-md-3">&nbsp;</div>
+                        <div class="form-group">
+                            <div class="col-md-3">&nbsp;</div>
 
-                        <div class="col-md-5">
-                            <button id="create" name="create" type="submit" class="btn btn-default" tabindex="3">
-                                <span class="glyphicon glyphicon-play"></span> Login
-                            </button>
+                            <div class="col-md-5">
+                                <button id="create" name="create" type="submit" class="btn btn-default" tabindex="3">
+                                    <span class="glyphicon glyphicon-play"></span> Login
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </g:if>
+                <g:if env="production">
+                    <form action='${postUrl}' autocomplete='on'
+                          method="post" class="form-horizontal form-widgets" role="form" id='loginForm'>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="username">Login ID:</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="username" name="j_username" tabindex="1"
+                                       placeholder="Login ID" value=""/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="password">Password:</label>
+
+                            <div class="col-md-9">
+
+                                <input type="password" class="form-control" id="password" name="j_password"
+                                       tabindex="2"
+                                       placeholder="Password" value=""/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">&nbsp;</div>
+
+                            <div class="col-md-5">
+                                <button id="create" name="create" type="submit" class="btn btn-default" tabindex="3">
+                                    <span class="glyphicon glyphicon-play"></span> Login
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </g:if>
                 <div>
                     <g:if test="${flash.message && !flash.success}">
                         <div class='alert alert-danger col-md-12' id="login_msg_"

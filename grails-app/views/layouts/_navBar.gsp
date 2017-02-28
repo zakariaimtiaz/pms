@@ -58,7 +58,7 @@
                             </sec:access>
                             <sec:access url="/reports/showEdDashBoard">
                                 <li>
-                                    <a href="#reports/showEdDashBoard"><i class="fa fa-object-group"></i>&nbsp;Dashboard</a>
+                                    <a href="#reports/showEdDashBoard"><i class="fa fa-object-group"></i>&nbsp;ED's Dashboard</a>
                                 </li>
                             </sec:access>
                             <sec:ifAnyUrls urls="/reports/showSpStatus,reports/showMcrsStatus">

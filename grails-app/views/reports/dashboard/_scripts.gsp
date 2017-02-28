@@ -1,5 +1,5 @@
 <script language="javascript">
-    var gridHR,gridField,gridGovt,gridDonor,gridNP,gridSP,tmp1='';
+    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp, tmp1 = '';
     $(document).ready(function () {
         onLoadInfoPage();
         initGridHR();
@@ -7,7 +7,7 @@
         initGridGovt();
         initGridDonor();
         initGridNP();
-        initGridSP();
+        initGridCssp();
         activaTab('menu1');
         populateKendoChart();
     });
@@ -24,9 +24,10 @@
         $('#month').val(str);
         defaultPageTile("Ed's Dashboard", '/reports/showEdDashBoard');
     }
-    function activaTab(tab){
+    function activaTab(tab) {
         $('.nav-tabs a[href="#' + tab + '"]').tab('show');
-    };
+    }
+    ;
     function initGridHR() {
         $("#gridHR").kendoGrid({
             dataSource: {
@@ -42,7 +43,7 @@
                     data: "hr",
                     parse: function (data) {
                         $("#spanHR").html('');
-                        $("#spanHR").html('HR Issue ('+data.hrCount+')');
+                        $("#spanHR").html('HR Issues (' + data.hrCount + ')');
                         return data;
                     }
                 },
@@ -56,23 +57,18 @@
             pageable: false,
             columns: [
                 {
-                    field: "SERVICE", title: "CSU/Sector", width: 180, sortable: false, filterable: false,
-                    template:"<b>#=SERVICE#</b>"
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
+                    template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    title: "<b>HR Issue</b>", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "HR_ISSUE", title: "Issues & Crisis", width: 250, sortable: false, filterable: false,
-                            template:"#=HR_IS_FOLLOWUP?formatIssue(HR_FOLLOWUP_MONTH,HR_ISSUE):HR_ISSUE#"
-                        },
-                        {
-                            field: "HR_REMARKS", title: "Remarks", width: 250, sortable: false, filterable: false
-                        },
-                        {
-                            field: "HR_ADVICE", title: "Ed's Advice", width: 250, sortable: false, filterable: false
-                        }
-                    ]
+                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=HR_IS_FOLLOWUP?formatIssue(HR_FOLLOWUP_MONTH,HR_ISSUE):HR_ISSUE#"
+                },
+                {
+                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                },
+                {
+                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -93,7 +89,7 @@
                     data: "fld",
                     parse: function (data) {
                         $("#spanFld").html('');
-                        $("#spanFld").html('Field Issue ('+data.fldCount+')');
+                        $("#spanFld").html('Beneficiary/Field Issues (' + data.fldCount + ')');
                         return data;
                     }
                 },
@@ -107,23 +103,18 @@
             pageable: false,
             columns: [
                 {
-                    field: "SERVICE", title: "CSU/Sector", width: 180, sortable: false, filterable: false,
-                    template:"<b>#=SERVICE#</b>"
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
+                    template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    title: "<b>Field Issue</b>", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "FIELD_ISSUE", title: "Issues & Crisis", width: 300, sortable: false, filterable: false,
-                            template:"#=FIELD_IS_FOLLOWUP?formatIssue(FIELD_FOLLOWUP_MONTH,FIELD_ISSUE):FIELD_ISSUE#"
-                        },
-                        {
-                            field: "FIELD_REMARKS", title: "Remarks", width: 200, sortable: false, filterable: false
-                        },
-                        {
-                            field: "FIELD_ADVICE", title: "Ed's Advice", width: 250, sortable: false, filterable: false
-                        }
-                    ]
+                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=FIELD_IS_FOLLOWUP?formatIssue(FIELD_FOLLOWUP_MONTH,FIELD_ISSUE):FIELD_ISSUE#"
+                },
+                {
+                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                },
+                {
+                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -144,7 +135,7 @@
                     data: "govt",
                     parse: function (data) {
                         $("#spanGvt").html('');
-                        $("#spanGvt").html('Government Issue ('+data.govtCount+')');
+                        $("#spanGvt").html('Government Issues (' + data.govtCount + ')');
                         return data;
                     }
                 },
@@ -158,23 +149,18 @@
             pageable: false,
             columns: [
                 {
-                    field: "SERVICE", title: "CSU/Sector", width: 180, sortable: false, filterable: false,
-                    template:"<b>#=SERVICE#</b>"
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
+                    template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    title: "<b>Government Issue</b>", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "GOVERNMENT_ISSUE", title: "Issues & Crisis", width: 300, sortable: false, filterable: false,
-                            template:"#=GOVERNMENT_IS_FOLLOWUP?formatIssue(GOVERNMENT_FOLLOWUP_MONTH,GOVERNMENT_ISSUE):GOVERNMENT_ISSUE#"
-                        },
-                        {
-                            field: "GOVERNMENT_REMARKS", title: "Remarks", width: 200, sortable: false, filterable: false
-                        },
-                        {
-                            field: "GOVERNMENT_ADVICE", title: "Ed's Advice", width: 250, sortable: false, filterable: false
-                        }
-                    ]
+                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=GOVERNMENT_IS_FOLLOWUP?formatIssue(GOVERNMENT_FOLLOWUP_MONTH,GOVERNMENT_ISSUE):GOVERNMENT_ISSUE#"
+                },
+                {
+                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                },
+                {
+                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -195,7 +181,7 @@
                     data: "dnr",
                     parse: function (data) {
                         $("#spanDnr").html('');
-                        $("#spanDnr").html('Donor Issue ('+data.dnrCount+')');
+                        $("#spanDnr").html('Donor Issues (' + data.dnrCount + ')');
                         return data;
                     }
                 },
@@ -209,23 +195,18 @@
             pageable: false,
             columns: [
                 {
-                    field: "SERVICE", title: "CSU/Sector", width: 180, sortable: false, filterable: false,
-                    template:"<b>#=SERVICE#</b>"
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
+                    template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    title: "<b>Donor Issue</b>", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "DONOR_ISSUE", title: "Issues & Crisis", width: 300, sortable: false, filterable: false,
-                            template:"#=DONOR_IS_FOLLOWUP?formatIssue(DONOR_FOLLOWUP_MONTH,DONOR_ISSUE):DONOR_ISSUE#"
-                        },
-                        {
-                            field: "DONOR_REMARKS", title: "Remarks", width: 200, sortable: false, filterable: false
-                        },
-                        {
-                            field: "DONOR_ADVICE", title: "Ed's Advice", width: 250, sortable: false, filterable: false
-                        }
-                    ]
+                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=DONOR_IS_FOLLOWUP?formatIssue(DONOR_FOLLOWUP_MONTH,DONOR_ISSUE):DONOR_ISSUE#"
+                },
+                {
+                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                },
+                {
+                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -246,7 +227,7 @@
                     data: "np",
                     parse: function (data) {
                         $("#spanNP").html('');
-                        $("#spanNP").html('New Project Issue ('+data.npCount+')');
+                        $("#spanNP").html('New Project Issues (' + data.npCount + ')');
                         return data;
                     }
                 },
@@ -260,30 +241,25 @@
             pageable: false,
             columns: [
                 {
-                    field: "SERVICE", title: "CSU/Sector", width: 180, sortable: false, filterable: false,
-                    template:"<b>#=SERVICE#</b>"
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
+                    template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    title: "<b>New Project Issue</b>", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "NEW_PROJECT_ISSUE", title: "Issues & Crisis", width: 300, sortable: false, filterable: false,
-                            template:"#=NP_IS_FOLLOWUP?formatIssue(NP_FOLLOWUP_MONTH,NEW_PROJECT_ISSUE):NEW_PROJECT_ISSUE#"
-                        },
-                        {
-                            field: "NEW_PROJECT_REMARKS", title: "Remarks", width: 200, sortable: false, filterable: false
-                        },
-                        {
-                            field: "NEW_PROJECT_ADVICE", title: "Ed's Advice", width: 250, sortable: false, filterable: false
-                        }
-                    ]
+                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=NP_IS_FOLLOWUP?formatIssue(NP_FOLLOWUP_MONTH,NEW_PROJECT_ISSUE):NEW_PROJECT_ISSUE#"
+                },
+                {
+                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                },
+                {
+                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
         gridNP = $("#gridNP").data("kendoGrid");
     }
-    function initGridSP() {
-        $("#gridSP").kendoGrid({
+    function initGridCssp() {
+        $("#gridCssp").kendoGrid({
             dataSource: {
                 transport: {
                     read: {
@@ -297,7 +273,7 @@
                     data: "cssp",
                     parse: function (data) {
                         $("#spanCssp").html('');
-                        $("#spanCssp").html('CSU/Sector Specific Issue ('+data.csspCount+')');
+                        $("#spanCssp").html('CSU/Sector Specific Issues (' + data.csspCount + ')');
                         return data;
                     }
                 },
@@ -311,73 +287,62 @@
             pageable: false,
             columns: [
                 {
-                    field: "SERVICE", title: "CSU/Sector", width: 180, sortable: false, filterable: false,
-                    template:"<b>#=omitRepeated(SERVICE_ID,SERVICE)#</b>"
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
+                    template: "<b>#=omitRepeated(SERVICE_ID,SERVICE)#</b>"
                 },
                 {
-                    title: "<b>CSU/Sector Specific Issue</b>", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "ISSUE", title: "Issues & Crisis", width: 300, sortable: false, filterable: false,
-                            template:"#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
-                        },
-                        {
-                            field: "REMARKS", title: "Remarks", width: 200, sortable: false, filterable: false
-                        },
-                        {
-                            field: "ADVICE", title: "Ed's Advice", width: 250, sortable: false, filterable: false
-                        }
-                    ]
+                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
+                },
+                {
+                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                },
+                {
+                    field: "ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
-        gridSP = $("#gridSP").data("kendoGrid");
+        gridCssp = $("#gridCssp").data("kendoGrid");
     }
-    function formatIssue(FOLLOWUP_MONTH,ISSUE){
-        return '<font color="#8b0000">First issued at ' + FOLLOWUP_MONTH +'</font> <br/>'+ ISSUE;
-    }
-    function omitRepeated(SEC_ID,VAL){
-        if(tmp1==SEC_ID){return ''}
-        tmp1 = SEC_ID;
-        return VAL;
-    }
+
     function populateKendoChart() {
+        tmp1 = '';
+        var serviceId = $('#serviceId').val();
+        if(serviceId==''){ serviceId = 0;}
         var month = $('#month').val();
-        var urlHR ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&hr=true";
-        var urlFld ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&fld=true";
-        var urlGovt ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&govt=true";
-        var urlDnr ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&dnr=true";
-        var urlNp ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&np=true";
-        var urlCssp ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&cssp=true";
+        var urlHR   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&hr=true";
+        var urlFld  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&fld=true";
+        var urlGovt = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&govt=true";
+        var urlDnr  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&dnr=true";
+        var urlNp   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&np=true";
+        var urlCssp = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&cssp=true";
         populateGridKendo(gridHR, urlHR);
         populateGridKendo(gridField, urlFld);
         populateGridKendo(gridGovt, urlGovt);
         populateGridKendo(gridDonor, urlDnr);
         populateGridKendo(gridNP, urlNp);
-        populateGridKendo(gridSP, urlCssp);
+        populateGridKendo(gridCssp, urlCssp);
         return false;
     }
 
-    function downloadDashboardReport() {
+    function setPreviousMonth() {
         var month = $('#month').val();
-        showLoadingSpinner(true);
-        var msg = 'Do you want to download the ED\'S Dashboard report now?',
-            params = "?month=" +month,
-            url = "${createLink(controller: 'reports', action:  'downloadEdDashBoard')}" + params;
-        confirmDownload(msg, url);
-        return false;
-    }
-
-    function setPreviousMonth(){
-        var month = $('#month').val();
-        var str = moment(month,'MMMM YYYY').subtract(1, 'months').format('MMMM YYYY');
+        var str = moment(month, 'MMMM YYYY').subtract(1, 'months').format('MMMM YYYY');
         $('#month').val(str);
         populateKendoChart();
     }
-    function setNextMonth(){
+    function setNextMonth() {
         var month = $('#month').val();
-        var str = moment(month,'MMMM YYYY').add(1, 'months').format('MMMM YYYY');
+        var str = moment(month, 'MMMM YYYY').add(1, 'months').format('MMMM YYYY');
         $('#month').val(str);
         populateKendoChart();
+    }
+    function formatIssue(FOLLOWUP_MONTH, ISSUE) {
+        return '<font color="#8b0000">First issued at ' + FOLLOWUP_MONTH + '</font> <br/>' + ISSUE;
+    }
+    function omitRepeated(SERVICE_ID, SERVICE) {
+        if (tmp1 == SERVICE_ID) { return '' }
+        tmp1 = SERVICE_ID;
+        return SERVICE;
     }
 </script>

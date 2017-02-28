@@ -3,34 +3,44 @@
         <div class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title text-center">
-                    Ed's Dashboard Summary
-%{--                    <button id="downloadSP" name="downloadSP" type="button" data-role="button"
-                            class="k-button k-button-icontext pull-right" role="button"
-                            aria-disabled="false" onclick='downloadDashboardReport();'><span
-                            class="fa fa-file-pdf-o"></span>&nbsp;Download
-                    </button>--}%
+                    ED's Dashboard
                 </div>
             </div>
 
             <div class="panel-body" style="padding: 0px;!important;height: 65px;!important;">
-                    <ul class="pager">
-                        <li><a onclick="setPreviousMonth();">Previous</a></li>
-                        <li><a><input type='text' class="kendo-date-picker" id="month" name="month"
-                                   placeholder="Month" validationMessage="Required"/></a>
-                        </li>
-                        <li><a onclick="setNextMonth();">Next</a></li>
-                    </ul>
+                <div class="form-group">
+                    <label class="col-md-1 control-label label-optional pager"
+                           for="serviceId">Service:</label>
+
+                    <div class="col-md-3 pager">
+                        <app:dropDownService
+                                class="kendo-drop-down" is_in_sp="true" hints_text="ALL CSU/Sector"
+                                id="serviceId" name="serviceId" tabindex="1" onchange="populateKendoChart();"
+                                data_model_name="dropDownService">
+                        </app:dropDownService>
+                    </div>
+
+                    <div class="col-md-5">
+                        <ul class="pager">
+                            <li style="cursor: pointer;"><a onclick="setPreviousMonth();" style="width: 80px;">Previous</a></li>
+                            <li><a><input type='text' class="kendo-date-picker" id="month" name="month"
+                                          placeholder="Month" validationMessage="Required"/></a>
+                            </li>
+                            <li style="cursor: pointer;"><a onclick="setNextMonth();" style="width: 80px;">Next</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="row">
         <ul class="nav nav-tabs">
-            <li><a data-toggle="tab" href="#menu1"><span id="spanHR">HR Issue (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu2"><span id="spanFld">Field Issue (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu3"><span id="spanGvt">Government Issue (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu4"><span id="spanDnr">Donor Issue (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu5"><span id="spanNP">New Project Issue (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu6"><span id="spanCssp">CSU/Sector Specific Issue (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu1"><span id="spanHR">HR Issues (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu2"><span id="spanFld">Field Issues (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu3"><span id="spanGvt">Government Issues (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu4"><span id="spanDnr">Donor Issues (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu5"><span id="spanNP">New Project Issues (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu6"><span id="spanCssp">CSU/Sector Specific Issues (0)</span></a></li>
         </ul>
 
         <div class="tab-content">
@@ -61,7 +71,7 @@
             </div>
             <div id="menu6" class="tab-pane fade in active">
                 <div class="panel-primary">
-                    <div id="gridSP"></div>
+                    <div id="gridCssp"></div>
                 </div>
             </div>
         </div>
