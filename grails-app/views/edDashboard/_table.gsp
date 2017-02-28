@@ -53,15 +53,12 @@
                                   class="form-control" readonly>${item?.remarks}</textarea>
                     </g:if>
                     <g:else>
-                       %{-- <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
-                                  style="padding: 0 0 0 0 ! important;"
+                        <textarea id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
+                                 style="padding: 0 0 0 0 ! important;"
                                   class="form-control"
-                                  placeholder="">${item?.remarks}</textarea>--}%
+                                  placeholder="">${item?.remarks}</textarea>
 
-                        <input type="text" id="remarks${item?.id}" name="remarks${item?.id}" rows="3"
-                                  style="padding: 0 0 0 0 ! important;"
-                                  class="form-control"
-                                  placeholder="" value="${item?.remarks}"  >
+
                     </g:else>
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
