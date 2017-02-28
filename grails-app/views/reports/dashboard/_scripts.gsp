@@ -68,7 +68,7 @@
                     field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -114,7 +114,7 @@
                     field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -160,7 +160,7 @@
                     field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -206,7 +206,7 @@
                     field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -252,7 +252,7 @@
                     field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -298,7 +298,7 @@
                     field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "ADVICE", title: "<b>Ed's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
