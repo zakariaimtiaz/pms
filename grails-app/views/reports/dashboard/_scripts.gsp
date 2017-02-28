@@ -61,14 +61,14 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
-                    template: "#=HR_IS_FOLLOWUP?formatIssue(HR_FOLLOWUP_MONTH,HR_ISSUE):HR_ISSUE#"
+                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -107,14 +107,14 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
-                    template: "#=FIELD_IS_FOLLOWUP?formatIssue(FIELD_FOLLOWUP_MONTH,FIELD_ISSUE):FIELD_ISSUE#"
+                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -153,14 +153,14 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
-                    template: "#=GOVERNMENT_IS_FOLLOWUP?formatIssue(GOVERNMENT_FOLLOWUP_MONTH,GOVERNMENT_ISSUE):GOVERNMENT_ISSUE#"
+                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -199,14 +199,14 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
-                    template: "#=DONOR_IS_FOLLOWUP?formatIssue(DONOR_FOLLOWUP_MONTH,DONOR_ISSUE):DONOR_ISSUE#"
+                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
@@ -245,14 +245,14 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "HR_ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
-                    template: "#=NP_IS_FOLLOWUP?formatIssue(NP_FOLLOWUP_MONTH,NEW_PROJECT_ISSUE):NEW_PROJECT_ISSUE#"
+                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "HR_REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "HR_ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
+                    field: "ADVICE", title: "<b>ED's Advice</b>", width: 250, sortable: false, filterable: false
                 }
             ]
         });
