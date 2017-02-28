@@ -39,7 +39,12 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "hr",
+                    parse: function (data) {
+                        $("#spanHR").html('');
+                        $("#spanHR").html('HR Issue ('+data.hrCount+')');
+                        return data;
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -85,7 +90,12 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "fld",
+                    parse: function (data) {
+                        $("#spanFld").html('');
+                        $("#spanFld").html('Field Issue ('+data.fldCount+')');
+                        return data;
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -131,7 +141,12 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "govt",
+                    parse: function (data) {
+                        $("#spanGvt").html('');
+                        $("#spanGvt").html('Government Issue ('+data.govtCount+')');
+                        return data;
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -177,7 +192,12 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "dnr",
+                    parse: function (data) {
+                        $("#spanDnr").html('');
+                        $("#spanDnr").html('Donor Issue ('+data.dnrCount+')');
+                        return data;
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -223,7 +243,12 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "np",
+                    parse: function (data) {
+                        $("#spanNP").html('');
+                        $("#spanNP").html('New Project Issue ('+data.npCount+')');
+                        return data;
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -269,7 +294,12 @@
                 },
                 schema: {
                     type: 'json',
-                    data: "list"
+                    data: "cssp",
+                    parse: function (data) {
+                        $("#spanCssp").html('');
+                        $("#spanCssp").html('CSU/Sector Specific Issue ('+data.csspCount+')');
+                        return data;
+                    }
                 },
                 serverPaging: true,
                 serverSorting: true
@@ -313,42 +343,18 @@
     }
     function populateKendoChart() {
         var month = $('#month').val();
-        var params = "?month="+month;
-        var url ="${createLink(controller: 'reports', action: 'listEdDashBoard')}" + params;
-        var url2 ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&cssp=true";
-        populateGridKendo(gridHR, url);
-        populateGridKendo(gridField, url);
-        populateGridKendo(gridGovt, url);
-        populateGridKendo(gridDonor, url);
-        populateGridKendo(gridNP, url);
-        populateGridKendo(gridSP, url2);
-
-
-        jQuery.ajax({
-            type: 'post',
-            url: "${createLink(controller: 'reports', action: 'issuesCounterEdDashBoard')}" + params,
-            success: function (data, textStatus) {
-                $("#spanHR").html('');
-                $("#spanFld").html('');
-                $("#spanGvt").html('');
-                $("#spanDnr").html('');
-                $("#spanNP").html('');
-                $("#spanSP").html('');
-
-                $("#spanHR").html('HR Issue ('+data.counter.HR_COUNT+')');
-                $("#spanFld").html('Field Issue ('+data.counter.FIELD_COUNT+')');
-                $("#spanGvt").html('Government Issue ('+data.counter.GOVERNMENT_COUNT+')');
-                $("#spanDnr").html('Donor Issue ('+data.counter.DONOR_COUNT+')');
-                $("#spanNP").html('New Project Issue ('+data.counter.NEW_PROJECT_COUNT+')');
-                $("#spanSP").html('CSU/Sector Specific Issue ('+data.counter.SP_COUNT+')');
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json'
-        });
+        var urlHR ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&hr=true";
+        var urlFld ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&fld=true";
+        var urlGovt ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&govt=true";
+        var urlDnr ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&dnr=true";
+        var urlNp ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&np=true";
+        var urlCssp ="${createLink(controller: 'reports', action: 'listEdDashBoard')}?month="+month+"&cssp=true";
+        populateGridKendo(gridHR, urlHR);
+        populateGridKendo(gridField, urlFld);
+        populateGridKendo(gridGovt, urlGovt);
+        populateGridKendo(gridDonor, urlDnr);
+        populateGridKendo(gridNP, urlNp);
+        populateGridKendo(gridSP, urlCssp);
         return false;
     }
 

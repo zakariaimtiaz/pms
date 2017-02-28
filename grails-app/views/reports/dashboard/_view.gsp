@@ -30,7 +30,7 @@
             <li><a data-toggle="tab" href="#menu3"><span id="spanGvt">Government Issue (0)</span></a></li>
             <li><a data-toggle="tab" href="#menu4"><span id="spanDnr">Donor Issue (0)</span></a></li>
             <li><a data-toggle="tab" href="#menu5"><span id="spanNP">New Project Issue (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu6"><span id="spanSP">CSU/Sector Specific Issue (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu6"><span id="spanCssp">CSU/Sector Specific Issue (0)</span></a></li>
         </ul>
 
         <div class="tab-content">
