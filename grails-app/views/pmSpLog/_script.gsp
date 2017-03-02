@@ -3,11 +3,14 @@
     <sec:access url="/pmSpLog/update">
         <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
+    <sec:access url="/pmSpLog/updateDeadLine">
+        <li onclick="showDeadLineModel();"><i class="fa fa-clock-o"></i>Dead Line</li>
+    </sec:access>
 </ul>
 </script>
 
 <script language="javascript">
-    var currentYear,gridSpLog, dataSource, SpLogModel;
+    var currentDate,currentYear,gridSpLog, dataSource, SpLogModel;
 
     $(document).ready(function () {
         onLoadSpLogPage();
@@ -155,6 +158,7 @@
                         serviceId: { type: "number" },
                         service: { type: "string" },
                         submissionDate: { type: "date" },
+                        deadLine: { type: "date" },
                         isSubmitted: { type: "boolean" },
                         isEditable: { type: "boolean" }
                     }
@@ -189,6 +193,13 @@
             },
             columns: [
                 {field: "service", title: "Sector/CSU", width: 50, sortable: false, filterable: kendoCommonFilterable(98)},
+                {
+                    field: "deadLine",title: "Dead Line",
+                    width: 50, sortable: false,filterable: false,
+                    template: "#=deadLine?kendo.toString(kendo.parseDate(deadLine, 'yyyy-MM-dd'), 'dd-MM-yyyy'):'Not set yet'#",
+                    attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()}
+                },
                 {field: "isSubmitted", title: "Submitted", width: 50, sortable: false,
                     filterable: { messages: { isTrue: "YES", isFalse: "NO" }},
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
@@ -251,5 +262,42 @@
                 url = "${createLink(controller: 'pmSpLog', action:  'delete')}";
         confirmDelete(msg, url, gridSpLog);
     }
+    function showDeadLineModel() {
+        $("#createSPModal").modal('show');
+        $('#modalSPYear').kendoDatePicker({
+            format: "yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "decade",
+            depth: "decade"
+        }).data("kendoDatePicker");
+        $('#modalSPYear').val(currentYear);
 
+        currentDate = moment().format('DD/MM/YYYY');
+        $('#modalSPDeadLine').kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"]
+        }).data("kendoDatePicker");
+        $('#modalSPDeadLine').val(currentDate);
+    }
+    function onClickSPModal() {
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#createSPModalForm").serialize(),
+            url: "${createLink(controller: 'pmSpLog', action: 'updateDeadLine')}",
+            success: function (result, textStatus) {
+                if (result.isError) {
+                    showError(result.message);
+                } else{
+                    showSuccess(result.message);
+                }
+                populateGrid();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+            },
+            dataType: 'json'
+        });
+        $("#createSPModal").modal('hide');
+    }
 </script>

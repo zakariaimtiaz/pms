@@ -3,6 +3,7 @@ package pms
 import actions.pmMcrsLog.CreatePmMcrsLogActionService
 import actions.pmMcrsLog.ListPmMcrsLogActionService
 import actions.pmMcrsLog.SubmitPmMcrsLogActionService
+import actions.pmMcrsLog.UpdatePmMcrsDeadLineActionService
 import actions.pmMcrsLog.UpdatePmMcrsLogActionService
 import com.pms.PmMcrsLog
 import com.pms.PmServiceSector
@@ -14,8 +15,8 @@ class PmMcrsLogController extends BaseController{
     CreatePmMcrsLogActionService createPmMcrsLogActionService
     UpdatePmMcrsLogActionService updatePmMcrsLogActionService
     SubmitPmMcrsLogActionService submitPmMcrsLogActionService
-
     ListPmMcrsLogActionService listPmMcrsLogActionService
+    UpdatePmMcrsDeadLineActionService updatePmMcrsDeadLineActionService
 
     def show() {
         SecUser user = baseService.currentUserObject()
@@ -42,5 +43,8 @@ class PmMcrsLogController extends BaseController{
     }
     def submission() {
         renderOutput(submitPmMcrsLogActionService, params)
+    }
+    def updateDeadLine() {
+        renderOutput(updatePmMcrsDeadLineActionService, params)
     }
 }

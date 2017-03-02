@@ -3,10 +3,13 @@
     <sec:access url="/pmMcrsLog/update">
         <li onclick="editMCRS();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
+    <sec:access url="/pmMcrsLog/updateDeadLine">
+        <li onclick="showDeadLineModel();"><i class="fa fa-clock-o"></i>Dead Line</li>
+    </sec:access>
 </ul>
 </script>
 <script language="javascript">
-    var gridMcrsLog,mcrsLogModel, dataSource,kendoDatePicker,currentMonth,currentYear,serviceId;
+    var gridMcrsLog,mcrsLogModel, dataSource,kendoDatePicker,currentDate,currentMonth,currentYear,serviceId;
 
     $(document).ready(function () {
         onLoadMcrsLogPage();
@@ -16,21 +19,6 @@
         dropDownService.value(serviceId);
         populateGrid();
     });
-
-    function populateGrid(){
-        var serviceId = $('#serviceId').val(),
-        year = $('#year').val(),
-        params = "?serviceId=" + serviceId + "&year=" + year;
-        if(serviceId==''){
-            showError("Please select service");
-            return false;
-        }if(year==''){
-            showError("Please select year");
-            return false;
-        }
-        var url = "${createLink(controller: 'pmMcrsLog', action: 'list')}" + params;
-        populateGridKendo(gridMcrsLog,url);
-    }
     function onLoadMcrsLogPage() {
         currentMonth = moment().format('MMMM YYYY');
         kendoDatePicker = $('#month').kendoDatePicker({
@@ -40,6 +28,7 @@
             depth: "year"
         }).data("kendoDatePicker");
         $('#month').val(currentMonth);
+
         currentYear = moment().format('YYYY');
         $('#year').kendoDatePicker({
             format: "yyyy",
@@ -52,9 +41,23 @@
         $(".k-datepicker input").prop("readonly", true);
 
         initializeForm($("#mcrsLogForm"), onSubmitMcrsLog);
-        defaultPageTile("MCRS Log",'/pmMcrsLog/show');
+        defaultPageTile("MCRS Log",'pmMcrsLog/show');
     }
 
+    function populateGrid(){
+        var serviceId = $('#serviceId').val(),
+                year = $('#year').val(),
+                params = "?serviceId=" + serviceId + "&year=" + year;
+        if(serviceId==''){
+            showError("Please select service");
+            return false;
+        }if(year==''){
+            showError("Please select year");
+            return false;
+        }
+        var url = "${createLink(controller: 'pmMcrsLog', action: 'list')}" + params;
+        populateGridKendo(gridMcrsLog,url);
+    }
     function executePreCondition() {
         if (!validateForm($("#mcrsLogForm"))) {
             return false;
@@ -161,6 +164,7 @@
                         serviceId: {type: "number"},
                         service: {type: "string"},
                         submissionDate: {type: "date"},
+                        deadLine: {type: "date"},
                         isSubmitted: {type: "boolean"},
                         isEditable: {type: "boolean"}
                     }
@@ -201,6 +205,13 @@
                 {
                     field: "monthStr", title: "Month", width: 50, sortable: false, filterable: kendoCommonFilterable(),
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
+                {
+                    field: "deadLine",title: "Dead Line",
+                    width: 50, sortable: false,filterable: false,
+                    template: "#=deadLine?kendo.toString(kendo.parseDate(deadLine, 'yyyy-MM-dd'), 'dd-MM-yyyy'):'Not set yet'#",
+                    attributes: {style: setAlignCenter()},
+                    headerAttributes: {style: setAlignCenter()}
                 },
                 {
                     field: "isSubmitted", title: "Submitted", width: 50, sortable: false,
@@ -246,13 +257,51 @@
         var mcrs = getSelectedObjectFromGridKendo(gridMcrsLog);
         showMCRS(mcrs);
     }
-
     function showMCRS(mcrs) {
         mcrsLogModel.set('mcrsLog', mcrs);
         $('#month').val(moment(mcrs.year+'-'+mcrs.month+'-01').format('MMMM YYYY'));
         dropDownService.readonly(true);
         kendoDatePicker.readonly(true);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+    function showDeadLineModel() {
+        $("#createMCRSModal").modal('show');
+        currentMonth = moment().format('MMMM YYYY');
+        $('#modalMCRSMonth').kendoDatePicker({
+            format: "MMMM yyyy",
+            parseFormats: ["yyyy-MM-dd"],
+            start: "year",
+            depth: "year"
+        }).data("kendoDatePicker");
+        $('#modalMCRSMonth').val(currentMonth);
+
+        currentDate = moment().format('DD/MM/YYYY');
+        $('#modalMCRSDeadLine').kendoDatePicker({
+            format: "dd/MM/yyyy",
+            parseFormats: ["yyyy-MM-dd"]
+        }).data("kendoDatePicker");
+        $('#modalMCRSDeadLine').val(currentDate);
+    }
+    function onClickMCRSModal() {
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#createMCRSMModalForm").serialize(),
+            url: "${createLink(controller: 'pmMcrsLog', action: 'updateDeadLine')}",
+            success: function (result, textStatus) {
+                if (result.isError) {
+                    showError(result.message);
+                } else{
+                    showSuccess(result.message);
+                }
+                populateGrid();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+            },
+            dataType: 'json'
+        });
+        $("#createMCRSModal").modal('hide');
     }
 
 </script>

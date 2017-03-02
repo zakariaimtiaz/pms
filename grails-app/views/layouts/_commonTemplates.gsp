@@ -120,5 +120,84 @@
         </div>
     </div>
 </div>
+<!-- Create SP deadline model -->
+<div class="modal fade" id="createSPModal" tabindex="-1" role="dialog" aria-labelledby="createSPModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Set SP Dead Line</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal form-widgets" id="createSPModalForm" name="createSPModalForm">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label label-optional" for="modalSPYear">Year:</label>
+
+                        <div class="col-md-3">
+                            <input type='text' tabindex="1" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="modalSPYear" name="modalSPYear"
+                                   placeholder="Year" validationMessage="Required"/>
+                        </div>
+                        <label class="col-md-2 control-label label-optional" for="modalSPDeadLine">Dead Line:</label>
+
+                        <div class="col-md-3">
+                            <input type='text' tabindex="2" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="modalSPDeadLine" name="modalSPDeadLine"
+                                   placeholder="Dead Line" validationMessage="Required"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Save" onclick="onClickSPModal();">
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Create MCRS deadline model -->
+<div class="modal fade" id="createMCRSModal" tabindex="-1" role="dialog" aria-labelledby="createMCRSMModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Set MCRS Dead Line</h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal form-widgets" id="createMCRSMModalForm" name="createMCRSMModalForm">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label label-optional" for="modalMCRSMonth">Month:</label>
+
+                        <div class="col-md-3">
+                            <input type='text' tabindex="1" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="modalMCRSMonth" name="modalMCRSMonth"
+                                   placeholder="Month" validationMessage="Required"/>
+                        </div>
+                        <label class="col-md-2 control-label label-optional" for="modalMCRSMonth">Dead Line:</label>
+
+                        <div class="col-md-3">
+                            <input type='text' tabindex="2" required="required" onkeydown="return false;"
+                                   class="kendo-date-picker" id="modalMCRSDeadLine" name="modalMCRSDeadLine"
+                                   placeholder="Dead Line" validationMessage="Required"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Save" onclick="onClickMCRSModal();">
+                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 

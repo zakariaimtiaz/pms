@@ -4,6 +4,7 @@ import actions.pmSpLog.CreatePmSpLogActionService
 import actions.pmSpLog.SubmitPmSpLogActionService
 import actions.pmSpLog.ListPmSpLogActionService
 import actions.pmSpLog.UpdatePmSpLogActionService
+import actions.pmSpLog.UpdateSpLogDeadLineActionService
 import com.pms.PmServiceSector
 import com.pms.PmSpLog
 import com.pms.SecUser
@@ -17,6 +18,7 @@ class PmSpLogController extends BaseController {
     UpdatePmSpLogActionService updatePmSpLogActionService
     SubmitPmSpLogActionService submitPmSpLogActionService
     ListPmSpLogActionService listPmSpLogActionService
+    UpdateSpLogDeadLineActionService updateSpLogDeadLineActionService
 
     def show() {
         render(view: "/pmSpLog/show")
@@ -43,5 +45,8 @@ class PmSpLogController extends BaseController {
     }
     def submission() {
         renderOutput(submitPmSpLogActionService, params)
+    }
+    def updateDeadLine() {
+        renderOutput(updateSpLogDeadLineActionService, params)
     }
 }
