@@ -7,9 +7,11 @@ class ListHrUserActionServiceModel {
     DROP TABLE IF EXISTS list_hr_user_action_service_model;
 
     CREATE OR REPLACE VIEW list_hr_user_action_service_model AS
-        SELECT u.id,u.username AS login_id,u.employee_name,u.password,s.static_name AS service
+    SELECT u.id,u.username AS login_id,e.employee_id,u.employee_name,se.name designation,
+    e.official_email,u.password,s.static_name AS service
              FROM `mis`.sec_user u
         LEFT JOIN `mis`.employee e ON e.employee_id = u.employee_id
+        LEFT JOIN `mis`.system_entity se ON se.id = e.designation_id AND se.type_id = 1
         LEFT JOIN `mis`.service s ON e.service_id = s.id
         WHERE e.employee_status_id = 1
         ORDER BY s.id;
@@ -18,7 +20,10 @@ class ListHrUserActionServiceModel {
     long id
     long version
     String login_id
+    String employee_id
     String employee_name
+    String designation
+    String official_email
     String password
     String service
 

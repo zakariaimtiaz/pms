@@ -10,7 +10,7 @@
 </script>
 
 <script language="javascript">
-    var gridService, dataSource, serviceModel,dropDownServiceCategory;
+    var gridService, dataSource, serviceModel,dropDownServiceCategory,dropDownDepartmentHead;
 
     $(document).ready(function () {
         onLoadServicePage();
@@ -98,6 +98,7 @@
     }
 
     function resetForm() {
+        $('#departmentHeadId').val('');
         clearForm($("#serviceForm"), $('#categoryId'));
         initObservable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
@@ -122,6 +123,8 @@
                         name: { type: "string" },
                         categoryId: { type: "number" },
                         categoryName: { type: "string" },
+                        contactEmail: { type: "string" },
+                        departmentHeadId: { type: "string" },
                         departmentHead: { type: "string" },
                         shortName: { type: "string" },
                         sequence: { type: "number" }
@@ -159,6 +162,7 @@
                 {field: "name", title: "Central Service/Sector", width: 180, sortable: false, filterable: kendoCommonFilterable(97),
                 template:"#=name # (#= shortName#)"},
                 {field: "departmentHead", title: "Department Head", width: 100, sortable: false, filterable: kendoCommonFilterable()},
+                {field: "contactEmail", title: "Notify Email", width: 100, sortable: false, filterable: kendoCommonFilterable()},
                 {field: "sequence", title: "Sequence", width: 30, sortable: false, filterable: false}
             ],
             filterable: {
@@ -179,7 +183,7 @@
                         sequence: "",
                         name: "",
                         shortName: "",
-                        departmentHead: "",
+                        departmentHeadId: "",
                         categoryId: ""
                     }
                 }

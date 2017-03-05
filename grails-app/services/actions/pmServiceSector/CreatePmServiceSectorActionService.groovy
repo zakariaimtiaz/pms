@@ -3,6 +3,7 @@ package actions.pmServiceSector
 import com.model.ListPmServiceSectorActionServiceModel
 import com.pms.PmServiceSector
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
@@ -104,9 +105,20 @@ class CreatePmServiceSectorActionService extends BaseService implements ActionSe
      * @return -new PmServiceSector object
      */
     private PmServiceSector buildObject(Map parameterMap) {
+        def user = userAllInformation(parameterMap.departmentHeadId.toString())
         PmServiceSector service = new PmServiceSector(parameterMap)
         service.staticName = service.name.toUpperCase()
         service.categoryId = Long.parseLong(parameterMap.categoryId.toString())
+        service.departmentHeadId = user?.login_id
+        service.departmentHead = user?.employee_name
+        service.contactDesignation = user?.designation
+        service.contactEmail = user?.official_email
         return service
+    }
+    private GroovyRowResult userAllInformation(String employee_id){
+        String query= """
+            SELECT * FROM list_hr_user_action_service_model WHERE login_id = ${employee_id}
+        """
+        return executeSelectSql(query)[0]
     }
 }

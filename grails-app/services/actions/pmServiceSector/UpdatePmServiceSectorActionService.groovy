@@ -1,9 +1,11 @@
 package actions.pmServiceSector
 
+import com.model.ListHrUserActionServiceModel
 import com.model.ListPmServiceSectorActionServiceModel
 import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
@@ -92,7 +94,8 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
         return params
     }
 
-    private static PmServiceSector buildObject(Map parameterMap, PmServiceSector oldDepartment) {
+    private PmServiceSector buildObject(Map parameterMap, PmServiceSector oldDepartment) {
+        GroovyRowResult user = userAllInformation(parameterMap.departmentHeadId.toString())
         PmServiceSector service = new PmServiceSector(parameterMap)
         if(!service.departmentHead.equals(oldDepartment.departmentHead)){
             List<SecUser> lstUser = SecUser.findAllByServiceId(oldDepartment.id)
@@ -106,6 +109,17 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
         oldDepartment.shortName = service.shortName
         oldDepartment.departmentHead = service.departmentHead
         oldDepartment.categoryId = Long.parseLong(parameterMap.categoryId.toString())
+        oldDepartment.departmentHeadId = user?.login_id
+        oldDepartment.departmentHead = user?.employee_name
+        oldDepartment.contactDesignation = user?.designation
+        oldDepartment.contactEmail = user?.official_email
         return oldDepartment
+    }
+
+    private GroovyRowResult userAllInformation(String employee_id){
+        String query= """
+            SELECT * FROM list_hr_user_action_service_model WHERE login_id = ${employee_id}
+        """
+        return executeSelectSql(query)[0]
     }
 }

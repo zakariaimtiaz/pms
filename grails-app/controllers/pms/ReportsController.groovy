@@ -8,9 +8,11 @@ import actions.reports.monthly.DownloadMonthlySPActionService
 import actions.reports.monthly.ListSpMonthlyPlanActionService
 import actions.reports.yearly.DownloadYearlySPActionService
 import actions.reports.yearly.ListYearlySPActionService
+import com.pms.PmMcrsLog
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
+import pms.utility.DateUtility
 import service.PmActionsService
 
 class ReportsController  extends BaseController  {
@@ -58,9 +60,25 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isHOD = baseService.isUserHOD(user.id)
+
+        Long month=1
+        Long year=1900
+        String submissionDate=""
+        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${user.serviceId}'  AND isSubmitted=True ")
+        if(d[0]) {
+            try {
+                Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,user.serviceId).month+1
+                year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,user.serviceId).year
+                submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
+
+            }catch(Exception ex){}
+        }
+
         render(view: "/reports/mcrs/show", model: [isSysAdmin:isSysAdmin,
                                                    isTopMan: isTopMan,isHOD: isHOD,
-                                                   serviceId:user.serviceId])
+                                                   serviceId:user.serviceId,
+                                                   submissionDate:submissionDate])
     }
     def listMcrs() {
         renderOutput(listMCRSActionService,params)

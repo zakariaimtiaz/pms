@@ -113,6 +113,19 @@ log4j.main = {
             'net.sf.ehcache.hibernate'
 }
 
+// Gmail settings
+grails {
+    mail {
+        host = "smtp.gmail.com"
+        port = 465
+        username = "info.friendship.bd@gmail.com"
+        password = "friendshipbd2016"
+        props = ["mail.smtp.auth":"true",
+                 "mail.smtp.socketFactory.port":"465",
+                 "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+                 "mail.smtp.socketFactory.fallback":"false"]
+    }
+}
 //grails.serverURL = "http://localhost:8081/${appName}"
 
 // Added by the Spring Security Core plugin:

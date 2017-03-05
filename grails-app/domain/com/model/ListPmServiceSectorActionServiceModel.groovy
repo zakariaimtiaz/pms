@@ -7,7 +7,7 @@ class ListPmServiceSectorActionServiceModel {
         DROP TABLE IF EXISTS list_pm_service_sector_action_service_model;
         CREATE OR REPLACE VIEW list_pm_service_sector_action_service_model AS
         SELECT d.id, d.version, d.name, d.short_name, d.category_id , sc.name AS category_name,d.sequence,
-        d.department_head,is_in_sp
+        d.department_head_id,d.department_head,d.contact_designation,d.contact_email,is_in_sp
         FROM pm_service_sector d
         LEFT JOIN service_category sc ON sc.id = d.category_id
         ORDER BY d.sequence ASC;
@@ -22,6 +22,9 @@ class ListPmServiceSectorActionServiceModel {
     String departmentHead
     boolean isInSp
     float sequence
+    String departmentHeadId
+    String contactDesignation
+    String contactEmail
 
     static constraints = {
     }

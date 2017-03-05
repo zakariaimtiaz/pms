@@ -89,18 +89,18 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         }
 
         String query = """
-                SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+                SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
-                 ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,ai.is_preference,
+                 ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
 
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 FLOOR(SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=@curmon THEN 1 ELSE 0 END))
+                 ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
                  SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 FLOOR(SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)/SUM(CASE WHEN  cm.sl_index<=@curmon THEN 1 ELSE 0 END))
+                 ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
                  SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
                  CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
@@ -108,6 +108,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
+                 (SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE('${currentMonth}'))) ind_remarks,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
 
@@ -130,7 +131,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
 
     private List<GroovyRowResult> buildResultListAdditional(long serviceId,int year, int month) {
         String query = """
-                SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+                SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks remarks,ai.target,
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,

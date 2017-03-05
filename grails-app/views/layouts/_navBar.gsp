@@ -45,12 +45,12 @@
                                     <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Annual SP</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/reports/showSpMonthlyPlan">
+%{--                            <sec:access url="/reports/showSpMonthlyPlan">
                                 <li>
                                     <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly SP
                                     </a>
                                 </li>
-                            </sec:access>
+                            </sec:access>--}%
                             <sec:access url="/reports/showMcrs">
                                 <li>
                                     <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>

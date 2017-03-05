@@ -23,14 +23,16 @@
             start: "year",
             depth: "year"
         }).data("kendoDatePicker");
-        var value='${submissionDate}';
-
-        if(value!='') {
-            start.min(value);
-            $('#month').val(moment(value).format('MMMM YYYY'));
-        }
-        else{
-            start.min(new Date(moment(new Date()).startOf('year')))
+        var submissionDate='${submissionDate}';
+        var nextMonth = moment(submissionDate).add(1, 'months');
+        if(submissionDate!='') {
+            var st = new Date(moment(nextMonth));
+            start.min(submissionDate);
+            start.max(st);
+            $('#month').val(moment(submissionDate).format('MMMM YYYY'));
+        } else{
+            start.min(new Date(moment(new Date()).startOf('year')));
+            start.max(new Date(moment(new Date()).endOf('year')));
             $('#month').val(str);
         }
         initializeForm($("#detailsForm"), onSubmitForm);
@@ -100,7 +102,6 @@
                 {
                     field: "note",
                     title: "Remarks",
-                    template: "#=trimTextForKendo(note,70)#",
                     width: 120,
                     sortable: false,
                     filterable: false
@@ -109,15 +110,6 @@
         });
         gridAction = $("#grid").data("kendoGrid");
     }
-    $("#grid").kendoTooltip({
-        filter: "td:nth-child(9)",
-        width: 300,
-        position: "top",
-        content: function (e) {
-            var dataItem = $("#grid").data("kendoGrid").dataItem(e.target.closest("tr"));
-            return dataItem.note;
-        }
-    }).data("kendoTooltip");
 
     function actionsDetails(e) {
         $("<div/>").appendTo(e.detailCell).kendoGrid({
@@ -185,21 +177,13 @@
             columns: [
                 {field: "indicator", title: "Indicator", width: "220px"},
                 {
-                    field: "target", title: "Total Target", width: "100px", attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}, template: "#=formatIndicator(indicator_type,target)#"
-                },
-                {
-                    field: "total_achievement", title: "Total</br> Achievement", width: "80px",
-                    template: "#=formatIndicator(indicator_type,total_achievement)#",
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
-                },
-                {
-                    field: "monthly_target", title: "Target</br> (This month)", width: "80px",
+                    field: "monthly_target", title: "Target", width: "80px",
                     template: "#=formatIndicator(indicator_type,monthly_target)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "achievement", title: "Achievement</br> (This month)", width: "100px", format: "{0:n0}",
+                    field: "achievement", title: "Achievement", width: "100px", format: "{0:n0}",
+                    template: "#=formatIndicator(indicator_type,achievement)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "remarks", title: "Remarks", width: "280px",editor: textEditorInitialize },

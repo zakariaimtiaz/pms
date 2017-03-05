@@ -49,16 +49,21 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-optional" for="departmentHead">Department Head:</label>
+                                <label class="col-md-3 control-label label-optional" for="departmentHeadId">Department Head:</label>
 
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" id="departmentHead" name="departmentHead"
-                                           placeholder="Department Head" tabindex="2"
-                                           data-bind="value: service.departmentHead"/>
+                                    <app:dropDownEmployee
+                                            data_model_name="dropDownDepartmentHead"
+                                            placeholder="Department Head" is_for_login="true"
+                                            required="false" class="kendo-drop-down"
+                                            sort_by_department="true" tabindex="3"
+                                            id="departmentHeadId" name="departmentHeadId"
+                                            data-bind="value: service.departmentHeadId">
+                                    </app:dropDownEmployee>
                                 </div>
 
                                 <div class="col-md-3 pull-left">
-                                    <span class="k-invalid-msg" data-for="departmentHead"></span>
+                                    <span class="k-invalid-msg" data-for="departmentHeadId"></span>
                                 </div>
                             </div>
                         </div>

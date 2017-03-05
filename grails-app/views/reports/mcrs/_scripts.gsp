@@ -17,15 +17,18 @@
             isApplicable = true;
         }
         var str = moment().format('MMMM YYYY');
-
+        var submissionDate='${submissionDate}';
         $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year"
         }).data("kendoDatePicker");
-        $('#month').val(str);
-
+        if(submissionDate!='') {
+            $('#month').val(moment(submissionDate).format('MMMM YYYY'));
+        }else{
+            $('#month').val(str);
+        }
         $('#indicatorType').kendoDropDownList({
             dataSource: {
                 data: ["All Indicator", "Action Indicator", "Preferred Indicator"]
@@ -47,6 +50,155 @@
             $("#reset").hide();
         }
     }
+    function initGrid() {
+        $("#gridMRP").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false,
+                        dataType: "json",
+                        type: "post"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "list",
+                    model: {
+                        id: "indicator_id",    // have to set id otherwise remove row by clicking cancel
+                        fields: {
+                            id: {editable: false, type: "number"},
+                            serviceId: {editable: false, type: "number"},
+                            indicator_id: {editable: false, type: "number"},
+                            sequence: {editable: false,type: "string"},
+                            actions: {editable: false,type: "string"},
+                            start: {editable: false,type: "date"},
+                            end: {editable: false,type: "date"},
+                            is_preference: {editable: true,type: "boolean"},
+                            goal: {editable: false, type: "string"},
+                            indicator: {editable: false, type: "string"},
+                            tot_tar: {editable: false, type: "number"},
+                            mon_tar: {editable: false, type: "string"},
+                            mon_acv: {editable: false, type: "string"},
+                            cum_tar: {editable: false, type: "string"},
+                            cum_acv: {editable: false, type: "string"},
+                            remarks: {editable: false, type: "string"},
+                            ind_remarks: {editable: false, type: "string"},
+                            responsiblePerson: {editable: false, type: "string"},
+                            supportDepartment: {editable: false, type: "string"},
+                            project: {editable: false, type: "string"}
+                        }
+                    }
+                },
+                serverPaging: true,
+                serverSorting: true
+            },
+            autoBind: false,
+            height: getGridHeightKendo() - 50,
+            sortable: false,
+            pageable: false,
+            columns: [
+                {
+                    field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template:"#=omitRepeated1(sequence,sequence)#"
+                },
+                {field: "actions", title: "Action", width: 250, sortable: false, filterable: false,
+                    template:"#=omitRepeated2(sequence,actions)#"
+                },
+                {
+                    field: "start", title: "Start Date", width: 80, sortable: false, filterable: false,
+                    template: "#=omitRepeated3(sequence,kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM'))#"
+                },
+                {
+                    field: "end", title: "End Date", width: 80, sortable: false, filterable: false,
+                    template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
+                },
+                {
+                    field: "is_preference",title: " ",width: 30,
+                    template: '<input type="checkbox" class="chkbx" #= is_preference ? "checked=checked" : "" #></input>'
+                },
+                {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
+                {field: "tot_tar", title: "Total<br/>Target", width: 80, sortable: false, filterable: false,
+                    headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
+                    template:"#=formatIndicator(indicator_type,tot_tar)#"
+                },
+                {
+                    title: "Cumulative", headerAttributes: {style: setAlignCenter()},
+                    columns: [
+                        {
+                            field: "cum_tar", title: "Target",
+                            width: 70, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=formatIndicator(indicator_type,cum_tar)#"
+                        },
+                        {
+                            field: "cum_acv", title: "Achievement",
+                            width: 90, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=formatIndicator(indicator_type,cum_acv)#"
+                        },
+                        {
+                            field: "cum_acv", title: "Variance",
+                            width: 70, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=calculateVariance(cum_tar,cum_acv)#"
+                        }
+                    ]
+                },
+                {
+                    title: "Monthly", headerAttributes: {style: setAlignCenter()},
+                    columns: [
+                        {
+                            field: "mon_tar", title: "Target",
+                            width: 70, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=formatIndicator(indicator_type,mon_tar)#"
+                        },
+                        {
+                            field: "mon_acv", title: "Achievement",
+                            width: 90, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=formatIndicator(indicator_type,mon_acv)#"
+                        },
+                        {
+                            field: "mon_acv", title: "Variance",
+                            width: 70, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignRight()},
+                            attributes: {style: setAlignRight()},
+                            template: "#=calculateVariance(mon_tar,mon_acv)#"
+                        }
+                    ]
+                },
+                {
+                    field: "ind_remarks", title: "Indicator Remarks",
+                    template: "#=trimTextForKendo(ind_remarks,70)#",
+                    width: 200, sortable: false,filterable: false
+                },
+                {
+                    field: "remarks", title: "Action Remarks",
+                    template: "#=trimTextForKendo(omitRepeated8(sequence,remarks),70)#",
+                    width: 200, sortable: false,filterable: false
+                },
+                {field: "responsiblePerson", title: "Responsible Person", width: 200, sortable: false, filterable: false,
+                    template:"#=omitRepeated5(sequence,responsiblePerson)#"
+                },
+                {
+                    field: "supportDepartment", title: "Support Department", width: 150,
+                    sortable: false, filterable: false,template:"#=trimTextForKendo(omitRepeated6(sequence,supportDepartment),50)#"
+                },
+                {field: "project", title: "Project", width: 150, sortable: false, filterable: false,
+                    template:"#=trimTextForKendo(omitRepeated7(sequence,project),50)#"
+                }
+            ],
+            editable: "inline"
+        });
+        gridMRP = $("#gridMRP").data("kendoGrid");
+    }
     function initGridAdditional() {
         $("#gridMRPAddi").kendoGrid({
             dataSource: {
@@ -64,6 +216,7 @@
                         fields: {
                             id: {type: "number"},
                             indicator_id: {type: "number"},
+                            goal: {type: "string"},
                             sequence: {type: "string"},
                             actions: {type: "string"},
                             remarks: {type: "string"},
@@ -116,147 +269,7 @@
         });
         gridMRPAddi = $("#gridMRPAddi").data("kendoGrid");
     }
-    function initGrid() {
-        $("#gridMRP").kendoGrid({
-            dataSource: {
-                transport: {
-                    read: {
-                        url: false,
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                schema: {
-                    type: 'json',
-                    data: "list",
-                    model: {
-                        id: "indicator_id",    // have to set id otherwise remove row by clicking cancel
-                        fields: {
-                            id: {editable: false, type: "number"},
-                            indicator_id: {editable: false, type: "number"},
-                            sequence: {editable: false,type: "string"},
-                            actions: {editable: false,type: "string"},
-                            start: {editable: false,type: "date"},
-                            end: {editable: false,type: "date"},
-                            is_preference: {editable: true,type: "boolean"},
-                            indicator: {editable: false, type: "string"},
-                            tot_tar: {editable: false, type: "number"},
-                            mon_tar: {editable: false, type: "string"},
-                            mon_acv: {editable: false, type: "string"},
-                            cum_tar: {editable: false, type: "string"},
-                            cum_acv: {editable: false, type: "string"},
-                            remarks: {editable: false, type: "string"},
-                            responsiblePerson: {editable: false, type: "string"},
-                            supportDepartment: {editable: false, type: "string"},
-                            project: {editable: false, type: "string"}
-                        }
-                    }
-                },
-                serverPaging: true,
-                serverSorting: true
-            },
-            autoBind: false,
-            height: getGridHeightKendo() - 50,
-            sortable: false,
-            pageable: false,
-            columns: [
-                {
-                    field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=omitRepeated1(sequence,sequence)#"
-                },
-                {field: "actions", title: "Action", width: 250, sortable: false, filterable: false,
-                    template:"#=omitRepeated2(sequence,actions)#"
-                },
-                {
-                    field: "start", title: "Start Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated3(sequence,kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM'))#"
-                },
-                {
-                    field: "end", title: "End Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
-                },
-                {
-                    field: "is_preference",title: " ",width: 30,
-                    template: '<input type="checkbox" class="chkbx" #= is_preference ? "checked=checked" : "" #></input>'
-                },
-                {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
-                {field: "tot_tar", title: "Total<br/>Target", width: 80, sortable: false, filterable: false,
-                    headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
-                    template:"#=formatIndicator(indicator_type,tot_tar)#"
-                },
-                {
-                    title: "Monthly", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "mon_tar", title: "Target",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,mon_tar)#"
-                        },
-                        {
-                            field: "mon_acv", title: "Achievement",
-                            width: 90, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,mon_acv)#"
-                        },
-                        {
-                            field: "mon_acv", title: "Variance",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=calculateVariance(mon_tar,mon_acv)#"
-                        }
-                    ]
-                },
-                {
-                    title: "Cumulative", headerAttributes: {style: setAlignCenter()},
-                    columns: [
-                        {
-                            field: "cum_tar", title: "Target",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,cum_tar)#"
-                        },
-                        {
-                            field: "cum_acv", title: "Achievement",
-                            width: 90, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=formatIndicator(indicator_type,cum_acv)#"
-                        },
-                        {
-                            field: "cum_acv", title: "Variance",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
-                            template: "#=calculateVariance(cum_tar,cum_acv)#"
-                        }
-                    ]
-                },
-                {
-                    field: "remarks", title: "Remarks",
-                    template: "#=trimTextForKendo(omitRepeated8(sequence,remarks),70)#",
-                    width: 200, sortable: false,filterable: false
-                },
-                {field: "responsiblePerson", title: "Responsible Person", width: 200, sortable: false, filterable: false,
-                    template:"#=omitRepeated5(sequence,responsiblePerson)#"
-                },
-                {
-                    field: "supportDepartment", title: "Support Department", width: 150,
-                    sortable: false, filterable: false,template:"#=trimTextForKendo(omitRepeated6(sequence,supportDepartment),50)#"
-                },
-                {field: "project", title: "Project", width: 150, sortable: false, filterable: false,
-                    template:"#=trimTextForKendo(omitRepeated7(sequence,project),50)#"
-                }
-            ],
-            editable: "inline"
-        });
-        gridMRP = $("#gridMRP").data("kendoGrid");
-    }
+
     $("#gridMRP .k-grid-content").on("change", "input.chkbx", function(e) {
         var grid = $("#gridMRP").data("kendoGrid"),
                 dataItem = grid.dataItem($(e.target).closest("tr"));
@@ -328,10 +341,8 @@
                 $('#tableData').html(data.tableHtml);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.info('error');
             },
             complete: function (XMLHttpRequest, textStatus) {
-                console.info('complete');
             }
 
         });
@@ -364,6 +375,7 @@
             return dataItem.remarks;
         }
     }).data("kendoTooltip");
+
     $("#gridMRP").kendoTooltip({
         filter: "td:nth-child(1)",
         width: 300,
@@ -375,14 +387,14 @@
     }).data("kendoTooltip");
     $("#gridMRP").kendoTooltip({
         show: function(e){
-            if(this.content.text().length > 3){
+            if(this.content.text().length > 70){
                 this.content.parent().css("visibility", "visible");
             }
         },
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(8)",
+        filter: "td:nth-child(14)",
         width: 300,
         position: "top",
         content: function(e){
@@ -399,7 +411,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(14)",
+        filter: "td:nth-child(15)",
         width: 300,
         position: "top",
         content: function(e){
@@ -417,7 +429,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(16)",
+        filter: "td:nth-child(17)",
         width: 300,
         position: "top",
         content: function(e){
@@ -434,7 +446,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(17)",
+        filter: "td:nth-child(18)",
         width: 300,
         position: "top",
         content: function(e){

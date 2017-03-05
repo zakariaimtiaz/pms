@@ -10,7 +10,10 @@ class PmServiceSector {
     boolean isDisplayble = true
     boolean isInSp = true
     String staticName
+    String departmentHeadId
     String departmentHead
+    String contactDesignation
+    String contactEmail
 
     static constraints = {
         staticName(nullable: true)
