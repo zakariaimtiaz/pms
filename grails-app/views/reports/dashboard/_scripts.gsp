@@ -22,6 +22,11 @@
             change: populateKendoChart
         }).data("kendoDatePicker");
         $('#month').val(str);
+
+        if(!${isSysAdmin} && !${isTopMan}){
+            dropDownService.value(${serviceId});
+            dropDownService.readonly(true);
+        }
         defaultPageTile("Ed's Dashboard", '/reports/showEdDashBoard');
     }
     function activaTab(tab) {

@@ -128,7 +128,12 @@ class ReportsController  extends BaseController  {
 
     //################## Dashboard Start ###########################
     def showEdDashBoard() {
-        render(view: "/reports/dashboard/show")
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        render(view: "/reports/dashboard/show", model: [isSysAdmin:isSysAdmin,
+                                                        isTopMan: isTopMan,
+                                                        serviceId:user.serviceId])
     }
     def listEdDashBoard() {
         renderOutput(listEdDashBoardActionService,params)
