@@ -125,7 +125,7 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
             public void run() {
                 mailService.sendMail {
                     to "${email}"
-                    from "support.mis@friendship-bd.org"
+                    from "sp.notification@friendship-bd.org"
                     subject "MCRS submission"
                     html (body)
                 }

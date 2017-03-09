@@ -60,8 +60,8 @@ class ArchiveTablesJob {
         Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
-                    to "imtiaz@friendship-bd.org"
-                    from "support.mis@friendship-bd.org"
+                    to "${email}"
+                    from "sp.notification@friendship-bd.org"
                     subject "MCRS submission"
                     html (body)
                 }
@@ -96,7 +96,7 @@ class ArchiveTablesJob {
             public void run() {
                 mailService.sendMail {
                     to "${email}"
-                    from "support.mis@friendship-bd.org"
+                    from "sp.notification@friendship-bd.org"
                     subject "MCRS deadline exceeds"
                     html (body)
                 }
