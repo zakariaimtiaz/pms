@@ -4,7 +4,6 @@ import com.pms.PmMcrsLog
 import com.pms.PmServiceSector
 import pms.utility.DateUtility
 
-
 class ArchiveTablesJob {
     def mailService
 
@@ -28,77 +27,78 @@ class ArchiveTablesJob {
             PmServiceSector sc = PmServiceSector.findByIdAndIsInSp(lstLog[i].serviceId, true)
             if (currentDay + 3 == deadlineDay && sc && !lstLog[i].isSubmitted) {
                 //send mail 3 days before deadline
-//                sendMail(DateUtility.getDateForUI(lstLog[i].deadLine), sc.departmentHead, sc.contactDesignation, sc.name, sc.contactEmail)
+                sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine))
             }
             if (deadlineDay == currentDay + 1 && sc && !lstLog[i].isSubmitted) {
                 //send mail 1 day after deadline
-                //sendMail2(DateUtility.getDateForUI(lstLog[i].deadLine), sc.departmentHead, sc.contactDesignation, sc.name, sc.contactEmail)
+                sendMail2(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine))
             }
         }
     }
 
-    private void sendMail(String deadline, String name, String designation, String department, String email) {
-        String beforeDeadLine = """
+    private String sendMail(String user,String email, String deadline) {
+        String body = """
         <div>
-            Dear ${name},</b>
-            ${designation},</b>
-            ${department}</b>
-
-            This is here-by notify that MCRS submission deadline is ${deadline}.
-            As only 3 days remaining for submission, this is a general reminder for MCRS submission.</b>
-
-            Thanks in advance.</b>
-
-            Regards,</b>
-            Friendship SP Team</b>
-
-            <i>This is an auto-generated email, which does not need reply.</i>
-        </div>
+            <p>
+                Dear ${user}, <br/>
+                Greetings!
+            </p>
+            <p>
+                This is here-by notify that MCRS submission deadline is <strong> ${deadline} </strong>.
+                As only 3 days remaining for submission, this is a general reminder for MCRS submission.
+            </p>
+            <p>
+                Thanks in advance.
+            </p>
+            <p>
+                Regards,<br/>
+                 Friendship SP Team</b>
+            </p>
+            <i>This is an auto-generated email, which does not need reply.<br/></i>
+            </div>
         """
-
         Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
-                    to "${email}"
+                    to "imtiaz@friendship-bd.org"
                     from "support.mis@friendship-bd.org"
-                    subject "Only 3 days remaining to summit MCRS"
-                    html(beforeDeadLine)
+                    subject "MCRS submission"
+                    html (body)
                 }
             }
         }.start();
+        return null
     }
 
-    private void sendMail2(String deadline, String name, String designation, String department, String email) {
-        String afterDeadLine = """
-            <div>
-                <p>
-                    Dear Mr/Mrs ${name},<br/>
-                    ${designation} ,<br/>
-                    ${department}
-                </p>
-                <p>
-                    This is here-by notify that MCRS submission deadline is <b>${deadline}</b>.<br/>
-                    We are very sorry to infor you that you did not submitted your MCRS yet.
-                </p>
-                <p>
-                    Please submit your MCRS as soon as possible.<br/>
-                    Thanks in advance.
-                </p>
-                <p>
-                    Regards,<br/>
-                      Friendship SP Team
-                </p>
-                <i>This is an auto-generated email, which does not need reply.</i>
+    private void sendMail2(String user,String email, String deadline) {
+        String body = """
+        <div>
+            <p>
+                Dear ${user}, <br/>
+                Greetings!
+            </p>
+            <p>
+                This is here-by notify that MCRS submission deadline is <strong>${deadline}</b>.<strong/>
+                We are very sorry to infor you that you did not submitted your MCRS yet.
+            </p>
+            <p>
+                Please submit your MCRS as soon as possible.<br/>
+                Thanks in advance.
+            </p>
+            <p>
+                Regards,<br/>
+                 Friendship SP Team</b>
+            </p>
+            <i>This is an auto-generated email, which does not need reply.<br/></i>
             </div>
         """
-
         Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
                     to "${email}"
                     from "support.mis@friendship-bd.org"
                     subject "MCRS deadline exceeds"
-                    html(afterDeadLine)
+                    html (body)
                 }
             }
         }.start();

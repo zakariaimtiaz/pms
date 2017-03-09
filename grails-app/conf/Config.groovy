@@ -120,7 +120,9 @@ grails {
         port = 25
         username = "support.mis@friendship-bd.org"
         password = "sMis49"
-        props = [ "mail.smtp.auth":"true" ]
+        props = [ "mail.smtp.auth":"true",
+                  "mail.smtp.starttls.enable": "true"
+        ]
     }
 }
 //grails.serverURL = "http://localhost:8081/${appName}"
