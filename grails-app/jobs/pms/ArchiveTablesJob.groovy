@@ -28,7 +28,7 @@ class ArchiveTablesJob {
             PmServiceSector sc = PmServiceSector.findByIdAndIsInSp(lstLog[i].serviceId, true)
             if (currentDay + 3 == deadlineDay && sc && !lstLog[i].isSubmitted) {
                 //send mail 3 days before deadline
-                //sendMail(DateUtility.getDateForUI(lstLog[i].deadLine), sc.departmentHead, sc.contactDesignation, sc.name, sc.contactEmail)
+//                sendMail(DateUtility.getDateForUI(lstLog[i].deadLine), sc.departmentHead, sc.contactDesignation, sc.name, sc.contactEmail)
             }
             if (deadlineDay == currentDay + 1 && sc && !lstLog[i].isSubmitted) {
                 //send mail 1 day after deadline
@@ -39,33 +39,29 @@ class ArchiveTablesJob {
 
     private void sendMail(String deadline, String name, String designation, String department, String email) {
         String beforeDeadLine = """
-            <div>
-                <p>
-                    Dear Mr/Mrs ${name},
-                    ${designation},
-                    ${department}
-                </p>
-                <p>
-                    This is here-by notify that MCRS submission deadline is <b>${deadline}</b>.
-                    As only 3 days remaining for submission, this is a general reminder for MCRS submission.
-                </p>
-                <p>
-                    Thanks in advance.
-                </p>
-                <p>
-                    Regards,
-                    Friendship SP Team
-                </p>
-                <i>This is an auto-generated email, which does not need reply.</i>
-            </div>
+        <div>
+            Dear ${name},</b>
+            ${designation},</b>
+            ${department}</b>
+
+            This is here-by notify that MCRS submission deadline is ${deadline}.
+            As only 3 days remaining for submission, this is a general reminder for MCRS submission.</b>
+
+            Thanks in advance.</b>
+
+            Regards,</b>
+            Friendship SP Team</b>
+
+            <i>This is an auto-generated email, which does not need reply.</i>
+        </div>
         """
 
         Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
-                    to "imtiaz@friendship-bd.org"
-                    from "info.friendship.bd@gmail.com"
-                    subject "MCRS deadline is knocking at the door"
+                    to "${email}"
+                    from "support.mis@friendship-bd.org"
+                    subject "Only 3 days remaining to summit MCRS"
                     html(beforeDeadLine)
                 }
             }
@@ -99,8 +95,8 @@ class ArchiveTablesJob {
         Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
-                    to "imtiaz@friendship-bd.org"
-                    from "info.friendship.bd@gmail.com"
+                    to "${email}"
+                    from "support.mis@friendship-bd.org"
                     subject "MCRS deadline exceeds"
                     html(afterDeadLine)
                 }
