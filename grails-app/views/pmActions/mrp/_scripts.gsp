@@ -167,7 +167,7 @@
                 pageSize: 50,
                 filter: {field: "actionsId", operator: "eq", value: e.data.id}
             },
-            selectable: true,
+            selectable: false,
             sortable: false,
             resizable: false,
             reorderable: false,

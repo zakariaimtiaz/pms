@@ -1,6 +1,7 @@
 package actions.pmMcrsLog
 
 import com.pms.PmMcrsLog
+import com.pms.PmServiceSector
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -36,6 +37,13 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
             pmMcrsLog.submissionDate = DateUtility.getSqlDate(new Date())
             pmMcrsLog.isEditable = Boolean.FALSE
             pmMcrsLog.save()
+            /// send thank you mail
+            PmServiceSector sc = PmServiceSector.read(pmMcrsLog.serviceId)
+            if(pmMcrsLog.deadLine >= pmMcrsLog.submissionDate){
+                sendMail(sc.departmentHead,sc.contactEmail)
+            }else{
+                sendMail2(sc.departmentHead,sc.contactEmail)
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -66,5 +74,63 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
     public Map buildFailureResultForUI(Map result) {
         return result
     }
-
+    private String sendMail(String user,String email) {
+        String body = """
+        <div>
+            <p>
+                Dear ${user}, <br/>
+                Greetings!
+            </p>
+            <p>
+                Thank you very much for submitting MCRS.
+            </p>
+            <p>
+                Regards,<br/>
+                 Friendship SP Team</b>
+            </p>
+            <i>This is an auto-generated email, which does not need reply.<br/></i>
+            </div>
+        """
+        Thread trd = new Thread() {
+            public void run() {
+                mailService.sendMail {
+                    to "${email}"
+                    from "support.mis@friendship-bd.org"
+                    subject "MCRS submission"
+                    html (body)
+                }
+            }
+        }.start();
+        return null
+    }
+    private String sendMail2(String user,String email) {
+        String body = """
+        <div>
+            <p>
+                Dear ${user}, <br/>
+                Greetings!
+            </p>
+            <p>
+                Thank you very much for submitting MCRS.</br>
+                We will appreciate if you submit your MCRS before deadline.
+            </p>
+            <p>
+                Regards,<br/>
+                 Friendship SP Team</b>
+            </p>
+            <i>This is an auto-generated email, which does not need reply.<br/></i>
+            </div>
+        """
+        Thread trd = new Thread() {
+            public void run() {
+                mailService.sendMail {
+                    to "${email}"
+                    from "support.mis@friendship-bd.org"
+                    subject "MCRS submission"
+                    html (body)
+                }
+            }
+        }.start();
+        return null
+    }
 }
