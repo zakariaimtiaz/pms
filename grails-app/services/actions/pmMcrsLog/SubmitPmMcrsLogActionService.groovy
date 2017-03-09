@@ -44,15 +44,15 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
             pmMcrsLog.save()
             /// send thank you mail
             PmServiceSector sc = PmServiceSector.read(pmMcrsLog.serviceId)
-            if(pmMcrsLog.deadLine >= pmMcrsLog.submissionDate){
+            if(DateUtility.getSqlFromDateWithSeconds(pmMcrsLog.submissionDate) <= DateUtility.getSqlFromDateWithSeconds(pmMcrsLog.deadLine)){
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(THANK_YOU_MAIL, true)
                 if(appMail){
-                    sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL,sc.departmentHeadGender)
+                    sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL,sc.departmentHeadGender,pmMcrsLog.deadLine,pmMcrsLog.monthStr,pmMcrsLog.year)
                 }
             }else{
                 AppMail appMail2 = AppMail.findByTransactionCodeAndIsActive(THANK_YOU_MAIL_AFTER_DEADLINE, true)
                 if(appMail2){
-                    sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL_AFTER_DEADLINE,sc.departmentHeadGender)
+                    sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL_AFTER_DEADLINE,sc.departmentHeadGender,pmMcrsLog.deadLine,pmMcrsLog.monthStr,pmMcrsLog.year)
                 }
             }
             return result
@@ -85,11 +85,13 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
     public Map buildFailureResultForUI(Map result) {
         return result
     }
-    private String sendMail(String user,String email,String transactionCode, String genderStr) {
+    private String sendMail(String user,String email,String transactionCode, String genderStr,Date deadLine,String monthStr,int year) {
         AppMail appMail = AppMail.findByTransactionCodeAndIsActive(transactionCode, true)
         String subjectStr = """${appMail.subject}"""
         String mailBody = """${appMail.body}"""
         mailBody = mailBody?.replaceAll("__APP_USER__",user+SINGLE_SPACE+genderStr)
+                            .replaceAll("_MONTH_NAME_",monthStr+SINGLE_SPACE+year)
+                            .replaceAll("__DEADLINE__",DateUtility.getDateForUI(deadLine))
 
         Thread trd = new Thread() {
             public void run() {

@@ -7,7 +7,7 @@
         <li onclick="editAppMail();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
     <sec:access url="/appMail/testAppMail">
-        <li onclick="testAppMail();"><i class="fa fa-envelope-o"></i>Test Mail</li>
+        <li onclick="testAppMail();"><i class="fa fa-envelope-o"></i>Send Mail</li>
     </sec:access>
 </ul>
 </script>

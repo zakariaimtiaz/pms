@@ -29,30 +29,32 @@ class ArchiveTablesJob {
         for (int i = 0; i < lstLog.size(); i++) {
             c.setTime(lstLog[i].deadLine);
             int deadlineDay = c.get(Calendar.DAY_OF_MONTH);
+            String deadline = DateUtility.getDateForUI(lstLog[i].deadLine)
             PmServiceSector sc = PmServiceSector.findByIdAndIsInSp(lstLog[i].serviceId, true)
 
             if (currentDay + 3 == deadlineDay && sc && !lstLog[i].isSubmitted) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
                 //send mail 3 days before deadline
                 if(appMail){
-                    sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine),REMINDER_MAIL_BEFORE_DEADLINE,sc.departmentHeadGender)
+                    sendMail(appMail,sc.departmentHead,sc.contactEmail,deadline,sc.departmentHeadGender,lstLog[i].monthStr,lstLog[i].year)
                 }
             }
             if (deadlineDay + 1 == currentDay && sc && !lstLog[i].isSubmitted) {
-                AppMail appMail2 = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
+                AppMail appMail = AppMail.findByTransactionCodeAndIsActive(WARNING_MAIL_AFTER_DEADLINE, true)
                 //send mail 1 day after deadline
-                if(appMail2){
-                    sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine),WARNING_MAIL_AFTER_DEADLINE,sc.departmentHeadGender)
+                if(appMail){
+                    sendMail(appMail,sc.departmentHead,sc.contactEmail,deadline,sc.departmentHeadGender,lstLog[i].monthStr,lstLog[i].year)
                 }
             }
         }
     }
 
-    public String sendMail(String user,String email, String deadline,String transactionCode,String genderStr) {
-        AppMail appMail = AppMail.findByTransactionCodeAndIsActive(transactionCode, true)
+    public String sendMail(AppMail appMail,String user,String email, String deadline,String genderStr,String monthStr,int year) {
         String subjectStr = """${appMail.subject}"""
         String mailBody = """${appMail.body}"""
-        mailBody = mailBody?.replaceAll("__APP_USER__",user+Tools.SINGLE_SPACE+genderStr)?.replaceAll("__DEADLINE__",deadline)
+        mailBody = mailBody?.replaceAll("__APP_USER__",user+Tools.SINGLE_SPACE+genderStr)
+                            .replaceAll("__DEADLINE__",deadline)
+                            .replaceAll("_MONTH_NAME_",monthStr+Tools.SINGLE_SPACE+year)
 
         Thread trd = new Thread() {
             public void run() {
