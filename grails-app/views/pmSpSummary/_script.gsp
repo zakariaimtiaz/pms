@@ -139,7 +139,7 @@
         });
     }
     function htmlDecode(value) {
-        return value.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+        return value.replaceHtmlEntites();
     }
     function initPmSpSummaryGrid() {
         initDataSource();
@@ -156,6 +156,7 @@
                 buttonCount: 4
             },
             columns: [
+                {field: "service", title: "Service", width: 100, sortable: false, filterable: true},
                 {field: "year", title: "Year", width: 50, sortable: false, filterable: false},
                 {field: "summary", title: "Summary",width: 400, sortable: false, filterable: false,
                 template: "#=htmlDecode(summary)#"}

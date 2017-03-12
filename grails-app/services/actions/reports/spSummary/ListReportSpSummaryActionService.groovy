@@ -1,4 +1,4 @@
-package actions.pmSpSummary
+package actions.reports.spSummary
 
 import com.model.ListPmSpSummaryActionServiceModel
 import grails.transaction.Transactional
@@ -7,7 +7,7 @@ import pms.ActionServiceIntf
 import pms.BaseService
 
 @Transactional
-class ListPmSpSummaryActionService extends BaseService implements ActionServiceIntf {
+class ListReportSpSummaryActionService  extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -34,9 +34,22 @@ class ListPmSpSummaryActionService extends BaseService implements ActionServiceI
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            List<Long> lst = currentUserDepartmentList()
+            long serviceId = Long.parseLong(result.serviceId.toString())
+            int year = Integer.parseInt(result.year.toString())
+            if(serviceId == 0){
+                List<Long> lst = currentUserDepartmentList()
+                Closure additionalParam = {
+                    'eq'('year', year)
+                    'in'('serviceId', lst)
+                }
+                Map resultMap = super.getSearchResult(result, ListPmSpSummaryActionServiceModel.class,additionalParam)
+                result.put(LIST, resultMap.list)
+                result.put(COUNT, resultMap.count)
+                return result
+            }
             Closure additionalParam = {
-                'in'('serviceId', lst)
+                'eq'('serviceId', serviceId)
+                'eq'('year', year)
             }
             Map resultMap = super.getSearchResult(result, ListPmSpSummaryActionServiceModel.class,additionalParam)
             result.put(LIST, resultMap.list)

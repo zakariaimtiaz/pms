@@ -245,6 +245,14 @@ String.prototype.isEmpty = function () {
         return true;
     }
 }
+String.prototype.replaceHtmlEntites = function() {
+    var s = this;
+    var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+    var translate = {"nbsp": " ","amp" : "&","quot": "\"","lt"  : "<","gt"  : ">"};
+    return ( s.replace(translate_re, function(match, entity) {
+        return translate[entity];
+    }) );
+};
 
 function isEmpty(val) {
     var val2;

@@ -18,14 +18,16 @@ class AppMail {
 
     static mapping = {
         body    sqlType: 'text'
+        recipients    sqlType: 'text'
     }
 
     static constraints = {
         body     size: 2..15000
+        recipients     size: 2..15000
+        recipients(nullable: true)
         controllerName(nullable: true)
         actionName(nullable: true)
         roleIds(nullable: true)
-        recipients(nullable: true)
     }
 
 }

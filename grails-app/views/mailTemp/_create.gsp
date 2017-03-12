@@ -46,7 +46,7 @@
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" id="recipients" name="recipients" tabindex="2"
                                            data-bind="value: appMail.recipients"
-                                           placeholder="Comma separated valid email id" maxlength="255"/>
+                                           placeholder="Comma separated valid email id"/>
                                 </div>
                             </div>
                             <div class="form-group">

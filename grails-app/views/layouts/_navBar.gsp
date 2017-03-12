@@ -61,6 +61,11 @@
                                     <a href="#reports/showEdDashBoard"><i class="fa fa-object-group"></i>&nbsp;ED's Dashboard</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/reports/showSpSummary">
+                                <li>
+                                    <a href="#reports/showSpSummary"><i class="fa fa-keyboard-o"></i>&nbsp;SP Summary</a>
+                                </li>
+                            </sec:access>
                             <sec:ifAnyUrls urls="/reports/showSpStatus,reports/showMcrsStatus">
                                 <li>
                                     <a href="#"><i class="fa fa-bar-chart-o"></i>&nbsp;Submission<span

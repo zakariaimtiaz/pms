@@ -6,6 +6,8 @@ import actions.reports.mcrs.DownloadMCRSActionService
 import actions.reports.mcrs.ListMCRSActionService
 import actions.reports.monthly.DownloadMonthlySPActionService
 import actions.reports.monthly.ListSpMonthlyPlanActionService
+import actions.reports.spSummary.DownloadSpSummaryActionService
+import actions.reports.spSummary.ListReportSpSummaryActionService
 import actions.reports.yearly.DownloadYearlySPActionService
 import actions.reports.yearly.ListYearlySPActionService
 import com.pms.PmMcrsLog
@@ -30,6 +32,9 @@ class ReportsController  extends BaseController  {
 
     ListEdDashBoardActionService listEdDashBoardActionService
     DownloadEdDashBoardActionService downloadEdDashBoardActionService
+
+    ListReportSpSummaryActionService listReportSpSummaryActionService
+    DownloadSpSummaryActionService downloadSpSummaryActionService
 
     static allowedMethods = [
             showSpStatus: "POST", showMcrsStatus: "POST", showMcrs: "POST", showSpMonthlyPlan: "POST", showYearlySP: "POST"
@@ -140,6 +145,24 @@ class ReportsController  extends BaseController  {
     }
     def downloadEdDashBoard() {
         Map result = (Map) getReportResponse(downloadEdDashBoardActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    //################## Dashboard End   ###########################
+
+    //################## SP Summary ###########################
+    def showSpSummary() {
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        render(view: "/reports/spSummary/show", model: [isSysAdmin:isSysAdmin,
+                                                        isTopMan: isTopMan,
+                                                        serviceId:user.serviceId])
+    }
+    def listSpSummary() {
+        renderOutput(listReportSpSummaryActionService,params)
+    }
+    def downloadSpSummary() {
+        Map result = (Map) getReportResponse(downloadSpSummaryActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     //################## Dashboard End   ###########################
