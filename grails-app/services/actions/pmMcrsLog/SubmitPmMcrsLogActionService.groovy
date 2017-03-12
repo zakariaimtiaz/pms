@@ -46,9 +46,15 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
             /// send thank you mail
             PmServiceSector sc = PmServiceSector.read(pmMcrsLog.serviceId)
             if(pmMcrsLog.deadLine >= pmMcrsLog.submissionDate){
-                sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL,sc.departmentHeadGender)
+                AppMail appMail = AppMail.findByTransactionCodeAndIsActive(THANK_YOU_MAIL, true)
+                if(appMail){
+                    sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL,sc.departmentHeadGender)
+                }
             }else{
-                sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL_AFTER_DEADLINE,sc.departmentHeadGender)
+                AppMail appMail2 = AppMail.findByTransactionCodeAndIsActive(THANK_YOU_MAIL_AFTER_DEADLINE, true)
+                if(appMail2){
+                    sendMail(sc.departmentHead,sc.contactEmail, THANK_YOU_MAIL_AFTER_DEADLINE,sc.departmentHeadGender)
+                }
             }
             return result
         } catch (Exception ex) {

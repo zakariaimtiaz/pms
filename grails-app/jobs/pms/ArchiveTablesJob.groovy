@@ -32,12 +32,18 @@ class ArchiveTablesJob {
             PmServiceSector sc = PmServiceSector.findByIdAndIsInSp(lstLog[i].serviceId, true)
 
             if (currentDay + 3 == deadlineDay && sc && !lstLog[i].isSubmitted) {
+                AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
                 //send mail 3 days before deadline
-                sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine),REMINDER_MAIL_BEFORE_DEADLINE,sc.departmentHeadGender)
+                if(appMail){
+                    sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine),REMINDER_MAIL_BEFORE_DEADLINE,sc.departmentHeadGender)
+                }
             }
             if (deadlineDay + 1 == currentDay && sc && !lstLog[i].isSubmitted) {
+                AppMail appMail2 = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
                 //send mail 1 day after deadline
-                sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine),WARNING_MAIL_AFTER_DEADLINE,sc.departmentHeadGender)
+                if(appMail2){
+                    sendMail(sc.departmentHead,sc.contactEmail,DateUtility.getDateForUI(lstLog[i].deadLine),WARNING_MAIL_AFTER_DEADLINE,sc.departmentHeadGender)
+                }
             }
         }
     }
