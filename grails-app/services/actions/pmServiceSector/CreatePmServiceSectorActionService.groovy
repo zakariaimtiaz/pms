@@ -111,6 +111,7 @@ class CreatePmServiceSectorActionService extends BaseService implements ActionSe
         service.categoryId = Long.parseLong(parameterMap.categoryId.toString())
         service.departmentHeadId = user?.login_id
         service.departmentHead = user?.employee_name
+        service.departmentHeadGender = user?.gender_str
         service.contactDesignation = user?.designation
         service.contactEmail = user?.official_email
         return service

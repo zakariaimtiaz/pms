@@ -111,6 +111,7 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
         oldDepartment.categoryId = Long.parseLong(parameterMap.categoryId.toString())
         oldDepartment.departmentHeadId = user?.login_id
         oldDepartment.departmentHead = user?.employee_name
+        oldDepartment.departmentHeadGender = user?.gender_str
         oldDepartment.contactDesignation = user?.designation
         oldDepartment.contactEmail = user?.official_email
         return oldDepartment

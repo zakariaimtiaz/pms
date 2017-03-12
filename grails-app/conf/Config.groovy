@@ -119,7 +119,7 @@ grails {
         host = "mail.friendship-bd.org"
         port = 25
         username = "sp.notification@friendship-bd.org"
-        password = "spnOT49 "
+        password = "spnOT49"
         props = [ "mail.smtp.auth":"true",
                   "mail.smtp.starttls.enable": "true"
         ]

@@ -12,11 +12,13 @@ class PmServiceSector {
     String staticName
     String departmentHeadId
     String departmentHead
+    String departmentHeadGender
     String contactDesignation
     String contactEmail
 
     static constraints = {
         staticName(nullable: true)
         departmentHead(nullable: true)
+        departmentHeadGender(nullable: true)
     }
 }

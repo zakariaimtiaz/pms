@@ -272,7 +272,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Action Remarks]]></text>
+				<text><![CDATA[Indicator Remarks]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="722" y="55" width="110" height="30" uuid="a14c543c-4c90-4467-a27e-2f7bf5f32ec6"/>
@@ -285,7 +285,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Indicator Remarks]]></text>
+				<text><![CDATA[Action Remarks]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

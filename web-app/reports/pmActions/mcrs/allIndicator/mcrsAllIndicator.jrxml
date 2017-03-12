@@ -384,7 +384,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 		</band>
-		<band height="20">
+		<band height="22">
 			<subreport>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="09a20222-6b61-44fb-b320-824a77b97d5a"/>
 				<subreportParameter name="SUBREPORT_DIR">

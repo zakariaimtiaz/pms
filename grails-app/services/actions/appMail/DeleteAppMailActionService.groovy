@@ -1,45 +1,32 @@
-package actions.secuser
+package actions.appMail
 
-import com.pms.SecUser
-import grails.transaction.Transactional
-import org.apache.log4j.Logger
+import com.pms.AppMail
+import org.springframework.transaction.annotation.Transactional
 import pms.ActionServiceIntf
 import pms.BaseService
-import service.SecUserService
 
-@Transactional
-class DeleteSecUserActionService extends BaseService implements ActionServiceIntf {
+class DeleteAppMailActionService extends BaseService implements ActionServiceIntf {
 
-    private Logger log = Logger.getLogger(getClass())
-
-    private static final String DELETE_SUCCESS_MESSAGE = "User has been deleted successfully"
-    private static final String NOT_FOUND = "Selected user does not exits"
-    private static final String ASSOCIATION_EXISTS = "Selected user is associated with roles"
-    private static final String SEC_USER = "user"
-
-
-    SecUserService secUserService
+    private static final String DELETE_SUCCESS_MESSAGE = "Template has been deleted successfully"
+    private static final String NOT_FOUND = "Template does not exits"
+    private static final String APP_MAIL = "appMail"
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         long userId = Long.parseLong(params.id)
-        SecUser user = secUserService.read(userId)
-        if(!user){
+        AppMail appMail = AppMail.read(userId)
+        if(!appMail){
             return super.setError(params, NOT_FOUND)
         }
-        int count = secUserService.countByUsernameIlike(user.username)
-        if(count > 0){
-            return super.setError(params, ASSOCIATION_EXISTS)
-        }
-        params.put(SEC_USER, user)
+        params.put(APP_MAIL, appMail)
         return params
     }
 
     @Transactional
     public Map execute(Map result) {
         try {
-            SecUser user = (SecUser) result.get(SEC_USER)
-            secUserService.delete(user)
+            AppMail appMail = (AppMail) result.get(APP_MAIL)
+            appMail.delete()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
