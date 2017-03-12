@@ -137,8 +137,8 @@ class CreatePmAdditionalActionsActionService extends BaseService implements Acti
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         parameterMap.start = DateUtility.getSqlDate(c.getTime())
 
-        int year = c.get(Calendar.YEAR);
-        int month=c.get(Calendar.MONTH)
+        int year = c.get(Calendar.YEAR)
+        int month=c.get(Calendar.MONTH)+1
 
         Date end = originalFormat.parse(startDateStr);
         c.setTime(end);

@@ -15,8 +15,8 @@ class ListPmAdditionalActionsActionServiceModel {
             FROM  pm_service_sector  sc
              JOIN pm_goals g ON  sc.id = g.service_id
              JOIN pm_additional_actions d ON  g.id =d.goal_id
-            GROUP BY  sc.id,g.id,EXTRACT(YEAR FROM d.start), d.tmp_seq
-            ORDER BY sc.id,EXTRACT(YEAR FROM d.start) , g.id ,d.tmp_seq;
+            GROUP BY  sc.id,g.id,EXTRACT(YEAR FROM d.start),EXTRACT(MONTH FROM d.start),d.tmp_seq
+            ORDER BY sc.id,EXTRACT(YEAR FROM d.start),EXTRACT(MONTH FROM d.start),g.id,d.tmp_seq;
     """
 
     long id
