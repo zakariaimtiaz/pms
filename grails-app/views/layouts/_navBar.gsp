@@ -185,6 +185,11 @@
                                     <a href="#pmProjects/show"><i class="fa fa-cogs"></i>&nbsp;Projects</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/appMail/show">
+                                <li>
+                                    <a href="#appMail/show"><i class="fa fa-envelope-o"></i>&nbsp;Mail</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
