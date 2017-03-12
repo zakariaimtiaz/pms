@@ -10,11 +10,12 @@ class ListPmAdditionalActionsActionServiceModel {
              SELECT d.id, d.version,d.actions, g.id AS goal_id, g.goal,d.res_person_id,d.start, d.end,d.sequence, d.tmp_seq, sc.id AS service_id,sc.name AS service,d.indicator,
             sc.short_name AS ser_short_name, d.res_person,d.strategy_map_ref, d.source_of_fund,d.note,d.support_department,d.total_indicator,
             (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',d.support_department,', '))>0 ) support_department_str,
-            (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',d.source_of_fund,', '))>0 ) source_of_fund_str
+            (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',d.source_of_fund,', '))>0 ) source_of_fund_str,lg.is_submitted
 
             FROM  pm_service_sector  sc
              JOIN pm_goals g ON  sc.id = g.service_id
              JOIN pm_additional_actions d ON  g.id =d.goal_id
+             LEFT JOIN pm_mcrs_log lg ON sc.id=lg.service_id AND MONTH(d.start)=lg.month AND YEAR(d.start)=lg.year
             GROUP BY  sc.id,g.id,EXTRACT(YEAR FROM d.start),EXTRACT(MONTH FROM d.start),d.tmp_seq
             ORDER BY sc.id,EXTRACT(YEAR FROM d.start),EXTRACT(MONTH FROM d.start),g.id,d.tmp_seq;
     """
@@ -41,6 +42,7 @@ class ListPmAdditionalActionsActionServiceModel {
     String indicator
     Date start
     Date end
+    boolean isSubmitted
 
     static constraints = {
     }

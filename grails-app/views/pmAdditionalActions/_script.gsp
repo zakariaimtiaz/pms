@@ -226,7 +226,19 @@ $('#hfSubmissionDate').val('${submissionDate}');
         $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
+    function cancelEntry() {
+        clearForm($("#additionalMRPForm"), null);
+        initObservable();
+        dropDownService.value(serviceId);
+        dropDownGoals.value('');
+        dropDownGoals.readonly(false);
+        clearIndicatorTable();
+        map = {};
+        deletedIndicatorIds = ''
 
+        $("#rowAction").hide();
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
+    }
     function initDataSource() {
         dataSource = new kendo.data.DataSource({
             transport: {
@@ -262,7 +274,8 @@ $('#hfSubmissionDate').val('${submissionDate}');
                         note: {type: "string"},
                         indicator: {type: "string"},
                         start: {type: "date"},
-                        end: {type: "date"}
+                        end: {type: "date"},
+                        isSubmitted: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -419,7 +432,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
 
         var actions = getSelectedObjectFromGridKendo(gridAdditionalMRP);
         var value=$('#hfSubmissionDate').val();
-        if(actions.start.getMonth()<=new Date(value).getMonth() && actions.start.getYear() <= new Date(value).getYear()){
+        if (actions.isSubmitted) {
             showError("This additional MRP already submitted.");
             return;
         }
@@ -439,12 +452,11 @@ $('#hfSubmissionDate').val('${submissionDate}');
             return;
         }
         var actions = getSelectedObjectFromGridKendo(gridAdditionalMRP);
-
-        var value=$('#hfSubmissionDate').val();
-        if(actions.start.getMonth()<=new Date(value).getMonth() && actions.start.getYear() <= new Date(value).getYear()){
+        if (actions.isSubmitted) {
             showError("This additional MRP already submitted.");
             return;
         }
+        var value = $('#hfSubmissionDate').val();
 
         clearIndicatorTable();
         addService();
@@ -474,7 +486,7 @@ $('#hfSubmissionDate').val('${submissionDate}');
                             "<input id='indicator" + trIdNo + "' name='indicator" + trIdNo + "' value='" + data.list[i].indicator + "' type='text'  placeholder='Indicator' class='form-control'/>" +
                             "</td>" +
                             "<td width='17%'>" +
-                            "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' value='" + data.list[i].indicatorType + "' onchange='resetData("+trIdNo+")'>" +
+                            "<select class='form-control' id='indType" + trIdNo + "' name='indType" + trIdNo + "' value='" + data.list[i].indicatorType + "' onchange='resetData(" + trIdNo + ")'>" +
                             "<option value='Dividable'>Dividable</option>" +
                             "<option value='Dividable%'>Dividable(%)</option>" +
                             "<option value='Repeatable'>Repeatable</option>" +
@@ -498,10 +510,10 @@ $('#hfSubmissionDate').val('${submissionDate}');
 
                     $('#tab_logic').append(trData);
                     $("#indType" + trIdNo).val(data.list[i].indicatorType);
-                    if($('#indicator').val()!=''){
+                    if ($('#indicator').val() != '') {
                         indCount = actions.totalIndicator;
                     }
-                    makeKendoDropDownList('unitId'+ trIdNo);
+                    makeKendoDropDownList('unitId' + trIdNo);
                     var mBox = $("#unitId" + trIdNo).data('kendoComboBox');
                     mBox.text(data.list[i].unitStr);
                     mBox.trigger("select");
