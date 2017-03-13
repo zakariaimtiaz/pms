@@ -18,7 +18,7 @@ class AppMailController extends BaseController {
 
 
     def show() {
-        render(view: "/appMail/show")
+        render(view: "/mailTemp/show")
     }
 
     def create() {
