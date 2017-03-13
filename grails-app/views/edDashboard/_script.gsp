@@ -27,7 +27,8 @@
         $('input[type="text"], textarea').attr('readonly','readonly');
         $('input[type="text"], textarea').val('');
         $('#month').val(mon);
-        isReadyForSave = false;
+//        isReadyForSave = false;
+        loadTableData();
     }
     function loadFollowupMonth(ele){
         var id=ele.id;
