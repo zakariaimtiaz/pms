@@ -1,6 +1,5 @@
 package pms
 
-import com.model.ListHrUserActionServiceModel
 import com.pms.AppMail
 import com.pms.PmMcrsLog
 import com.pms.PmServiceSector
@@ -52,7 +51,7 @@ class ArchiveTablesJob {
         Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
-                    to "imtiaz@friendship-bd.org"
+                    to "${email}"
                     from "sp.notification@friendship-bd.org"
                     subject "${subjectStr}"
                     html (mailBody)

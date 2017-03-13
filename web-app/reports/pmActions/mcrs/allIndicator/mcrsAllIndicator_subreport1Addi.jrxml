@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsAllIndicator_subreport1Addi" language="groovy" pageWidth="832" pageHeight="572" orientation="Landscape" columnWidth="832" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6fdbea04-6465-4ee7-8c30-265e7b8be426">
+	<property name="ireport.zoom" value="1.0000000000000029"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="serviceId" class="java.lang.Long"/>
+	<parameter name="year" class="java.lang.Integer"/>
+	<parameter name="currentMonth" class="java.util.Date"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ROOT_DIR" class="java.lang.String"/>
+	<parameter name="goalId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT @rownum := @rownum + 1 AS row_number,a.id action_id,a.sequence,a.actions,a.start,a.end,
+ai.id AS indicator_id,ai.indicator,ai.indicator_type,
+CASE WHEN POSITION("%" IN ai.indicator_type)!=0 THEN CONCAT(ai.target, '%') ELSE ai.target END AS target,
+a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS res_person,
+(SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
+(SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) support_depart
+
+                FROM pm_additional_actions a
+                JOIN pm_additional_actions_indicator ai ON ai.actions_id = a.id
+                JOIN pm_service_sector sc ON sc.id = a.service_id,
+                (SELECT @rownum := 0) r
+                WHERE sc.id = $P{serviceId} AND YEAR(a.start) = $P{year} AND MONTH(a.start) = MONTH($P{currentMonth}) AND a.goal_id = $P{goalId}
+                GROUP BY ai.id
+                ORDER BY sc.id,a.goal_id, a.tmp_seq;]]>
+	</queryString>
+	<field name="row_number" class="java.lang.Long"/>
+	<field name="action_id" class="java.lang.Long"/>
+	<field name="sequence" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="actions" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="start" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="end" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="indicator_id" class="java.lang.Long"/>
+	<field name="indicator" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="indicator_type" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="target" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="remarks" class="java.lang.String"/>
+	<field name="res_person" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="project" class="java.lang.String"/>
+	<field name="support_depart" class="java.lang.String"/>
+	<variable name="tmpSeq" class="java.lang.String" resetType="Column">
+		<variableExpression><![CDATA[$F{sequence}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="39">
+			<staticText>
+				<reportElement x="0" y="0" width="225" height="22" uuid="6dec7e53-e450-4cb7-8e59-f0ccb38ca878"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#939597"/>
+					<leftPen lineWidth="0.0" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Additional :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="23" width="30" height="16" uuid="6f3f611d-9f51-4de9-9f1a-161cfc6b768a"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[#ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="23" width="205" height="16" uuid="a28b1bb2-5298-49bf-bd38-2d9d65f6488d"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Actions]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="23" width="188" height="16" uuid="135b6405-5dc7-4a25-8587-0eb83aad6f7d"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Indicator]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="423" y="23" width="50" height="16" uuid="2fdbb5b1-84fb-41ec-8b15-d48b5562bb40"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Achievement]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="473" y="23" width="144" height="16" uuid="b55f3c27-80d7-492f-82ff-b7820a924ac7"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Remarks]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="617" y="23" width="75" height="16" uuid="072f14b0-95a6-444b-98b0-42d5c6ff7b3e"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Responsible Person]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="692" y="23" width="57" height="16" uuid="ccc12e5e-39fb-47f8-ae61-bf33e54cd522"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="749" y="23" width="83" height="16" uuid="6986883c-20f6-4baa-b1c8-34a09ba799bf"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Support Department]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="30" y="0" width="205" height="20" uuid="95550cb1-8516-4972-894c-5aab4e44bdcb"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actions}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="235" y="0" width="188" height="20" uuid="99c06809-6f82-4a42-b424-6c66542634cb"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indicator}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="473" y="0" width="144" height="20" uuid="39ffef12-0f8f-4cf1-9123-7fe654a19b62"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="749" y="0" width="83" height="20" uuid="735ce9c9-d465-4787-9188-52482c3bc528"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{support_depart}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="617" y="0" width="75" height="20" uuid="c39267fc-7b9f-40d5-90ab-1b04b4fed2cb"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{res_person}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="692" y="0" width="57" height="20" uuid="f845b812-b8d9-41b5-a559-c1ecb88c1811"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{project}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="30" height="20" uuid="de12f757-abe0-4f6b-84f7-cab624abff9b"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sequence}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="423" y="0" width="50" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{target}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
