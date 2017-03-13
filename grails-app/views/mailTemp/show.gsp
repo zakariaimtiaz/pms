@@ -1,4 +1,4 @@
-<g:render template='/appMail/script'/>
-<g:render template='/appMail/create'/>
+<g:render template='/mailTemp/script'/>
+<g:render template='/mailTemp/create'/>
 
 
