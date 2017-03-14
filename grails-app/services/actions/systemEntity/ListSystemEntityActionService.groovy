@@ -21,7 +21,7 @@ class ListSystemEntityActionService extends BaseService implements ActionService
         try {
             Map resultMap = super.getSearchResult(result, ListSystemEntityActionServiceModel.class)
             result.put(LIST, resultMap.list)
-            result.put(AggregationFunction.COUNT, resultMap.count)
+            result.put(COUNT, resultMap.count)
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
