@@ -6,7 +6,9 @@ import com.pms.PmServiceSector
 import pms.utility.DateUtility
 import pms.utility.Tools
 
-class ArchiveTablesJob {
+import java.text.SimpleDateFormat
+
+class DynamicSpMailSendJob {
 
     private static final String REMINDER_MAIL_BEFORE_DEADLINE = "REMINDER_MAIL_BEFORE_DEADLINE"
     private static final String WARNING_MAIL_AFTER_DEADLINE = "WARNING_MAIL_AFTER_DEADLINE"
@@ -14,10 +16,12 @@ class ArchiveTablesJob {
     def mailService
 
     static triggers = {
-        cron name: 'cronTrigger', cronExpression: "0 0 9 * * ?"
+        // cron name: 'cronTrigger', cronExpression: "0 0 9 * * ?"
     }
 
     def execute() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        println('>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ' + sdf.format(new Date()))
         Calendar now = Calendar.getInstance();
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH);
@@ -36,14 +40,14 @@ class ArchiveTablesJob {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
                 //send mail 3 days before deadline
                 if(appMail){
-                    sendMail(appMail,sc.departmentHead,sc.contactEmail,deadline,sc.departmentHeadGender,lstLog[i].monthStr,lstLog[i].year)
+//                    sendMail(appMail,sc.departmentHead,sc.contactEmail,deadline,sc.departmentHeadGender,lstLog[i].monthStr,lstLog[i].year)
                 }
             }
             if (deadlineDay + 1 == currentDay && sc && !lstLog[i].isSubmitted) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(WARNING_MAIL_AFTER_DEADLINE, true)
                 //send mail 1 day after deadline
                 if(appMail){
-                    sendMail(appMail,sc.departmentHead,sc.contactEmail,deadline,sc.departmentHeadGender,lstLog[i].monthStr,lstLog[i].year)
+//                    sendMail(appMail,sc.departmentHead,sc.contactEmail,deadline,sc.departmentHeadGender,lstLog[i].monthStr,lstLog[i].year)
                 }
             }
         }

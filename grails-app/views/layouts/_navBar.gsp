@@ -195,6 +195,11 @@
                                     <a href="#appMail/show"><i class="fa fa-envelope-o"></i>&nbsp;Mail</a>
                                 </li>
                             </sec:access>
+                            <sec:access url="/quartz/show">
+                                <li>
+                                    <a href="#quartz/show"><i class="fa fa-tachometer"></i>&nbsp;Quartz</a>
+                                </li>
+                            </sec:access>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>

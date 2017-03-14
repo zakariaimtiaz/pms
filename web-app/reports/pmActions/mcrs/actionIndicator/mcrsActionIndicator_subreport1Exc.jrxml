@@ -26,15 +26,15 @@ a.actions,a.start,a.end, ai.indicator,ai.indicator_type,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
-	CASE WHEN POSITION("%" IN indicator_type)!=0  THEN
+	CASE WHEN ai.indicator_type LIKE 'Repeatable%' THEN
 	ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
 	ELSE
 	SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
-	CASE WHEN  POSITION("%" IN indicator_type)!=0  THEN
+	CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
         ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
 	ELSE
 	SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
-	CASE WHEN  POSITION("%" IN indicator_type)!=0 THEN
+	CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
 	SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)
 	ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
@@ -170,7 +170,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{tot_tar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="436" y="0" width="30" height="20" uuid="509f553c-599f-4d95-9b24-05e7016a08f1"/>
+				<reportElement stretchType="RelativeToTallestObject" x="524" y="0" width="30" height="20" uuid="509f553c-599f-4d95-9b24-05e7016a08f1"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -183,7 +183,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{mon_tar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="466" y="0" width="29" height="20" uuid="9361af7f-9670-4864-9cbb-a37564016c6b"/>
+				<reportElement stretchType="RelativeToTallestObject" x="554" y="0" width="29" height="20" uuid="9361af7f-9670-4864-9cbb-a37564016c6b"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -196,7 +196,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{mon_acv}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="524" y="0" width="30" height="20" uuid="19736e2b-092f-4bf2-a59a-9978fc0fdf2a"/>
+				<reportElement stretchType="RelativeToTallestObject" x="436" y="0" width="30" height="20" uuid="19736e2b-092f-4bf2-a59a-9978fc0fdf2a"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -209,7 +209,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{cum_tar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="554" y="0" width="29" height="20" uuid="8ba3160b-46ef-4fb4-820b-e107a6f51137"/>
+				<reportElement stretchType="RelativeToTallestObject" x="466" y="0" width="29" height="20" uuid="8ba3160b-46ef-4fb4-820b-e107a6f51137"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -237,7 +237,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="495" y="0" width="29" height="20" uuid="e82bc330-1540-49f7-bf33-80808fe08815"/>
+				<reportElement stretchType="RelativeToTallestObject" x="583" y="0" width="29" height="20" uuid="e82bc330-1540-49f7-bf33-80808fe08815"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -320,7 +320,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="495" y="0" width="29" height="20" uuid="2135c8b2-a92e-431b-8895-a36a0d56dfb6"/>
+				<reportElement stretchType="RelativeToTallestObject" x="583" y="0" width="29" height="20" uuid="2135c8b2-a92e-431b-8895-a36a0d56dfb6"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -333,7 +333,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{mon_var}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToTallestObject" x="583" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
+				<reportElement stretchType="RelativeToTallestObject" x="495" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
