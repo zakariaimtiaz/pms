@@ -1,14 +1,8 @@
 package pms
 
-import com.pms.AppMail
-import com.pms.PmMcrsLog
-import com.pms.PmServiceSector
-import com.pms.SystemEntity
-import com.pms.SystemEntityType
+import com.pms.*
 import pms.utility.DateUtility
 import pms.utility.Tools
-
-import java.text.SimpleDateFormat
 
 class DynamicSpMailSendJob {
 
