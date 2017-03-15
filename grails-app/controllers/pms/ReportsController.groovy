@@ -136,8 +136,10 @@ class ReportsController  extends BaseController  {
         SecUser user = baseService.currentUserObject()
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isAssist = baseService.isEdAssistantRole(user.id)
         render(view: "/reports/dashboard/show", model: [isSysAdmin:isSysAdmin,
                                                         isTopMan: isTopMan,
+                                                        isAssist: isAssist,
                                                         serviceId:user.serviceId])
     }
     def listEdDashBoard() {

@@ -3,6 +3,7 @@ package actions.edDashboard
 import com.pms.EdDashboard
 import com.pms.EdDashboardIssues
 import com.pms.PmMcrsLog
+import com.pms.SecUser
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -55,7 +56,11 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             int year = c.get(Calendar.YEAR);
 
             PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndMonthAndYear(serviceId,month+1,year)
-            if(pmMcrsLog?.isSubmitted){
+            SecUser user = currentUserObject()
+            boolean isTop = isUserTopManagement(user.id)
+            boolean isEdAssist = isEdAssistantRole(user.id)
+
+            if(!isTop && !isEdAssist && pmMcrsLog?.isSubmitted){
                 return super.setError(result, 'Already submitted for this month');
             }
 

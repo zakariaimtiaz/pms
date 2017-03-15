@@ -1,6 +1,7 @@
 package pms
 
 import actions.edDashboard.CreateEdDashboardActionService
+import actions.edDashboard.UpdateEdDashboardActionService
 import com.pms.EdDashboard
 import com.pms.PmSpLog
 import com.pms.SecUser
@@ -22,6 +23,7 @@ class EdDashboardController extends BaseController {
     BaseService baseService
     EdDashboardService edDashboardService
     CreateEdDashboardActionService createEdDashboardActionService
+    UpdateEdDashboardActionService updateEdDashboardActionService
 
     def show() {
         SecUser user = baseService.currentUserObject()
@@ -30,6 +32,9 @@ class EdDashboardController extends BaseController {
     def create() {
         renderOutput(createEdDashboardActionService, params)
 
+    }
+    def update(){
+        renderOutput(updateEdDashboardActionService, params)
     }
 
     def list() {

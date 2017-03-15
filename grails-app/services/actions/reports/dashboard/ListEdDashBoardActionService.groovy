@@ -109,7 +109,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
 
     private List<GroovyRowResult> buildResultList(Date month,long issueId, String serviceStr) {
         String query = """
-        SELECT ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE', ed.remarks 'REMARKS', ed.ed_advice 'ADVICE',
+        SELECT ed.id 'ID',ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE', ed.remarks 'REMARKS', ed.ed_advice 'ADVICE',
         CASE WHEN ed.is_followup = TRUE  THEN TRUE ELSE FALSE END 'IS_FOLLOWUP',
         CASE WHEN ed.is_followup = TRUE  THEN DATE_FORMAT(ed.followup_month_for,'%M %Y') ELSE '' END 'FOLLOWUP_MONTH'
         FROM ed_dashboard_issues edi
@@ -128,7 +128,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
     }
     private List<GroovyRowResult> buildResultCsspList(Date month, String serviceStr) {
         String query = """
-        SELECT ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE',  ed.remarks 'REMARKS',
+        SELECT ed.id 'ID',ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE',  ed.remarks 'REMARKS',
          ed.ed_advice 'ADVICE', ed.is_followup 'IS_FOLLOWUP', DATE_FORMAT(ed.followup_month_for,'%M %Y')  'FOLLOWUP_MONTH'
         FROM ed_dashboard_issues edi
         LEFT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND MONTH(ed.month_for)=MONTH('${month}')

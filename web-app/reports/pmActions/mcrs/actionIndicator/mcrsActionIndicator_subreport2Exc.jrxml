@@ -128,7 +128,7 @@ ORDER BY edi.id]]>
 	</columnHeader>
 	<detail>
 		<band height="30" splitType="Stretch">
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="39" y="0" width="84" height="30" uuid="5f72fad6-a38e-4a06-a2b0-c9de6e5c25c8">
 					<printWhenExpression><![CDATA[$F{is_heading}==false]]></printWhenExpression>
 				</reportElement>
@@ -143,7 +143,7 @@ ORDER BY edi.id]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{issue_name}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="123" y="0" width="250" height="30" uuid="e69eb9fa-0b00-4911-87dd-3a101db1e5f7">
 					<printWhenExpression><![CDATA[$F{is_heading}==false]]></printWhenExpression>
 				</reportElement>
@@ -158,7 +158,7 @@ ORDER BY edi.id]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="373" y="0" width="250" height="30" uuid="d9d64268-fa90-4dfb-a71c-b2434b00bd73">
 					<printWhenExpression><![CDATA[$F{is_heading}==false]]></printWhenExpression>
 				</reportElement>
@@ -173,7 +173,7 @@ ORDER BY edi.id]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="623" y="0" width="209" height="30" uuid="8c14206c-063f-463c-8bc6-21a76962d58c">
 					<printWhenExpression><![CDATA[$F{is_heading}==false]]></printWhenExpression>
 				</reportElement>
@@ -188,7 +188,7 @@ ORDER BY edi.id]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ed_advice}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="39" y="0" width="793" height="30" uuid="50a3389c-9cd3-4c3c-bb42-3157407f4f13">
 					<printWhenExpression><![CDATA[$F{is_heading}==true && $P{specificIssueCount} > 0]]></printWhenExpression>
 				</reportElement>
