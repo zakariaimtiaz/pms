@@ -9,7 +9,7 @@ import pms.BaseService
 @Transactional
 class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
 
-    private static final String COULD_NOT_BE_EMPTY = "Remarks could not be empty as target is set on %"
+    private static final String COULD_NOT_BE_EMPTY = "Remarks is mandatory for Repeatable% indicator"
     private static final String UPDATE_SUCCESS_MESSAGE = "Achievement has been updated successfully"
 
     private Logger log = Logger.getLogger(getClass())
@@ -21,7 +21,7 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
             String achievementStr = params.get("models[0][achievement]")
             String remarksStr = params.get("models[0][remarks]")
 
-            if(indicatorType.indexOf("%")>-1&&remarksStr==''){
+            if((indicatorType.equals("Repeatable%")||indicatorType.equals("Repeatable%++")) && remarksStr==''){
                 return super.setError(params, COULD_NOT_BE_EMPTY)
             }
 

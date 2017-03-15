@@ -5,7 +5,9 @@ import com.pms.PmActions
 import com.pms.PmActionsIndicator
 import com.pms.PmMcrsLog
 import com.pms.PmSpLog
+import com.pms.SecRole
 import com.pms.SecUser
+import com.pms.SecUserSecRole
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
 import pms.utility.DateUtility
@@ -113,6 +115,9 @@ class PmActionsController extends BaseController {
     ////////////MRP///////////////
     def achievement() {
         SecUser user = baseService.currentUserObject()
+        SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
+        int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
+        boolean isAdmin = count > 0
         Long serviceId=user.serviceId
 
         Long month=1
@@ -129,7 +134,7 @@ class PmActionsController extends BaseController {
             }catch(Exception ex){}
         }
 
-        render(view: "/pmActions/mrp/show", model: [serviceId:serviceId,submissionDate:submissionDate])
+        render(view: "/pmActions/mrp/show", model: [isAdmin:isAdmin,serviceId:serviceId,submissionDate:submissionDate])
     }
     def listAchievement(){
         renderOutput(listMRPActionService, params)

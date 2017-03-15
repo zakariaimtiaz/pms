@@ -134,6 +134,8 @@
                         var message = response["message"];
                         if (isError) {
                             showError(message);
+                        }else{
+                            showSuccess(message);
                         }
                         var grid = $("#grid").data("kendoGrid");
                         var data = grid.dataSource;
@@ -186,8 +188,10 @@
                     template: "#=formatIndicator(indicator_type,achievement)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "remarks", title: "Remarks", width: "280px",editor: textEditorInitialize },
-                {command: [{name:"edit",text:{edit: "Achievement",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "100px"}
+                {field: "remarks", title: "Remarks", width: "280px",editor: textEditorInitialize }
+                <g:if test="${!isAdmin}">
+                ,{command: [{name:"edit",text:{edit: "Achievement",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "100px"}
+                </g:if>
             ]
         });
     }
@@ -198,7 +202,12 @@
     };
 
     function formatIndicator(indicatorType, target) {
-        if (!target) return '0'
+        if (!target && indicatorType.match('%')){
+            return '0 %'
+        }else if(!target && !indicatorType.match('%')){
+            return '0'
+        }
+
         if (indicatorType.match('%')) {
             return target + ' % ';
         }
