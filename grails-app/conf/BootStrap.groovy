@@ -1,4 +1,5 @@
 import com.pms.PropertiesReader
+import com.pms.Quartz
 import grails.converters.JSON
 import pms.ConfigureService
 
@@ -26,6 +27,11 @@ class BootStrap {
             configureService.initSchema()
         }
 
+        List<Quartz> lstQuartz = Quartz.findAllByIsRunning(Boolean.TRUE)
+        for (Quartz quartz : lstQuartz) {
+            quartz.isRunning = false
+            quartz.save()
+        }
     }
     def destroy = {
     }
