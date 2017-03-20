@@ -52,7 +52,7 @@ environments {
         }
         dataSource_mis {
             dbCreate    = "update"
-            url         = "jdbc:mysql://192.168.16.217:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
+            url         = "jdbc:mysql://163.53.150.197:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
             username    = "root"
             password    = "hr586DB"
             logSql = false
@@ -119,7 +119,7 @@ environments {
         }
         dataSource_mis {
             dbCreate    = "update"
-            url         = "jdbc:mysql://192.168.16.217:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
+            url         = "jdbc:mysql://163.53.150.197:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
             username    = "root"
             password    = "hr586DB"
             logSql = false
