@@ -48,10 +48,7 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
         runtime 'mysql:mysql-connector-java:5.1.29'
-        //runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
-        //test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
         compile 'org.imgscalr:imgscalr-lib:4.2'
         compile 'net.sf.uadetector:uadetector-resources:2014.10'
         build "com.lowagie:itext:2.1.7"

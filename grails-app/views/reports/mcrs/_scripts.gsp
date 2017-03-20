@@ -13,10 +13,10 @@
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }
-        if(${isHOD}){
+        if(${isTopMan}){
             isApplicable = true;
         }
-        var str = moment().format('MMMM YYYY');
+        var str = moment().subtract(1, 'months').format('MMMM YYYY');
         var submissionDate='${submissionDate}';
         $('#month').kendoDatePicker({
             format: "MMMM yyyy",
@@ -94,6 +94,7 @@
             },
             autoBind: false,
             height: getGridHeightKendo() - 50,
+            dataBound   : dataBoundGrid,
             sortable: false,
             pageable: false,
             columns: [
@@ -106,12 +107,9 @@
                     template:"#=omitRepeated2(sequence,actions)#"
                 },
                 {
-                    field: "start", title: "Start Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated3(sequence,kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM'))#"
-                },
-                {
-                    field: "end", title: "End Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
+                    field: "start", title: "Date<br/>Range", width: 80, sortable: false, filterable: false,
+                    headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
+                    template: "#=omitRepeated3(sequence,formatDateRange(kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMM'),kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMM')))#"
                 },
                 {
                     field: "is_preference",title: " ",width: 30,
@@ -126,24 +124,24 @@
                     title: "Cumulative", headerAttributes: {style: setAlignCenter()},
                     columns: [
                         {
-                            field: "cum_tar", title: "Target",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
+                            field: "cum_tar", title: "Tar",
+                            width: 60, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
                             template: "#=formatIndicator(indicator_type,cum_tar)#"
                         },
                         {
-                            field: "cum_acv", title: "Achievement",
-                            width: 90, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
+                            field: "cum_acv", title: "Acv",
+                            width: 60, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
                             template: "#=formatIndicator(indicator_type,cum_acv)#"
                         },
                         {
-                            field: "cum_acv", title: "Variance",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
+                            field: "cum_acv", title: "Var",
+                            width: 60, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
                             template: "#=calculateVariance(cum_tar,cum_acv)#"
                         }
                     ]
@@ -152,24 +150,24 @@
                     title: "Monthly", headerAttributes: {style: setAlignCenter()},
                     columns: [
                         {
-                            field: "mon_tar", title: "Target",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
+                            field: "mon_tar", title: "Tar",
+                            width: 60, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
                             template: "#=formatIndicator(indicator_type,mon_tar)#"
                         },
                         {
-                            field: "mon_acv", title: "Achievement",
-                            width: 90, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
+                            field: "mon_acv", title: "Acv",
+                            width: 60, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
                             template: "#=formatIndicator(indicator_type,mon_acv)#"
                         },
                         {
-                            field: "mon_acv", title: "Variance",
-                            width: 70, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignRight()},
-                            attributes: {style: setAlignRight()},
+                            field: "mon_acv", title: "Var",
+                            width: 60, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
                             template: "#=calculateVariance(mon_tar,mon_acv)#"
                         }
                     ]
@@ -198,6 +196,18 @@
             editable: "inline"
         });
         gridMRP = $("#gridMRP").data("kendoGrid");
+    }
+    function dataBoundGrid(e) {
+        var grid = e.sender;
+        var data = grid.dataSource.data();
+        $.each(data, function (i, row) {
+            if(row.is_preference){
+                $('tr[data-uid="' + row.uid + '"] ').css("color", "#00994C");
+            }
+        });
+    }
+    function formatDateRange(start,end){
+        return start + ' ~ ' + end;
     }
     function initGridAdditional() {
         $("#gridMRPAddi").kendoGrid({
@@ -322,9 +332,9 @@
             return false;
         }
         if(filterType=='reset' && indicatorType=='Preferred Indicator'){
-            gridMRP.showColumn(4);
+            gridMRP.showColumn(3);
         }else{
-            gridMRP.hideColumn(4);
+            gridMRP.hideColumn(3);
         }
         var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&filterType="+filterType;
         var url ="${createLink(controller: 'reports', action: 'listMcrs')}" + params;
@@ -394,7 +404,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(14)",
+        filter: "td:nth-child(13)",
         width: 300,
         position: "top",
         content: function(e){
@@ -411,7 +421,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(15)",
+        filter: "td:nth-child(14)",
         width: 300,
         position: "top",
         content: function(e){
@@ -429,7 +439,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(17)",
+        filter: "td:nth-child(16)",
         width: 300,
         position: "top",
         content: function(e){
@@ -446,7 +456,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(18)",
+        filter: "td:nth-child(17)",
         width: 300,
         position: "top",
         content: function(e){

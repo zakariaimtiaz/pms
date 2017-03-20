@@ -96,7 +96,10 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "inline",
+            editable: "popup",
+            edit: function(e) {
+                 editableTemplateModify(e);
+            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -180,7 +183,10 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "inline",
+            editable: "popup",
+            edit: function(e) {
+                editableTemplateModify(e);
+            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -264,7 +270,10 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "inline",
+            editable: "popup",
+            edit: function(e) {
+                editableTemplateModify(e);
+            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -348,7 +357,10 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "inline",
+            editable: "popup",
+            edit: function(e) {
+                editableTemplateModify(e);
+            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -432,7 +444,10 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "inline",
+            editable: "popup",
+            edit: function(e) {
+                editableTemplateModify(e);
+            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -516,7 +531,10 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "inline",
+            editable: "popup",
+            edit: function(e) {
+                editableTemplateModify(e);
+            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -578,9 +596,17 @@
         tmp1 = SERVICE_ID;
         return SERVICE;
     }
+    function editableTemplateModify(e){
+        e.container.data("kendoWindow").title("Ed's Advice");
+        e.container.find("label[for=SERVICE]").parent("div .k-edit-label").hide();
+        e.container.find("label[for=SERVICE]").parent().next("div .k-edit-field").hide();
+        e.container.find("label[for=ISSUE]").parent("div .k-edit-label").hide();
+        e.container.find("label[for=ISSUE]").parent().next("div .k-edit-field").hide();
+        e.container.find("label[for=REMARKS]").parent("div .k-edit-label").hide();
+        e.container.find("label[for=REMARKS]").parent().next("div .k-edit-field").hide();
+    }
     function textAreaInitialize(container, options) {
-        $('<textarea name="' + options.field + '" style="width: ' + container.width() + 'px;height:' + container.height() + 'px" />')
-                .appendTo(container);
+        $('<textarea name="' + options.field + '" style="width: 230px;height: 270px" />').appendTo(container);
     }
 
 </script>
