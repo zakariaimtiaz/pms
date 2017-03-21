@@ -19,7 +19,7 @@ environments {
     development {
         dataSource {
             dbCreate    = "update"
-            url         = PropertiesReader.getProperty("dataSource.database.url", PropertiesReader.CONFIG_FILE_DB)
+            url         = PropertiesReader.getProperty("dataSource.db.url", PropertiesReader.CONFIG_FILE_DB)
             username    = PropertiesReader.getProperty("dataSource.db.username", PropertiesReader.CONFIG_FILE_DB);
             password    = PropertiesReader.getProperty("dataSource.db.password", PropertiesReader.CONFIG_FILE_DB);
             logSql = false
@@ -52,9 +52,9 @@ environments {
         }
         dataSource_mis {
             dbCreate    = "update"
-            url         = "jdbc:mysql://163.53.150.197:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
-            username    = "root"
-            password    = "hr586DB"
+            url         = PropertiesReader.getProperty("dataSource.mis.db.url", PropertiesReader.CONFIG_FILE_DB)
+            username    = PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB)
+            password    = PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB)
             logSql = false
             properties {
                 jmxEnabled = true
@@ -93,7 +93,7 @@ environments {
     production {
         dataSource {
             dbCreate    = "update"
-            url         = PropertiesReader.getProperty("dataSource.prod.database.url", PropertiesReader.CONFIG_FILE_DB)
+            url         = PropertiesReader.getProperty("dataSource.prod.db.url", PropertiesReader.CONFIG_FILE_DB)
             username    = PropertiesReader.getProperty("dataSource.prod.db.username", PropertiesReader.CONFIG_FILE_DB);
             password    = PropertiesReader.getProperty("dataSource.prod.db.password", PropertiesReader.CONFIG_FILE_DB);
             logSql = false
@@ -119,9 +119,9 @@ environments {
         }
         dataSource_mis {
             dbCreate    = "update"
-            url         = "jdbc:mysql://163.53.150.197:3306/mis?useUnicode=true&characterEncoding=utf8&generateSimpleParameterMetadata=true"
-            username    = "root"
-            password    = "hr586DB"
+            url         = PropertiesReader.getProperty("dataSource.mis.db.url", PropertiesReader.CONFIG_FILE_DB)
+            username    = PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB)
+            password    = PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB)
             logSql = false
             properties {
                 jmxEnabled = true
