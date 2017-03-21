@@ -39,7 +39,10 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
 
             Date currentMonth = DateUtility.getSqlDate(c.getTime());
             long serviceId = Long.parseLong(result.serviceId.toString())
-            List lstVal = buildResultList(serviceId, year, currentMonth,result.indicatorType.toString(),result.filterType.toString())
+            String indicatorType = result.indicatorType.toString()
+            String filterType = result.filterType.toString()
+            String indicatorLight = result.indicatorLight.toString()
+            List lstVal = buildResultList(serviceId, year, currentMonth,indicatorType,filterType,indicatorLight)
             List lstValAdditional = buildResultListAdditional(serviceId, year, month)
             result.put(LIST, lstVal)
             result.put("lstAddi", lstValAdditional)
@@ -79,7 +82,17 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth,String type,String filterType) {
+    private List<GroovyRowResult> buildResultList(long serviceId,int year, Date currentMonth,String type,String filterType,String indicatorLight) {
+        String indicatorLightStr = EMPTY_SPACE
+        if(indicatorLight.equals("Red")) {
+            indicatorLightStr = "WHERE ROUND(((mon_acv/mon_tar)*100)-100) BETWEEN -100 AND -50"
+        }else if(indicatorLight.equals("Amber")){
+            indicatorLightStr = "WHERE ROUND(((mon_acv/mon_tar)*100)-100) BETWEEN -49 AND -1 "
+        }else if(indicatorLight.equals("Green")){
+            indicatorLightStr = "WHERE ROUND(((mon_acv/mon_tar)*100)-100) >= 0 "
+        }else{
+            indicatorLightStr = EMPTY_SPACE
+        }
         String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id AND ai.year = ${year}"
         if(type.equals("Action Indicator")) {
             actionIndicatorJoin = "JOIN pm_actions_indicator ai ON a.id = ai.actions_id AND ai.year = ${year} " +
@@ -89,7 +102,8 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         }
 
         String query = """
-                SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
+                SELECT *,(((mon_acv/mon_tar)*100)-100) AS mon_var FROM
+                (SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
 
@@ -123,7 +137,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 AND (@curmon <= MONTH(a.end) AND @curmon >= MONTH(a.start))
                 GROUP BY ai.id
                 HAVING mon_tar!=0
-                ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq;
+                ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq ) tmp ${indicatorLightStr};
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue

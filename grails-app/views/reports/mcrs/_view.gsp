@@ -39,17 +39,20 @@
                         <div class="col-md-2">
                             <select class="kendo-drop-down" id="indicatorType" name="indicatorType" onchange="showResetPreference();" tabindex="3"></select>
                         </div>
+                        <div class="col-md-2" style="width: 120px;">
+                            <select class="kendo-drop-down" id="indicatorLight" name="indicatorLight" tabindex="4"></select>
+                        </div>
                         <div class="col-md-1">
                             <button id="create" name="create" type="submit" data-role="button"
                                     class="k-button k-button-icontext"
-                                    role="button" tabindex="4"
+                                    role="button" tabindex="5"
                                     aria-disabled="false"><span class="k-icon k-i-search"></span>View
                             </button>
                         </div>
                         <div class="col-md-1">
                             <button id="reset" name="reset" type="submit" data-role="button"
                                     class="k-button k-button-icontext" style="display: none;"
-                                    role="button" tabindex="5"
+                                    role="button" tabindex="6"
                                     aria-disabled="false"><span class="k-icon k-i-connector"></span>Reset
                             </button>
                         </div>

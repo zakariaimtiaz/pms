@@ -1,12 +1,23 @@
+<style type="text/css">
+.selected-value {
+    display: inline-block;
+    vertical-align: middle;
+    width: 15px;
+    height: 15px;
+    background-size: 100%;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+</style>
 <script language="javascript">
-    var serviceId,dataSource,gridMRP,gridMRPAddi,dropDownIndicatorType,isApplicable=false;
+    var serviceId,dataSource,gridMRP,gridMRPAddi,dropDownIndicatorType,dropDownIndicatorLight,isApplicable=false;
     var tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
 
     $(document).ready(function () {
         onLoadInfoPage();
         initGrid();
         initGridAdditional();
-        activaTab('menu1');
+        activeTab('menu1');
     });
     function onLoadInfoPage() {
         if(!${isSysAdmin} && !${isTopMan}){
@@ -36,12 +47,35 @@
         });
         dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
 
+        $("#indicatorLight").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            valueTemplate: '<img src="images/#:data.img#.ico" style="height: 15px;"><span>&nbsp;#: data.text #</span>',
+            template: '<img src="images/#:data.img#.ico" style="height: 15px;"><span class="k-state-default">&nbsp;#: data.text #</span>',
+            dataSource: {
+                transport: {
+                    read: {
+                        dataType: "json",
+                        url: "${createLink(controller: 'login', action: 'listIndicatorLight')}"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "data"
+                }
+            },
+            dataBound: function() {
+                this.select(0);
+            }
+        });
+        dropDownIndicatorLight = $("#indicatorLight").data("kendoDropDownList");
+
         initializeForm($("#detailsForm"), null);
         defaultPageTile("Strategic Plan", 'reports/showMcrs');
     }
-    function activaTab(tab){
+    function activeTab(tab){
         $('.nav-tabs a[href="#' + tab + '"]').tab('show');
-    };
+    }
     function showResetPreference(){
         var indicatorType = dropDownIndicatorType.value();
         if(indicatorType=='Preferred Indicator' && isApplicable){
@@ -305,10 +339,12 @@
             perc="N/A";
         }else{
             perc = Math.round(((ach/tar) * 100).toFixed(1)-100);
-            if(perc < 0) {
-                return '<span style="color: #ff0000" >'+ perc + ' %' + '</span>';
+            if (perc >= -100 && perc <= -50) {
+                return '<span style="fontWeight :bold;color: #ff0000" >'+ perc + ' %' + '</span>';
+            }else if(perc >= -49 && perc <= -1){
+                return '<span style="fontWeight :bold;color: #FFBF00" >'+ perc + ' %' + '</span>';
             }else{
-                return perc + ' %';
+                return '<span style="fontWeight :bold;color: #00FF00" >'+ perc + ' %' + '</span>';
             }
         }
         return perc;
@@ -327,6 +363,7 @@
         var month = $('#month').val();
         var serviceId = dropDownService.value();
         var indicatorType = dropDownIndicatorType.value();
+        var indicatorLight = dropDownIndicatorLight.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
@@ -336,7 +373,7 @@
         }else{
             gridMRP.hideColumn(3);
         }
-        var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&filterType="+filterType;
+        var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&indicatorLight="+indicatorLight+"&filterType="+filterType;
         var url ="${createLink(controller: 'reports', action: 'listMcrs')}" + params;
         var dashboard ="${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+"&month="+month+
                 "&template=/reports/mcrs/ViewED";

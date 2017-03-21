@@ -427,7 +427,6 @@ function serializeFormAsObject(frm) {
 }
 
 
-// todo: Azam - enabling kendo grid to filter only on a single column
 // extensive test is required. Current implementation does not support
 // multiple condition on a single column (e.g., field contains 'a' AND field ENDS WITH 'rica' is not supported)
 jQuery.fn.extend({

@@ -206,4 +206,38 @@ class LoginController {
 
         render output
     }
+
+    def listIndicatorLight(){
+        def list = []
+        def map = [:]
+
+        def map1 = [:]
+        map1.put('text','ALL')
+        map1.put('value','ALL')
+        map1.put('img','circle_grey')
+        list << map1
+
+        def map2 = [:]
+        map2.put('text','Red')
+        map2.put('value','Red')
+        map2.put('img','circle_red')
+        list << map2
+
+        def map3 = [:]
+        map3.put('text','Amber')
+        map3.put('value','Amber')
+        map3.put('img','circle_yellow')
+        list << map3
+
+        def map4 = [:]
+        map4.put('text','Green')
+        map4.put('value','Green')
+        map4.put('img','circle_green')
+        list << map4
+
+        map.put('data',list)
+        render map as JSON
+
+    }
+
 }

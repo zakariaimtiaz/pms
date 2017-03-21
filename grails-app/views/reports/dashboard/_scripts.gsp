@@ -1,3 +1,13 @@
+<style type="text/css">
+.k-widget.k-window {
+    width: 500px;
+    height: 300px;
+}
+.k-edit-buttons {
+    width: 480px;
+}
+</style>
+
 <script language="javascript">
     var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp, tmp1 = '';
     $(document).ready(function () {
@@ -597,7 +607,7 @@
         return SERVICE;
     }
     function editableTemplateModify(e){
-        e.container.data("kendoWindow").title("Ed's Advice");
+        e.container.data("kendoWindow").title("Ed's Advice Panel");
         e.container.find("label[for=SERVICE]").parent("div .k-edit-label").hide();
         e.container.find("label[for=SERVICE]").parent().next("div .k-edit-field").hide();
         e.container.find("label[for=ISSUE]").parent("div .k-edit-label").hide();
@@ -606,7 +616,7 @@
         e.container.find("label[for=REMARKS]").parent().next("div .k-edit-field").hide();
     }
     function textAreaInitialize(container, options) {
-        $('<textarea name="' + options.field + '" style="width: 230px;height: 270px" />').appendTo(container);
+        $('<textarea name="' + options.field + '" style="width: 326px;height: 220px" />').appendTo(container);
     }
 
 </script>
