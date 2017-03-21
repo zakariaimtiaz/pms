@@ -340,11 +340,11 @@
         }else{
             perc = Math.round(((ach/tar) * 100).toFixed(1)-100);
             if (perc >= -100 && perc <= -50) {
-                return '<span style="fontWeight :bold;color: #ff0000" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #ff0000" >'+ perc + ' %' + '</span>';
             }else if(perc >= -49 && perc <= -1){
-                return '<span style="fontWeight :bold;color: #FFBF00" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #FFBF00" >'+ perc + ' %' + '</span>';
             }else{
-                return '<span style="fontWeight :bold;color: #00FF00" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #00FF00" >'+ perc + ' %' + '</span>';
             }
         }
         return perc;
