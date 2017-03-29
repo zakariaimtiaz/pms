@@ -14,7 +14,7 @@ class ListPmSprintsActionService extends BaseService implements ActionServiceInt
 
     private Logger log = Logger.getLogger(getClass())
 
-    public static final String ROLE_ACTION_USER = "ROLE_ACTION_USER"
+    public static final String PMS_ROLE_ACTION_USER = "PMS_ROLE_ACTION_USER"
 
     public Map executePreCondition(Map params) {
         return params
@@ -27,7 +27,7 @@ class ListPmSprintsActionService extends BaseService implements ActionServiceInt
             SecUser user = currentUserObject()
             Boolean isActionUser = Boolean.FALSE
             List<SecUserSecRole> lstRole = SecUserSecRole.findAllBySecUser(user)
-            SecRole role = SecRole.findByAuthority(ROLE_ACTION_USER)
+            SecRole role = SecRole.findByAuthority(PMS_ROLE_ACTION_USER)
             for(int i=0; i<lstRole.size(); i++){
                 if(lstRole[i].secRole==role){
                     isActionUser = Boolean.TRUE

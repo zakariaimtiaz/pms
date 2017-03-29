@@ -40,9 +40,9 @@ class FeatureManagementService extends BaseService{
         List lstCommonFeatures = lstOldFeatures.intersect(lstAssignedFeatures)
 
         List<Long> lstToRemove = (List<Long>) lstOldFeatures.clone()
-        // Get the IDs of requestMap where current ROLE has lost the RIGHT
+        // Get the IDs of requestMap where current AUTHORITY_PRIFIX has lost the RIGHT
         lstToRemove.removeAll(lstCommonFeatures)      // i.e. ToBeRemoved=(Existing Feature) - (Common Features)
-        // Get the IDs of requestMap where current ROLE has gain the RIGHT
+        // Get the IDs of requestMap where current AUTHORITY_PRIFIX has gain the RIGHT
         List<Long> lstToAdd = (List<Long>) lstAssignedFeatures.clone()
         lstToAdd.removeAll(lstCommonFeatures)        // i.e. ToBeAdded=(All assigned Feature) - (Common Features)
 

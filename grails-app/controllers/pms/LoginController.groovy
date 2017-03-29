@@ -1,6 +1,5 @@
 package pms
 
-import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -10,17 +9,18 @@ import org.springframework.security.authentication.CredentialsExpiredException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.session.SessionInformation
 import org.springframework.security.web.WebAttributes
 import service.PmActionsService
 
 import javax.servlet.http.HttpServletResponse
 
-class LoginController {
+class LoginController extends BaseController {
 
     BaseService baseService
-
     PmActionsService pmActionsService
+    SendMailForPasswordResetActionService sendMailForPasswordResetActionService
+    ShowForResetPasswordActionService showForResetPasswordActionService
+    ManageSecUserPasswordActionService manageSecUserPasswordActionService
 
     def SessionRegistry
 
@@ -157,54 +157,46 @@ class LoginController {
         SecUser user = SecUser.findByUsername(springSecurityService.authentication.name)
         render(view: '/login/resetPassword', model: [userId: user.id])
     }
-
-
-    def showOnlineUser() {
-        render(view: '/whoIsOnline/showOnlineUser')
-    }
-
-    def listOnlineUser() {
-        SecUser cUser = baseService.currentUserObject()
-        boolean isAdmin = baseService.isUserSystemAdmin(cUser.id)
-        List lstUsers = []
-        sessionRegistry.getAllPrincipals().each {
-            SecUser user = SecUser.findByUsername(it.username)
-            String department = ""
-            if (user.username == "admin") {
-                department = "<b>Software Development</b>"
-            } else {
-                PmServiceSector service = PmServiceSector.read(user.serviceId)
-                department = service.name
-            }
-            List<SessionInformation> lst = sessionRegistry.getAllSessions(it, true)
-            if (!isAdmin) {
-                if (user.serviceId == cUser.serviceId) {
-                    Map eachDetails = [
-                            id          : user.id,
-                            username    : user.username,
-                            employeeName: user.fullName,
-                            department  : department,
-                            signInTime  : lst.lastRequest[0]
-                    ]
-                    lstUsers << eachDetails
-                }
-            } else {
-                Map eachDetails = [
-                        id          : user.id,
-                        username    : user.username,
-                        employeeName: user.fullName,
-                        department  : department,
-                        signInTime  : lst.lastRequest[0]
-                ]
-                lstUsers << eachDetails
-            }
+    def showResetPassword() {
+        String view = '/login/showForgotPassword'
+        Map result = getServiceResponse(showForResetPasswordActionService, params)
+        Boolean isError = result.isError
+        if (isError.booleanValue()) {
+            flash.success = false
+            flash.message = result.message
+            render view: view, model: [userInfoMap: result.userInfoMap]
+            return
         }
-        Map result = new LinkedHashMap()
-        result.put("list", lstUsers)
-        result.put("count", lstUsers.size())
-        String output = result as JSON
-
-        render output
+        flash.message = null
+        render view: view, model: [userInfoMap: result.userInfoMap]
+    }
+    def managePassword(){
+        String view = "/login/showForgotPassword"
+        Map userInfoMap = [passwordResetLink: params.link, username: params.username, empname: params.empname]
+        Map result = getServiceResponse(manageSecUserPasswordActionService, params)
+        Boolean isError = result.isError
+        if (isError.booleanValue()) {
+            flash.success = false
+            flash.message = result.message
+            render view: view, model: [userInfoMap: userInfoMap]
+            return
+        }
+        flash.success = true
+        flash.message = result.message
+        render view: view, model: [userInfoMap: userInfoMap]
+    }
+    def sendPasswordResetLink() {
+        Map result = getServiceResponse(sendMailForPasswordResetActionService, params)
+        Boolean isError = result.isError
+        if (isError.booleanValue()) {
+            flash.success = false
+            flash.message = result.message
+            redirect action: 'auth', params: params
+            return
+        }
+        flash.success = true
+        flash.message = result.message
+        redirect action: 'auth', params: params
     }
 
     def listIndicatorLight(){

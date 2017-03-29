@@ -35,7 +35,7 @@ class ListUserDepartmentActionService extends BaseService implements ActionServi
     public Map execute(Map result) {
         try {
             Closure params = {
-                'eq' ('userId', Long.parseLong(result.userId))
+                'eq' ('userId', Long.parseLong(result.userId.toString()))
             }
             Map resultMap = super.getSearchResult(result, ListUserDepartmentActionServiceModel.class, params)
             result.put(LIST, resultMap.list)

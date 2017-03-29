@@ -7,6 +7,9 @@ class UserDepartment {
     long userId
     long serviceId
 
+    static mapping = {
+        datasource 'mis'
+    }
     static constraints = {
     }
 }

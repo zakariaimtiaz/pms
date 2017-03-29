@@ -8,6 +8,10 @@ dataSource_mis {
     driverClassName = PropertiesReader.getProperty("dataSource.driverClassName", PropertiesReader.CONFIG_FILE_DB)
     dialect         = PropertiesReader.getProperty("dataSource.dialect", PropertiesReader.CONFIG_FILE_DB);
 }
+dataSource_comn {
+    driverClassName = PropertiesReader.getProperty("dataSource.driverClassName", PropertiesReader.CONFIG_FILE_DB)
+    dialect         = PropertiesReader.getProperty("dataSource.dialect", PropertiesReader.CONFIG_FILE_DB);
+}
 hibernate {
     cache.use_second_level_cache = false
     cache.use_query_cache        = false
@@ -83,6 +87,32 @@ environments {
                 logAbandoned = false // causes stacktrace recording overhead, use only for debugging
             }
         }
+        dataSource_comn {
+            dbCreate    = "update"
+            url         = PropertiesReader.getProperty("dataSource.comn.db.url", PropertiesReader.CONFIG_FILE_DB)
+            username    = PropertiesReader.getProperty("dataSource.comn.db.username", PropertiesReader.CONFIG_FILE_DB)
+            password    = PropertiesReader.getProperty("dataSource.comn.db.password", PropertiesReader.CONFIG_FILE_DB)
+            logSql = false
+            properties {
+                jmxEnabled = true
+                initialSize = 5
+                maxActive = 50
+                minIdle = 5
+                maxIdle = 25
+                maxWait = 10000
+                maxAge = 10 * 60000
+                timeBetweenEvictionRunsMillis = 5000
+                minEvictableIdleTimeMillis = 60000
+                validationQuery = "SELECT 1"
+                validationQueryTimeout = 3
+                validationInterval = 15000
+                testOnBorrow = true
+                testWhileIdle = true
+                testOnReturn = false
+                jdbcInterceptors = "ConnectionState"
+                defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
+            }
+        }
     }
     test {
         dataSource {
@@ -122,6 +152,32 @@ environments {
             url         = PropertiesReader.getProperty("dataSource.mis.db.url", PropertiesReader.CONFIG_FILE_DB)
             username    = PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB)
             password    = PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB)
+            logSql = false
+            properties {
+                jmxEnabled = true
+                initialSize = 5
+                maxActive = 50
+                minIdle = 5
+                maxIdle = 25
+                maxWait = 10000
+                maxAge = 10 * 60000
+                timeBetweenEvictionRunsMillis = 5000
+                minEvictableIdleTimeMillis = 60000
+                validationQuery = "SELECT 1"
+                validationQueryTimeout = 3
+                validationInterval = 15000
+                testOnBorrow = true
+                testWhileIdle = true
+                testOnReturn = false
+                jdbcInterceptors = "ConnectionState"
+                defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
+            }
+        }
+        dataSource_comn {
+            dbCreate    = "update"
+            url         = PropertiesReader.getProperty("dataSource.comn.db.url", PropertiesReader.CONFIG_FILE_DB)
+            username    = PropertiesReader.getProperty("dataSource.comn.db.username", PropertiesReader.CONFIG_FILE_DB)
+            password    = PropertiesReader.getProperty("dataSource.comn.db.password", PropertiesReader.CONFIG_FILE_DB)
             logSql = false
             properties {
                 jmxEnabled = true

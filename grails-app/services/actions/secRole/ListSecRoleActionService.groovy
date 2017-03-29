@@ -45,7 +45,10 @@ class ListSecRoleActionService extends BaseService implements ActionServiceIntf 
                 result.put(COUNT, lstVal.size())
                 return result
             }
-            Map resultMap = super.getSearchResult(result, ListSecRoleActionServiceModel.class)
+            Closure param = {
+                'eq'('appsId', 1L)
+            }
+            Map resultMap = super.getSearchResult(result, ListSecRoleActionServiceModel.class,param)
             result.put(LIST, resultMap.list)
             result.put(COUNT, resultMap.count)
             return result
@@ -93,7 +96,7 @@ class ListSecRoleActionService extends BaseService implements ActionServiceIntf 
                 WHERE role.id IN (3,5)
                     GROUP BY role.id,role.name,role.authority,role.version;
         """
-        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        List<GroovyRowResult> lstValue = groovySql_comn.rows(query)
         return lstValue
     }
 }

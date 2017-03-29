@@ -115,7 +115,7 @@ class PmActionsController extends BaseController {
     ////////////MRP///////////////
     def achievement() {
         SecUser user = baseService.currentUserObject()
-        SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
+        SecRole roleAdmin = SecRole.findByAuthority("ROLE_PMS_ADMIN")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         boolean isAdmin = count > 0
         Long serviceId=user.serviceId

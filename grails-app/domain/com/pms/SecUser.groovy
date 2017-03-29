@@ -4,14 +4,18 @@ class SecUser {
 
 	transient springSecurityService
 
-	String fullName
+	long serviceId
 	String username
 	String password
 	boolean enabled = true
 	boolean accountExpired
 	boolean accountLocked
 	boolean passwordExpired
-	long serviceId
+	String employeeId
+	String employeeName
+	String passwordResetLink    // encoded link id based on loginId + current time
+	Date passwordResetValidity  // valid date time to reset password (valid till 24 hrs after sending request)
+	String passwordResetCode    // security code to reset password (sent by mail)
 
 	static transients = ['springSecurityService']
 
@@ -19,14 +23,19 @@ class SecUser {
 		username blank: false, unique: true
 		password blank: false
 		serviceId blank: true
+		employeeId(nullable: true)
+		passwordResetLink(nullable: true)
+		passwordResetValidity(nullable: true)
+		passwordResetCode(nullable: true)
 	}
 
 	static mapping = {
+		datasource 'comn'
 		password column: '`password`'
 	}
 
 	Set<SecRole> getAuthorities() {
-		SecUserSecRole.findAllBySecUser(this).collect { it.secRole }
+		SecUserSecRole.findAllBySecUserAndAppsId(this, 1).collect { it.secRole }
 	}
 
 	def beforeInsert() {

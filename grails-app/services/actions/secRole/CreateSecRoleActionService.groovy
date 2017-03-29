@@ -13,7 +13,7 @@ class CreateSecRoleActionService extends BaseService implements ActionServiceInt
 
     private static final String SAVE_SUCCESS_MESSAGE = "Role has been saved successfully"
     private static final String ALREADY_EXIST = "Same Role already exist"
-    private static final String ROLE = "ROLE_"
+    private static final String AUTHORITY_PREFIX = "ROLE_PMS_"
     private static final String SEC_ROLE = "secRole"
 
     private Logger log = Logger.getLogger(getClass())
@@ -33,7 +33,7 @@ class CreateSecRoleActionService extends BaseService implements ActionServiceInt
             if (!params.name) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            int duplicateCount = secRoleService.countByNameIlike(params.name)
+            int duplicateCount = secRoleService.countByNameIlike(params.name.toString())
             if (duplicateCount > 0) {
                 return super.setError(params, ALREADY_EXIST)
             }
@@ -56,7 +56,7 @@ class CreateSecRoleActionService extends BaseService implements ActionServiceInt
     public Map execute(Map result) {
         try {
             SecRole secRole = (SecRole) result.get(SEC_ROLE)
-            secRoleService.create(secRole)
+            secRole.save()
             featureManagementService.addRoleToRoot(secRole.authority)
             return result
         } catch (Exception ex) {
@@ -99,7 +99,8 @@ class CreateSecRoleActionService extends BaseService implements ActionServiceInt
      */
     private SecRole buildObject(Map parameterMap) {
         SecRole secRole = new SecRole(parameterMap)
-        secRole.authority = ROLE + secRole.name
+        secRole.authority = AUTHORITY_PREFIX + secRole.name
+        secRole.appsId = 1L
         return secRole
     }
 }

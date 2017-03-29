@@ -9,7 +9,6 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import service.SecRoleService
-import service.SecUserSecRoleService
 import service.SecUserService
 
 @Transactional
@@ -19,7 +18,6 @@ class CreateSecUserSecRoleActionService extends BaseService implements ActionSer
 
     SecUserService secUserService
     SecRoleService secRoleService
-    SecUserSecRoleService secUserSecRoleService
 
     private static final String SAVE_SUCCESS_MESSAGE = "User has been added successfully"
     private static final String USER_ROLE = "userRole"
@@ -60,12 +58,7 @@ class CreateSecUserSecRoleActionService extends BaseService implements ActionSer
     public Map execute(Map result) {
         try {
             SecUserSecRole userRole = (SecUserSecRole) result.get(USER_ROLE)
-            secUserSecRoleService.create(userRole)
-
-            SecUser user = SecUser.read(userRole.secUser.id)
-            user.accountLocked = Boolean.FALSE
-            user.save()
-
+            userRole.save()
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -112,6 +105,7 @@ class CreateSecUserSecRoleActionService extends BaseService implements ActionSer
         SecRole role = secRoleService.read(roleId)
         userRole.secUser = user
         userRole.secRole = role
+        userRole.appsId = 1L
         return userRole
     }
 }

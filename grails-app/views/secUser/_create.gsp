@@ -16,7 +16,7 @@
                         <div class="col-md-8">
 
                             <div class="form-group">
-                                <label class="col-md-3 control-label label-required" for="username">Login ID:</label>
+                                <label class="col-md-3 control-label label-required" >Login ID:</label>
 
                                 <div class="col-md-6">
                                     <app:dropDownEmployee
@@ -38,7 +38,7 @@
 
                                 <div class="col-md-6">
                                     <app:dropDownService
-                                            class="kendo-drop-down" is_in_sp="true"
+                                            class="kendo-drop-down" is_in_sp="false"
                                             id="serviceId" name="serviceId" tabindex="2"
                                             data-bind="value: secUser.serviceId"
                                             data_model_name="dropDownService">

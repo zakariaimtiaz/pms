@@ -6,11 +6,8 @@
     <sec:access url="/secUser/update">
         <li onclick="editSecUser();"><i class="fa fa-edit"></i>Edit</li>
     </sec:access>
-    <sec:access url="/secUser/syncUser">
-        <li onclick="syncronizeUser();"><i class="fa fa-cogs"></i>Sync User</li>
-    </sec:access>
     <sec:access url="/userDepartment/show">
-        <li onclick="editHeadInCharge();"><i class="fa fa-black-tie"></i>In-Charge</li>
+        <li onclick="editHeadInCharge();"><i class="fa fa-black-tie"></i>User Department Mapping</li>
     </sec:access>
 </ul>
 </script>
@@ -218,30 +215,6 @@
         var id = getSelectedIdFromGridKendo(gridSecUser);
         var loc = "${createLink(controller: 'userDepartment', action: 'show')}?userId=" + id;
         router.navigate(formatLink(loc));
-        return false;
-    }
-    function syncronizeUser() {
-        bootbox.confirm("Do you want to sync hr list ?", function (result) {
-            if (result) {
-                showLoadingSpinner(true);
-                jQuery.ajax({
-                    type: 'post',
-                    url:  "${createLink(controller:'secUser', action: 'syncUser')}",
-                    success: function (data, textStatus) {
-                        showSuccess(data.message);
-                        gridSecUser.dataSource.read();
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    },
-                    complete: function (XMLHttpRequest, textStatus) {
-                        showLoadingSpinner(false);
-                    },
-                    dataType: 'json'
-                });            }
-            else {
-                return "no";
-            }
-        }).find("div.modal-content").addClass("conf-download");
         return false;
     }
 </script>

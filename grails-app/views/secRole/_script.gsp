@@ -131,7 +131,7 @@
                     return data;
                 }
             },
-            pageSize: 15,
+            pageSize: 50,
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true

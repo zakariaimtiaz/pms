@@ -40,7 +40,7 @@ class SecUserService extends BaseService {
         """
         String queryStr3 = """
             INSERT INTO sec_user_sec_role(sec_user_id,sec_role_id)
-            SELECT u.id,(SELECT id FROM sec_role WHERE authority="ROLE_REPORT_USER")
+            SELECT u.id,(SELECT id FROM sec_role WHERE authority="PMS_ROLE_REPORT_USER")
             FROM sec_user u
             WHERE u.id NOT IN (SELECT DISTINCT(sec_user_id) FROM sec_user_sec_role);
         """

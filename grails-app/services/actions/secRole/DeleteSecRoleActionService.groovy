@@ -26,7 +26,7 @@ class DeleteSecRoleActionService extends BaseService implements ActionServiceInt
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
-        long userId = Long.parseLong(params.id)
+        long userId = Long.parseLong(params.id.toString())
         SecRole role = secRoleService.read(userId)
         if(!role){
             return super.setError(params, NOT_FOUND)
@@ -48,7 +48,7 @@ class DeleteSecRoleActionService extends BaseService implements ActionServiceInt
         try {
             SecRole role = (SecRole) result.get(SEC_ROLE)
             featureManagementService.removeRoleFromRoot(role.authority)
-            secRoleService.delete(role)
+            role.delete()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

@@ -100,16 +100,8 @@ class UpdateSecUserActionService extends BaseService implements ActionServiceInt
      */
     private SecUser buildObject(Map parameterMap, SecUser oldSecUser) {
         long serviceId = Long.parseLong(parameterMap.serviceId.toString())
-        String str = parameterMap.fullName
-        int startIndex = str.indexOf("(");
-        int endIndex = str.indexOf(")");
-        String toBeReplaced = str.substring(startIndex, endIndex + 1);
-        parameterMap.fullName = str.replace(toBeReplaced, "");
-
         SecUser user = new SecUser(parameterMap)
         oldSecUser.serviceId = serviceId
-        oldSecUser.username = user.username
-        oldSecUser.fullName = user.fullName
         oldSecUser.enabled = user.enabled
         oldSecUser.password = springSecurityService.encodePassword(user.password)
         oldSecUser.accountExpired = user.accountExpired

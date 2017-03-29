@@ -24,6 +24,8 @@ class BaseService extends Tools {
     def sessionFactory
     def groovySql
     def groovySql_mis
+    def groovySql_comn
+
     SpringSecurityService springSecurityService
     static transactional = false
 
@@ -629,25 +631,25 @@ class BaseService extends Tools {
     }
     public boolean isUserSystemAdmin(long userId) {
         SecUser user = SecUser.read(userId)
-        SecRole roleAdmin = SecRole.findByAuthority("ROLE_ADMIN")
+        SecRole roleAdmin = SecRole.findByAuthority("ROLE_PMS_ADMIN")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         return count > 0
     }
     public boolean isUserTopManagement(long userId) {
         SecUser user = SecUser.read(userId)
-        SecRole roleMan = SecRole.findByAuthority("ROLE_TOP_MANAGEMENT")
+        SecRole roleMan = SecRole.findByAuthority("ROLE_PMS_TOP_MANAGEMENT")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleMan, user)
         return count > 0
     }
     public boolean isUserHOD(long userId) {
         SecUser user = SecUser.read(userId)
-        SecRole roleHead = SecRole.findByAuthority("ROLE_DEPARTMENT_HEAD")
+        SecRole roleHead = SecRole.findByAuthority("ROLE_PMS_DEPARTMENT_HEAD")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
         return count > 0
     }
     public boolean isEdAssistantRole(long userId) {
         SecUser user = SecUser.read(userId)
-        SecRole roleHead = SecRole.findByAuthority("ROLE_ED_ASSISTANT_ROLE")
+        SecRole roleHead = SecRole.findByAuthority("ROLE_PMS_ED_ASSISTANT")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
         return count > 0
     }

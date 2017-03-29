@@ -21,19 +21,11 @@ class UpdateSecRoleActionService extends BaseService implements ActionServiceInt
 
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
             if ((!params.id) || (!params.name)) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
-            //long version = Long.parseLong(params.version.toString())
-
-            //Check existing of Obj and version matching
             SecRole oldSecRole = (SecRole) secRoleService.read(id)
-            /*if ((!oldSecRole) || oldSecRole.version != version) {
-                return super.setError(params, OBJ_CHANGED_MSG)
-            }*/
-            // Check existing of same secUser name
             String name = params.name.toString()
             int duplicateCount = secRoleService.countByNameIlikeAndIdNotEqual(name, id)
             if (duplicateCount > 0) {
@@ -52,7 +44,7 @@ class UpdateSecRoleActionService extends BaseService implements ActionServiceInt
     public Map execute(Map result) {
         try {
             SecRole secRole = (SecRole) result.get(SEC_ROLE)
-            secRoleService.update(secRole)
+            secRole.save()
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

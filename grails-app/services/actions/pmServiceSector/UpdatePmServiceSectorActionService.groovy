@@ -23,13 +23,11 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
 
     public Map executePreCondition(Map params) {
         try {
-            //Check parameters
-            if ((!params.name) || (!params.shortName)) {
+            if (!params.departmentHeadId) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long id = Long.parseLong(params.id.toString())
 
-            //Check existing of Obj and version matching
             PmServiceSector oldDepartment = (PmServiceSector) PmServiceSector.read(id)
 
             String name = params.name.toString()
@@ -37,10 +35,6 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
             if (count > 0) {
                 return super.setError(params, NAME_ALREADY_EXIST)
             }
-/*            int countSequence = Service.countBySequenceAndIdNotEqual(Integer.parseInt(params.sequence.toString()),id)
-            if (countSequence > 0) {
-                return super.setError(params, SEQUENCE_ALREADY_EXIST)
-            }*/
             int duplicateCount = PmServiceSector.countByShortNameIlikeAndIdNotEqual(name, id)
             if (duplicateCount > 0) {
                 return super.setError(params, SHORT_NAME_ALREADY_EXIST)
@@ -100,15 +94,11 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
         if(!service.departmentHead.equals(oldDepartment.departmentHead)){
             List<SecUser> lstUser = SecUser.findAllByServiceId(oldDepartment.id)
             for(int i=0; i<lstUser.size();i++){
-                lstUser[i].fullName = service.departmentHead
+                lstUser[i].employeeName = service.departmentHead
                 lstUser[i].save()
             }
         }
-        oldDepartment.name = service.name
-        oldDepartment.sequence = service.sequence
-        oldDepartment.shortName = service.shortName
         oldDepartment.departmentHead = service.departmentHead
-        oldDepartment.categoryId = Long.parseLong(parameterMap.categoryId.toString())
         oldDepartment.departmentHeadId = user?.login_id
         oldDepartment.departmentHead = user?.employee_name
         oldDepartment.departmentHeadGender = user?.gender_str

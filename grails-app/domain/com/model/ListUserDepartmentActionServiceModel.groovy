@@ -2,17 +2,12 @@ package com.model
 
 class ListUserDepartmentActionServiceModel {
 
-    public static final String MODEL_NAME = 'list_user_department_action_service_model'
-
     public static final String SQL_LIST_USER_DEPARTMENT_MODEL = """
-        DROP TABLE IF EXISTS list_user_department_action_service_model;
-        CREATE VIEW list_user_department_action_service_model AS
-        SELECT ud.id, ud.version, s.id AS service_id,s.name AS service_name, s.short_name AS service_short_name,
-             s.sequence AS sequence,u.id AS user_id
+        SELECT ud.id, ud.version, ud.user_id AS user_id,ur.employee_name user_name,
+         ud.service_id, s.name service_name,s.short_name service_short_name,s.sequence
                 FROM user_department ud
-        LEFT JOIN pm_service_sector s ON s.id = ud.service_id
-        LEFT JOIN sec_user u ON u.id = ud.user_id
-        ORDER BY s.sequence ASC;
+                LEFT JOIN service s ON s.id = ud.service_id
+                LEFT JOIN login_auth.sec_user ur ON ur.id = ud.user_id
     """
 
     long id
@@ -23,6 +18,10 @@ class ListUserDepartmentActionServiceModel {
     String serviceShortName
     float sequence
 
+    static mapping = {
+        datasource 'mis'
+        cache usage: "read-only"
+    }
     static constraints = {
     }
 }

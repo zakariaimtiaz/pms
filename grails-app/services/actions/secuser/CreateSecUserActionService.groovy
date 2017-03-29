@@ -105,12 +105,6 @@ class CreateSecUserActionService extends BaseService implements ActionServiceInt
      */
     private SecUser buildObject(Map parameterMap) {
         long serviceId = Long.parseLong(parameterMap.serviceId.toString())
-        String str = parameterMap.fullName
-        int startIndex = str.indexOf("(");
-        int endIndex = str.indexOf(")");
-        String toBeReplaced = str.substring(startIndex, endIndex + 1);
-        parameterMap.fullName = str.replace(toBeReplaced, "");
-
         SecUser secUser = new SecUser(parameterMap)
         secUser.serviceId = serviceId
         return secUser

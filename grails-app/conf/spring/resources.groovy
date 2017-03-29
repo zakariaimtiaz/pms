@@ -6,6 +6,7 @@ import org.springframework.security.web.session.ConcurrentSessionFilter
 beans = {
     groovySql(groovy.sql.Sql, ref('dataSource'))
     groovySql_mis(groovy.sql.Sql, ref('dataSource_mis'))
+    groovySql_comn(groovy.sql.Sql, ref('dataSource_comn'))
 
     sessionRegistry(SessionRegistryImpl)
 

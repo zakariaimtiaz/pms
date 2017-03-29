@@ -3,9 +3,6 @@
     <sec:access url="/pmServiceSector/update">
     <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
 </sec:access>
-<sec:access url="/pmServiceSector/delete">
-    <li onclick="deleteService();"><i class="fa fa-trash-o"></i>Delete</li>
-</sec:access>
 </ul>
 </script>
 
@@ -19,17 +16,8 @@
     });
 
     function onLoadServicePage() {
-        $('#sequence').kendoNumericTextBox({
-            min: 1.00,
-            step:1,
-            decimals: 2,
-            max: 999999999999,
-            format: "##.##"
-
-        });
-        // initialize form with kendo validator & bind onSubmit event
+        $('#rowCSU').hide();
         initializeForm($("#serviceForm"), onSubmitService);
-        // update page title
         defaultPageTile("Create Services",null);
     }
 
@@ -44,13 +32,14 @@
         if (executePreCondition() == false) {
             return false;
         }
-
-        setButtonDisabled($('#create'), true);
-        showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller:'pmServiceSector', action: 'create')}";
+            showError('CSU/Sector is only updatable');
+            return false
+            %{--actionUrl = "${createLink(controller:'pmServiceSector', action: 'create')}";--}%
         } else {
+            setButtonDisabled($('#create'), true);
+            showLoadingSpinner(true);
             actionUrl = "${createLink(controller:'pmServiceSector', action: 'update')}";
         }
 
@@ -101,7 +90,7 @@
         $('#departmentHeadId').val('');
         clearForm($("#serviceForm"), $('#categoryId'));
         initObservable();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
+        $('#rowCSU').hide();
     }
 
     function initDataSource() {
@@ -135,7 +124,7 @@
                     return data;
                 }
             },
-            sort: {field: 'sequence', dir: 'asc'},
+            sort: {field: 'id', dir: 'asc'},
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
@@ -180,27 +169,15 @@
                     service: {
                         id: "",
                         version: "",
-                        sequence: "",
-                        name: "",
-                        shortName: "",
-                        departmentHeadId: "",
-                        categoryId: ""
+                        departmentHeadId: ""
                     }
                 }
         );
         kendo.bind($("#application_top_panel"), serviceModel);
     }
 
-    function deleteService() {
-        if (executeCommonPreConditionForSelectKendo(gridService, 'service') == false) {
-            return;
-        }
-        var msg = 'Are you sure you want to delete the selected pmServiceSector?',
-                url = "${createLink(controller: 'pmServiceSector', action:  'delete')}";
-        confirmDelete(msg, url, gridService);
-    }
-
     function editService() {
+        $('#rowCSU').show();
         if (executeCommonPreConditionForSelectKendo(gridService, 'service') == false) {
             return;
         }
@@ -210,7 +187,6 @@
 
     function showService(service) {
         serviceModel.set('service', service);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 
 </script>

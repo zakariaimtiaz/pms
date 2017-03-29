@@ -132,19 +132,18 @@ class GetDropDownUserRoleTagLibActionService extends BaseService implements Acti
             serviceStr = "AND service_id = ${serviceId}"
         }
         String queryForList = """
-            SELECT id, CONCAT(full_name,' (',username,')') AS name
+            SELECT id, CONCAT(employee_name,' (',username,')') AS name
             FROM sec_user
             WHERE enabled = true ${serviceStr}
             AND id NOT IN
             (
                 SELECT sec_user_id
                 FROM sec_user_sec_role
-                WHERE sec_role_id = :roleId
+                WHERE sec_role_id = ${roleId}
             )
             ORDER BY username
         """
-        Map queryParams = [roleId: roleId]
-        List<GroovyRowResult> lstAppUser = executeSelectSql(queryForList, queryParams)
+        List<GroovyRowResult> lstAppUser = groovySql_comn.rows(queryForList)
         return lstAppUser
     }
 

@@ -11,7 +11,7 @@ class PermissionTagLib {
     static namespace = "sec"
 
     def fullName = { attrs ->
-        String username = SecUser.read(springSecurityService.principal.id).fullName
+        String username = SecUser.read(springSecurityService.principal.id).employeeName
         out << username
     }
 
