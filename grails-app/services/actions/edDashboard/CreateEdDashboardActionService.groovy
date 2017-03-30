@@ -56,7 +56,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             int year = c.get(Calendar.YEAR);
 
             PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndMonthAndYear(serviceId,month+1,year)
-            SecUser user = currentUserObject()
+            SecUser user = SecUser.read(springSecurityService.principal.id)
             boolean isTop = isUserTopManagement(user.id)
             boolean isEdAssist = isEdAssistantRole(user.id)
 
@@ -90,6 +90,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                     c.setTime(start);
                     c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
                     edDashboard.followupMonthFor = DateUtility.getSqlDate(c.getTime())
+                    edDashboard.edAdvice =EMPTY_SPACE
                 }
 
                 if (!edDashboard.description.isEmpty()) {
