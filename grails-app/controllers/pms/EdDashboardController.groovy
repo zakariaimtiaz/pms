@@ -60,20 +60,35 @@ class EdDashboardController extends BaseController {
     }
     def retrieveIssueAndMonthData() {
         try {
-            SecUser user = baseService.currentUserObject()
-            boolean isEdAssistant = baseService.isEdAssistantRole(user.id)
-            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-            Date start = originalFormat.parse(params.month.toString());
-            Calendar c = Calendar.getInstance();
-            c.setTime(start);
-            c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-            Date d = DateUtility.getSqlDate(c.getTime())
-            long sId = Long.parseLong(params.serviceId.toString())
-            long issuesId = Long.parseLong(params.issueId.toString())
+            if (!params.dashboardId) {
+                SecUser user = baseService.currentUserObject()
+                boolean isEdAssistant = baseService.isEdAssistantRole(user.id)
+                DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+                Date start = originalFormat.parse(params.month.toString());
+                Calendar c = Calendar.getInstance();
+                c.setTime(start);
+                c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+                Date monthFor = DateUtility.getSqlDate(c.getTime())
+                long sId = Long.parseLong(params.serviceId.toString())
 
-            EdDashboard edDashboard=EdDashboard.findByServiceIdAndMonthForAndIssueId(sId,d,issuesId)
-            Map result = [lst: edDashboard]
-            render result as JSON
+                if (!params.issueId) {
+                    List<GroovyRowResult> lst = edDashboardService.lstEdDashboardSectorOrCSUIssue(sId, monthFor)
+                    List<GroovyRowResult> lstKendo = BaseService.listForKendoDropdown(lst, null, null)
+                    Map result = [lst: lstKendo]
+                    render result as JSON
+                } else {
+                    long issuesId = Long.parseLong(params.issueId.toString())
+
+                    EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(sId, monthFor, issuesId)
+                    Map result = [lst: edDashboard]
+                    render result as JSON
+                }
+            } else {
+                long edDashboardId = Long.parseLong(params.dashboardId.toString())
+                EdDashboard edDashboard = EdDashboard.findById(edDashboardId)
+                Map result = [lst: edDashboard]
+                render result as JSON
+            }
         }catch (Exception ex){
         }
     }

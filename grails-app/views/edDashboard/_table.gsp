@@ -10,6 +10,7 @@
 
     <g:each var="item" in="${list}">
         <g:hiddenField name="hfIsHeading${item?.id}" value="${item?.is_heading}"></g:hiddenField>
+        <g:hiddenField name="hfIsAdditional${item?.id}" value="${item?.is_additional}"></g:hiddenField>
         <g:if test="${!item?.is_heading}">
             <tr>
 
@@ -32,7 +33,7 @@
 
                 </td>
                 <td style="padding: 0 0 0 0 ! important; width: 30%;">
-
+<div id="divDescriptionTextArea${item?.id}">
                     <g:if test="${!isEdAssistant ? item?.crisis_remarks_g : item?.crisis_remarks_s}">
                         <textarea id="description${item?.id}" name="description${item?.id}" rows="3"
                                   style="padding: 0 0 0 0 ! important;"
@@ -44,6 +45,13 @@
                                   class="form-control"
                                   placeholder="">${item?.description}</textarea>
                     </g:else>
+</div>
+                    <div id="divDescFollowupMonthDDL${item?.id}" style="display: none;">
+                            <select
+                                    id="descFollowupMonthDDL${item?.id}" name="descFollowupMonthDDL${item?.id}"
+                                    class="kendo-drop-down" onchange="loadRemarksAndEdAdvice(this);">
+                            </select>
+                    </div>
 
                 </td>
                 <td style="padding: 0 0 0 0 ! important;width: 25%;">
@@ -80,7 +88,7 @@
         </g:if>
         <g:else>
             <tr style="background-color: #c0c0c0">
-                <td colspan="4" style="width: 100%; text-align: left;">
+                <td colspan="6" style="width: 100%; text-align: left;">
                     <label id="issue${item?.id}" name="issue${item?.id}">
                         ${item?.issue_name}</label></td>
             </tr>

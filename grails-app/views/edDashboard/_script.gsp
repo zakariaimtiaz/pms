@@ -56,43 +56,124 @@
     function loadMonthAndIssueData(){
         var id=$(':focus').attr('id');
         var issueId=id.substring(13,id.length);
-        var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
-        serviceId=$('#serviceId').val();
-        var month=$(':focus').val();
-      //  alert(issueId);
-        jQuery.ajax({
-            type: 'post',
-            data: {serviceId:serviceId,month:month,issueId:issueId},
-            url: actionUrl,
-            success: function (data, textStatus) {
-                if (data.isError) {
-                    showError(data.message);
-                    return false;
+        if($('#hfIsAdditional' + issueId).val()=='true'){
+            $('#divDescriptionTextArea' + issueId).hide();
+            $('#divDescFollowupMonthDDL' + issueId).show();
+            $('#descFollowupMonthDDL' + issueId).kendoDropDownList({
+                dataTextField: "name",
+                dataValueField: "id",
+                dataSource: getKendoEmptyDataSource
+
+            });
+            descFollowupMonthDDL = $('#descFollowupMonthDDL' + issueId).data("kendoDropDownList");
+            descFollowupMonthDDL.setDataSource(getKendoEmptyDataSource(descFollowupMonthDDL, null));
+
+            var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
+            serviceId = $('#serviceId').val();
+            var month = $(':focus').val();
+            jQuery.ajax({
+                type: 'post',
+                data: {serviceId: serviceId, month: month},
+                url: actionUrl,
+                success: function (data, textStatus) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+                        $('#description' + issueId).val('');
+                        $('#remarks' + issueId).val('');
+                        $('#edAdvice' + issueId).val('');
+                    descFollowupMonthDDL.setDataSource(data.lst);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.info('error');
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    console.info('complete');
                 }
 
-                if(data.lst!=null) {
-                    $('#description' + issueId).val(data.lst.description);
-                    $("#remarks"+issueId).attr('title', data.lst.remarks);
-                   // $("#remarks" + issueId).attr('template','#=trimTextForKendo('+ data.lst.remarks+',70)#');
+            });
 
-                    //$('#remarks' + issueId).val(data.lst.remarks);
-                    $('#edAdvice' + issueId).val(data.lst.edAdvice);
-                    $('#description' + issueId).prop('readOnly',true);
-                }else{
-                    $('#description' + issueId).val('');
-                    $('#remarks' + issueId).val('');
-                    $('#edAdvice' + issueId).val('');
-                    $('#description' + issueId).prop('readOnly',false);
+        }else {
+            $('#divDescriptionTextArea' + issueId).show();
+            $('#divDescFollowupMonthDDL' + issueId).hide();
+            var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
+            serviceId = $('#serviceId').val();
+            var month = $(':focus').val();
+            //  alert(issueId);
+            jQuery.ajax({
+                type: 'post',
+                data: {serviceId: serviceId, month: month, issueId: issueId},
+                url: actionUrl,
+                success: function (data, textStatus) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+
+                    if (data.lst != null) {
+                        $('#description' + issueId).val(data.lst.description);
+                        $("#remarks" + issueId).attr('title', data.lst.remarks);
+                        // $("#remarks" + issueId).attr('template','#=trimTextForKendo('+ data.lst.remarks+',70)#');
+
+                        //$('#remarks' + issueId).val(data.lst.remarks);
+                        $('#edAdvice' + issueId).val(data.lst.edAdvice);
+                        $('#description' + issueId).prop('readOnly', true);
+                    } else {
+                        $('#description' + issueId).val('');
+                        $('#remarks' + issueId).val('');
+                        $('#edAdvice' + issueId).val('');
+                        $('#description' + issueId).prop('readOnly', false);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.info('error');
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    console.info('complete');
                 }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.info('error');
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                console.info('complete');
-            }
 
-        });
+            });
+        }
+    }
+    function loadRemarksAndEdAdvice(obj){
+
+        var id=obj.id;
+        var issueId=id.substring(20,id.length);
+        var descriptionId=$('#'+id).val();
+            var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
+
+            jQuery.ajax({
+                type: 'post',
+                data: {dashboardId:descriptionId},
+                url: actionUrl,
+                success: function (data, textStatus) {
+                    if (data.isError) {
+                        showError(data.message);
+                        return false;
+                    }
+
+                    if (data.lst != null) {
+                        $('#description' + issueId).val($('#'+id).data("kendoDropDownList").text());
+                        $("#remarks" + issueId).attr('title', data.lst.remarks);
+
+                        $('#edAdvice' + issueId).val(data.lst.edAdvice);
+                        $('#description' + issueId).prop('readOnly', true);
+                    } else {
+                        $('#description' + issueId).val('');
+                        $('#remarks' + issueId).val('');
+                        $('#edAdvice' + issueId).val('');
+                        $('#description' + issueId).prop('readOnly', false);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.info('error');
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    console.info('complete');
+                }
+
+            });
 
     }
 
