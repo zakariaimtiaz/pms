@@ -125,7 +125,7 @@
                 type: "column",
                 stack: true
             },
-            seriesColors: ["#FF6666", "#00FF00"],
+            seriesColors: ["#ff8a00", "#069302"],
             series: [
                 {
                     name: 'No. of Actions',
@@ -211,7 +211,7 @@
                 type: "column",
                 stack: true
             },
-            seriesColors: ["#FF6666", "#00FF00"],
+            seriesColors: ["#ff8a00", "#069302"],
             series: [
                 {
                     name: 'Remaining',
