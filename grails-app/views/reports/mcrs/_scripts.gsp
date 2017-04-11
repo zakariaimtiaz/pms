@@ -342,9 +342,9 @@
             if (perc >= -100 && perc <= -50) {
                 return '<span style="font-weight :bold;color: #ff0000" >'+ perc + ' %' + '</span>';
             }else if(perc >= -49 && perc <= -1){
-                return '<span style="font-weight :bold;color: #FFBF00" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #ff8a00" >'+ perc + ' %' + '</span>';
             }else{
-                return '<span style="font-weight :bold;color: #00FF00" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #069302" >'+ perc + ' %' + '</span>';
             }
         }
         return perc;
