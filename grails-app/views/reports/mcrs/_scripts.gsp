@@ -359,7 +359,7 @@
     $("#reset").click(onSubmitMCRSForm);
     function onSubmitMCRSForm(e) {
         var filterType = this.id;
-        tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
+        tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='', tmp8='';
         var month = $('#month').val();
         var serviceId = dropDownService.value();
         var indicatorType = dropDownIndicatorType.value();
