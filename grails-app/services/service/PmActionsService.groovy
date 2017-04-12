@@ -138,7 +138,7 @@ class PmActionsService extends BaseService {
         SecUser user = currentUserObject();
 
         String query = """
-        (SELECT ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Achieved" act_name,"#00FF00" act_color FROM
+        (SELECT ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Achieved" act_name,"#069302" act_color FROM
                 (SELECT cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
                 (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,aid.target,aid.achievement,
                 ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
@@ -153,7 +153,7 @@ class PmActionsService extends BaseService {
                 GROUP BY g.id
                 ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2)
         UNION ALL
-            (SELECT 100-ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Remaining" act_name,"#FF6666" act_color FROM
+            (SELECT 100-ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Remaining" act_name,"#ff8a00" act_color FROM
                 (SELECT cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
                 (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,aid.target,aid.achievement,
                 ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
@@ -185,7 +185,7 @@ class PmActionsService extends BaseService {
             FROM
             (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,
             ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col,
-            '#FF6666' t_color, '#00FF00' a_color,g.goal
+            '#ff8a00' t_color, '#069302' a_color,g.goal
             FROM pm_goals g
             LEFT JOIN pm_actions a ON a.goal_id = g.id
             LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
@@ -208,8 +208,8 @@ class PmActionsService extends BaseService {
         int year = c.get(Calendar.YEAR)
 
         String query = """
-            SELECT service_id,service,short_name,ROUND(SUM(a_pert)/COUNT(cat_axe)) a_pert,'#00FF00' a_color,
-            100-ROUND(SUM(a_pert)/COUNT(cat_axe)) r_pert,'#FF6666' r_color
+            SELECT service_id,service,short_name,ROUND(SUM(a_pert)/COUNT(cat_axe)) a_pert,'#069302' a_color,
+            100-ROUND(SUM(a_pert)/COUNT(cat_axe)) r_pert,'#ff8a00' r_color
             FROM
             (SELECT service_id,service,short_name,cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
             (SELECT sc.id service_id,g.id AS goal_id,sc.name service,sc.short_name,

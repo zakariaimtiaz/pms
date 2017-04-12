@@ -342,9 +342,9 @@
             if (perc >= -100 && perc <= -50) {
                 return '<span style="font-weight :bold;color: #ff0000" >'+ perc + ' %' + '</span>';
             }else if(perc >= -49 && perc <= -1){
-                return '<span style="font-weight :bold;color: #FFBF00" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #ff8a00" >'+ perc + ' %' + '</span>';
             }else{
-                return '<span style="font-weight :bold;color: #00FF00" >'+ perc + ' %' + '</span>';
+                return '<span style="font-weight :bold;color: #069302" >'+ perc + ' %' + '</span>';
             }
         }
         return perc;
@@ -359,7 +359,7 @@
     $("#reset").click(onSubmitMCRSForm);
     function onSubmitMCRSForm(e) {
         var filterType = this.id;
-        tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
+        tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='', tmp8='';
         var month = $('#month').val();
         var serviceId = dropDownService.value();
         var indicatorType = dropDownIndicatorType.value();
