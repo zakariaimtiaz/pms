@@ -93,7 +93,7 @@
                     </li>
                 </sec:ifAnyUrls>
                 <sec:ifAnyUrls
-                        urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show,/pmSpLog/showSubmission">
+                        urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show">
                     <li>
                         <a href="#"><i class="fa fa-book"></i>&nbsp;SP Entry<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

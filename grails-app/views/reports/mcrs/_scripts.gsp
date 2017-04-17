@@ -20,7 +20,7 @@
         activeTab('menu1');
     });
     function onLoadInfoPage() {
-        if(!${isSysAdmin} && !${isTopMan}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }

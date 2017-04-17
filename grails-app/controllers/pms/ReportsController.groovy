@@ -65,6 +65,7 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isHOD = baseService.isUserHOD(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
 
         Long month=1
         Long year=1900
@@ -83,6 +84,7 @@ class ReportsController  extends BaseController  {
         render(view: "/reports/mcrs/show", model: [isSysAdmin:isSysAdmin,
                                                    isTopMan: isTopMan,isHOD: isHOD,
                                                    serviceId:user.serviceId,
+                                                   isSpAdmin:isSpAdmin,
                                                    submissionDate:submissionDate])
     }
     def listMcrs() {
@@ -100,8 +102,10 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isHOD = baseService.isUserHOD(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+
         render(view: "/reports/monthly/show", model: [isSysAdmin:isSysAdmin,
-                                                      isTopMan: isTopMan,isHOD: isHOD,
+                                                      isTopMan: isTopMan,isHOD: isHOD,isSpAdmin: isSpAdmin,
                                                       serviceId:user.serviceId])
     }
     def listSpMonthlyPlan() {
@@ -118,8 +122,10 @@ class ReportsController  extends BaseController  {
         SecUser user = baseService.currentUserObject()
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
         render(view: "/reports/yearly/show", model: [isSysAdmin:isSysAdmin,
                                                      isTopMan: isTopMan,
+                                                     isSpAdmin: isSpAdmin,
                                                      serviceId:user.serviceId])
     }
     def listYearlySP() {
@@ -137,9 +143,12 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isAssist = baseService.isEdAssistantRole(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+
         render(view: "/reports/dashboard/show", model: [isSysAdmin:isSysAdmin,
                                                         isTopMan: isTopMan,
                                                         isAssist: isAssist,
+                                                        isSpAdmin: isSpAdmin,
                                                         serviceId:user.serviceId])
     }
     def listEdDashBoard() {
@@ -156,8 +165,10 @@ class ReportsController  extends BaseController  {
         SecUser user = baseService.currentUserObject()
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+
         render(view: "/reports/spSummary/show", model: [isSysAdmin:isSysAdmin,
-                                                        isTopMan: isTopMan,
+                                                        isTopMan: isTopMan, isSpAdmin: isSpAdmin,
                                                         serviceId:user.serviceId])
     }
     def listSpSummary() {

@@ -1,6 +1,5 @@
 package taglib
 
-import com.pms.PmServiceSector
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -173,7 +172,7 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
                 FROM mis.service
             WHERE is_displayble = TRUE AND id IN (${param})
             ${spStr}
-            ORDER BY id ASC
+            ORDER BY name ASC
         """
         List<GroovyRowResult> lstServices = groovySql_mis.rows(queryForList)
         return lstServices

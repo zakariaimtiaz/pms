@@ -33,7 +33,7 @@
         }).data("kendoDatePicker");
         $('#month').val(str);
 
-        if(!${isSysAdmin} && !${isTopMan}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }
