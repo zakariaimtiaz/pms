@@ -5,7 +5,7 @@
         <td style="width: 10%;"><label class=" control-label"></label></td>
         <td style="width: 30%;"><label class=" control-label">Crisis & Highlights</label></td>
         <td style="width: 25%;"><label class=" control-label">Remarks</label></td>
-        <td style="width: 25%;"><label class=" control-label">Ed's Advice</label></td>
+        <td style="width: 25%;"><label class=" control-label">ED's Advice</label></td>
     </tr>
 
     <g:each var="item" in="${list}">
