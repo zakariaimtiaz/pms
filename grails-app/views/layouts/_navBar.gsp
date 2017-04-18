@@ -92,6 +92,20 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/meetingLog/show">
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/meetingLog/show">
+                                <li>
+                                    <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly</a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
                 <sec:ifAnyUrls
                         urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show">
                     <li>

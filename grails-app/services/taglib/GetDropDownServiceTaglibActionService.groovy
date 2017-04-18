@@ -175,6 +175,7 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
             ORDER BY name ASC
         """
         List<GroovyRowResult> lstServices = groovySql_mis.rows(queryForList)
+        consolePrint(queryForList)
         return lstServices
     }
 }
