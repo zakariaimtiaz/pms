@@ -29,6 +29,7 @@
             dropDownService.readonly(true);
         }
         $("#issues").kendoEditor({
+            encoded: false,
             resizable: {
                 content: false,
                 toolbar: true
@@ -43,10 +44,11 @@
                 "justifyRight",
                 "justifyFull",
                 "insertUnorderedList",
-                "insertOrderedList",
+                "insertOrderedList"
             ]
         });
         $("#logStr").kendoEditor({
+            encoded: false,
             resizable: {
                 content: false,
                 toolbar: true

@@ -15,11 +15,13 @@ import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
 import pms.utility.DateUtility
+import service.MeetingLogService
 import service.PmActionsService
 
 class ReportsController  extends BaseController  {
     BaseService baseService
     PmActionsService pmActionsService
+    MeetingLogService meetingLogService
 
     ListMCRSActionService listMCRSActionService
     DownloadMCRSActionService downloadMCRSActionService
@@ -39,7 +41,7 @@ class ReportsController  extends BaseController  {
     static allowedMethods = [
             showSpStatus: "POST", showMcrsStatus: "POST", showMcrs: "POST", showSpMonthlyPlan: "POST", showYearlySP: "POST"
     ]
-    //################## Submission Status Start ###########################
+    //################## Statical Status Start ###########################
 
     def showSpStatus() {
         render(view: "/reports/statistical/showSP")
@@ -54,6 +56,14 @@ class ReportsController  extends BaseController  {
     }
     def listMcrsStatus() {
         List<GroovyRowResult> lst = pmActionsService.lstDepartmentMcrsStatus(params.year.toString())
+        render lst as JSON
+    }
+
+    def showMeetingStatus() {
+        render(view: "/reports/statistical/showMeeting")
+    }
+    def listMeetingStatus() {
+        List<GroovyRowResult> lst = meetingLogService.lstDepartmentWeeklyMeetingStatus(params.year.toString())
         render lst as JSON
     }
 

@@ -86,6 +86,7 @@ class UpdateMeetingLogActionService extends BaseService implements ActionService
     private static MeetingLog buildObject(Map parameterMap,MeetingLog oldObject) {
         parameterMap.heldOn = DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.heldOn.toString()))
         MeetingLog meetingLog = new MeetingLog(parameterMap)
+        oldObject.serviceId = meetingLog.serviceId
         oldObject.attendees = meetingLog.attendees
         oldObject.heldOn = meetingLog.heldOn
         oldObject.issues = meetingLog.issues
