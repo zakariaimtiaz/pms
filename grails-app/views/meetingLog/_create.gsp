@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="issues">Issues:</label>
+                                <label class="col-md-2 control-label label-required" for="issues">Agenda:</label>
 
                                 <div class="col-md-9">
                                     <textarea id="issues" name="issues"

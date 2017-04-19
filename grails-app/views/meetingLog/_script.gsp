@@ -232,7 +232,7 @@
                 {field: "attendeesStr", title: "Attendees", width: 150, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "issues", title: "Issues",width: 100, sortable: false, filterable: false,
+                {field: "issues", title: "Agenda",width: 100, sortable: false, filterable: false,
                     template: "#=htmlDecode(issues)#"
                 },
                 {field: "logStr", title: "Action Log",width: 250, sortable: false, filterable: false,

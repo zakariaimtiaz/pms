@@ -38,7 +38,7 @@
     <table class="table table-bordered">
         <tbody>
         <tr>
-            <td width="20%" class="active">CSU/Sector</td>
+            <td width="20%" class="active">Sector/CSU</td>
             <td>${resultSet.service}</td>
         </tr>
         <tr>
@@ -50,7 +50,7 @@
             <td>${resultSet.attendees_str}</td>
         </tr>
         <tr>
-            <td width="20%" class="active">Issues</td>
+            <td width="20%" class="active">Agenda</td>
             <td>${resultSet.issues}</td>
         </tr>
         <tr>

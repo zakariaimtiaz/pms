@@ -86,7 +86,7 @@
             reorderable: true,
             pageable: false,
             columns: [
-                {field: "SERVICE_STR", title: "CSU/Sector", width: 150, sortable: false, filterable: false},
+                {field: "SERVICE_STR", title: "Sector/CSU", width: 150, sortable: false, filterable: false},
                 {field: "JANUARY", title: "January", width: 80, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },

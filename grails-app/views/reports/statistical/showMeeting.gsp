@@ -3,7 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-title">
-                    CSU/Sector Weekly meeting Status
+                    Sector/CSU Weekly meeting Status
                 </div>
             </div>
 
