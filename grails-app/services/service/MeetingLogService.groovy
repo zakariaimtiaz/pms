@@ -39,7 +39,7 @@ class MeetingLogService extends BaseService {
 
         String query = """
         SELECT ml.id, ml.version, mt.id meeting_type_id,mt.name meeting_type,s.id service_id,
-              s.name service,ml.held_on,ml.log_str,ml.issues,ml.attendees,
+              s.name service,DATE_FORMAT(ml.held_on, '%d-%b-%Y') held_on,ml.log_str,ml.issues,ml.attendees,
               (SELECT GROUP_CONCAT(NAME SEPARATOR ', ') FROM mis.employee
               WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',ml.attendees,', '))>0 ) attendees_str
         FROM meeting_log ml
