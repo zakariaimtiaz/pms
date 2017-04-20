@@ -1,16 +1,9 @@
 package pms
 
 import actions.pmActions.*
-import com.pms.PmActions
-import com.pms.PmActionsIndicator
-import com.pms.PmMcrsLog
-import com.pms.PmSpLog
-import com.pms.SecRole
-import com.pms.SecUser
-import com.pms.SecUserSecRole
+import com.pms.*
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
-import pms.utility.DateUtility
 import service.PmActionsService
 import service.PmProjectsService
 import service.PmServiceSectorService
@@ -118,23 +111,9 @@ class PmActionsController extends BaseController {
         SecRole roleAdmin = SecRole.findByAuthority("ROLE_PMS_ADMIN")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         boolean isAdmin = count > 0
-        Long serviceId=user.serviceId
+        String submissionDate=baseService.lastSubmissionDate(user.serviceId)
 
-        Long month=1
-        Long year=1900
-        String submissionDate=""
-        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
-        if(d[0]) {
-            try {
-                Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
-                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
-                year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
-                submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
-
-            }catch(Exception ex){}
-        }
-
-        render(view: "/pmActions/mrp/show", model: [isAdmin:isAdmin,serviceId:serviceId,submissionDate:submissionDate])
+        render(view: "/pmActions/mrp/show", model: [isAdmin:isAdmin,serviceId:user.serviceId,submissionDate:submissionDate])
     }
     def listAchievement(){
         renderOutput(listMRPActionService, params)

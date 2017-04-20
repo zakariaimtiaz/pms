@@ -1,15 +1,16 @@
 package taglib
 
-import com.pms.PmServiceSector
+import com.pms.SecUser
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import pms.ActionServiceIntf
 import pms.BaseService
-import service.SecUserService
+
+import javax.validation.constraints.Null
 
 @Transactional
-class GetDropDownServiceTaglibActionService extends BaseService implements ActionServiceIntf {
+class GetDropDownEdDashboardIssuesTaglibActionService extends BaseService implements ActionServiceIntf {
 
     private static final String NAME = 'name'
     private static final String ID = 'id'
@@ -19,13 +20,10 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
     private static final String ON_CHANGE = 'onchange'
     private static final String DEFAULT_VALUE = 'defaultValue'
     private static final String REQUIRED = 'required'
-    private static final String IS_IN_SP = 'is_in_sp'
     private static final String VALIDATION_MESSAGE = 'validationmessage'
     private static final String DEFAULT_MESSAGE = 'Required'
     private static final String DATA_MODEL_NAME = 'data_model_name'
     private static final String ERROR_FOR_INVALID_INPUT = 'Error for invalid input'
-
-    SecUserService secUserService
 
     /**
      * Build a map containing properties of html select
@@ -50,7 +48,6 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
             params.put(HINTS_TEXT, params.hints_text ? params.hints_text : PLEASE_SELECT)
             params.put(SHOW_HINTS, params.show_hints ? new Boolean(Boolean.parseBoolean(params.show_hints.toString())) : Boolean.TRUE)
             params.put(REQUIRED, params.required ? new Boolean(Boolean.parseBoolean(params.required.toString())) : Boolean.FALSE)
-            params.put(IS_IN_SP, params.is_in_sp ? new Boolean(Boolean.parseBoolean(params.is_in_sp.toString())) : Boolean.FALSE)
             params.put(VALIDATION_MESSAGE, params.validationmessage ? params.validationmessage : DEFAULT_MESSAGE)
             params.put(DEFAULT_VALUE, params.defaultValue ? new Long(Long.parseLong(params.defaultValue.toString())) : null)
 
@@ -69,9 +66,8 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
      */
     public Map execute(Map result) {
         try {
-            boolean isInSP = (boolean) result.get(IS_IN_SP)
-            List<GroovyRowResult> lstServices = (List<GroovyRowResult>) listServices(isInSP)
-            String html = buildDropDown(lstServices, result)
+            List<GroovyRowResult> lstGoal = (List<GroovyRowResult>) listGoals()
+            String html = buildDropDown(lstGoal, result)
             result.html = html
             return result
         } catch (Exception e) {
@@ -114,11 +110,11 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
      *  2.set value for refresh dropdown in strDefaultValue
      *  3.Build list for kendo dropdown
      *
-     * @param lstServices - list for select 'options'
+     * @param lstGoals - list for select 'options'
      * @param dropDownAttributes - a map containing the attributes of drop down
      * @return - html string for select
      */
-    private String buildDropDown(List<GroovyRowResult> lstServices, Map dropDownAttributes) {
+    private String buildDropDown(List<GroovyRowResult> lstGoals, Map dropDownAttributes) {
         // read map values
         String name = dropDownAttributes.get(NAME)
         String dataModelName = dropDownAttributes.get(DATA_MODEL_NAME)
@@ -139,10 +135,10 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
         String strDefaultValue = defaultValue ? defaultValue : EMPTY_SPACE
 
         if (showHints.booleanValue()) {
-            lstServices = listForKendoDropdown(lstServices, null, hintsText)
+            lstGoals = listForKendoDropdown(lstGoals, null, hintsText)
             // the null parameter indicates that dataTextField is name
         }
-        String jsonData = lstServices as JSON
+        String jsonData = lstGoals as JSON
         String script = """ \n
             <script type="text/javascript">
                 \$(document).ready(function () {
@@ -164,18 +160,11 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
         return html + script
     }
 
-    private List<GroovyRowResult> listServices(boolean isInSP) {
-        String spStr = EMPTY_SPACE
-        if(isInSP) spStr = "AND is_in_sp IN (${isInSP})"
-        String param = currentUserDepartmentListStr()
+    private List<GroovyRowResult> listGoals() {
         String queryForList = """
-            SELECT id, CONCAT(name,' (',short_name,')') AS name
-                FROM mis.service
-            WHERE is_displayble = TRUE AND id IN (${param})
-            ${spStr}
-            ORDER BY name ASC
+            SELECT id,issue_name AS name FROM ed_dashboard_issues WHERE is_heading<>TRUE ORDER BY id ASC
         """
-        List<GroovyRowResult> lstServices = groovySql_mis.rows(queryForList)
+        List<GroovyRowResult> lstServices = executeSelectSql(queryForList)
         return lstServices
     }
 }
