@@ -8,7 +8,7 @@
         $("#gridMonthlySP .k-grid-toolbar").hide();
     });
     function onLoadInfoPage() {
-        if(!${isSysAdmin} && !${isTopMan}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }

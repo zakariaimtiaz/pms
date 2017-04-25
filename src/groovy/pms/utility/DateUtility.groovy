@@ -98,7 +98,6 @@ class DateUtility {
 
 
 
-    //NOTE:  parseMaskedDate() method has 118 usage in project
 
     public static Date parseMaskedDate(String paramDate) {
 

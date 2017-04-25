@@ -8,7 +8,7 @@
     });
     function onLoadInfoPage() {
         var data = [];
-        if(!${isSysAdmin} && !${isTopMan}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
             data = ["All Indicator", "Action Indicator"];

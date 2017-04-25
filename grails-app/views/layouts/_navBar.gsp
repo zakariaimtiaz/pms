@@ -66,6 +66,21 @@
                                     <a href="#reports/showSpSummary"><i class="fa fa-keyboard-o"></i>&nbsp;SP Summary</a>
                                 </li>
                             </sec:access>
+                            <sec:ifAnyUrls urls="/reports/showMeetingStatus">
+                                <li>
+                                    <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
+                                            class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <sec:access url="/reports/showMeetingStatus">
+                                            <li>
+                                                <a href="#reports/showMeetingStatus"><i
+                                                        class="fa fa-wikipedia-w"></i>&nbsp;Weekly
+                                                </a>
+                                            </li>
+                                        </sec:access>
+                                    </ul>
+                                </li>
+                            </sec:ifAnyUrls>
                             <sec:ifAnyUrls urls="/reports/showSpStatus,reports/showMcrsStatus">
                                 <li>
                                     <a href="#"><i class="fa fa-bar-chart-o"></i>&nbsp;Submission<span
@@ -92,8 +107,22 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/meetingLog/show">
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/meetingLog/show">
+                                <li>
+                                    <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly</a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
                 <sec:ifAnyUrls
-                        urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show,/pmSpLog/showSubmission">
+                        urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show">
                     <li>
                         <a href="#"><i class="fa fa-book"></i>&nbsp;SP Entry<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

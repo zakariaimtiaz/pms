@@ -236,7 +236,7 @@ function showInfo(infoDescrip) {
 
 String.prototype.endsWith = function (str) {
     return (this.match(str + "$") == str);
-}
+};
 
 String.prototype.isEmpty = function () {
     try {
@@ -244,7 +244,7 @@ String.prototype.isEmpty = function () {
     } catch (e) {
         return true;
     }
-}
+};
 String.prototype.replaceHtmlEntites = function() {
     var s = this;
     var translate_re = /&(nbsp|amp|quot|lt|gt);/g;

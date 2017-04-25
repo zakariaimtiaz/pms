@@ -22,8 +22,9 @@ class PmMcrsLogController extends BaseController{
         SecUser user = baseService.currentUserObject()
         long serviceId = user.serviceId
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
         PmServiceSector service = PmServiceSector.findByShortName("MIS")
-        if(isAdmin){ serviceId = service.id}
+        if(isAdmin || isSpAdmin){ serviceId = service.id}
         render(view: "/pmMcrsLog/show", model: [serviceId:serviceId,isAdmin:isAdmin])
     }
     def create() {

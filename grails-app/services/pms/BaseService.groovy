@@ -611,8 +611,9 @@ class BaseService extends Tools {
         boolean isSysAdmin = isUserSystemAdmin(user.id)
         boolean isTop = isUserTopManagement(user.id)
         boolean isEdAssist = isEdAssistantRole(user.id)
+        boolean isEdAdmin = isEdAdminRole(user.id)
 
-        if(!isSysAdmin && !isTop && !isEdAssist){
+        if(!isSysAdmin && !isTop && !isEdAssist && !isEdAdmin){
             List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
             return Tools.buildCommaSeparatedStringOfIds(lstIds)
         }
@@ -624,7 +625,9 @@ class BaseService extends Tools {
         boolean isSysAdmin = isUserSystemAdmin(user.id)
         boolean isTop = isUserTopManagement(user.id)
         boolean isEdAssist = isEdAssistantRole(user.id)
-        if(!isSysAdmin && !isTop && !isEdAssist){
+        boolean isEdAdmin = isEdAdminRole(user.id)
+
+        if(!isSysAdmin && !isTop && !isEdAssist && !isEdAdmin){
             List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
             return lstIds
         }
@@ -652,6 +655,12 @@ class BaseService extends Tools {
     public boolean isEdAssistantRole(long userId) {
         SecUser user = SecUser.read(userId)
         SecRole roleHead = SecRole.findByAuthority("ROLE_PMS_ED_ASSISTANT")
+        int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
+        return count > 0
+    }
+    public boolean isEdAdminRole(long userId) {
+        SecUser user = SecUser.read(userId)
+        SecRole roleHead = SecRole.findByAuthority("ROLE_PMS_CONTROL_ADMIN")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
         return count > 0
     }

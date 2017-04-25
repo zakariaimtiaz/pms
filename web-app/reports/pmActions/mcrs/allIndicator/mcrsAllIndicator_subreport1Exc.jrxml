@@ -346,18 +346,6 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ind_remarks}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="548" y="0" width="29" height="20" uuid="458b18dd-2ef8-4dab-9218-0853421fd2c6">
-					<printWhenExpression><![CDATA[$F{variance}<0]]></printWhenExpression>
-				</reportElement>
-				<box>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Top"/>
-				<text><![CDATA[*]]></text>
-			</staticText>
 		</band>
 	</detail>
 </jasperReport>
