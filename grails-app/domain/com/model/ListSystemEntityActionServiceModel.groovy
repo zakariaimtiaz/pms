@@ -4,7 +4,6 @@ class ListSystemEntityActionServiceModel {
     public static final String MODEL_NAME = 'list_system_entity_action_service_model'
 
     public static final String SQL_LIST_SYSTEM_ENTITY_MODEL = """
-    DROP TABLE IF EXISTS list_system_entity_action_service_model;
     CREATE OR REPLACE VIEW list_system_entity_action_service_model AS
           SELECT se.id, se.version, se.name,se.type_id, stp.name AS type_name
           FROM system_entity AS se

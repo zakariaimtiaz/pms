@@ -1,6 +1,5 @@
 package actions.secRole
 
-import com.model.ListPmGoalsActionServiceModel
 import com.model.ListSecRoleActionServiceModel
 import com.pms.SecUser
 import grails.transaction.Transactional

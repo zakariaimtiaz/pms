@@ -4,7 +4,6 @@ class ListPmSprintsActionServiceModel {
     public static final String MODEL_NAME = 'list_pm_sprints_action_service_model'
 
     public static final String SQL_LIST_SPRINTS_MODEL = """
-        DROP TABLE IF EXISTS list_pm_sprints_action_service_model;
         CREATE OR REPLACE VIEW list_pm_sprints_action_service_model AS
         SELECT s.id, s.version, s.sprints,d.id AS actions_id,d.actions, g.id AS goal_id, g.goal,s.sequence,
         sc.id AS service_id,sc.name AS service,sc.short_name AS ser_short_name,s.weight,d.res_person_id AS action_res_id,

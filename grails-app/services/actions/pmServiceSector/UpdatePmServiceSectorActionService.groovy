@@ -1,6 +1,5 @@
 package actions.pmServiceSector
 
-import com.model.ListHrUserActionServiceModel
 import com.model.ListPmServiceSectorActionServiceModel
 import com.pms.PmServiceSector
 import com.pms.SecUser
