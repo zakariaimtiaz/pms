@@ -1,19 +1,13 @@
 package pms
 
-import actions.pmActions.*
 import actions.pmAdditionalActions.CreatePmAdditionalActionsActionService
 import actions.pmAdditionalActions.DeletePmAdditionalActionsActionService
 import actions.pmAdditionalActions.ListPmAdditionalActionsActionService
 import actions.pmAdditionalActions.UpdatePmAdditionalActionsActionService
-import com.pms.PmActions
-import com.pms.PmActionsIndicator
 import com.pms.PmAdditionalActionsIndicator
-import com.pms.PmMcrsLog
-import com.pms.PmSpLog
 import com.pms.SecUser
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
-import pms.utility.DateUtility
 import service.PmActionsService
 import service.PmProjectsService
 import service.PmServiceSectorService
@@ -38,24 +32,10 @@ class PmAdditionalActionsController extends BaseController {
         List<GroovyRowResult> lstProject = pmProjectsService.activeList()
         lstProject.remove(0)
         SecUser user = baseService.currentUserObject()
-        Long serviceId=user.serviceId
-
-        Long month=1
-        Long year=1900
-        String submissionDate=""
-        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
-       if(d[0]) {
-           try {
-               Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
-               month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
-               year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
-               submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
-
-           }catch(Exception ex){}
-       }
+        String submissionDate=baseService.lastSubmissionDate(user.serviceId)
         render(view: "/pmAdditionalActions/show", model: [lstService  : lst as JSON,
                                                 lstProject  : lstProject as JSON,
-                                                serviceId   : serviceId,submissionDate:submissionDate])
+                                                serviceId   : user.serviceId,submissionDate:submissionDate])
     }
     def create() {
         renderOutput(createPmAdditionalActionsActionService, params)

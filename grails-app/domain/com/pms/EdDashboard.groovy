@@ -27,7 +27,7 @@ class EdDashboard {
         description     size: 2..15000
         remarks     size: 2..15000
         edAdvice     size: 2..15000
-        description(nullable: true)
+        description nullable: true
         remarks(nullable: true)
         edAdvice(nullable: true)
         followupMonthFor(nullable: true)

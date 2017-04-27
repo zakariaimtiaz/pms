@@ -1,5 +1,6 @@
 package pms
 
+import com.pms.PmMcrsLog
 import com.pms.PmServiceSector
 import com.pms.SecRole
 import com.pms.SecUser
@@ -15,6 +16,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
 import org.hibernate.SQLQuery
 import org.hibernate.Session
+import pms.utility.DateUtility
 import pms.utility.Tools
 
 import javax.sql.DataSource
@@ -686,5 +688,21 @@ class BaseService extends Tools {
         """
         List<GroovyRowResult> result = groovySql_mis.rows(query)
         return result[0].name
+    }
+    public String lastSubmissionDate(Long serviceId){
+        Long month=1
+        Long year=1900
+        String submissionDate=""
+        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
+        if(d[0]) {
+            try {
+                Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
+                year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
+                submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
+
+            }catch(Exception ex){}
+        }
+        return submissionDate
     }
 }
