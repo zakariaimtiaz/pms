@@ -96,7 +96,9 @@ class CreatePmMcrsLogActionService extends BaseService implements ActionServiceI
         pmMcrsLog.serviceId = serviceId
         pmMcrsLog.monthStr = monthString
         pmMcrsLog.isSubmitted = false
+        pmMcrsLog.isSubmittedDb = false
         pmMcrsLog.isEditable = true
+        pmMcrsLog.isEditableDb = true
         return pmMcrsLog
     }
 }

@@ -1,6 +1,8 @@
 package actions.pmActions
 
 import com.pms.PmActionsIndicatorDetails
+import com.pms.PmMcrsLog
+import com.pms.SecUser
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -11,6 +13,8 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
 
     private static final String COULD_NOT_BE_EMPTY = "Remarks is mandatory for Repeatable% indicator"
     private static final String UPDATE_SUCCESS_MESSAGE = "Achievement has been updated successfully"
+    private static final String MRP_LOCKED_MSG = "MRP is locked for this month"
+    private static final String MRP_SUBMITTED_MSG = "MRP already submitted"
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -31,6 +35,14 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
             if(detailsIdStr) {
                 long id = Long.parseLong(detailsIdStr)
                 PmActionsIndicatorDetails details = PmActionsIndicatorDetails.read(id)
+                SecUser user = currentUserObject()
+                PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndMonthStrIlike(user.serviceId, details.monthName)
+                if(!pmMcrsLog.isEditable){
+                    return super.setError(params, MRP_LOCKED_MSG)
+                }
+                if(pmMcrsLog.isSubmitted){
+                    return super.setError(params, MRP_SUBMITTED_MSG)
+                }
                 details.remarks = remarksStr
                 if (!achievementStr.isEmpty())
                     details.achievement = Integer.parseInt(achievementStr)

@@ -97,6 +97,13 @@ class UpdatePmServiceSectorActionService extends BaseService implements ActionSe
                 lstUser[i].save()
             }
         }
+        oldDepartment.categoryId = service.categoryId
+        oldDepartment.name = service.name
+        oldDepartment.shortName= service.shortName
+        oldDepartment.sequence= service.sequence
+        oldDepartment.isActive= service.isActive
+        oldDepartment.isDisplayble= service.isDisplayble
+        oldDepartment.isInSp= service.isInSp
         oldDepartment.departmentHead = service.departmentHead
         oldDepartment.departmentHeadId = user?.login_id
         oldDepartment.departmentHead = user?.employee_name

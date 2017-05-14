@@ -72,5 +72,6 @@ grails.project.dependency.resolution = {
         compile ":hibernate:3.6.10.18" // or ":hibernate:3.6.10.18"
         runtime ":jquery:1.11.1"
         compile ":mail:1.0.7"
+        compile ":rest-client-builder:2.1.1"
     }
 }

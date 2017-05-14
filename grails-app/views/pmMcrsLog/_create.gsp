@@ -12,42 +12,43 @@
                     <input type="hidden" name="id" id="id" data-bind="value: mcrsLog.id"/>
                     <input type="hidden" name="version" id="version" data-bind="value: mcrsLog.version"/>
 
-                    <div class="form-group">
-                        <label class="col-md-1 control-label label-optional"
-                               for="serviceId">Sector/CSU:</label>
+                            <div class="form-group">
+                                <label class="col-md-1 control-label label-optional" for="serviceId">Sector/CSU:</label>
 
-                        <div class="col-md-3">
-                            <app:dropDownService
-                                    class="kendo-drop-down" onchange="populateGrid();"
-                                    required="true" validationMessage="Required"
-                                    id="serviceId" name="serviceId" tabindex="1"
-                                    data-bind="value: mcrsLog.serviceId"
-                                    data_model_name="dropDownService">
-                            </app:dropDownService>
-                        </div>
-                        <label class="col-md-1 control-label label-optional" for="month">Month:</label>
+                                <div class="col-md-4">
+                                    <app:dropDownService
+                                            class="kendo-drop-down" onchange="populateGrid();"
+                                            required="true" validationMessage="Required"
+                                            id="serviceId" name="serviceId" tabindex="1"
+                                            data-bind="value: mcrsLog.serviceId"
+                                            data_model_name="dropDownService">
+                                    </app:dropDownService>
+                                </div>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="isEditable">Edit MRP:</label>
 
-                        <div class="col-md-2">
-                            <input type='text' tabindex="2" required="required" onkeydown="return false;"
-                                   class="kendo-date-picker" id="month" name="month"
-                                   placeholder="Month" validationMessage="Required"/>
-                        </div>
-                        <label class="col-md-1 control-label label-optional"
-                               for="isSubmitted">Submitted:</label>
+                                <div class="col-md-1">
+                                    <g:checkBox class="form-control-static" id="isEditable" name="isEditable"
+                                                tabindex="3" data-bind="checked: mcrsLog.isEditable"/>
+                                </div>
+                            </div>
 
-                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label label-optional" for="month">Month:</label>
 
-                            <g:checkBox class="form-control-static" id="isSubmitted" name="isSubmitted" tabindex="3"
-                                        data-bind="checked: mcrsLog.isSubmitted" onchange="checkSubmitted();"/>
-                        </div>
-                        <label class="col-md-1 control-label label-optional"
-                               for="isEditable">Editable:</label>
+                                <div class="col-md-4">
+                                    <input type='text' tabindex="2" required="required" onkeydown="return false;"
+                                           class="kendo-date-picker" id="month" name="month"
+                                           placeholder="Month" validationMessage="Required"/>
+                                </div>
+                                <label class="col-md-2 control-label label-optional"
+                                       for="isEditable">Edit Dashboard:</label>
 
-                        <div class="col-md-1">
-                            <g:checkBox class="form-control-static" id="isEditable" name="isEditable" tabindex="4"
-                                        onchange="checkEditable();" data-bind="checked: mcrsLog.isEditable"/>
-                        </div>
-                    </div>
+                                <div class="col-md-1">
+                                    <g:checkBox class="form-control-static" id="isEditableDb" name="isEditableDb"
+                                                tabindex="4" data-bind="checked: mcrsLog.isEditableDb"/>
+                                </div>
+                            </div>
                 </div>
 
                 <div class="panel-footer">
@@ -61,6 +62,7 @@
                             aria-disabled="false" onclick='emptyForm();'><span
                             class="k-icon k-i-close"></span>Cancel
                     </button>
+
                     <div class="col-md-2 pull-right">
                         <input type="text" id="year" name="year">
                     </div>

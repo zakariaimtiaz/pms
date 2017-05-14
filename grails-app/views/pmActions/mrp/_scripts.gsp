@@ -36,7 +36,7 @@
             $('#month').val(str);
         }
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showSpMonthlyPlan');
+        defaultPageTile("Strategic Plan", 'pmActions/achievement');
     }
     function initListView() {
         $("#lstGoal").kendoListView({
@@ -202,13 +202,13 @@
     };
 
     function formatIndicator(indicatorType, target) {
-        if (!target && indicatorType.match('%')){
+        if (!target && (indicatorType=='Dividable%'||indicatorType=='RepeatableP'||indicatorType=='RepeatableP++')){
             return '0 %'
-        }else if(!target && !indicatorType.match('%')){
+        }else if(!target && (indicatorType!='Dividable%'||indicatorType!='RepeatableP'||indicatorType!='RepeatableP++')){
             return '0'
         }
 
-        if (indicatorType.match('%')) {
+        if (indicatorType=='Dividable%'||indicatorType=='RepeatableP'||indicatorType=='RepeatableP++') {
             return target + ' % ';
         }
         return target

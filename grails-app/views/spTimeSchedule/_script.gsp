@@ -50,7 +50,7 @@
         active.min(start.value());
         active.max(end.value());
         initializeForm($("#timeScheduleForm"), onSubmitTimeSchedule);
-        defaultPageTile("SP Time Schedule",'/spTimeSchedule/show');
+        defaultPageTile("SP Time Schedule",'spTimeSchedule/show');
     }
     function startChange() {
         var startDate = start.value();

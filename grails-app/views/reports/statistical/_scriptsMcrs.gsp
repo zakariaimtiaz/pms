@@ -1,3 +1,5 @@
+<div id="dialog"></div>
+
 <script language="javascript">
     var gridMCRS, dataSource;
 
@@ -17,7 +19,7 @@
             change: populateMCRSGrid
         }).data("kendoDatePicker");
         $('#year').val(str);
-        defaultPageTile("MCRS Submission",null);
+        defaultPageTile("MCRS Submission","reports/showMcrsStatus");
     }
 
     function populateMCRSGrid(){
@@ -46,30 +48,18 @@
                 model: {
                     fields: {
                         service: { type: "string" },
-                        January: { type: "date" },
-                        JanuaryD: { type: "date" },
-                        February: { type: "date" },
-                        FebruaryD: { type: "date" },
-                        March: { type: "date" },
-                        MarchD: { type: "date" },
-                        April: { type: "date" },
-                        AprilD: { type: "date" },
-                        May: { type: "date" },
-                        MayD: { type: "date" },
-                        June: { type: "date" },
-                        JuneD: { type: "date" },
-                        July: { type: "date" },
-                        JulyD: { type: "date" },
-                        August: { type: "date" },
-                        AugustD: { type: "date" },
-                        September: { type: "date" },
-                        SeptemberD: { type: "date" },
-                        October: { type: "date" },
-                        OctoberD: { type: "date" },
-                        November: { type: "date" },
-                        NovemberD: { type: "date" },
-                        December: { type: "date" },
-                        DecemberD: { type: "date" }
+                        JanuaryID: { type: "number" },     January: { type: "date" },     JanuaryDsb: { type: "date" },      JanuaryD: { type: "date" },
+                        FebruaryID: { type: "number" },    February: { type: "date" },    FebruaryDsb: { type: "date" },     FebruaryD: { type: "date" },
+                        MarchID: { type: "number" },       March: { type: "date" },       MarchDsb: { type: "date" },        MarchD: { type: "date" },
+                        AprilID: { type: "number" },       April: { type: "date" },       AprilDsb: { type: "date" },        AprilD: { type: "date" },
+                        MayID: { type: "number" },         May: { type: "date" },         MayDsb: { type: "date" },          MayD: { type: "date" },
+                        JuneID: { type: "number" },        June: { type: "date" },        JuneDsb: { type: "date" },         JuneD: { type: "date" },
+                        JulyID: { type: "number" },        July: { type: "date" },        JulyDsb: { type: "date" },         JulyD: { type: "date" },
+                        AugustID: { type: "number" },      August: { type: "date" },      AugustDsb: { type: "date" },       AugustD: { type: "date" },
+                        SeptemberID: { type: "number" },   September: { type: "date" },   SeptemberDsb: { type: "date" },    SeptemberD: { type: "date" },
+                        OctoberID: { type: "number" },     October: { type: "date" },     OctoberDsb: { type: "date" },      OctoberD: { type: "date" },
+                        NovemberID: { type: "number" },    November: { type: "date" },    NovemberDsb: { type: "date" },     NovemberD: { type: "date" },
+                        DecemberID: { type: "number" },    December: { type: "date" },    DecemberDsb: { type: "date" },     DecemberD: { type: "date" }
                     }
                 },
                 parse: function (data) {
@@ -90,60 +80,168 @@
             autoBind: false,
             dataSource: dataSource,
             height: getGridHeightKendo(),
-            selectable: true,
+            selectable: false,
             sortable: true,
             resizable: true,
             reorderable: true,
             pageable: false,
             columns: [
                 {field: "service", title: "CSU/Sector", width: 150, sortable: false, filterable: false},
-                {field: "January", title: "January", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(January,JanuaryD)#"
+                {
+                    title: "January", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "January", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(JanuaryID,1,January,JanuaryD)#"
+                        },
+                        {field: "JanuaryDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(JanuaryID,2,JanuaryDsb,JanuaryD)#"
+                        }
+                    ]
                 },
-                {field: "February", title: "February", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(February,FebruaryD)#"
+                {
+                    title: "February", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "February", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(FebruaryID,1,February,FebruaryD)#"
+                        },
+                        {field: "FebruaryDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(FebruaryID,2,FebruaryDsb,FebruaryD)#"
+                        }
+                    ]
                 },
-                {field: "March", title: "March", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(March,MarchD)#"
+                {
+                    title: "March", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "March", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(MarchID,1,March,MarchD)#"
+                        },
+                        {field: "MarchDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(MarchID,2,MarchDsb,MarchD)#"
+                        }
+                    ]
                 },
-                {field: "April", title: "April", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(April,AprilD)#"
+                {
+                    title: "April", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "April", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(AprilID,1,April,AprilD)#"
+                        },
+                        {field: "AprilDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(AprilID,2,AprilDsb,AprilD)#"
+                        }
+                    ]
                 },
-                {field: "May", title: "May", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(May,MayD)#"
+                {
+                    title: "May", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "May", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(MayID,1,May,MayD)#"
+                        },
+                        {field: "MayDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(MayID,2,MayDsb,MayD)#"
+                        }
+                    ]
                 },
-                {field: "June", title: "June", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(June,JuneD)#"
+                {
+                    title: "June", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "June", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(JuneID,1,June,JuneD)#"
+                        },
+                        {field: "JuneDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(JuneID,2,JuneDsb,JuneD)#"
+                        }
+                    ]
                 },
-                {field: "July", title: "July", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(July,JulyD)#"
+                {
+                    title: "July", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "July", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(JulyID,1,July,JulyD)#"
+                        },
+                        {field: "JulyDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(JulyID,2,JulyDsb,JulyD)#"
+                        }
+                    ]
                 },
-                {field: "August", title: "August", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(August,AugustD)#"
+                {
+                    title: "August", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "August", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(AugustID,1,August,AugustD)#"
+                        },
+                        {field: "AugustDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(AugustID,2,AugustDsb,AugustD)#"
+                        }
+                    ]
                 },
-                {field: "September", title: "September", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(September,SeptemberD)#"
+                {
+                    title: "September", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "September", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(SeptemberID,1,September,SeptemberD)#"
+                        },
+                        {field: "SeptemberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(SeptemberID,2,SeptemberDsb,SeptemberD)#"
+                        }
+                    ]
                 },
-                {field: "October", title: "October", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(October,OctoberD)#"
+                {
+                    title: "October", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "October", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(OctoberID,1,October,OctoberD)#"
+                        },
+                        {field: "OctoberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(OctoberID,2,OctoberDsb,OctoberD)#"
+                        }
+                    ]
                 },
-                {field: "November", title: "November", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(November,NovemberD)#"
+                {
+                    title: "November", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "November", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(NovemberID,1,November,NovemberD)#"
+                        },
+                        {field: "NovemberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(NovemberID,2,NovemberDsb,NovemberD)#"
+                        }
+                    ]
                 },
-                {field: "December", title: "December", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=checkDeadLine(December,DecemberD)#"
+                {
+                    title: "December", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {field: "December", title: "MRP", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(DecemberID,1,December,DecemberD)#"
+                        },
+                        {field: "DecemberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
+                            attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                            template:"#=checkDeadLine(DecemberID,2,DecemberDsb,DecemberD)#"
+                        }
+                    ]
                 }
             ],
             filterable: {
@@ -154,16 +252,23 @@
         $("#menuGrid").kendoMenu();
     }
 
-    function checkDeadLine(submit, deadLine){
-        var d1 = new Date(submit);
+    function checkDeadLine(logId,typeId,submitOn, deadLine){
+        var d1 = new Date(submitOn);
         var d2 = new Date(deadLine);
         if(d1.getTime()== 0){
             return "";
         }
         if(d1.getTime() > d2.getTime()){
-            return "<b style='color: orange'>"+convertDate(submit)+"</b>";
+            return "<a style='cursor: pointer' onclick='showMcrsLogDetails("+logId+","+typeId+");'><b style='color: orange'>"+convertDate(submitOn)+"</b></a>";
         }
-        return  convertDate(submit);
+        return  "<a style='cursor: pointer' onclick='javascript:showMcrsLogDetails("+logId+","+typeId+");'>"+convertDate(submitOn)+'</a>';
+    }
+
+    function showMcrsLogDetails(logId,typeId){
+        var param = "?logId=" + logId + "&typeId=" + typeId;
+
+        var url = "${createLink(controller: 'pmMcrsLog', action: 'logDetailsById')}"  + param;
+        router.navigate(formatLink(url));
     }
 
     $("#gridMCRS").kendoTooltip({

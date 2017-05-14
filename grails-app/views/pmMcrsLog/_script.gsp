@@ -122,6 +122,7 @@
     function emptyForm() {
         clearForm($("#mcrsLogForm"), $('#serviceId'));
         $('#month').val(currentMonth);
+        $('#year').val(currentYear);
         dropDownService.value(serviceId);
         dropDownService.readonly(false);
         kendoDatePicker.readonly(false);
@@ -135,8 +136,8 @@
                         version: "",
                         serviceId: "",
                         month: currentMonth,
-                        isSubmitted: "",
-                        isEditable: ""
+                        isEditable: "",
+                        isEditableDb: ""
                     }
                 }
         );
@@ -164,9 +165,12 @@
                         serviceId: {type: "number"},
                         service: {type: "string"},
                         submissionDate: {type: "date"},
+                        submissionDateDb: {type: "date"},
                         deadLine: {type: "date"},
                         isSubmitted: {type: "boolean"},
-                        isEditable: {type: "boolean"}
+                        isSubmittedDb: {type: "boolean"},
+                        isEditable: {type: "boolean"},
+                        isEditableDb: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -174,7 +178,7 @@
                     return data;
                 }
             },
-            sort: {field: 'service', dir: 'asc'},
+            sort: {field: 'month', dir: 'asc'},
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
@@ -214,21 +218,61 @@
                     headerAttributes: {style: setAlignCenter()}
                 },
                 {
-                    field: "isSubmitted", title: "Submitted", width: 50, sortable: false,
-                    filterable: false, attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=isSubmitted?'YES':'NO'#"
+                    title: "Submitted", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {
+                            field: "isSubmitted", title: "MRP",
+                            width: 30, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isSubmitted?'YES':'NO'#"
+                        },
+                        {
+                            field: "isSubmittedDb", title: "ED's Dashboard",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isSubmittedDb?'YES':'NO'#"
+                        }
+                    ]
                 },
                 {
-                    field: "submissionDate",title: "Submission Date",
-                    width: 50, sortable: false,filterable: false,
-                    template: "#=isSubmitted?kendo.toString(kendo.parseDate(submissionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#",
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}
+                    title: "Submission Date", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {
+                            field: "submissionDate", title: "MRP",
+                            width: 30, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isSubmitted?kendo.toString(kendo.parseDate(submissionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                        },
+                        {
+                            field: "submissionDateDb", title: "ED's Dashboard",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=submissionDateDb?kendo.toString(kendo.parseDate(submissionDateDb, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                        }
+                    ]
                 },
                 {
-                    field: "isEditable", title: "Editable", width: 50, sortable: false,
-                    filterable: false,attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=isEditable?'YES':'NO'#"
+                    title: "Editable", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {
+                            field: "isEditable", title: "MRP",
+                            width: 30, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isEditable?'YES':'NO'#"
+                        },
+                        {
+                            field: "isEditableDb", title: "ED's Dashboard",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isEditableDb?'YES':'NO'#"
+                        }
+                    ]
                 }
             ],
             filterable: {
@@ -239,17 +283,7 @@
         gridMcrsLog = $("#gridMcrsLog").data("kendoGrid");
         $("#menuGrid2").kendoMenu();
     }
-    function checkSubmitted(){
-        if($("#isSubmitted").is(":checked")){
-            $("#isEditable").prop("checked",false);
-        }
-    }
-    function checkEditable(){
-        if($("#isEditable").is(":checked")){
-            $("#isSubmitted").prop("checked",false);
-        }
 
-    }
     function editMCRS() {
         if (executeCommonPreConditionForSelectKendo(gridMcrsLog, 'mcrsLog') == false) {
             return;

@@ -43,7 +43,7 @@
             }
         }
         var value='${submissionDate}';
-$('#hfSubmissionDate').val('${submissionDate}');
+        $('#hfSubmissionDate').val('${submissionDate}');
         if(value!='') {
             st = new Date(moment('${submissionDate}').endOf('year'));
             start.min('${submissionDate}');

@@ -37,7 +37,7 @@
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }
-        defaultPageTile("Ed's Dashboard", '/reports/showEdDashBoard');
+        defaultPageTile("Ed's Dashboard", 'reports/showEdDashBoard');
     }
     function activaTab(tab) {
         $('.nav-tabs a[href="#' + tab + '"]').tab('show');

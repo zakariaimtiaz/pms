@@ -113,6 +113,7 @@
                             tot_tar: {editable: false, type: "number"},
                             mon_tar: {editable: false, type: "string"},
                             mon_acv: {editable: false, type: "string"},
+                            mon_var: {editable: false, type: "string"},
                             cum_tar: {editable: false, type: "string"},
                             cum_acv: {editable: false, type: "string"},
                             remarks: {editable: false, type: "string"},
@@ -198,11 +199,10 @@
                             template: "#=formatIndicator(indicator_type,mon_acv)#"
                         },
                         {
-                            field: "mon_acv", title: "Var",
+                            field: "mon_var", title: "Var",
                             width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
-                            attributes: {style: setAlignCenter()},
-                            template: "#=calculateVariance(mon_tar,mon_acv)#"
+                            attributes: {style: setAlignCenter()}
                         }
                     ]
                 },
@@ -335,7 +335,7 @@
     });
     function calculateVariance(tar,ach){
         var perc="";
-        if(isNaN(tar) || isNaN(ach) || tar == 0){
+        if(isNaN(tar) || isNaN(ach) || tar == 0 || tar=='N/A'|| ach=='N/A'){
             perc="N/A";
         }else{
             perc = Math.round(((ach/tar) * 100).toFixed(1)-100);

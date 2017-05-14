@@ -1,5 +1,8 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
+    <sec:access url="/pmServiceSector/create">
+        <li onclick="addService();"><i class="fa fa-plus-square"></i>Add</li>
+    </sec:access>
     <sec:access url="/pmServiceSector/update">
     <li onclick="editService();"><i class="fa fa-edit"></i>Edit</li>
 </sec:access>
@@ -116,7 +119,10 @@
                         departmentHeadId: { type: "string" },
                         departmentHead: { type: "string" },
                         shortName: { type: "string" },
-                        sequence: { type: "number" }
+                        sequence: { type: "number" },
+                        isDisplayble: { type: "boolean" },
+                        isInSp: { type: "boolean"},
+                        isActive: { type: "boolean" }
                     }
                 },
                 parse: function (data) {
@@ -169,18 +175,27 @@
                     service: {
                         id: "",
                         version: "",
+                        sequence: "",
+                        name: "",
+                        shortName: "",
+                        categoryId: "",
+                        isInSp: true,
+                        isDisplayble: true,
+                        isActive: true,
                         departmentHeadId: ""
                     }
                 }
         );
         kendo.bind($("#application_top_panel"), serviceModel);
     }
-
-    function editService() {
+    function addService() {
         $('#rowCSU').show();
+    }
+    function editService() {
         if (executeCommonPreConditionForSelectKendo(gridService, 'service') == false) {
             return;
         }
+        $('#rowCSU').show();
         var service = getSelectedObjectFromGridKendo(gridService);
         showService(service);
     }
