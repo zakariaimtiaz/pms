@@ -40,15 +40,19 @@ class EdDashboardService  extends BaseService{
         Date month = DateUtility.getSqlDate(c.getTime())
         long userServiceId = currentUserObject().serviceId
         String queryForList = """
-        SELECT  edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
-                ,CASE WHEN lg.is_submitted THEN TRUE ELSE FALSE END AS crisis_remarks_g,
+        SELECT tbl.*,CASE WHEN lg.is_submitted THEN TRUE ELSE FALSE END AS crisis_remarks_g,
                 CASE WHEN ${userServiceId}!=${serviceId} THEN TRUE ELSE CASE WHEN lg.is_submitted THEN TRUE ELSE FALSE END END AS crisis_remarks_s,
                 TRUE AS advice_g,FALSE AS advice_s
-        FROM ed_dashboard_issues edi
-        LEFT JOIN ed_dashboard ed ON ed.service_id = ${serviceId} AND ed.issue_id=edi.id AND MONTH(ed.month_for)=MONTH('${month}') AND YEAR(ed.month_for)=YEAR('${month}')
+         FROM (SELECT  edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
+        ,ed.is_followup,ed.followup_month_for FROM  ed_dashboard_issues edi LEFT JOIN ed_dashboard ed ON ed.issue_id=edi.id
+        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE edi.is_additional<>1
+        UNION ALL
+        SELECT edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
+        ,ed.is_followup,ed.followup_month_for FROM  ed_dashboard_issues edi RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id
+        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE edi.is_additional=1)tbl
         LEFT JOIN pm_mcrs_log lg ON lg.service_id = ${serviceId} AND lg.month =MONTH('${month}') AND lg.year = YEAR('${month}')
-        LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id
-        ORDER BY edi.id;
+        LEFT JOIN pm_service_sector ss ON ss.id=${serviceId}
+        ORDER BY tbl.id;
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
@@ -63,5 +67,22 @@ class EdDashboardService  extends BaseService{
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
+    }
+    public List<GroovyRowResult> lstEdDashboardDescriptionAndRemarks(long serviceId,Date month,long issuesId) {
+        String queryForList = """
+        SELECT description,GROUP_CONCAT(CONCAT(MONTHNAME(month_for),':\\\nRemarks: ',remarks,'\\\nED Advice: ',ed_advice)SEPARATOR'\\\n') AS remarks
+            FROM ed_dashboard WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}'
+            GROUP BY description
+        """
+        List<GroovyRowResult>  lst = executeSelectSql(queryForList)
+        return lst
+    }
+    public long minimumAdditionalIssuesId() {
+        String query = """
+        select min(id) as count from ed_dashboard_issues WHERE is_additional=1
+        """
+        List<GroovyRowResult> max = executeSelectSql(query)
+        long con = max[0].count
+        return con
     }
 }
