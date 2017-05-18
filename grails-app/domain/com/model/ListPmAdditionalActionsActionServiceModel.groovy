@@ -3,8 +3,7 @@ package com.model
 class ListPmAdditionalActionsActionServiceModel {
     public static final String MODEL_NAME = 'list_pm_additional_actions_action_service_model'
 
-    public static final String SQL_LIST_ACTIONS_MODEL = """
-            DROP TABLE IF EXISTS list_pm_additional_actions_action_service_model;
+    public static final String SQL_LIST_ADDITIONAL_ACTIONS_MODEL = """
             CREATE OR REPLACE VIEW list_pm_additional_actions_action_service_model AS
 
              SELECT d.id, d.version,d.actions, g.id AS goal_id, g.goal,d.res_person_id,d.start, d.end,d.sequence, d.tmp_seq, sc.id AS service_id,sc.name AS service,d.indicator,

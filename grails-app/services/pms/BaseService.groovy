@@ -23,6 +23,7 @@ import javax.sql.DataSource
 
 class BaseService extends Tools {
 
+    def rest
     def sessionFactory
     def groovySql
     def groovySql_mis

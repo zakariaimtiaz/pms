@@ -102,22 +102,31 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         }
 
         String query = """
-                SELECT *,(((mon_acv/mon_tar)*100)-100) AS mon_var FROM
+                SELECT * FROM
                 (SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
 
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
+
+                 CONCAT(ROUND((SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)/
+                 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))*100)-100,'%') AS mon_var,
+
+                 CASE
+                 WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
+                 ROUND((100*SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
-                 SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
+                 SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
+
+                 CASE
+                 WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
                  ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
                  SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
-                 CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
+
+                 CASE
+                 WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 

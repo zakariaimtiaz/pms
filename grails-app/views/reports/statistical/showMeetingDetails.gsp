@@ -25,7 +25,7 @@
 </style>
 <script language="javascript">
     $(document).ready(function () {
-        defaultPageTile("Meeting Log details","meetingLog/show");
+        defaultPageTile("Meeting Log details","reports/showMeetingStatus");
     });
 </script>
 <div id="dd">

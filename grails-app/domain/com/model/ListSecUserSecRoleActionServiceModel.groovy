@@ -1,12 +1,7 @@
 package com.model
 
 class ListSecUserSecRoleActionServiceModel implements Serializable {
-    public static final String MODEL_NAME = 'list_sec_user_sec_role_action_service_model'
-
     public static final String SQL_LIST_USER_ROLE_MODEL = """
-    DROP TABLE IF EXISTS list_sec_user_sec_role_action_service_model;
-    CREATE OR REPLACE VIEW list_sec_user_sec_role_action_service_model AS
-
     SELECT sec_user_id AS user_id,CONCAT(u.employee_name,' (',u.username,')') AS username,
            s.id AS service_id,s.name AS service,sec_role_id AS role_id, role.authority,role.apps_id
     FROM sec_user_sec_role ur

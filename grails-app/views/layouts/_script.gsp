@@ -30,19 +30,19 @@
             type: 'post',
             url: loc,
             success: function (data, textStatus) {
+                markLeftMenu(loc);
                 $('#page-wrapper').height($(window).height()-60);
                 $('#page-wrapper').html(data);
-                markLeftMenu(loc);
             },
             complete: function (XMLHttpRequest, textStatus) {
                 showLoadingSpinner(false);
             }
         });
     }
+
     function markLeftMenu(loc){
         $("#navbar a").removeClass('active');
         $("#navbar a[href='" + '#'+loc + "']").addClass('active').focus();
-
     }
 
     function redirectToLogoutPage() {

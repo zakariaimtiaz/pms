@@ -9,6 +9,7 @@ class PmServiceSector {
     float sequence = 0.00f
     boolean isDisplayble = true
     boolean isInSp = true
+    boolean isActive = true
     String staticName
     String departmentHeadId
     String departmentHead

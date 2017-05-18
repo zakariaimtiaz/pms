@@ -358,10 +358,11 @@
                     return data;
                 }
             },
-            sort: [{field:'serviceId', dir: 'asc'},
+            sort: [
+                {field:'serviceId', dir: 'asc'},
                 {field:'start', dir: 'asc',format: "{0:yyyy}"},
                 {field:'goalId', dir: 'asc'},
-                {field:'tmpSeq', dir: 'asc'},
+                {field:'tmpSeq', dir: 'asc'}
             ],
             pageSize: getDefaultPageSize(),
             serverPaging: true,
@@ -471,7 +472,13 @@
         });
     }
     function formatIndicator(indicatorType,target){
-        if(indicatorType.match('%')){
+        if (!target && (indicatorType=='Dividable%'||indicatorType=='RepeatableP'||indicatorType=='RepeatableP++')){
+            return '0 %'
+        }else if(!target && (indicatorType!='Dividable%'||indicatorType!='RepeatableP'||indicatorType!='RepeatableP++')){
+            return '0'
+        }
+
+        if (indicatorType=='Dividable%'||indicatorType=='RepeatableP'||indicatorType=='RepeatableP++') {
             return target + ' % ';
         }
         return target
@@ -587,9 +594,9 @@
                             "<option value='Dividable'>Dividable</option>" +
                             "<option value='Dividable%'>Dividable(%)</option>" +
                             "<option value='Repeatable'>Repeatable</option>" +
-                            "<option value='Repeatable%'>Repeatable(%)</option>" +
+                            "<option value='RepeatableP'>Repeatable(%)</option>" +
                             "<option value='Repeatable++'>Repeatable(+/-)</option>" +
-                            "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
+                            "<option value='RepeatableP++'>Repeatable(%)(+/-)</option>" +
                             "</select> " +
                             "<td width='20%'>" +
                             "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
@@ -640,9 +647,9 @@
                 "<option value='Dividable'>Dividable</option>" +
                 "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
-                "<option value='Repeatable%'>Repeatable(%)</option>" +
+                "<option value='RepeatableP'>Repeatable(%)</option>" +
                 "<option value='Repeatable++'>Repeatable(+/-)</option>" +
-                "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
+                "<option value='RepeatableP++'>Repeatable(%)(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId1' name='unitId1' type='2'></select>" +
@@ -693,7 +700,7 @@
             $(tmpTar).val('');
             $(tmpInd).focus();
         }
-        if (count > 1 && indicator != '' && type != 'Repeatable'&& type != 'Repeatable%') {
+        if (count > 1 && indicator != '' && type != 'Repeatable'&& type != 'RepeatableP') {
             showIndicatorModal(indName, indicator, tmpTar, target, count, list, type);
         }
     }
@@ -717,9 +724,9 @@
                 "<option value='Dividable'>Dividable</option>" +
                 "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
-                "<option value='Repeatable%'>Repeatable(%)</option>" +
+                "<option value='RepeatableP'>Repeatable(%)</option>" +
                 "<option value='Repeatable++'>Repeatable(+/-)</option>" +
-                "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
+                "<option value='RepeatableP++'>Repeatable(%)(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
@@ -786,7 +793,7 @@
     });
 
     function calculateTarget() {
-        if($('#indTypeIdModal').val()=='Repeatable++'||$('#indTypeIdModal').val()=='Repeatable%++') {
+        if($('#indTypeIdModal').val()=='Repeatable++'||$('#indTypeIdModal').val()=='RepeatableP++') {
             var max = 0;
             $(".amount").each(function () {
                 if (!isNaN(this.value) && this.value.length != 0) {

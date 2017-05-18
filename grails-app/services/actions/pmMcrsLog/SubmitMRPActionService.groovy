@@ -2,6 +2,7 @@ package actions.pmMcrsLog
 
 import com.pms.AppMail
 import com.pms.PmMcrsLog
+import com.pms.PmMcrsLogDetails
 import com.pms.PmServiceSector
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
@@ -10,11 +11,11 @@ import pms.BaseService
 import pms.utility.DateUtility
 
 @Transactional
-class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceIntf {
+class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
 
     def mailService
 
-    private static final String SAVE_SUCCESS_MESSAGE = "MCRS has been submitted successfully"
+    private static final String SAVE_SUCCESS_MESSAGE = "MRP has been submitted successfully"
     private static final String PM_MCRS_LOG = "pmMcrsLog"
     private static final String THANK_YOU_MAIL = "THANK_YOU_MAIL"
     private static final String THANK_YOU_MAIL_AFTER_DEADLINE = "THANK_YOU_MAIL_AFTER_DEADLINE"
@@ -42,6 +43,13 @@ class SubmitPmMcrsLogActionService extends BaseService implements ActionServiceI
             pmMcrsLog.submissionDate = DateUtility.getSqlDate(new Date())
             pmMcrsLog.isEditable = Boolean.FALSE
             pmMcrsLog.save()
+
+            PmMcrsLogDetails details = PmMcrsLogDetails.findByLogIdAndIsCurrent(pmMcrsLog.id, Boolean.TRUE)
+            if(details){
+                details.submittedOn = pmMcrsLog.submissionDate
+                details.save()
+            }
+
             /// send thank you mail
             PmServiceSector sc = PmServiceSector.read(pmMcrsLog.serviceId)
             if(DateUtility.getSqlFromDateWithSeconds(pmMcrsLog.submissionDate) <= DateUtility.getSqlFromDateWithSeconds(pmMcrsLog.deadLine)){

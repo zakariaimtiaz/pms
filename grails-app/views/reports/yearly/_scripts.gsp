@@ -32,7 +32,7 @@
         dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", '/reports/listYearlySp');
+        defaultPageTile("Strategic Plan", 'reports/showYearlySP');
     }
 
     function initGrid() {

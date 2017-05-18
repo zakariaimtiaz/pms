@@ -5,10 +5,7 @@ class ListPmMissionsActionServiceModel {
 
     public static final String SQL_LIST_MISSION_MODEL = """
 
-        DROP TABLE IF EXISTS `list_pm_missions_action_service_model`;
-        DROP VIEW IF EXISTS `list_pm_missions_action_service_model`;
-
-        CREATE OR REPLACE VIEW `pms`.`list_pm_missions_action_service_model` AS
+        CREATE OR REPLACE VIEW `list_pm_missions_action_service_model` AS
                 SELECT
                   `m`.`id`          AS `id`,
                   `m`.`version`     AS `version`,
@@ -18,9 +15,8 @@ class ListPmMissionsActionServiceModel {
                   `sc`.`name`       AS `service`,
                   `sc`.`sequence`   AS `sequence`,
                   CONCAT(`sc`.`name`,' (',`sc`.`short_name`,')')  AS `display_name`
-                FROM (`pms`.`pm_missions` `m`
-                   LEFT JOIN `pms`.`pm_service_sector` `sc`
-                     ON ((`sc`.`id` = `m`.`service_id`)))
+                FROM `pm_missions` `m`
+                   LEFT JOIN `pm_service_sector` `sc` ON `sc`.`id` = `m`.`service_id`
                 ORDER BY `sc`.`sequence;
     """
 

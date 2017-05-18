@@ -2,14 +2,11 @@ package com.model
 
 class ListHrUserActionServiceModel {
 
-    public static final String MODEL_NAME = 'list_hr_user_action_service_model'
     public static final String SQL_LIST_HR_USER_MODEL = """
-    DROP TABLE IF EXISTS list_hr_user_action_service_model;
-
-    CREATE OR REPLACE VIEW list_hr_user_action_service_model AS
+    CREATE VIEW `list_hr_user_action_service_model` AS
     SELECT u.id,u.username AS login_id,e.employee_id,u.employee_name,deg.name designation,
     IF(gen.name='Female','Apa','Bhai') gender_str,e.official_email,u.password,s.static_name AS service
-             FROM `mis`.sec_user u
+             FROM `login_auth`.sec_user u
         LEFT JOIN `mis`.employee e ON e.employee_id = u.employee_id
         LEFT JOIN `mis`.system_entity deg ON deg.id = e.designation_id AND deg.type_id = 1
         LEFT JOIN `mis`.system_entity gen ON gen.id = e.gender_id AND gen.type_id = 2
@@ -30,7 +27,7 @@ class ListHrUserActionServiceModel {
     String service
 
     static mapping = {
-        datasource 'dataSource_mis'
+        datasource 'mis'
         cache usage: "read-only"
     }
 }

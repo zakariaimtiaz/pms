@@ -2,19 +2,24 @@ package pms
 
 import actions.pmMcrsLog.CreatePmMcrsLogActionService
 import actions.pmMcrsLog.ListPmMcrsLogActionService
-import actions.pmMcrsLog.SubmitPmMcrsLogActionService
+import actions.pmMcrsLog.SubmitDashBoardActionService
+import actions.pmMcrsLog.SubmitMRPActionService
 import actions.pmMcrsLog.UpdatePmMcrsDeadLineActionService
 import actions.pmMcrsLog.UpdatePmMcrsLogActionService
-import com.pms.PmMcrsLog
+import com.pms.PmMcrsLogDetails
 import com.pms.PmServiceSector
 import com.pms.SecUser
+import grails.converters.JSON
+import service.PmMcrsLogService
 
-class PmMcrsLogController extends BaseController{
+class PmMcrsLogController extends BaseController {
 
     BaseService baseService
+    PmMcrsLogService pmMcrsLogService
     CreatePmMcrsLogActionService createPmMcrsLogActionService
     UpdatePmMcrsLogActionService updatePmMcrsLogActionService
-    SubmitPmMcrsLogActionService submitPmMcrsLogActionService
+    SubmitMRPActionService submitMRPActionService
+    SubmitDashBoardActionService submitDashBoardActionService
     ListPmMcrsLogActionService listPmMcrsLogActionService
     UpdatePmMcrsDeadLineActionService updatePmMcrsDeadLineActionService
 
@@ -42,10 +47,27 @@ class PmMcrsLogController extends BaseController{
         SecUser user = baseService.currentUserObject()
         render(view: "/pmMcrsLog/showSubmission", model: [serviceId:user.serviceId])
     }
-    def submission() {
-        renderOutput(submitPmMcrsLogActionService, params)
+    def submissionMRP() {
+        renderOutput(submitMRPActionService, params)
+    }
+    def submissionDashBoard() {
+        renderOutput(submitDashBoardActionService, params)
     }
     def updateDeadLine() {
         renderOutput(updatePmMcrsDeadLineActionService, params)
+    }
+    def logDetailsById() {
+        long typeId = Long.parseLong(params.typeId.toString())
+        long logId = Long.parseLong(params.logId.toString())
+        def result = pmMcrsLogService.mcrsLogDetailsByLogId(logId, typeId)
+        String typeStr = 'MRP'
+        if(typeId==2){
+            typeStr = 'ED\'s Dashboard'
+        }
+
+        render(view: '/reports/statistical/showMcrsDetails',
+                model:[result:result,service:result[0]?.service,
+                       logStart: result[0]?.log_start,
+                       month:result[0]?.month_str,typeStr:typeStr])
     }
 }

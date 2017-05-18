@@ -1,9 +1,6 @@
 package pms
 
-import com.model.ListSecRoleActionServiceModel
-import com.model.ListSecUserActionServiceModel
-import com.model.ListSecUserSecRoleActionServiceModel
-import com.model.ListThemeActionServiceModel
+import com.model.*
 import com.pms.FeatureManagement
 import com.pms.SecRole
 import com.pms.SecUser
@@ -15,11 +12,23 @@ import service.ThemeService
 class ConfigureService extends BaseService {
 
     public void initSchema() {
-        customExecuteSql(ListSecUserActionServiceModel.MODEL_NAME, ListSecUserActionServiceModel.SQL_LIST_SEC_USER_MODEL)
-        customExecuteSql(ListSecRoleActionServiceModel.MODEL_NAME, ListSecRoleActionServiceModel.SQL_LIST_SEC_ROLE_MODEL)
-        customExecuteSql(ListSecUserSecRoleActionServiceModel.MODEL_NAME, ListSecUserSecRoleActionServiceModel.SQL_LIST_USER_ROLE_MODEL)
+        customExecuteSql(ListSystemEntityActionServiceModel.MODEL_NAME, ListSystemEntityActionServiceModel.SQL_LIST_SYSTEM_ENTITY_MODEL)
         customExecuteSql(ListThemeActionServiceModel.MODEL_NAME, ListThemeActionServiceModel.SQL_LIST_THEME_MODEL)
-    }
+        customExecuteSql(ListAppMailActionServiceModel.MODEL_NAME, ListAppMailActionServiceModel.SQL_LIST_APP_MAIL_MODEL)
+        customExecuteSql(ListMeetingLogActionServiceModel.MODEL_NAME, ListMeetingLogActionServiceModel.SQL_LIST_MEETING_LOG_MODEL)
+        customExecuteSql(ListPmMissionsActionServiceModel.MODEL_NAME, ListPmMissionsActionServiceModel.SQL_LIST_MISSION_MODEL)
+        customExecuteSql(ListPmGoalsActionServiceModel.MODEL_NAME, ListPmGoalsActionServiceModel.SQL_LIST_GOALS_MODEL)
+        customExecuteSql(ListPmActionsActionServiceModel.MODEL_NAME, ListPmActionsActionServiceModel.SQL_LIST_ACTIONS_MODEL)
+        customExecuteSql(ListPmAdditionalActionsActionServiceModel.MODEL_NAME, ListPmAdditionalActionsActionServiceModel.SQL_LIST_ADDITIONAL_ACTIONS_MODEL)
+        customExecuteSql(ListPmMcrsLogActionServiceModel.MODEL_NAME, ListPmMcrsLogActionServiceModel.SQL_LIST_PM_MCRS_LOG_MODEL)
+        customExecuteSql(ListPmProjectsActionServiceModel.MODEL_NAME, ListPmProjectsActionServiceModel.SQL_LIST_PROJECTS_MODEL)
+        customExecuteSql(ListPmServiceSectorActionServiceModel.MODEL_NAME, ListPmServiceSectorActionServiceModel.SQL_LIST_SERVICE_MODEL)
+        customExecuteSql(ListPmSpLogActionServiceModel.MODEL_NAME, ListPmSpLogActionServiceModel.SQL_LIST_PM_SP_LOG_MODEL)
+        customExecuteSql(ListPmSprintsActionServiceModel.MODEL_NAME, ListPmSprintsActionServiceModel.SQL_LIST_SPRINTS_MODEL)
+        customExecuteSql(ListPmSpSummaryActionServiceModel.MODEL_NAME, ListPmSpSummaryActionServiceModel.SQL_LIST_SP_SUMMARY_MODEL)
+        customExecuteSql(ListQuartzActionServiceModel.MODEL_NAME, ListQuartzActionServiceModel.SQL_LIST_QUARTZ_MODEL)
+        customExecuteSql(ListSpTimeScheduleActionServiceModel.MODEL_NAME, ListSpTimeScheduleActionServiceModel.SQL_LIST_SP_TIME_SCHEDULE_MODEL)
+}
 
     public boolean customExecuteSql(String model, String query) {
         String dropTable = """ DROP TABLE IF EXISTS ${model} """

@@ -19,12 +19,11 @@ class BootStrap {
         Boolean initDefaultData = Boolean.parseBoolean(PropertiesReader.getProperty("bootstrap.initDefaultData", PropertiesReader.CONFIG_FILE_DB))
         Boolean initDefaultSchema = Boolean.parseBoolean(PropertiesReader.getProperty("bootstrap.initDefaultSchema", PropertiesReader.CONFIG_FILE_DB))
 
-        if (initDefaultData.booleanValue()) {
-            configureService.initData()
-        }
-
         if (initDefaultSchema.booleanValue()) {
             configureService.initSchema()
+        }
+        if (initDefaultData.booleanValue()) {
+            configureService.initData()
         }
 
         List<Quartz> lstQuartz = Quartz.findAllByIsRunning(Boolean.TRUE)

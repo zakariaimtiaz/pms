@@ -1,10 +1,4 @@
 <div id="application_top_panel" class="panel panel-primary">
-    <div class="panel-heading">
-        <div class="panel-title">
-            MCRS Submission
-        </div>
-    </div>
-
     <div class="panel-body">
             <div id="gridMCRSSubmission"></div>
     </div>
@@ -16,8 +10,11 @@
 </style>
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid2" class="kendoGridMenu">
-    <sec:access url="/pmMcrsLog/submission">
-        <li onclick="mcrsSubmission();"><i class="fa fa-edit"></i>Submit</li>
+    <sec:access url="/pmMcrsLog/submissionMRP">
+        <li onclick="mrpSubmission();"><i class="fa fa-gavel"></i>MRP Submit</li>
+    </sec:access>
+    <sec:access url="/pmMcrsLog/submissionDashBoard">
+        <li onclick="dashboardSubmission();"><i class="fa fa-gavel"></i>ED's Dashboard Submit</li>
     </sec:access>
 </ul>
 </script>
@@ -49,8 +46,11 @@
                         service: {type: "string"},
                         shortName: {type: "string"},
                         submissionDate: {type: "date"},
+                        submissionDateDb: {type: "date"},
                         isSubmitted: {type: "boolean"},
+                        isSubmittedDb: {type: "boolean"},
                         isEditable: {type: "boolean"},
+                        isEditableDb: {type: "boolean"},
                         year: {type: "number"},
                         monthStr: {type: "string"},
                         month: {type: "number"}
@@ -85,25 +85,64 @@
             },
             columns: [
                 {
-                    field: "monthStr", title: "Month", width: 50, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    field: "monthStr", title: "Month", width: 30, sortable: false, filterable: false
                 },
                 {
-                    field: "isSubmitted", title: "Submitted", width: 50, sortable: false,
-                    filterable: false, attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=isSubmitted?'YES':'NO'#"
+                    title: "Submitted", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {
+                            field: "isSubmitted", title: "MRP",
+                            width: 30, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isSubmitted?'YES':'NO'#"
+                        },
+                        {
+                            field: "isSubmittedDb", title: "ED's Dashboard",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isSubmittedDb?'YES':'NO'#"
+                        }
+                    ]
                 },
                 {
-                    field: "submissionDate",title: "Submission Date",
-                    width: 50, sortable: false,filterable: false,
-                    template: "#=isSubmitted?kendo.toString(kendo.parseDate(submissionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#",
-                    attributes: {style: setAlignCenter()},
-                    headerAttributes: {style: setAlignCenter()}
+                    title: "Submission Date", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {
+                            field: "submissionDate", title: "MRP",
+                            width: 30, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isSubmitted?kendo.toString(kendo.parseDate(submissionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                        },
+                        {
+                            field: "submissionDateDb", title: "ED's Dashboard",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=submissionDateDb?kendo.toString(kendo.parseDate(submissionDateDb, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                        }
+                    ]
                 },
                 {
-                    field: "isEditable", title: "Editable", width: 50, sortable: false,
-                    filterable: false,attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=isEditable?'YES':'NO'#"
+                    title: "Editable", headerAttributes: {style: setAlignCenter()},filterable: false,
+                    columns: [
+                        {
+                            field: "isEditable", title: "MRP",
+                            width: 30, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isEditable?'YES':'NO'#"
+                        },
+                        {
+                            field: "isEditableDb", title: "ED's Dashboard",
+                            width: 40, sortable: false, filterable: false,
+                            headerAttributes: {style: setAlignCenter()},
+                            attributes: {style: setAlignCenter()},
+                            template: "#=isEditableDb?'YES':'NO'#"
+                        }
+                    ]
                 }
             ],
             filterable: {
@@ -115,17 +154,30 @@
         $("#menuGrid2").kendoMenu();
     }
 
-    function mcrsSubmission() {
-        if (executeCommonPreConditionForSelectKendo(gridMCRSSubmission, 'mcrs') == false) {
+    function mrpSubmission() {
+        if (executeCommonPreConditionForSelectKendo(gridMCRSSubmission, 'month') == false) {
             return;
         }
         var isSubmitted = getSelectedValueFromGridKendo(gridMCRSSubmission, 'isSubmitted');
         if(isSubmitted){
-            showInfo('MCRS already submitted');
+            showInfo('MRP already submitted');
             return false;
         }
-        var msg = 'Are you sure you want to submit the selected MCRS(MRP and ED Dashboard)?',
-                url = "${createLink(controller: 'pmMcrsLog', action:  'submission')}";
+        var msg = 'Are you sure you want to submit the selected MRP?',
+                url = "${createLink(controller: 'pmMcrsLog', action:  'submissionMRP')}";
+        confirmActionForEdit(msg, url, gridMCRSSubmission);
+    }
+    function dashboardSubmission() {
+        if (executeCommonPreConditionForSelectKendo(gridMCRSSubmission, 'month') == false) {
+            return;
+        }
+        var isSubmitted = getSelectedValueFromGridKendo(gridMCRSSubmission, 'isSubmittedDb');
+        if(isSubmitted){
+            showInfo('Dashboard already submitted');
+            return false;
+        }
+        var msg = 'Are you sure you want to submit the ED Dashboard?',
+                url = "${createLink(controller: 'pmMcrsLog', action:  'submissionDashBoard')}";
         confirmActionForEdit(msg, url, gridMCRSSubmission);
     }
 

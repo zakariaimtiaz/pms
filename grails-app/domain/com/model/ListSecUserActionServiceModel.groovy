@@ -2,11 +2,7 @@ package com.model
 
 class ListSecUserActionServiceModel {
 
-    public static final String MODEL_NAME = 'list_sec_user_action_service_model'
     public static final String SQL_LIST_SEC_USER_MODEL = """
-    DROP TABLE IF EXISTS list_sec_user_action_service_model;
-    CREATE OR REPLACE VIEW list_sec_user_action_service_model AS
-
         SELECT suser.id, suser.version,suser.employee_name full_name,suser.employee_name,
         suser.username,suser.password,suser.enabled, suser.account_expired,
          suser.account_locked, sc.id AS service_id, sc.name AS service

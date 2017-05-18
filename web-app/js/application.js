@@ -205,7 +205,8 @@ function onCompleteAjaxCall(XMLHttpRequest, textStatus) {
 
 // function trims the leading / for hash loading
 function formatLink(link) {
-    link = link.substring(5, link.length); // 5 = '/pms/'
+    var trimLength = _APP_NAME.length + 2;
+    link = link.substring(trimLength, link.length);
     if (link.indexOf('/') == 0) {
         link = link.substring(1, link.length);
     }

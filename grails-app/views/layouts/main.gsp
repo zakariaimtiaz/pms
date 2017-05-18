@@ -6,6 +6,9 @@
 	<link rel="shortcut icon" href="${createLinkTo(dir:'images',file:'favicon.png')}" type="image/x-icon" />
 	<title>Welcome to Friendship</title>
 	<g:layoutHead/>
+	<script type="text/javascript">
+		var _APP_NAME = '${grailsApplication.config.appName}';
+	</script>
 	<g:render template='/layouts/commonInclude'/>
 	<g:render template="/layouts/script"/>
 </head>
@@ -14,7 +17,7 @@
 <div id="wrapper">
 	<g:render template='/layouts/navBar'/>
 	<div id="page-wrapper">
-	<g:render template='/layouts/dashBoard'/>
+		<g:render template='/layouts/dashBoard'/>
 	</div>
 </div>
 </body>

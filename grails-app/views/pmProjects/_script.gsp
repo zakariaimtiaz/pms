@@ -40,7 +40,7 @@
         end.value(currentDate);
         end.min(start.value());
         initializeForm($("#projectForm"), onSubmitProjects);
-        defaultPageTile("Save Projects","/pmProjects/show");
+        defaultPageTile("Save Projects","pmProjects/show");
     }
     function startChange() {
         var startDate = start.value();

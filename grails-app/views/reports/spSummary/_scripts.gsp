@@ -19,7 +19,7 @@
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }
-        defaultPageTile("SP Summary", '/reports/showSpSummary');
+        defaultPageTile("SP Summary", 'reports/showSpSummary');
     }
 
     function initGridHR() {
