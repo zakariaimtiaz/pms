@@ -199,16 +199,17 @@
 <!-- Create Ed Dashboard Modal for Crisis & remarks -->
 <div class="modal fade" id="createCrisisRemarksModal" role="dialog" tabindex="-1"
      aria-labelledby="createCrisisRemarksLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" style=" width:70%;">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header "style=" background:#81ecef;border-top-left-radius: 5px;
+                 border-top-right-radius: 5px; height: 30px; padding-top: 5px;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideCreateCrisisRemarksModal();"><span
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="headingLabel"></h4>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body" style="padding-top: 5px;padding-bottom: 5px;">
                 <form class="form-horizontal form-widgets" id="createCrisisRemarksForm" name="createCrisisRemarksForm">
                     <input type="hidden" id="hfClickingRowNo" name="hfClickingRowNo" value=""/>
                     <input type="hidden" id="hfIsAdditionalModal" name="hfIsAdditionalModal" value=""/>
@@ -217,7 +218,7 @@
 
                     <div class="form-group">
 
-                        <div class="col-md-4" style="padding-right: 0px;">
+                        <div class="col-md-3" style="padding-right: 0px;">
                             <strong class="label-required">Type:</strong>
                         <input type="radio" name="selection" id="selectionNew"
                                onchange="loadFollowupMonth();" value="New"><label>New</label>&nbsp;&nbsp;
@@ -226,14 +227,14 @@
                         </div>
 
                         <div id="divfollowupMonth" style="display: none;" class="col-md-5">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="control-label label-required"> <strong>Month:</strong></label></div> <div class="col-md-9">
                             <input type="text" id="followupMonth" name="followupMonth"
                                    placeholder="Select month"></div>
                         </div>
                     </div>
-                    <div align="left" style="padding-right: 0px;">
-                        <label class="control-label label-required" for="description" ><strong>Crisis And Highlights:</strong></label>
+                    <div align="left">
+                        <label class="control-label label-required" style="padding-top: 0px;" for="description" ><strong>Crisis And Highlights:</strong></label>
                     </div>
                     <div class="form-group">
                             <div class="col-md-12" id="divDescriptionTextArea">
@@ -249,8 +250,8 @@
                         </div>
                         </div>
                     <div class="form-group" id="divOldRemarks" style="display: none;">
-                        <div align="left" style="padding-right: 0px; padding-left: 15px;">
-                            <label class="control-label label-optional" for="remarks" ><strong>Previous Remarks And Recommendations:</strong></label>
+                        <div align="left" style=" padding-left: 15px;">
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous Remarks And Recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <textarea id="oldRemarks" name="oldRemarks" rows="5"
@@ -259,8 +260,8 @@
                         </div>
 
                     </div>
-                    <div align="left" style="padding-right: 0px;">
-                        <label class="control-label label-optional" for="remarks" ><strong>Remarks And Recommendations:</strong></label>
+                    <div align="left">
+                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks And Recommendations:</strong></label>
                     </div>
                     <div class="form-group">
 
