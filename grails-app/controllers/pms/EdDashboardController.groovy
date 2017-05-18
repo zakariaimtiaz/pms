@@ -50,7 +50,6 @@ class EdDashboardController extends BaseController {
                 }
                 if(i==0){
                     i=edDashboardService.minimumAdditionalIssuesId()
-
                 }
                 else{i=i+1}
                 def gString = g.render(template: template, model: [list: listValue, isEdAssistant: isEdAssistant,maxAdditionalId:i])

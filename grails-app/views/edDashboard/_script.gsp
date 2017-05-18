@@ -1,5 +1,5 @@
 <script language="javascript">
-    var serviceId,currentMonth,isReadyForSave=true,submissionDate;
+    var serviceId,currentMonth,isReadyForSave=true;
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
@@ -17,7 +17,7 @@
             change: makeNonEditable
         }).data("kendoDatePicker");
         $('#month').val(currentMonth);
-        submissionDate='${submissionDate}';
+        $('#hfSubmissionDate').val('${submissionDate}');
         initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
         defaultPageTile("Create Ed Dashboard",null);
         dropDownService.value(serviceId);
@@ -88,8 +88,8 @@
                 change: loadMonthAndIssueData
             }).data("kendoDatePicker");
 
-            if(submissionDate!='') {
-                var sDate= moment(submissionDate).add(-1, 'months')
+            if($('#hfSubmissionDate').val()!='') {
+                var sDate= moment($('#hfSubmissionDate').val()).add(-1, 'months')
                 fMonth.max(moment(sDate).format('YYYY-MM-DD'));
             }else{
                 var sDate= moment(new Date()).add(-1, 'months')
@@ -230,6 +230,8 @@
             $('#headingLabel').text('Sector/CSU Specific Issue');
         }
         $('#selectionNew').prop('checked', true);
+        $('#remarks').prop('readonly', false);
+        $('#followupMonth').prop('readOnly',false);
         $('#description').val($('#description' + rowIdx).val());
         $('#remarks').val($('#remarks' + rowIdx).val());
         $('#hfServiceIdModal').val($('#serviceId').val());

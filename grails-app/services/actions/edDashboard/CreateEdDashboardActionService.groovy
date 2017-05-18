@@ -6,12 +6,10 @@ import com.pms.PmMcrsLog
 import com.pms.SecUser
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
-import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
-import service.EdDashboardService
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -19,7 +17,6 @@ import java.text.SimpleDateFormat
 @Transactional
 class CreateEdDashboardActionService extends BaseService implements ActionServiceIntf {
 
-    EdDashboardService edDashboardService
     SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Dashboard has been saved successfully"
     private static final String ALREADY_EXIST = "Dashboard already exist"
@@ -32,7 +29,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.serviceId&&!params.month&&!params.issueId&&!params.description&&!params.remarks) {
+            if (!params.hfServiceIdModal&&!params.hfMonthModal) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             return params
@@ -45,7 +42,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional
     public Map execute(Map result) {
         try {
-            String startDateStr = result.month.toString()
+            String startDateStr = result.hfMonthModal.toString()
             DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
             Date start = originalFormat.parse(startDateStr);
@@ -53,7 +50,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             c.setTime(start);
             c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
             Date monthFor = DateUtility.getSqlDate(c.getTime())
-            long serviceId = Long.parseLong(result.serviceId.toString())
+            long serviceId = Long.parseLong(result.hfServiceIdModal.toString())
 
             int month = c.get(Calendar.MONTH);
             int year = c.get(Calendar.YEAR);
@@ -67,20 +64,21 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                 return super.setError(result, 'Already submitted for this month');
             }
 
-            EdDashboard edDashboard=EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId,monthFor,Long.parseLong(result.issueId))
-            if(!edDashboard) {
-                edDashboard = new EdDashboard()
+                Long i = Long.parseLong(result.hfClickingRowNo)
+                EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId, monthFor, i)
+                if (!edDashboard) {
+                    edDashboard = new EdDashboard()
+                }
+
                 edDashboard.serviceId = serviceId
                 edDashboard.monthFor = monthFor
-                edDashboard.issueId = Long.parseLong(result.issueId)
-            }
-
+                edDashboard.issueId = i
                 edDashboard.description = result.description
                 edDashboard.remarks = result.remarks
-                edDashboard.edAdvice = result.edAdvice
                 edDashboard.createBy = springSecurityService?.principal?.id
                 edDashboard.createDate = DateUtility.getSqlDate(new Date())
-                edDashboard.isFollowup = result.isFollowup?result.isFollowup:false
+                edDashboard.edAdvice =EMPTY_SPACE
+                edDashboard.isFollowup = result.selection != 'New' ? true : false
                 if(edDashboard.isFollowup){
                     String followupDateStr = result.followupMonth
 
@@ -89,7 +87,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                     c.setTime(start);
                     c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
                     edDashboard.followupMonthFor = DateUtility.getSqlDate(c.getTime())
-                    edDashboard.edAdvice =EMPTY_SPACE
                 }
 
                 if (!edDashboard.description.isEmpty()) {

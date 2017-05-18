@@ -196,6 +196,93 @@
         </div>
     </div>
 </div>
+<!-- Create Ed Dashboard Modal for Crisis & remarks -->
+<div class="modal fade" id="createCrisisRemarksModal" role="dialog" tabindex="-1"
+     aria-labelledby="createCrisisRemarksLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onclick="hideCreateCrisisRemarksModal();"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="headingLabel"></h4>
+            </div>
+
+            <div class="modal-body">
+                <form class="form-horizontal form-widgets" id="createCrisisRemarksForm" name="createCrisisRemarksForm">
+                    <input type="hidden" id="hfClickingRowNo" name="hfClickingRowNo" value=""/>
+                    <input type="hidden" id="hfIsAdditionalModal" name="hfIsAdditionalModal" value=""/>
+                    <input type="hidden" id="hfServiceIdModal" name="hfServiceIdModal" value=""/>
+                    <input type="hidden" id="hfMonthModal" name="hfMonthModal" value=""/>
+
+                    <div class="form-group">
+
+                        <div class="col-md-4" style="padding-right: 0px;">
+                            <strong class="label-required">Type:</strong>
+                        <input type="radio" name="selection" id="selectionNew"
+                               onchange="loadFollowupMonth();" value="New"><label>New</label>&nbsp;&nbsp;
+                        <input type="radio" name="selection" id="selectionFollowup"
+                               onchange="loadFollowupMonth();" value="Followup"><label>Followup</label>
+                        </div>
+
+                        <div id="divfollowupMonth" style="display: none;" class="col-md-5">
+                            <div class="col-md-3">
+                                <label class="control-label label-required"> <strong>Month:</strong></label></div> <div class="col-md-9">
+                            <input type="text" id="followupMonth" name="followupMonth"
+                                   placeholder="Select month"></div>
+                        </div>
+                    </div>
+                    <div align="left" style="padding-right: 0px;">
+                        <label class="control-label label-required" for="description" ><strong>Crisis And Highlights:</strong></label>
+                    </div>
+                    <div class="form-group">
+                            <div class="col-md-12" id="divDescriptionTextArea">
+                                <textarea id="description" name="description" rows="5"
+                                          style="padding: 0 0 0 0 ! important;"
+                                          class="form-control" ></textarea>
+                            </div>
+                        <div id="divDescFollowupMonthDDL"  class="col-md-12" style="display: none;">
+                            <select
+                                    id="descFollowupMonthDDL" name="descFollowupMonthDDL"
+                                    class="kendo-drop-down" onchange="loadRemarksAndEdAdvice();">
+                            </select>
+                        </div>
+                        </div>
+                    <div class="form-group" id="divOldRemarks" style="display: none;">
+                        <div align="left" style="padding-right: 0px; padding-left: 15px;">
+                            <label class="control-label label-optional" for="remarks" ><strong>Previous Remarks And Recommendations:</strong></label>
+                        </div>
+                        <div class="col-md-12">
+                            <textarea id="oldRemarks" name="oldRemarks" rows="5"
+                                      style="padding: 0 0 0 0 ! important;" readonly
+                                      class="form-control" ></textarea>
+                        </div>
+
+                    </div>
+                    <div align="left" style="padding-right: 0px;">
+                        <label class="control-label label-optional" for="remarks" ><strong>Remarks And Recommendations:</strong></label>
+                    </div>
+                    <div class="form-group">
+
+                        <div class="col-md-12">
+                            <textarea id="remarks" name="remarks" rows="5"
+                                      style="padding: 0 0 0 0 ! important;"
+                                      class="form-control" ></textarea>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Save" onclick="onSubmitEdDashboard();"
+                       tabindex="2">
+                <input class="btn btn-default" type="button" value="Close" onclick="hideCreateCrisisRemarksModal();"
+                       data-dismiss="modal" tabindex="3">
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

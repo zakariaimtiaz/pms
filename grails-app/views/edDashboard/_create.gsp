@@ -9,7 +9,7 @@
 
             <g:form name='edDashboardForm' id='edDashboardForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
-
+                    <input type="hidden" id="hfSubmissionDate" name="hfSubmissionDate" value=""/>
                     <div class="form-group">
                         <label class="col-md-1 control-label label-optional"
                                for="serviceId">Sector/CSU:</label>
