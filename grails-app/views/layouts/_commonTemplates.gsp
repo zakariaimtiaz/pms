@@ -254,11 +254,9 @@
                             <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous Remarks And Recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
-                            %{--<textarea id="oldRemarks" name="oldRemarks"  rows="5"--}%
-                                      %{--style="padding: 0 0 0 0 ! important;" readonly--}%
-                                      %{--class="form-control" ></textarea>--}%
 
-                            <div id="oldRemarks" name="oldRemarks" class="form-control"  style="padding: 0 0 0 0 ! important; height: 100px;width: 100%; overflow: auto;" contentEditable='false' unselectable='true'>
+
+                            <div id="oldRemarks" name="oldRemarks" class="form-control"  style="padding: 0 0 0 0 ! important; background-color: #eee; height: 110px;width: 100%; overflow: auto;" contentEditable='false' unselectable='true'>
 
 
                             </div>

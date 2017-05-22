@@ -65,11 +65,22 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             }
 
                 Long i = Long.parseLong(result.hfClickingRowNo)
-                EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId, monthFor, i)
-                if (!edDashboard) {
-                    edDashboard = new EdDashboard()
-                }
+            EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId, monthFor, i)
+            if (!edDashboard) {
+                edDashboard = new EdDashboard()
+            }
+            if( !result.description) {
+                edDashboard.delete()
+                EdDashboardIssues edDashboardIssues=EdDashboardIssues.findById(i)
+                if(edDashboardIssues.isAdditional) {
+                    List<EdDashboard> lstEdDashboard = EdDashboard.findAllByServiceIdAndMonthForAndIssueIdGreaterThan(serviceId, monthFor,i, [ sort: "issueId", order: "asc"])
+                    for (EdDashboard obj : lstEdDashboard) {
+                            obj.issueId = obj.issueId - 1
+                            obj.save()
 
+                    }
+                }
+            }else{
                 edDashboard.serviceId = serviceId
                 edDashboard.monthFor = monthFor
                 edDashboard.issueId = i
@@ -88,8 +99,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                     c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
                     edDashboard.followupMonthFor = DateUtility.getSqlDate(c.getTime())
                 }
-
-                if (!edDashboard.description.isEmpty()) {
                     edDashboard.save()
                 }
 
