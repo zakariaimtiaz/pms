@@ -237,6 +237,9 @@
         $('#hfIsAdditionalModal').val($('#hfIsAdditional' + (rowIdx)).val());
         if(!$('#issue' + rowIdx).text().isEmpty()) {
             $('#headingLabel').text($('#issue' + rowIdx).text() + ' Issue');
+            if($('#hfIsAdditional' + (rowIdx)).val()=='true'){
+                $('#headingLabel').text('Sector/CSU Specific '+$('#issue' + rowIdx).text());
+            }
         }else{
             $('#headingLabel').text('Sector/CSU Specific Issue');
         }
