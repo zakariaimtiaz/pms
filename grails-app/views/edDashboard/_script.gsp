@@ -78,7 +78,7 @@
             }
             $('#description').prop('readOnly',true);
             $('#divOldRemarks').show();
-            $("#oldRemarks").val('');
+            $("#oldRemarks").html('');
             $('#divfollowupMonth').show();
             var fMonth =  $('#followupMonth').kendoDatePicker({
                 format: "MMMM yyyy",
@@ -124,7 +124,7 @@
                         return false;
                     }
                         $('#description').val('');
-                        $('#oldRemarks').val('');
+                        $('#oldRemarks').html('');
                        // $('#edAdvice' + issueId).val('');
                     descFollowupMonthDDL.setDataSource(data.lst);
                 },
@@ -162,11 +162,11 @@
 
                     if (data.lst != null) {
                         $('#description').val(data.lst[0].description);
-                        $("#oldRemarks").val(data.lst[0].remarks);
+                        $("#oldRemarks").html(data.lst[0].remarks);
                         //$('#edAdvice').val(data.lst.edAdvice);
                     } else {
                         $('#description').val('');
-                        $("#oldRemarks").val('');
+                        $("#oldRemarks").html('');
                         //$('#edAdvice' + issueId).val('');
                     }
                 },
@@ -199,12 +199,12 @@
 
                     if (data.lst != null) {
                         $('#description').val($('#descFollowupMonthDDL').data("kendoDropDownList").text());
-                        $("#oldRemarks").val(data.lst[0].remarks);
+                        $("#oldRemarks").html(data.lst[0].remarks);
                         //$("#remarks").attr('title', data.lst.remarks);
                        // $('#edAdvice' + issueId).val(data.lst.edAdvice);
                     } else {
                         $('#description').val('');
-                        $('#oldRemarks').val('');
+                        $('#oldRemarks').html('');
                         //$('#edAdvice' + issueId).val('');
                     }
                 },
@@ -231,6 +231,7 @@
         }
         $('#selectionNew').prop('checked', true);
         $('#remarks').prop('readonly', false);
+        $('#description').prop('readonly', false);
         $('#followupMonth').prop('readOnly',false);
         $('#description').val($('#description' + rowIdx).val());
         $('#remarks').val($('#remarks' + rowIdx).val());
@@ -250,7 +251,7 @@
         $('#headingLabel').text('');
         $('#selectionNew').attr('checked',true);
         $('#divfollowupMonth').hide();
-        $("#oldRemarks").val('');
+        $("#oldRemarks").html('');
         $('#divOldRemarks').hide();
         $('#description').prop('readOnly',false);
         $('#divDescFollowupMonthDDL').hide();
