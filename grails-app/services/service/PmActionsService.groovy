@@ -173,36 +173,53 @@ class PmActionsService extends BaseService {
         SecUser user = currentUserObject();
 
         String query = """
-        (SELECT ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Achieved" act_name,"#069302" act_color FROM
-                (SELECT cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
-                (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,aid.target,aid.achievement,
-                ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
-                                FROM pm_goals g
-                LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
-                LEFT JOIN pm_actions a ON a.goal_id = g.id
-                LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
-                LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
-                JOIN custom_month cm ON cm.name=aid.month_name,
-                (SELECT @curmon := ${month}) r
-                WHERE g.service_id=  ${user.serviceId}  AND  a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
-                GROUP BY g.id
-                ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2)
-        UNION ALL
-            (SELECT 100-ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Remaining" act_name,"#ff8a00" act_color FROM
-                (SELECT cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
-                (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,aid.target,aid.achievement,
-                ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
-                                FROM pm_goals g
-                LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
-                LEFT JOIN pm_actions a ON a.goal_id = g.id
-                LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
-                LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
-                JOIN custom_month cm ON cm.name=aid.month_name,
-                (SELECT @curmon := ${month}) r
-                WHERE g.service_id=  ${user.serviceId}  AND  a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
-                GROUP BY g.id
-                ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2);
+                    SELECT ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Achieved" act_name,"#069302" act_color
+            FROM (
+                SELECT t.cat_axe,IF(ROUND(SUM(t.avgr)/COUNT(t.actions_id))>100,100,ROUND(SUM(t.avgr)/COUNT(t.actions_id))) a_pert
+                FROM (
+                    SELECT t.service_id,t.goal_id,t.cat_axe,t.actions_id,
+                    SUM(ROUND((t.achievement/t.target)*100,2))/COUNT(t.indicator_id) avgr
+                    FROM (
+                        SELECT sc.id service_id,g.id AS goal_id,sc.name service,sc.short_name,a.id actions_id,ai.id indicator_id,
+                        CONCAT('Goal ',g.sequence) cat_axe,aid.target,COALESCE(aid.achievement,0) achievement
+                        FROM pm_goals g
+                        LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
+                        LEFT JOIN pm_actions a ON a.goal_id = g.id
+                        LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
+                        LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
+                        JOIN custom_month cm ON cm.name=aid.month_name,
+                        (SELECT @curmon := ${month}) r
+                        WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0 AND a.service_id = ${user.serviceId}
+                        ORDER BY sc.sequence,g.id,a.id,ai.id,aid.id
+                    ) t GROUP BY t.goal_id ,t.actions_id
+                ) t GROUP BY t.goal_id
+            ) tmp
+
+            UNION ALL
+
+            SELECT 100-ROUND(SUM(a_pert)/COUNT(cat_axe)) act_val, "Remaining" act_name,"#ff8a00" act_color
+            FROM (
+                SELECT t.cat_axe,IF(ROUND(SUM(t.avgr)/COUNT(t.actions_id))>100,100,ROUND(SUM(t.avgr)/COUNT(t.actions_id))) a_pert
+                FROM (
+                    SELECT t.service_id,t.goal_id,t.cat_axe,t.actions_id,
+                    SUM(ROUND((t.achievement/t.target)*100,2))/COUNT(t.indicator_id) avgr
+                    FROM (
+                        SELECT sc.id service_id,g.id AS goal_id,sc.name service,sc.short_name,a.id actions_id,ai.id indicator_id,
+                        CONCAT('Goal ',g.sequence) cat_axe,aid.target,COALESCE(aid.achievement,0) achievement
+                        FROM pm_goals g
+                        LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
+                        LEFT JOIN pm_actions a ON a.goal_id = g.id
+                        LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
+                        LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
+                        JOIN custom_month cm ON cm.name=aid.month_name,
+                        (SELECT @curmon := ${month}) r
+                        WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0 AND a.service_id = ${user.serviceId}
+                        ORDER BY sc.sequence,g.id,a.id,ai.id,aid.id
+                    ) t GROUP BY t.goal_id ,t.actions_id
+                ) t GROUP BY t.goal_id
+            ) tmp2;
         """
+        println(query)
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }
@@ -216,21 +233,29 @@ class PmActionsService extends BaseService {
         SecUser user = currentUserObject();
 
         String query = """
-            SELECT cat_axe,ac_count,IF((ac_count-a_col)<0,0.00,ac_count-a_col) t_col,a_col,a_color,t_color,goal,ROUND(a_col/ac_count*100) a_pert
-            FROM
-            (SELECT CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,
-            ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col,
-            '#ff8a00' t_color, '#069302' a_color,g.goal
-            FROM pm_goals g
-            LEFT JOIN pm_actions a ON a.goal_id = g.id
-            LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
-            LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
-            JOIN custom_month cm ON cm.name=aid.month_name,
-            (SELECT @curmon := ${month}) r
-            WHERE g.service_id = ${user.serviceId} AND a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
-            GROUP BY g.id
-            ORDER BY g.sequence,a.id,ai.id,aid.id) tmp;
+                SELECT t.cat_axe,t.goal,COUNT(t.actions_id) ac_count,'#ff8a00' t_color, '#069302' a_color,
+                IF(ROUND(SUM(t.avgr)/COUNT(t.actions_id))>100,100,ROUND(SUM(t.avgr)/COUNT(t.actions_id))) a_pert,
+                ROUND(IF(ROUND(SUM(t.avgr)/COUNT(t.actions_id))>100,100,ROUND(SUM(t.avgr)/COUNT(t.actions_id)))*COUNT(t.actions_id)/100,2) a_col,
+                COUNT(t.actions_id)-ROUND(IF(ROUND(SUM(t.avgr)/COUNT(t.actions_id))>100,100,ROUND(SUM(t.avgr)/COUNT(t.actions_id)))*COUNT(t.actions_id)/100,2) t_col
+                FROM (
+                    SELECT t.goal_id,t.goal,t.cat_axe,t.actions_id,
+                    SUM(ROUND((t.achievement/t.target)*100,2))/COUNT(t.indicator_id) avgr
+                    FROM (
+                        SELECT g.id AS goal_id,g.goal,a.id actions_id,ai.id indicator_id,
+                        CONCAT('Goal ',g.sequence) cat_axe,aid.target,COALESCE(aid.achievement,0) achievement
+                        FROM pm_goals g
+                        LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
+                        LEFT JOIN pm_actions a ON a.goal_id = g.id
+                        LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
+                        LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
+                        JOIN custom_month cm ON cm.name=aid.month_name,
+                        (SELECT @curmon := ${month}) r
+                        WHERE g.service_id = ${user.serviceId} AND a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
+                        ORDER BY sc.sequence,g.id,a.id,ai.id,aid.id
+                    ) t GROUP BY t.goal_id ,t.actions_id
+                ) t GROUP BY t.goal_id
         """
+        println(query)
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }
@@ -243,24 +268,32 @@ class PmActionsService extends BaseService {
         int year = c.get(Calendar.YEAR)
 
         String query = """
-            SELECT service_id,service,short_name,ROUND(SUM(a_pert)/COUNT(cat_axe)) a_pert,'#069302' a_color,
-            100-ROUND(SUM(a_pert)/COUNT(cat_axe)) r_pert,'#ff8a00' r_color
-            FROM
-            (SELECT service_id,service,short_name,cat_axe,IF(ROUND(a_col/ac_count*100)>100,100,ROUND(a_col/ac_count*100)) a_pert FROM
-            (SELECT sc.id service_id,g.id AS goal_id,sc.name service,sc.short_name,
-            CONCAT('Goal ',g.sequence) cat_axe,COUNT(a.id) ac_count,
-            ROUND(SUM(FLOOR(((COALESCE(aid.achievement,0)/aid.target)*100)))/COUNT(ai.id)*COUNT(a.id)/100,2) a_col
-            FROM pm_goals g
-            LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
-            LEFT JOIN pm_actions a ON a.goal_id = g.id
-            LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
-            LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
-            JOIN custom_month cm ON cm.name=aid.month_name,
-            (SELECT @curmon := ${month}) r
-            WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
-            GROUP BY g.id
-            ORDER BY sc.sequence,a.id,ai.id,aid.id) tmp ) tmp2 GROUP BY service_id;
+            SELECT tmp.service_id,tmp.service,tmp.short_name,
+            ROUND(SUM(tmp.avgr)/COUNT(tmp.goal_id)) a_pert,'#069302' a_color,
+            100-ROUND(SUM(tmp.avgr)/COUNT(tmp.goal_id)) r_pert,'#ff8a00' r_color
+            FROM (
+                SELECT t.service_id,t.goal_id,t.service,t.short_name,t.cat_axe,
+                IF(ROUND(SUM(t.avgr)/COUNT(t.actions_id))>100,100,ROUND(SUM(t.avgr)/COUNT(t.actions_id))) avgr
+                FROM (
+                    SELECT t.service_id,t.goal_id,t.service,t.short_name,t.cat_axe,t.actions_id,
+                    SUM(ROUND((t.achievement/t.target)*100,2))/COUNT(t.indicator_id) avgr
+                    FROM (
+                        SELECT sc.id service_id,g.id AS goal_id,sc.name service,sc.short_name,a.id actions_id,ai.id indicator_id,
+                        CONCAT('Goal ',g.sequence) cat_axe,aid.target,COALESCE(aid.achievement,0) achievement
+                        FROM pm_goals g
+                        LEFT JOIN pm_service_sector sc ON sc.id = g.service_id
+                        LEFT JOIN pm_actions a ON a.goal_id = g.id
+                        LEFT JOIN pm_actions_indicator ai ON a.id = ai.actions_id
+                        LEFT JOIN pm_actions_indicator_details aid ON ai.id=aid.indicator_id
+                        JOIN custom_month cm ON cm.name=aid.month_name,
+                        (SELECT @curmon := ${month}) r
+                        WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
+                        ORDER BY sc.sequence,g.id,a.id,ai.id,aid.id
+                    ) t GROUP BY t.goal_id ,t.actions_id
+                ) t GROUP BY t.goal_id
+            ) tmp GROUP BY service_id;
         """
+        println(query)
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }

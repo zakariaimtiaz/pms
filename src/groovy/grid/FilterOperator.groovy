@@ -1,8 +1,6 @@
 package grid
 
-/**
- * Created by Mohammad Ali Azam on 9/22/2014.
- */
+
 public interface FilterOperator {
 
     static final String EQUAL = "eq"

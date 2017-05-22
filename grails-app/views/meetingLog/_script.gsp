@@ -38,7 +38,7 @@
                 "bold",
                 "italic",
                 "underline",
-                "strikethrough",
+                "foreColor",
                 "justifyLeft",
                 "justifyCenter",
                 "justifyRight",
@@ -52,7 +52,20 @@
             resizable: {
                 content: false,
                 toolbar: true
-            }
+            },
+            tools: [
+                "bold",
+                "italic",
+                "underline",
+                "backColor",
+                "foreColor",
+                "justifyLeft",
+                "justifyCenter",
+                "justifyRight",
+                "justifyFull",
+                "insertUnorderedList",
+                "insertOrderedList"
+            ]
         });
         $("#attendees").kendoMultiSelect({
             dataTextField: "name",
