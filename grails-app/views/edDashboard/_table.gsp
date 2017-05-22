@@ -75,7 +75,7 @@
                         ${item?.issue_name}</label>
             <g:if test="${!isEdAssistant && !item?.crisis_remarks_g  && item?.is_heading}">
                 <div class="pull-right">
-                    <a href="#"  class="btn btn-info" role="button" onclick="showRemarksModal(${maxAdditionalId});"><span class="k-icon k-i-plus"></span>Add</a>
+                    <a href="#"  class="btn btn-info" role="button" onclick="showRemarksModal(${maxAdditionalId});"><span class="k-icon k-i-plus"></span> Add</a>
 
                 </div>
             </g:if>
