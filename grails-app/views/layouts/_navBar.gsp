@@ -40,17 +40,28 @@
                         <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;Reports<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <sec:access url="/reports/showYearlySP">
+                            <sec:ifAnyUrls urls="/reports/showYearlySP,/reports/showYearlySPDetails">
                                 <li>
-                                    <a href="#reports/showYearlySP"><i class="fa fa-cubes"></i>&nbsp;Annual SP</a>
+                                    <a href="#"><i class="fa fa-cubes"></i>&nbsp;Annual SP<span
+                                            class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <sec:access url="/reports/showYearlySP">
+                                            <li>
+                                                <a href="#reports/showYearlySP"><i
+                                                        class="fa fa-file-text-o"></i>&nbsp;Cumulative
+                                                </a>
+                                            </li>
+                                        </sec:access>
+                                        <sec:access url="/reports/showYearlySPDetails">
+                                            <li>
+                                                <a href="#reports/showYearlySPDetails"><i
+                                                        class="fa fa-file-text-o"></i>&nbsp;Details
+                                                </a>
+                                            </li>
+                                        </sec:access>
+                                    </ul>
                                 </li>
-                            </sec:access>
-%{--                            <sec:access url="/reports/showSpMonthlyPlan">
-                                <li>
-                                    <a href="#reports/showSpMonthlyPlan"><i class="fa fa-cube"></i>&nbsp;Monthly SP
-                                    </a>
-                                </li>
-                            </sec:access>--}%
+                            </sec:ifAnyUrls>
                             <sec:access url="/reports/showMcrs">
                                 <li>
                                     <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
@@ -58,12 +69,14 @@
                             </sec:access>
                             <sec:access url="/reports/showEdDashBoard">
                                 <li>
-                                    <a href="#reports/showEdDashBoard"><i class="fa fa-object-group"></i>&nbsp;ED's Dashboard</a>
+                                    <a href="#reports/showEdDashBoard"><i
+                                            class="fa fa-object-group"></i>&nbsp;ED's Dashboard</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showSpSummary">
                                 <li>
-                                    <a href="#reports/showSpSummary"><i class="fa fa-keyboard-o"></i>&nbsp;SP Summary</a>
+                                    <a href="#reports/showSpSummary"><i class="fa fa-keyboard-o"></i>&nbsp;SP Summary
+                                    </a>
                                 </li>
                             </sec:access>
                             <sec:ifAnyUrls urls="/reports/showMeetingStatus">
@@ -114,7 +127,8 @@
                         <ul class="nav nav-second-level">
                             <sec:access url="/meetingLog/show">
                                 <li>
-                                    <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly</a>
+                                    <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly
+                                    </a>
                                 </li>
                             </sec:access>
                         </ul>
