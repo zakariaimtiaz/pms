@@ -45,7 +45,7 @@ class EdDashboardService  extends BaseService{
                 TRUE AS advice_g,FALSE AS advice_s
          FROM (SELECT  edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
         ,ed.is_followup,ed.followup_month_for FROM  ed_dashboard_issues edi LEFT JOIN ed_dashboard ed ON ed.issue_id=edi.id
-        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE edi.is_additional<>1
+        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE (edi.is_additional<>1 OR edi.is_heading<>0)
         UNION ALL
         SELECT edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
         ,ed.is_followup,ed.followup_month_for FROM  ed_dashboard_issues edi RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id
@@ -79,7 +79,7 @@ class EdDashboardService  extends BaseService{
     }
     public long minimumAdditionalIssuesId() {
         String query = """
-        select min(id) as count from ed_dashboard_issues WHERE is_additional=1
+        SELECT MIN(id) AS COUNT FROM ed_dashboard_issues WHERE is_additional=1 AND is_heading<>1
         """
         List<GroovyRowResult> max = executeSelectSql(query)
         long con = max[0].count

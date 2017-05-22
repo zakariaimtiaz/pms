@@ -219,11 +219,22 @@
             });
 
     }
-
+    function showRemarksModalForAdditional(rowIdx,maxRowIndex) {
+        $("#createCrisisRemarksModal").modal('show');
+        $('#hfClickingRowNo').val(maxRowIndex);
+        $('#hfIsAdditionalModal').val($('#hfIsAdditional' + (rowIdx)).val());
+            $('#headingLabel').text('Sector/CSU Specific Issue');
+        $('#selectionNew').prop('checked', true);
+        $('#remarks').prop('readonly', false);
+        $('#description').prop('readonly', false);
+        $('#followupMonth').prop('readOnly',false);
+        $('#hfServiceIdModal').val($('#serviceId').val());
+        $('#hfMonthModal').val($('#month').val());
+    }
     function showRemarksModal(rowIdx) {
         $("#createCrisisRemarksModal").modal('show');
         $('#hfClickingRowNo').val(rowIdx);
-        $('#hfIsAdditionalModal').val($('#hfIsAdditional' + rowIdx).val());
+        $('#hfIsAdditionalModal').val($('#hfIsAdditional' + (rowIdx)).val());
         if(!$('#issue' + rowIdx).text().isEmpty()) {
             $('#headingLabel').text($('#issue' + rowIdx).text() + ' Issue');
         }else{
