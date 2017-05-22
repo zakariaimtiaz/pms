@@ -138,6 +138,9 @@
                     colorField: "t_color"
                 }
             ],
+            legendItemClick: function(e) {
+                e.preventDefault();
+            },
             categoryAxis: {
                 field: 'cat_axe',
                 labels: {
