@@ -234,7 +234,7 @@
                         </div>
                     </div>
                     <div align="left">
-                        <label class="control-label label-required" style="padding-top: 0px;" for="description" ><strong>Crisis And Highlights:</strong></label>
+                        <label class="control-label label-required" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
                     </div>
                     <div class="form-group">
                             <div class="col-md-12" id="divDescriptionTextArea">
@@ -251,12 +251,14 @@
                         </div>
                     <div class="form-group" id="divOldRemarks" style="display: none;">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous Remarks And Recommendations:</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous Remarks and Recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
 
 
-                            <div id="oldRemarks" name="oldRemarks" class="form-control"  style="padding: 0 0 0 0 ! important; background-color: #eee; height: 110px;width: 100%; overflow: auto;" contentEditable='false' unselectable='true'>
+                            <div id="oldRemarks" name="oldRemarks" class="form-control"  style="padding: 0 0 0 0 ! important;
+                            background-color: #eee; height: 110px;width: 100%; overflow: auto;font-weight: 700;" contentEditable='false'
+                                 unselectable='true'>
 
 
                             </div>
@@ -264,7 +266,7 @@
 
                     </div>
                     <div align="left">
-                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks And Recommendations:</strong></label>
+                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
                     </div>
                     <div class="form-group">
 

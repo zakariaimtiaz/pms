@@ -98,6 +98,8 @@
         }
     }
     function loadMonthAndIssueData(){
+        $('#description').val('');
+        $('#oldRemarks').html('');
         var issueId= $('#hfClickingRowNo').val();
         if($('#hfIsAdditionalModal').val()=='true'){
             $('#divDescriptionTextArea').hide();
@@ -123,9 +125,6 @@
                         showError(data.message);
                         return false;
                     }
-                        $('#description').val('');
-                        $('#oldRemarks').html('');
-                       // $('#edAdvice' + issueId).val('');
                     descFollowupMonthDDL.setDataSource(data.lst);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -149,7 +148,6 @@
             var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
             serviceId = $('#serviceId').val();
             var month = $('#followupMonth').val();
-            //  alert(issueId);
             jQuery.ajax({
                 type: 'post',
                 data: {serviceId: serviceId, month: month, issueId: issueId},
@@ -159,19 +157,17 @@
                         showError(data.message);
                         return false;
                     }
+                    if (data.lst != null && data.lst.length>0) {
 
-                    if (data.lst != null) {
                         $('#description').val(data.lst[0].description);
                         $("#oldRemarks").html(data.lst[0].remarks);
                         //$('#edAdvice').val(data.lst.edAdvice);
-                    } else {
-                        $('#description').val('');
-                        $("#oldRemarks").html('');
-                        //$('#edAdvice' + issueId).val('');
+                    }else{
+                        showError('No data found.');
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.info('error in 1');
+                    showError('No data found.');
                 },
                 complete: function (XMLHttpRequest, textStatus) {
                     console.info('complete');
@@ -181,6 +177,11 @@
         }
     }
     function loadRemarksAndEdAdvice(descId){
+        $('#description').val('');
+        if($('#descFollowupMonthDDL').data("kendoDropDownList").value()>0){
+            $('#description').val($('#descFollowupMonthDDL').data("kendoDropDownList").text());
+        }
+        $('#oldRemarks').html('');
         var descriptionId = descFollowupMonthDDL.value();
         if(descId>0) {
             descriptionId=descId;
@@ -197,15 +198,9 @@
                         return false;
                     }
 
-                    if (data.lst != null) {
-                        $('#description').val($('#descFollowupMonthDDL').data("kendoDropDownList").text());
+                    if (data.lst != null && data.lst.length>0) {
                         $("#oldRemarks").html(data.lst[0].remarks);
                         //$("#remarks").attr('title', data.lst.remarks);
-                       // $('#edAdvice' + issueId).val(data.lst.edAdvice);
-                    } else {
-                        $('#description').val('');
-                        $('#oldRemarks').html('');
-                        //$('#edAdvice' + issueId).val('');
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
