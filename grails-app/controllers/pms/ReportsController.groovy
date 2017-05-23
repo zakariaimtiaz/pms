@@ -145,6 +145,24 @@ class ReportsController  extends BaseController  {
         Map result = (Map) getReportResponse(downloadYearlySPActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
+
+    def showYearlySPDetails() {
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+        render(view: "/reports/yearly/details/show", model: [isSysAdmin:isSysAdmin,
+                                                     isTopMan: isTopMan,
+                                                     isSpAdmin: isSpAdmin,
+                                                     serviceId:user.serviceId])
+    }
+    def listYearlySPDetails() {
+        renderOutput(listYearlySPActionService,params)
+    }
+    def downloadYearlySPDetails() {
+        Map result = (Map) getReportResponse(downloadYearlySPActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
     //################## Yearly End ###########################
 
     //################## Dashboard Start ###########################
