@@ -283,6 +283,8 @@
             </div>
 
             <div class="modal-footer">
+                <input class="btn btn-warning pull-left" id="deleteIssue" type="button" value="Delete" onclick="deleteIssue();"
+                       tabindex="4">
                 <input class="btn btn-primary" type="button" value="Save" onclick="onSubmitEdDashboard();"
                        tabindex="2">
                 <input class="btn btn-default" type="button" value="Close" onclick="hideCreateCrisisRemarksModal();"

@@ -225,6 +225,7 @@
         $('#followupMonth').prop('readOnly',false);
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
+        $('#deleteIssue').hide();
     }
     function showRemarksModal(rowIdx) {
         $("#createCrisisRemarksModal").modal('show');
@@ -243,6 +244,10 @@
         $('#description').prop('readonly', false);
         $('#followupMonth').prop('readOnly',false);
         $('#description').val($('#description' + rowIdx).val());
+        $('#deleteIssue').hide();
+        if(!$('#description' + rowIdx).val().isEmpty()){
+            $('#deleteIssue').show();
+        }
         $('#remarks').val($('#remarks' + rowIdx).val());
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
@@ -262,6 +267,8 @@
         $('#divfollowupMonth').hide();
         $("#oldRemarks").html('');
         $('#divOldRemarks').hide();
+        $('#remarks').val('');
+        $('#description').val('');
         $('#description').prop('readOnly',false);
         $('#divDescFollowupMonthDDL').hide();
         $('#divDescriptionTextArea').show();
@@ -269,6 +276,38 @@
         $('#hfMonthModal').val('');
         $('#followupMonth').val('');
         $("#createCrisisRemarksModal").modal('hide');
+    }
+    function deleteIssue() {
+
+        var msg = 'Are you sure you want to delete the record?',
+                url = "${createLink(controller: 'edDashboard', action:  'delete')}";
+        bootbox.confirm(msg, function (result) {
+            if (result) {
+                showLoadingSpinner(true);
+                var id = $('#hfClickingRowNo').val();
+                var serviceId = $('#hfServiceIdModal').val();
+                var month = $('#hfMonthModal').val();
+                $.ajax({
+                    url: url + "?id=" + id + "&serviceId=" + serviceId + "&month=" + month,
+                    success: function (data, textStatus) {
+                        if (data.isError) {
+                            showError(data.message);
+                            return false;
+                        }
+                        hideCreateCrisisRemarksModal();
+                        executePostCondition(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        afterAjaxError(XMLHttpRequest, textStatus)
+                    },
+                    complete: function (XMLHttpRequest, textStatus) {
+                        showLoadingSpinner(false);
+                    },
+                    dataType: 'json',
+                    type: 'post'
+                });
+            }
+        }).find("div.modal-content").addClass("conf-delete");
     }
     function executePreCondition() {
         if (!validateForm($("#edDashboardForm"))) {
@@ -294,7 +333,6 @@
             success: function (data, textStatus) {
                 hideCreateCrisisRemarksModal();
                 executePostCondition(data);
-                setButtonDisabled($('#create'), false);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
             },
