@@ -70,7 +70,7 @@ class EdDashboardService  extends BaseService{
     }
     public List<GroovyRowResult> lstEdDashboardDescriptionAndRemarks(long serviceId,Date month,long issuesId) {
         String queryForList = """
-        SELECT description,GROUP_CONCAT(CONCAT('<FONT color="#79a9f7">',MONTHNAME(month_for),':</FONT>\\<br /><b> Remarks: </b>',remarks,'\\<br /><b>ED\\\'s Advice: </b>',ed_advice)SEPARATOR'\\<br />') AS remarks
+        SELECT description,GROUP_CONCAT(CONCAT('<FONT color="#79a9f7">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
             FROM ed_dashboard WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}'
             GROUP BY description
         """

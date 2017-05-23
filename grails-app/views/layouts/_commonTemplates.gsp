@@ -257,7 +257,7 @@
 
 
                             <div id="oldRemarks" name="oldRemarks" class="form-control"  style="padding: 0 0 0 0 ! important;
-                            background-color: #eee; height: 110px;width: 100%; overflow: auto;font-weight: 700;" contentEditable='false'
+                            background-color: #eee; height: 110px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
                                  unselectable='true'>
 
 
