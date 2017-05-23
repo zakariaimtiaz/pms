@@ -227,6 +227,9 @@
                     colorField: "r_color"
                 }
             ],
+            legendItemClick: function(e) {
+                e.preventDefault();
+            },
             categoryAxis: {
                 field: 'short_name',
                 labels: {
