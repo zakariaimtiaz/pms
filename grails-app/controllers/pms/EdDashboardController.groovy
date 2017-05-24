@@ -27,7 +27,7 @@ class EdDashboardController extends BaseController {
 
     def show() {
         SecUser user = baseService.currentUserObject()
-        String submissionDate = baseService.lastSubmissionDate(user.serviceId)
+        String submissionDate = baseService.lastDashboardSubmissionDate(user.serviceId)
         render(view: "/edDashboard/show", model: [serviceId: user.serviceId, submissionDate: submissionDate])
     }
 

@@ -111,7 +111,7 @@ class PmActionsController extends BaseController {
         SecRole roleAdmin = SecRole.findByAuthority("ROLE_PMS_ADMIN")
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleAdmin, user)
         boolean isAdmin = count > 0
-        String submissionDate=baseService.lastSubmissionDate(user.serviceId)
+        String submissionDate=baseService.lastMRPSubmissionDate(user.serviceId)
 
         render(view: "/pmActions/mrp/show", model: [isAdmin:isAdmin,serviceId:user.serviceId,submissionDate:submissionDate])
     }
