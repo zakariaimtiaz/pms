@@ -1,6 +1,7 @@
 package actions.edDashboard
 
 import com.pms.EdDashboard
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat
 @Transactional
 class CreateEdDashboardActionService extends BaseService implements ActionServiceIntf {
 
+    SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Mission has been saved successfully"
     private static final String ALREADY_EXIST = "Mission already exist"
     private static final String ED_DASHBOARD = "edDashboard"
@@ -24,16 +26,10 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.serviceId&&!params.mission) {
+            if (!params.serviceId&&!params.month) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            long serviceId = Long.parseLong(params.serviceId.toString())
-            int count =EdDashboard.countByServiceId(serviceId)
-            if (count > 0) {
-                return super.setError(params, ALREADY_EXIST)
-            }
-            EdDashboard edDashboard = buildObject(params)
-            params.put(ED_DASHBOARD, edDashboard)
+
             return params
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -44,8 +40,32 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional
     public Map execute(Map result) {
         try {
-            EdDashboard edDashboard = (EdDashboard) result.get(ED_DASHBOARD)
-            edDashboard.save()
+            String startDateStr = result.month.toString()
+            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+
+            Date start = originalFormat.parse(startDateStr);
+            Calendar c = Calendar.getInstance();
+            c.setTime(start);
+            c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+            Date monthFor = DateUtility.getSqlDate(c.getTime())
+            long serviceId = Long.parseLong(result.serviceId.toString())
+
+            for (int i = 1; i <= 13;i++) {
+                EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId,monthFor,i)
+                if(!edDashboard) {
+                    edDashboard = new EdDashboard()
+                }
+                edDashboard.serviceId = serviceId
+                edDashboard.monthFor = monthFor
+                edDashboard.issueId = i
+                edDashboard.description = i != 7 ? result.get("description" + (i)) : ""
+                edDashboard.remarks = i != 7 ? result.get("remarks" + (i)) : ""
+                edDashboard.edAdvice = i != 7 ? result.get("edAdvice" + (i)) : ""
+                edDashboard.createBy=springSecurityService?.principal?.id
+                edDashboard.createDate=DateUtility.getSqlDate(new Date())
+                edDashboard.save()
+            }
+
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())
@@ -77,20 +97,5 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
         return result
     }
 
-    private static EdDashboard buildObject(Map parameterMap) {
 
-        String startDateStr = parameterMap.month.toString()
-        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-        Date start = originalFormat.parse(startDateStr);
-        Calendar c = Calendar.getInstance();
-        c.setTime(start);
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-        parameterMap.month = DateUtility.getSqlDate(c.getTime())
-
-        EdDashboard service = new EdDashboard(parameterMap)
-        service.serviceId = Long.parseLong(parameterMap.serviceId.toString())
-        return service
-
-    }
 }

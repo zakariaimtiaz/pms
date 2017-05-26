@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
     <div class="row" id="rowEdDashboard">
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading">
@@ -9,43 +9,38 @@
 
             <g:form name='edDashboardForm' id='edDashboardForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
-                    <input type="hidden" name="id" id="id" data-bind="value: edDashboard.id"/>
-                    <input type="hidden" name="version" id="version" data-bind="value: edDashboard.version"/>
 
                     <div class="form-group">
                         <label class="col-md-1 control-label label-optional"
                                for="serviceId">Sector/CSU:</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <app:dropDownService
-                                    class="kendo-drop-down" readonly="true"
-                                    required="true" validationMessage="Required"
+                                    class="kendo-drop-down"
                                     id="serviceId" name="serviceId" tabindex="1"
-                                    data-bind="value: edDashboard.serviceId"
                                     data_model_name="dropDownService">
                             </app:dropDownService>
                         </div>
-
-                        <div class="col-md-3 pull-left">
-                            <span class="k-invalid-msg" data-for="serviceId"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="col-md-1 control-label label-required" for="month">Month:</label>
+                <div class="col-md-2">
                         <input type="text" id="month" name="month" tabindex="3"
-                               data-bind="value: edDashboard.monthFor" placeholder="Select month">
+                               placeholder="Select month">
+                </div>
+                    <div class="col-md-2" >
+                        <button id="view" name="view" type="button" data-role="button"
+                                class="k-button k-button-icontext" onclick="loadTableData();"
+                                role="button" tabindex="3"
+                                aria-disabled="false"><span class="k-icon k-i-search"></span>View/Edit
+                        </button>
                     </div>
-                </div>
-                <div class="form-group" >
-                    <button id="view" name="view" type="submit" data-role="button"
-                            class="k-button k-button-icontext"
-                            role="button" tabindex="3"
-                            aria-disabled="false"><span class="k-icon k-i-search"></span>View
-                    </button>
-                </div>
-                <div class="row">
+                    </div>
+
+                <div  class="form-group" style="display: none;">
                     <div id="gridEdDashboard"></div>
+                </div>
+                    <div class="form-group" id="tableData">
+                    &nbsp;
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
@@ -63,6 +58,4 @@
             </g:form>
         </div>
     </div>
-
-
 </div>

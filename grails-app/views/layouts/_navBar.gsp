@@ -96,9 +96,9 @@
                                     <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;MRP</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/pmActions/achievement">
+                            <sec:access url="/EdDashboard/show">
                                 <li>
-                                    <a href="#pmActions/achievement"><i class="fa fa-bar-chart"></i>&nbsp;ED'S Dashboard</a>
+                                    <a href="#EdDashboard/show"><i class="fa fa-bar-chart"></i>&nbsp;ED'S Dashboard</a>
                                 </li>
                             </sec:access>
 
