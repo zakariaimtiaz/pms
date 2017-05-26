@@ -17,7 +17,7 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid2" class="kendoGridMenu">
     <sec:access url="/pmSpLog/submission">
-        <li onclick="spSubmission();"><i class="fa fa-edit"></i>Submission</li>
+        <li onclick="spSubmission();"><i class="fa fa-edit"></i>Submit</li>
     </sec:access>
 </ul>
 </script>
@@ -118,6 +118,11 @@
     function spSubmission() {
         if (executeCommonPreConditionForSelectKendo(gridSpSubmission, 'spLog') == false) {
             return;
+        }
+        var isSubmitted = getSelectedValueFromGridKendo(gridSpSubmission, 'isSubmitted');
+        if(isSubmitted){
+            showInfo('SP already submitted');
+            return false;
         }
         var msg = 'Are you sure you want to submit the selected SP?',
                 url = "${createLink(controller: 'pmSpLog', action:  'submission')}";

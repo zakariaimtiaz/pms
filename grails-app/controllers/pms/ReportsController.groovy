@@ -1,5 +1,8 @@
 package pms
 
+import actions.reports.DownloadCompiledSPActionService
+import actions.reports.ListActionsIndicatorActionService
+import actions.reports.ListCompiledSPActionService
 import actions.reports.ListSpMonthlyPlanActionService
 import actions.reports.ListSpPlanActionService
 import com.pms.PmServiceSector
@@ -13,6 +16,9 @@ class ReportsController  extends BaseController  {
     PmActionsService pmActionsService
     ListSpPlanActionService listSpPlanActionService
     ListSpMonthlyPlanActionService listSpMonthlyPlanActionService
+    ListCompiledSPActionService listCompiledSPActionService
+    ListActionsIndicatorActionService listActionsIndicatorActionService
+    DownloadCompiledSPActionService downloadCompiledSPActionService
 
     static allowedMethods = [
             showSpPlan: "POST", listSpPlan: "POST"
@@ -35,5 +41,23 @@ class ReportsController  extends BaseController  {
     def showSpStatus() {
         List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
         render(view: "/reports/statistical/show",model: [lst: lst as JSON])
+    }
+    def showCompiledSP() {
+        List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
+        render(view: "/reports/strategicPlan/allIndicator/show",model: [lst: lst as JSON])
+    }
+    def listCompiledSP() {
+        renderOutput(listCompiledSPActionService,params)
+    }
+    def downloadCompiledSP() {
+        Map result = (Map) getReportResponse(downloadCompiledSPActionService, params).report
+        renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
+    }
+    def showActionsIndicator() {
+        List<GroovyRowResult> lst = pmActionsService.lstDepartmentSpStatus()
+        render(view: "/reports/strategicPlan/actionsIndicator/show",model: [lst: lst as JSON])
+    }
+    def listActionsIndicator() {
+        renderOutput(listActionsIndicatorActionService,params)
     }
 }

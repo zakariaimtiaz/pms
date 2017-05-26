@@ -37,7 +37,7 @@
             <ul class="nav" id="side-menu">
                 <sec:ifAnyUrls urls="/reports/showSpPlan,reports/showSpMonthlyPlan">
                     <li>
-                        <a href="#"><i class="fa fa-server"></i>&nbsp;Strategic Plan<span
+                        <a href="#"><i class="fa fa-server"></i>&nbsp;SP Views<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/reports/showSpPlan">
@@ -96,9 +96,9 @@
                                     <a href="#pmActions/achievement"><i class="fa fa-hand-peace-o"></i>&nbsp;MRP</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/EdDashboard/show">
+                            <sec:access url="/pmActions/achievement">
                                 <li>
-                                    <a href="#EdDashboard/show"><i class="fa fa-bar-chart"></i>&nbsp;ED'S Dashboard</a>
+                                    <a href="#pmActions/achievement"><i class="fa fa-bar-chart"></i>&nbsp;ED'S Dashboard</a>
                                 </li>
                             </sec:access>
 

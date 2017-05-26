@@ -226,7 +226,7 @@ public abstract class AbstractFilterInvocationDefinition implements FilterInvoca
 	/**
 	 * For debugging.
 	 * @return an unmodifiable map of {@link AnnotationFilterInvocationDefinition}ConfigAttributeDefinition
-	 * keyed by compiled patterns
+	 * keyed by allIndicator patterns
 	 */
 	public List<InterceptedUrl> getConfigAttributeMap() {
 		return Collections.unmodifiableList(compiled);
