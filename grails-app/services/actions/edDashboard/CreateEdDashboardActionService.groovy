@@ -18,8 +18,8 @@ import java.text.SimpleDateFormat
 class CreateEdDashboardActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
-    private static final String SAVE_SUCCESS_MESSAGE = "Dashboard has been saved successfully"
-    private static final String ALREADY_EXIST = "Dashboard already exist"
+    private static final String SAVE_SUCCESS_MESSAGE = "Issue has been saved successfully"
+    private static final String ALREADY_EXIST = "Issue already exist"
     private static final String ED_DASHBOARD = "edDashboard"
 
     private Logger log = Logger.getLogger(getClass())
@@ -29,7 +29,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.hfServiceIdModal&&!params.hfMonthModal) {
+            if (!params.hfServiceIdModal&&!params.hfMonthModal&& !params.description) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             return params
@@ -69,18 +69,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             if (!edDashboard) {
                 edDashboard = new EdDashboard()
             }
-            if( !result.description) {
-                edDashboard.delete()
-                EdDashboardIssues edDashboardIssues=EdDashboardIssues.findById(i)
-                if(edDashboardIssues.isAdditional) {
-                    List<EdDashboard> lstEdDashboard = EdDashboard.findAllByServiceIdAndMonthForAndIssueIdGreaterThan(serviceId, monthFor,i, [ sort: "issueId", order: "asc"])
-                    for (EdDashboard obj : lstEdDashboard) {
-                            obj.issueId = obj.issueId - 1
-                            obj.save()
-
-                    }
-                }
-            }else{
                 edDashboard.serviceId = serviceId
                 edDashboard.monthFor = monthFor
                 edDashboard.issueId = i
@@ -100,7 +88,6 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
                     edDashboard.followupMonthFor = DateUtility.getSqlDate(c.getTime())
                 }
                     edDashboard.save()
-                }
 
 
             return result

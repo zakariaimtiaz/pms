@@ -1,6 +1,7 @@
 package pms
 
 import actions.edDashboard.CreateEdDashboardActionService
+import actions.edDashboard.DeleteEdDashboardIssueActionService
 import com.pms.EdDashboard
 import com.pms.EdDashboardIssues
 import com.pms.SecUser
@@ -22,15 +23,19 @@ class EdDashboardController extends BaseController {
     BaseService baseService
     EdDashboardService edDashboardService
     CreateEdDashboardActionService createEdDashboardActionService
+    DeleteEdDashboardIssueActionService deleteEdDashboardIssueActionService
 
     def show() {
         SecUser user = baseService.currentUserObject()
-        String submissionDate = baseService.lastSubmissionDate(user.serviceId)
+        String submissionDate = baseService.lastDashboardSubmissionDate(user.serviceId)
         render(view: "/edDashboard/show", model: [serviceId: user.serviceId, submissionDate: submissionDate])
     }
 
     def create() {
         renderOutput(createEdDashboardActionService, params)
+    }
+    def delete() {
+        renderOutput(deleteEdDashboardIssueActionService, params)
     }
 
     def list() {
@@ -105,4 +110,5 @@ class EdDashboardController extends BaseController {
         } catch (Exception ex) {
         }
     }
+
 }

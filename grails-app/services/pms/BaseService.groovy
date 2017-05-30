@@ -697,11 +697,27 @@ class BaseService extends Tools {
         List<GroovyRowResult> result = groovySql_mis.rows(query)
         return result[0].name
     }
-    public String lastSubmissionDate(Long serviceId){
+    public String lastMRPSubmissionDate(Long serviceId){
         Long month=1
         Long year=1900
         String submissionDate=""
         def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
+        if(d[0]) {
+            try {
+                Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
+                year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
+                submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
+
+            }catch(Exception ex){}
+        }
+        return submissionDate
+    }
+    public String lastDashboardSubmissionDate(Long serviceId){
+        Long month=1
+        Long year=1900
+        String submissionDate=""
+        def d=PmMcrsLog.executeQuery("select max(submissionDateDb) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmittedDb=True ")
         if(d[0]) {
             try {
                 Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))

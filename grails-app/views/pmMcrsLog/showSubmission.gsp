@@ -53,7 +53,8 @@
                         isEditableDb: {type: "boolean"},
                         year: {type: "number"},
                         monthStr: {type: "string"},
-                        month: {type: "number"}
+                        month: {type: "number"},
+                        issueCount: {type: "number"}
                     }
                 },
                 parse: function (data) {
@@ -176,8 +177,10 @@
             showInfo('Dashboard already submitted');
             return false;
         }
-        var msg = 'Are you sure you want to submit the ED Dashboard?',
-                url = "${createLink(controller: 'pmMcrsLog', action:  'submissionDashBoard')}";
+        var msg = 'Are you sure you have no issue reporting to ED and want to submit the ED Dashboard?';
+        if(getSelectedValueFromGridKendo(gridMCRSSubmission, 'issueCount')>0)
+            msg = 'Are you sure you want to submit the ED Dashboard?';
+        var url = "${createLink(controller: 'pmMcrsLog', action:  'submissionDashBoard')}";
         confirmActionForEdit(msg, url, gridMCRSSubmission);
     }
 

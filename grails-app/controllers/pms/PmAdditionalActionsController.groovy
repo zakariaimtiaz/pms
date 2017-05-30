@@ -32,7 +32,7 @@ class PmAdditionalActionsController extends BaseController {
         List<GroovyRowResult> lstProject = pmProjectsService.activeList()
         lstProject.remove(0)
         SecUser user = baseService.currentUserObject()
-        String submissionDate=baseService.lastSubmissionDate(user.serviceId)
+        String submissionDate=baseService.lastMRPSubmissionDate(user.serviceId)
         render(view: "/pmAdditionalActions/show", model: [lstService  : lst as JSON,
                                                 lstProject  : lstProject as JSON,
                                                 serviceId   : user.serviceId,submissionDate:submissionDate])

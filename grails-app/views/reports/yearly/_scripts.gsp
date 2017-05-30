@@ -5,6 +5,9 @@
     $(document).ready(function () {
         onLoadInfoPage();
         initGrid();
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
+            onSubmitForm();
+        }
     });
     function onLoadInfoPage() {
         var data = [];

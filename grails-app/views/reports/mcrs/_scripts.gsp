@@ -18,6 +18,9 @@
         initGrid();
         initGridAdditional();
         activeTab('menu1');
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}) {
+            onSubmitMCRSForm();
+        }
     });
     function onLoadInfoPage() {
         if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
@@ -72,6 +75,7 @@
 
         initializeForm($("#detailsForm"), null);
         defaultPageTile("Strategic Plan", 'reports/showMcrs');
+
     }
     function activeTab(tab){
         $('.nav-tabs a[href="#' + tab + '"]').tab('show');

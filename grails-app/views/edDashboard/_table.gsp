@@ -2,8 +2,8 @@
 
     <tr style="background-color: #c0c0c0">
         <td style="width: 10%;"><label class=" control-label">Issue</label></td>
-        <td style="width: 35%;"><label class=" control-label">Crisis And Highlights</label></td>
-        <td style="width: 30%;"><label class=" control-label">Remarks And Recommendations</label></td>
+        <td style="width: 35%;"><label class=" control-label">Crisis and Highlights</label></td>
+        <td style="width: 30%;"><label class=" control-label">Remarks and Recommendations</label></td>
         <td style="width: 25%;"><label class=" control-label">ED's Advice</label></td>
     </tr>
 
