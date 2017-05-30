@@ -6,9 +6,19 @@
     <sec:access url="/pmSpLog/updateDeadLine">
         <li onclick="showDeadLineModel();"><i class="fa fa-clock-o"></i>Dead Line</li>
     </sec:access>
+    <sec:access url="/pmActions/showEditableActions">
+        <li onclick="showEditableActions();"><i class="fa fa-th-list"></i>Set Editable Actions</li>
+    </sec:access>
 </ul>
 </script>
-
+<style type="text/css">
+    .k-filtercell {
+        text-align: center;
+    }
+    .k-filtercell label {
+        padding-left: 5px;
+    }
+</style>
 <script language="javascript">
     var currentDate,currentYear,gridSpLog, dataSource, SpLogModel;
 
@@ -130,12 +140,14 @@
         clearForm($("#spLogForm"), $('#serviceId'));
         initObservable();
         $('#year').val(currentYear);
+        $('#yearGrid').val(currentYear);
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function resetForm() {
         initObservable();
         $('#year').val(currentYear);
+        $('#yearGrid').val(currentYear);
     }
 
     function initDataSource() {
@@ -156,6 +168,7 @@
                         version: { type: "number" },
                         year: { type: "number" },
                         serviceId: { type: "number" },
+                        serviceName: { type: "string" },
                         service: { type: "string" },
                         submissionDate: { type: "date" },
                         deadLine: { type: "date" },
@@ -201,7 +214,7 @@
                     headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "isSubmitted", title: "Submitted", width: 50, sortable: false,
-                    filterable: { messages: { isTrue: "YES", isFalse: "NO" }},
+                    filterable: { messages: { isTrue: " YES ", isFalse: " NO " }},
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
                     template:"#=isSubmitted?'YES':'NO'#"
                 },
@@ -210,7 +223,7 @@
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "isEditable", title: "Editable", width: 50, sortable: false,
-                    filterable: { messages: { isTrue: "YES", isFalse: "NO" }, extra: false},
+                    filterable: { messages: { isTrue: " YES ", isFalse: " NO " }, extra: false},
                     attributes: {style: setAlignCenter()},headerAttributes: {style: setAlignCenter()},
                     template:"#=isEditable?'YES':'NO'#"
                 }
@@ -299,5 +312,21 @@
             dataType: 'json'
         });
         $("#createSPModal").modal('hide');
+    }
+
+    function showEditableActions(){
+        if (executeCommonPreConditionForSelectKendo(gridSpLog, 'sector/csu') == false) {
+            return;
+        }
+        var object = getSelectedObjectFromGridKendo(gridSpLog);
+        if(!object.isEditable){
+            showError('First make SP editable to make actions editable');
+            return false;
+        }
+        showLoadingSpinner(true);
+        var params = "?serviceId=" + object.serviceId + "&year=" + object.year + "&service=" + object.serviceName;
+        var loc = "${createLink(controller: 'pmActions', action: 'showEditableActions')}" + params;
+        router.navigate(formatLink(loc));
+        return false;
     }
 </script>

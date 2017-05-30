@@ -7,13 +7,10 @@
         initGrid();
     });
     function onLoadInfoPage() {
-        var data = [];
+        var data = ["All Indicator", "Action Indicator"];
         if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
-            data = ["All Indicator", "Action Indicator"];
-        }else{
-            data = ["All Indicator", "Action Indicator", "Without Achievement"];
         }
         var str = moment().format('YYYY');
         $('#year').kendoDatePicker({
@@ -32,7 +29,7 @@
         dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showYearlySPDetails');
+        defaultPageTile("Strategic Action Plan", 'reports/showYearlySPDetails');
     }
     function onSubmitForm() {
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
@@ -42,13 +39,6 @@
         if(serviceId==''){
             showError('Please select any service');
             return false;
-        }
-        if(indicatorType=='Without Achievement') {
-            gridYearlySP.hideColumn(6);
-            gridYearlySP.hideColumn(7);
-        }else {
-            gridYearlySP.showColumn(6);
-            gridYearlySP.showColumn(7);
         }
         var params = "?serviceId=" +serviceId+"&year="+year+"&indicatorType="+indicatorType;
         var url ="${createLink(controller: 'reports', action: 'listYearlySPDetails')}" + params;
@@ -117,7 +107,7 @@
                     template: "#=calculateVariance(tot_tar,tot_acv)#"
                 },
                 {
-                    field: "remarks", title: "Remarks",
+                    field: "remarks", title: "Action Remarks",
                     template: "#=trimTextForKendo(omitRepeated8(sequence,remarks),70)#",
                     width: 200, sortable: false,filterable: false
                 },
@@ -160,10 +150,11 @@
             pageable: false,
             detailInit: initDetails,
             columns: [
-                {field: "indicator", title: "Indicator",width: '55%'},
-                {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#",width: '15%'},
-                {field: "unitStr", title: "Unit",width: '15%'},
-                {field: "indicatorType", title: "Indicator Type",width: '15%'}
+                {field: "indicator", title: "Indicator",width: '30%'},
+                {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#",width: '10%'},
+                {field: "unitStr", title: "Unit",width: '10%'},
+                {field: "indicatorType", title: "Indicator Type",width: '10%'},
+                {field: "remarks", title: "Indicator Remarks",width: '40%'}
             ]
         });
     }
@@ -196,9 +187,10 @@
             sortable: false,
             pageable: false,
             columns: [
-                {field: "month_name", title: "Month"},
-                {field: "target", title: "Monthly Target",template:"#=formatIndicator(indicator_type,target)#"},
-                {field: "achievement", title: "Monthly Achievement",template:"#=formatIndicatorAcv(month_name,indicator_type,achievement)#"}
+                {field: "month_name", title: "Month",width: '10%'},
+                {field: "target", title: "Monthly Target",template:"#=formatIndicator(indicator_type,target)#",width: '10%'},
+                {field: "achievement", title: "Monthly Achievement",template:"#=formatIndicatorAcv(month_name,indicator_type,achievement)#",width: '10%'},
+                {field: "remarks", title: "Monthly Indicator Remarks",width: '70%'}
             ]
         });
     }
@@ -340,18 +332,16 @@
     }
 
     function downloadYearlySpReport() {
-        var checked = document.querySelector('input[name="downloadType"]:checked').value;
         var year = $('#year').val();
         var serviceId = dropDownService.value();
-        var indicatorType = dropDownIndicatorType.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
         showLoadingSpinner(true);
-        var msg = 'Do you want to download the yearly SP report now?',
-            params = "?serviceId=" +serviceId+"&year="+year+"&indicatorType="+indicatorType+"&checked="+checked,
-            url = "${createLink(controller: 'reports', action:  'downloadYearlySP')}" + params;
+        var msg = 'Do you want to download the yearly SAP details report now?',
+            params = "?serviceId=" +serviceId+"&year="+year,
+            url = "${createLink(controller: 'reports', action:  'downloadYearlySPDetails')}" + params;
         confirmDownload(msg, url);
         return false;
     }

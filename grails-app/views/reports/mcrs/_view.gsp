@@ -21,7 +21,7 @@
                     <div class="form-group">
                         <label class="col-md-1 control-label label-optional" for="month">Month:</label>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2" style="width: 160px;">
                             <input type='text' tabindex="1" required="required" onkeydown="return false;"
                                    class="kendo-date-picker" id="month" name="month"
                                    placeholder="Month" validationMessage="Required"/>
@@ -39,7 +39,7 @@
                         <div class="col-md-2">
                             <select class="kendo-drop-down" id="indicatorType" name="indicatorType" onchange="showResetPreference();" tabindex="3"></select>
                         </div>
-                        <div class="col-md-2" style="width: 120px;">
+                        <div class="col-md-1" style="width: 120px;">
                             <select class="kendo-drop-down" id="indicatorLight" name="indicatorLight" tabindex="4"></select>
                         </div>
                         <div class="col-md-1">
@@ -66,7 +66,7 @@
         <ul class="nav nav-tabs">
             <li><a data-toggle="tab" href="#menu1">MRP</a></li>
             <li><a data-toggle="tab" href="#menu2">MRP Additional</a></li>
-            <li><a data-toggle="tab" href="#menu3">ED's Dashboard</a></li>
+            %{--<li><a data-toggle="tab" href="#menu3">ED's Dashboard</a></li>--}%
         </ul>
 
         <div class="tab-content">
@@ -80,13 +80,13 @@
                     <div id="gridMRPAddi"></div>
                 </div>
             </div>
-            <div id="menu3" class="tab-pane fade">
+%{--            <div id="menu3" class="tab-pane fade">
                 <div class="panel-primary">
                     <div class="form-group" id="tableData">
                         <g:render template='/reports/mcrs/ViewED'/>
                     </div>
                 </div>
-            </div>
+            </div>--}%
         </div>
     </div>
 </div>

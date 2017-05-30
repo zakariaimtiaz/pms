@@ -202,13 +202,13 @@
     };
 
     function formatIndicator(indicatorType, target) {
-        if (!target && (indicatorType=='Dividable%'||indicatorType=='RepeatableP'||indicatorType=='RepeatableP++')){
-            return '0 %'
-        }else if(!target && (indicatorType!='Dividable%'||indicatorType!='RepeatableP'||indicatorType!='RepeatableP++')){
-            return '0'
+        if (!target && indicatorType.match('%')) {
+            return ' 0% ';
         }
-
-        if (indicatorType=='Dividable%'||indicatorType=='RepeatableP'||indicatorType=='RepeatableP++') {
+        if (!target && !indicatorType.match('%')) {
+            return '0';
+        }
+        if (indicatorType.match('%')) {
             return target + ' % ';
         }
         return target

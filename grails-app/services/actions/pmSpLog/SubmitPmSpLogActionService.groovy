@@ -1,6 +1,7 @@
 package actions.pmSpLog
 
 import com.pms.PmSpLog
+import com.pms.PmSpLogDetails
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -35,6 +36,12 @@ class SubmitPmSpLogActionService extends BaseService implements ActionServiceInt
             spLog.submissionDate = DateUtility.getSqlDate(new Date())
             spLog.isEditable = Boolean.FALSE
             spLog.save()
+
+            PmSpLogDetails details = PmSpLogDetails.findByLogIdAndIsCurrent(spLog.id,Boolean.TRUE)
+            if(details){
+                details.submittedOn = spLog.submissionDate
+                details.save()
+            }
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

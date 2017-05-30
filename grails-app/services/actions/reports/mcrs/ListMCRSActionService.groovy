@@ -127,7 +127,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
 
                  CASE
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)
+                 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(ai.target,0) ELSE 0 END)
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
@@ -145,7 +145,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
                 AND (@curmon <= MONTH(a.end) AND @curmon >= MONTH(a.start))
                 GROUP BY ai.id
-                HAVING mon_tar!=0
+                HAVING mon_tar!=0 OR mon_acv !=0
                 ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq ) tmp ${indicatorLightStr};
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)

@@ -1,19 +1,14 @@
 package pms
 
-import actions.pmSpLog.CreatePmSpLogActionService
-import actions.pmSpLog.SubmitPmSpLogActionService
-import actions.pmSpLog.ListPmSpLogActionService
-import actions.pmSpLog.UpdatePmSpLogActionService
-import actions.pmSpLog.UpdateSpLogDeadLineActionService
-import com.pms.PmServiceSector
+import actions.pmSpLog.*
 import com.pms.PmSpLog
 import com.pms.SecUser
-import com.pms.SystemEntity
-import grails.converters.JSON
+import service.PmSpLogService
 
 class PmSpLogController extends BaseController {
 
     BaseService baseService
+    PmSpLogService pmSpLogService
     CreatePmSpLogActionService createPmSpLogActionService
     UpdatePmSpLogActionService updatePmSpLogActionService
     SubmitPmSpLogActionService submitPmSpLogActionService
@@ -33,6 +28,11 @@ class PmSpLogController extends BaseController {
     }
     def retrieveSpLog() {
         SecUser user = baseService.currentUserObject()
+        boolean isAdmin = baseService.isUserSystemAdmin(user.id)
+        if(isAdmin) {
+            render Boolean.FALSE
+            return
+        }
         PmSpLog spLog = PmSpLog.findByServiceIdAndYear(user.serviceId, Integer.parseInt(params.year.toString()))
         render spLog.isSubmitted
     }
@@ -48,5 +48,13 @@ class PmSpLogController extends BaseController {
     }
     def updateDeadLine() {
         renderOutput(updateSpLogDeadLineActionService, params)
+    }
+    def logDetailsById() {
+        long logId = Long.parseLong(params.logId.toString())
+        def result = pmSpLogService.spLogDetailsByLogId(logId)
+
+        render(view: '/reports/statistical/showSpDetails',
+                model:[result:result,service:result[0]?.service,
+                       logStart: result[0]?.log_start,year:result[0].year])
     }
 }

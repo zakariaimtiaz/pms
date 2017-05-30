@@ -42,7 +42,7 @@
                         <ul class="nav nav-second-level">
                             <sec:ifAnyUrls urls="/reports/showYearlySP,/reports/showYearlySPDetails">
                                 <li>
-                                    <a href="#"><i class="fa fa-cubes"></i>&nbsp;Annual SP<span
+                                    <a href="#"><i class="fa fa-cubes"></i>&nbsp;Annual SAP<span
                                             class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level">
                                         <sec:access url="/reports/showYearlySP">
@@ -75,7 +75,7 @@
                             </sec:access>
                             <sec:access url="/reports/showSpSummary">
                                 <li>
-                                    <a href="#reports/showSpSummary"><i class="fa fa-keyboard-o"></i>&nbsp;SP Summary
+                                    <a href="#reports/showSpSummary"><i class="fa fa-keyboard-o"></i>&nbsp;SAP Summary
                                     </a>
                                 </li>
                             </sec:access>
@@ -109,7 +109,7 @@
                                         <sec:access url="/reports/showSpStatus">
                                             <li>
                                                 <a href="#reports/showSpStatus"><i
-                                                        class="fa fa-file-powerpoint-o"></i>&nbsp;SP
+                                                        class="fa fa-file-powerpoint-o"></i>&nbsp;SAP
                                                 </a>
                                             </li>
                                         </sec:access>
@@ -138,7 +138,7 @@
                 <sec:ifAnyUrls
                         urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show">
                     <li>
-                        <a href="#"><i class="fa fa-book"></i>&nbsp;SP Entry<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-book"></i>&nbsp;SAP Entry<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmMissions/show">
                                 <li>
@@ -157,7 +157,7 @@
                             </sec:access>
                             <sec:access url="/pmSpSummary/show">
                                 <li>
-                                    <a href="#pmSpSummary/show"><i class="fa fa-newspaper-o"></i>&nbsp;SP Summary</a>
+                                    <a href="#pmSpSummary/show"><i class="fa fa-newspaper-o"></i>&nbsp;SAP Summary</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/pmSpLog/showSubmission">
@@ -205,7 +205,7 @@
                         <ul class="nav nav-second-level">
                             <sec:access url="/pmSpLog/show">
                                 <li>
-                                    <a href="#pmSpLog/show"><i class="fa fa-clock-o"></i>&nbsp;SP Log</a>
+                                    <a href="#pmSpLog/show"><i class="fa fa-clock-o"></i>&nbsp;SAP Log</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/pmMcrsLog/show">
@@ -223,9 +223,9 @@
                                     <a href="#systemEntity/show"><i class="fa fa-cogs"></i>&nbsp;System Entity</a>
                                 </li>
                             </sec:access>
-                            <sec:access url="/spTimeSchedule/show">
+                            <sec:access url="/XspTimeSchedule/show">
                                 <li>
-                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SP Schedule</a>
+                                    <a href="#spTimeSchedule/show"><i class="fa fa-cogs"></i>&nbsp;SAP Schedule</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/pmProjects/show">

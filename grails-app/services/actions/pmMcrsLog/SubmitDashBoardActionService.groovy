@@ -101,7 +101,7 @@ class SubmitDashBoardActionService extends BaseService implements ActionServiceI
                 .replaceAll("_MONTH_NAME_",monthStr+SINGLE_SPACE+year)
                 .replaceAll("__DEADLINE__",DateUtility.getDateForUI(deadLine))
 
-/*        Thread trd = new Thread() {
+        Thread trd = new Thread() {
             public void run() {
                 mailService.sendMail {
                     to "${email}"
@@ -110,7 +110,7 @@ class SubmitDashBoardActionService extends BaseService implements ActionServiceI
                     html (mailBody)
                 }
             }
-        }.start();*/
+        }.start();
         return null
     }
 }

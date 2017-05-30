@@ -1,6 +1,7 @@
 package pms
 
 import actions.pmActions.*
+import actions.pmActions.ListEditableActionsActionService
 import com.pms.*
 import grails.converters.JSON
 import groovy.sql.GroovyRowResult
@@ -24,6 +25,8 @@ class PmActionsController extends BaseController {
     UpdateMRPActionService updateMRPActionService
     UpdatePreferenceActionService updatePreferenceActionService
     ListMRPActionService listMRPActionService
+    ListEditableActionsActionService listEditableActionsActionService
+    UpdateEditableActionsActionService updateEditableActionsActionService
 
     def show() {
         List<GroovyRowResult> lst = pmServiceSectorService.activeList()
@@ -32,7 +35,7 @@ class PmActionsController extends BaseController {
         lstProject.remove(0)
         SecUser user = baseService.currentUserObject()
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
-        boolean isSubmitted = true
+        boolean isSubmitted = Boolean.FALSE
         if(!isAdmin){
             Calendar now = Calendar.getInstance();   // Gets the current date and time
             int year = now.get(Calendar.YEAR);
@@ -61,6 +64,19 @@ class PmActionsController extends BaseController {
     }
     def updatePreference(){
         renderOutput(updatePreferenceActionService, params)
+    }
+    def showEditableActions(){
+        render(view: "/pmActions/editableActions/show",
+                model:[serviceId : params.serviceId,
+                       service   : params.service,
+                       year      : params.year
+                ])
+    }
+    def updateEditableActions(){
+        renderOutput(updateEditableActionsActionService, params)
+    }
+    def listEditableActions(){
+        renderOutput(listEditableActionsActionService,params)
     }
     def list() {
         renderOutput(listPmActionsActionService, params)
@@ -92,11 +108,18 @@ class PmActionsController extends BaseController {
         render result as JSON
     }
     def listDetailsByIndicator() {
-        long actionsId = Long.parseLong(params.actionsId.toString())
-        long indicatorId = Long.parseLong(params."filter[filters][0][value]".toString())
-        List<GroovyRowResult> lst = pmActionsService.findAllDetailsByActionsIdAndIndicatorId(actionsId, indicatorId)
-        Map result = [list: lst, count:lst.size()]
-        render result as JSON
+        if(params.containsKey("indicatorId")){
+            long indicatorId = Long.parseLong(params.indicatorId.toString())
+            List<PmActionsIndicatorDetails> lst = PmActionsIndicatorDetails.findAllByIndicatorId(indicatorId)
+            Map result = [list: lst, count:lst.size()]
+            render result as JSON
+        }else{
+            long actionsId = Long.parseLong(params.actionsId.toString())
+            long indicatorId = Long.parseLong(params."filter[filters][0][value]".toString())
+            List<GroovyRowResult> lst = pmActionsService.findAllDetailsByActionsIdAndIndicatorId(actionsId, indicatorId)
+            Map result = [list: lst, count:lst.size()]
+            render result as JSON
+        }
     }
     def actionsStartAndEndDateById() {
         long id = Long.parseLong(params.actionId.toString())
@@ -104,6 +127,42 @@ class PmActionsController extends BaseController {
 
         Map result = [lstActions: lst]
         render result as JSON
+    }
+    def updateIndicatorDetails(){
+        long indicatorId = Long.parseLong(params.indIdModal.toString())
+        PmActionsIndicator indicator = PmActionsIndicator.read(indicatorId)
+        int count = Integer.parseInt(params.tempCountModal.toString())
+        long actionsId = indicator.actionsId
+        String start = params.get("month1")
+        String end = params.get("month"+count)
+            for(int i = 0; i < count; i++){
+                String monStr = "month"+(i+1)
+                String trStr = "tempTr"+(i+1)
+                String acvStr = "tempAcv"+(i+1)
+                String paramMonth = params.get(monStr)
+                String paramsTar = params.get(trStr)
+                String paramsAcv = params.get(acvStr)
+                if(!paramsTar) paramsTar = "0"
+                if(!paramsAcv) paramsAcv = "0"
+
+                PmActionsIndicatorDetails obj = PmActionsIndicatorDetails.findByActionsIdAndIndicatorIdAndMonthName(actionsId, indicatorId, paramMonth)
+                if (obj) {
+                    obj.target = Integer.parseInt(paramsTar)
+                    obj.achievement = Integer.parseInt(paramsAcv)
+                    obj.save()
+                }else {
+                    PmActionsIndicatorDetails details2 = new PmActionsIndicatorDetails()
+                    details2.actionsId = actionsId
+                    details2.indicatorId = indicatorId
+                    details2.monthName = paramMonth
+                    details2.target = Integer.parseInt(paramsTar)
+                    details2.achievement = Integer.parseInt(paramsAcv)
+                    details2.createDate = new Date()
+                    details2.createBy = baseService.currentUserObject().id
+                    details2.save()
+                }
+            }
+           pmActionsService.deleteInvalidIndicatorDetails(indicatorId,start,end)
     }
     ////////////MRP///////////////
     def achievement() {

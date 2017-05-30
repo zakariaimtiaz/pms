@@ -272,7 +272,7 @@
     }
 
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(2)",
+        filter: "td:nth-child(2),td:nth-child(3)",
         width: 200,
         position: "top",
         content: function(e){
@@ -285,7 +285,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(3)",
+        filter: "td:nth-child(4),td:nth-child(5)",
         width: 200,
         position: "top",
         content: function(e){
@@ -298,7 +298,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(4)",
+        filter: "td:nth-child(6),td:nth-child(7)",
         width: 200,
         position: "top",
         content: function(e){
@@ -311,7 +311,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(5)",
+        filter: "td:nth-child(8),td:nth-child(9)",
         width: 200,
         position: "top",
         content: function(e){
@@ -324,7 +324,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(6)",
+        filter: "td:nth-child(10),td:nth-child(11)",
         width: 200,
         position: "top",
         content: function(e){
@@ -337,7 +337,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(7)",
+        filter: "td:nth-child(12),td:nth-child(13)",
         width: 200,
         position: "top",
         content: function(e){
@@ -350,7 +350,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(8)",
+        filter: "td:nth-child(14),td:nth-child(15)",
         width: 200,
         position: "top",
         content: function(e){
@@ -363,7 +363,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(9)",
+        filter: "td:nth-child(16),td:nth-child(17)",
         width: 200,
         position: "top",
         content: function(e){
@@ -376,7 +376,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(10)",
+        filter: "td:nth-child(18),td:nth-child(19)",
         width: 200,
         position: "top",
         content: function(e){
@@ -389,7 +389,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(11)",
+        filter: "td:nth-child(20),td:nth-child(21)",
         width: 200,
         position: "top",
         content: function(e){
@@ -402,7 +402,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(12)",
+        filter: "td:nth-child(22),td:nth-child(23)",
         width: 200,
         position: "top",
         content: function(e){
@@ -415,7 +415,7 @@
         }
     }).data("kendoTooltip");
     $("#gridMCRS").kendoTooltip({
-        filter: "td:nth-child(13)",
+        filter: "td:nth-child(24),td:nth-child(25)",
         width: 200,
         position: "top",
         content: function(e){

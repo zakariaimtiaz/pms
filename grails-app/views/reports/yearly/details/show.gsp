@@ -1,6 +1,6 @@
 <script type="application/javascript"> var dropDownService,dropDownIndicatorType;</script>
 <style type="text/css">
-#downloadSP {
+#downloadSPD {
     height: 23px;
     font-size: smaller;
 }

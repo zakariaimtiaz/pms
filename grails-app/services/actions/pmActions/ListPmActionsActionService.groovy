@@ -1,6 +1,9 @@
 package actions.pmActions
 
 import com.model.ListPmActionsActionServiceModel
+import com.pms.PmSpLog
+import com.pms.SecUser
+import com.pms.SpTimeSchedule
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -32,6 +35,24 @@ class ListPmActionsActionService extends BaseService implements ActionServiceInt
             Date date2 = DateUtility.getSqlDate(c.getTime());
 
             List<Long> lst = currentUserDepartmentList()
+            boolean departmentalUser = isUserOnlyDepartmental()
+            if(departmentalUser){
+                SecUser user = currentUserObject()
+                SpTimeSchedule schedule = SpTimeSchedule.findByIsActive(Boolean.TRUE)
+                PmSpLog spLog = PmSpLog.findByServiceIdAndYear(user.serviceId,Integer.parseInt(schedule.activeYear))
+                if(spLog.isEditable){
+                    Closure additionalParam = {
+                        'in'('serviceId', lst)
+                        'eq'('isEditable', true)
+                        'between'("start", date1, date2)
+                    }
+                    Map resultMap = super.getSearchResult(result, ListPmActionsActionServiceModel.class,additionalParam)
+                    result.put(LIST, resultMap.list)
+                    result.put(COUNT, resultMap.count)
+                    return result
+                }
+            }
+
             Closure additionalParam = {
                 'in'('serviceId', lst)
                 'between'("start", date1, date2)

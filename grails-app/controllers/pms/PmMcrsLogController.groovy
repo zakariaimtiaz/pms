@@ -47,7 +47,7 @@ class PmMcrsLogController extends BaseController {
         SecUser user = baseService.currentUserObject()
         render(view: "/pmMcrsLog/showSubmission", model: [serviceId:user.serviceId])
     }
-    def submissionMRP() {
+    def submission() {
         renderOutput(submitMRPActionService, params)
     }
     def submissionDashBoard() {

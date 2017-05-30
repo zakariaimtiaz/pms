@@ -3,7 +3,7 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
-                    Annual SP
+                    Annual SAP
                     <button id="downloadSP" name="downloadSP" type="button" data-role="button"
                             class="k-button k-button-icontext pull-right" role="button"
                             aria-disabled="false" onclick='downloadYearlySpReport();'><span

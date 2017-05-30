@@ -3,16 +3,12 @@
         <div id="application_top_panel" class="panel panel-primary">
             <div class="panel-heading" style="height: 30px;">
                 <div class="panel-title">
-                    Annual SP Details
-%{--                    <button id="downloadSP" name="downloadSP" type="button" data-role="button"
+                    Annual SAP Details
+                    <button id="downloadSPD" name="downloadSPD" type="button" data-role="button"
                             class="k-button k-button-icontext pull-right" role="button"
                             aria-disabled="false" onclick='downloadYearlySpReport();'><span
                             class="fa fa-file-pdf-o"></span>&nbsp;Download
                     </button>
-                    <label class="control-label label-optional pull-right" style="font-size: 10px;">
-                        <input type="radio" name="downloadType" value="true" checked> All column
-                        <input type="radio" name="downloadType" value="false">Selected column
-                    &nbsp;</label>--}%
                 </div>
             </div>
 

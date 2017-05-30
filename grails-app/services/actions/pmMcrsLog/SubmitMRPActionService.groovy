@@ -44,7 +44,7 @@ class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
             pmMcrsLog.isEditable = Boolean.FALSE
             pmMcrsLog.save()
 
-            PmMcrsLogDetails details = PmMcrsLogDetails.findByLogIdAndIsCurrent(pmMcrsLog.id, Boolean.TRUE)
+            PmMcrsLogDetails details = PmMcrsLogDetails.findByLogIdAndLogTypeIdAndIsCurrent(pmMcrsLog.id,1L, Boolean.TRUE)
             if(details){
                 details.submittedOn = pmMcrsLog.submissionDate
                 details.save()

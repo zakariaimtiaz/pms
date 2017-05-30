@@ -51,7 +51,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
 
             String str = result.indicator.toString()
             String deletedIndicatorIds = result.deletedIndicatorIds.toString()
-            if(!deletedIndicatorIds.isEmpty()){
+            if (!deletedIndicatorIds.isEmpty()) {
                 String query1 = """
                 DELETE FROM pm_actions_indicator WHERE id IN (${deletedIndicatorIds})
             """
@@ -104,7 +104,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         }
                         PmActionsIndicator indicator = new PmActionsIndicator()
                         if (result.get("indicatorId" + (i + 1)).toString().isEmpty()) {
-
                             indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
                             indicator.year = actions.year
@@ -132,7 +131,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                 pmActionsIndicatorDetails.delete()
                             }
                         }
-
                         PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
                         details.actionsId = actions.id
                         details.indicatorId = indicator.id
@@ -141,7 +139,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         details.createBy = springSecurityService.principal.id
                         details.createDate = new Date()
                         details.save()
-
                     } catch (Exception e) {
                     }
                 }
@@ -153,7 +150,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         long unitId = 0
                         String unitIdStr = ''
                         String tempStr = result.get("unitId" + (i + 1)).toString()
-                        if(!tempStr.isEmpty()) {
+                        if (!tempStr.isEmpty()) {
                             try {
                                 unitId = Long.parseLong(tempStr)
                                 SystemEntity se = SystemEntity.read(unitId)
@@ -173,7 +170,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                 }
                             }
                         }
-                        if(result.get("indicatorId" + (i + 1)).toString().isEmpty()){
+                        if (result.get("indicatorId" + (i + 1)).toString().isEmpty()) {
                             PmActionsIndicator indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
                             indicator.year = actions.year
@@ -202,40 +199,8 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                     details.save()
                                     monthCount++
                                 }
-                            } else {
-                                String[] couple = ""
-                                for (int k = 0; k < max; k++) {
-                                    couple = ind[k].split("&");
-                                    if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
-                                        break;
-                                    }
-                                }
-                                int tmpCount = Integer.parseInt(couple[4].split("=")[1].replaceAll("^\\d.]", ""))
-
-                                int t = 6;
-                                for (int j = 0; j < tmpCount; j++) {
-                                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                                    details.actionsId = actions.id
-                                    details.indicatorId = indicator.id
-                                    String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-                                    String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
-                                    int targetInt = 0
-                                    try {
-                                        targetInt = Integer.parseInt(target)
-                                    } catch (Exception e) {
-                                        targetInt = 0
-                                    }
-
-                                    details.monthName = name
-                                    details.target = targetInt
-                                    details.createBy = springSecurityService.principal.id
-                                    details.createDate = new Date()
-                                    details.save()
-                                    t += 2
-                                }
-
                             }
-                        }else{
+                        } else {
                             Long id = Long.parseLong(result.get("indicatorId" + (i + 1)).toString())
                             PmActionsIndicator indicator = PmActionsIndicator.read(id)
                             indicator.actionsId = actions.id
@@ -246,6 +211,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.unitStr = unitIdStr
                             indicator.unitId = unitId
                             indicator.save()
+
 
                             List<PmActionsIndicatorDetails> lstIndDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorId(actions.id,id)
                             for (PmActionsIndicatorDetails pmActionsIndicatorDetails : lstIndDetails) {
@@ -270,41 +236,9 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                     details.save()
                                     monthCount++
                                 }
-                            } else {
-                                String[] couple = ""
-                                for (int k = 0; k < max; k++) {
-                                    couple = ind[k].split("&");
-                                    if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
-                                        break;
-                                    }
-                                }
-                                int tmpCount = Integer.parseInt(couple[5].split("=")[1].replaceAll("^\\d.]", ""))
-
-                                int t = 6;
-                                for (int j = 0; j < tmpCount; j++) {
-                                    String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-
-                                        PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                                        int targetInt = 0
-                                        try {
-                                            String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
-                                            targetInt = Integer.parseInt(target)
-                                        } catch (Exception e) {
-                                            targetInt = 0
-                                        }
-                                        details.actionsId = actions.id
-                                        details.indicatorId = indicator.id
-                                        details.monthName = name
-                                        details.target = targetInt
-                                        details.createBy = springSecurityService.principal.id
-                                        details.createDate = new Date()
-                                        details.save()
-
-                                    t += 2
-                                }
                             }
                         }
-                            indSplitCount++
+
                     } catch (Exception e) {
                         indSplitCount++
                     }
