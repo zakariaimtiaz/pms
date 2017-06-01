@@ -10,6 +10,7 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.EdDashboardService
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -23,13 +24,13 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     private static final String ED_DASHBOARD = "edDashboard"
 
     private Logger log = Logger.getLogger(getClass())
-
+    EdDashboardService edDashboardService
 
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.hfServiceIdModal&&!params.hfMonthModal&& !params.description) {
+            if (!params.hfServiceIdModal && !params.hfMonthModal && !params.description) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             return params
@@ -52,42 +53,24 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             Date monthFor = DateUtility.getSqlDate(c.getTime())
             long serviceId = Long.parseLong(result.hfServiceIdModal.toString())
 
-            int month = c.get(Calendar.MONTH);
-            int year = c.get(Calendar.YEAR);
+            Long issueId = Long.parseLong(result.issueIdDDL)
 
-            PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndMonthAndYear(serviceId,month+1,year)
-            SecUser user = SecUser.read(springSecurityService.principal.id)
-            boolean isTop = isUserTopManagement(user.id)
-            boolean isEdAssist = isEdAssistantRole(user.id)
-
-            if(!isTop && !isEdAssist && pmMcrsLog?.isSubmitted){
-                return super.setError(result, 'Already submitted for this month');
+            if (EdDashboardIssues.findById(issueId).isHeading) {
+                issueId = edDashboardService.minimumAdditionalIssuesId()
             }
+            EdDashboard edDashboard = new EdDashboard()
+            edDashboard.serviceId = serviceId
+            edDashboard.monthFor = monthFor
+            edDashboard.issueId = issueId
+            edDashboard.description = result.description
+            edDashboard.remarks = result.remarks
+            edDashboard.createBy = springSecurityService?.principal?.id
+            edDashboard.createDate = DateUtility.getSqlDate(new Date())
+            edDashboard.edAdvice = EMPTY_SPACE
+            edDashboard.isFollowup=false
+            edDashboard.isResolve=false
 
-                Long i = Long.parseLong(result.hfClickingRowNo)
-            EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId, monthFor, i)
-            if (!edDashboard) {
-                edDashboard = new EdDashboard()
-            }
-                edDashboard.serviceId = serviceId
-                edDashboard.monthFor = monthFor
-                edDashboard.issueId = i
-                edDashboard.description = result.description
-                edDashboard.remarks = result.remarks
-                edDashboard.createBy = springSecurityService?.principal?.id
-                edDashboard.createDate = DateUtility.getSqlDate(new Date())
-                edDashboard.edAdvice =EMPTY_SPACE
-                edDashboard.isFollowup = result.selection != 'New' ? true : false
-                if(edDashboard.isFollowup){
-                    String followupDateStr = result.followupMonth
-
-                    start = originalFormat.parse(followupDateStr);
-                    c = Calendar.getInstance();
-                    c.setTime(start);
-                    c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-                    edDashboard.followupMonthFor = DateUtility.getSqlDate(c.getTime())
-                }
-                    edDashboard.save()
+            edDashboard.save()
 
 
             return result

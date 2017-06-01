@@ -24,16 +24,7 @@ class DeleteEdDashboardIssueActionService extends BaseService implements ActionS
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         long id = Long.parseLong(params.id.toString())
-        String startDateStr = params.month.toString()
-        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
-        Date start = originalFormat.parse(startDateStr);
-        Calendar c = Calendar.getInstance();
-        c.setTime(start);
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-        Date monthFor = DateUtility.getSqlDate(c.getTime())
-        long serviceId = Long.parseLong(params.serviceId.toString())
-        EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(serviceId, monthFor, id)
+        EdDashboard edDashboard = EdDashboard.findById(id)
         if(!edDashboard){
             return super.setError(params, NOT_FOUND)
         }
