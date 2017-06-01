@@ -1,15 +1,26 @@
 package service
 
+import com.pms.PmActionsIndicatorDetails
+import com.pms.PmServiceSector
+import com.pms.PropertiesReader
 import com.pms.SecUser
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
+import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
+import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
+import org.codehaus.groovy.grails.plugins.jasper.JasperService
 import pms.BaseService
+import pms.utility.DateUtility
+import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
+import pms.utility.Tools
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
 class PmActionsService extends BaseService {
+
+    JasperService jasperService
 
     public List<GroovyRowResult> lstActionsByServiceIdAndYear(long serviceId, String year) {
         String queryForList = """
@@ -48,33 +59,12 @@ class PmActionsService extends BaseService {
         int year = Integer.parseInt(dateStr)
 
         String query = """
-            SELECT ss.short_name service,
-                CASE WHEN l.year=2017 THEN l.submission_date ELSE NULL END 'YEAR_2017',
-                CASE WHEN l.year=2017 THEN l.dead_line ELSE NULL END 'YEAR_2017D',
-                CASE WHEN l.year=2018 THEN l.submission_date ELSE NULL END 'YEAR_2018',
-                CASE WHEN l.year=2018 THEN l.dead_line ELSE NULL END 'YEAR_2018D',
-                CASE WHEN l.year=2019 THEN l.submission_date ELSE NULL END 'YEAR_2019',
-                CASE WHEN l.year=2019 THEN l.dead_line ELSE NULL END 'YEAR_2019D',
-                CASE WHEN l.year=2020 THEN l.submission_date ELSE NULL END 'YEAR_2020',
-                CASE WHEN l.year=2020 THEN l.dead_line ELSE NULL END 'YEAR_2020D',
-                CASE WHEN l.year=2021 THEN l.submission_date ELSE NULL END 'YEAR_2021',
-                CASE WHEN l.year=2021 THEN l.dead_line ELSE NULL END 'YEAR_2021D',
-                CASE WHEN l.year=2022 THEN l.submission_date ELSE NULL END 'YEAR_2022',
-                CASE WHEN l.year=2022 THEN l.dead_line ELSE NULL END 'YEAR_2022D',
-                CASE WHEN l.year=2023 THEN l.submission_date ELSE NULL END 'YEAR_2023',
-                CASE WHEN l.year=2023 THEN l.dead_line ELSE NULL END 'YEAR_2023D',
-                CASE WHEN l.year=2024 THEN l.submission_date ELSE NULL END 'YEAR_2024',
-                CASE WHEN l.year=2024 THEN l.dead_line ELSE NULL END 'YEAR_2024D',
-                CASE WHEN l.year=2025 THEN l.submission_date ELSE NULL END 'YEAR_2025',
-                CASE WHEN l.year=2025 THEN l.dead_line ELSE NULL END 'YEAR_2025D',
-                CASE WHEN l.year=2026 THEN l.submission_date ELSE NULL END 'YEAR_2026',
-                CASE WHEN l.year=2026 THEN l.dead_line ELSE NULL END 'YEAR_2026D',
-                CASE WHEN l.year=2027 THEN l.submission_date ELSE NULL END 'YEAR_2027',
-                CASE WHEN l.year=2027 THEN l.dead_line ELSE NULL END 'YEAR_2027D'
-                FROM pm_service_sector ss
-                LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = ${year}
-                WHERE ss.is_in_sp = TRUE
-                ORDER BY ss.name,l.year;
+            SELECT ss.name service,l.id AS log_id,l.dead_line,
+                l.submission_date,l.is_editable,l.is_submitted,l.year
+            FROM pm_service_sector ss
+            LEFT JOIN pm_sp_log l ON l.service_id = ss.id AND l.year = ${year}
+            WHERE ss.is_in_sp = TRUE
+            ORDER BY ss.name,l.year;
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
@@ -299,12 +289,364 @@ class PmActionsService extends BaseService {
     }
     public List<GroovyRowResult> findAllDetailsByActionsIdAndIndicatorId(long actionsId, long indicatorId) {
         String query = """
-            SELECT aid.*,ai.indicator_type
+            SELECT aid.id,aid.version,aid.actions_id,aid.create_by,aid.create_date,aid.indicator_id,aid.month_name,
+                COALESCE(aid.target,0) target,COALESCE(aid.achievement,0) achievement,aid.remarks,ai.indicator_type
                 FROM pm_actions_indicator_details aid
                 LEFT JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
                 WHERE aid.actions_id = ${actionsId} AND aid.indicator_id = ${indicatorId}
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
+    }
+
+    private static final String BACKUP_DIR = PropertiesReader.getProperty("sap.backup.location", PropertiesReader.CONFIG_FILE_DB)
+    private static final String REPORT_FOLDER = 'pmActions/yearly/Details'
+    private static final String JASPER_FILE = 'sapDetails'
+    private static final String REPORT_TITLE_LBL = 'reportTitle'
+    private static final String REPORT_TITLE = ' -Strategic Action Plan '
+    private static final String SERVICE_ID = "serviceId"
+    private static final String SERVICE_NAME = "serviceName"
+    private static final String YEAR = "year"
+
+    public void sapDetailsBackup(long serviceId, int year) {
+        PmServiceSector service = PmServiceSector.read(serviceId)
+        String rootDir = SCH.servletContext.getRealPath('/reports') + File.separator
+        String logoDir = SCH.servletContext.getRealPath('/images') + File.separator
+        String reportDir = rootDir + REPORT_FOLDER
+        String titleStr = service.shortName + REPORT_TITLE + EMPTY_SPACE + year
+        Date date = new Date() ;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+        String outputFileName = dateFormat.format(date) + UNDERSCORE + service.shortName + UNDERSCORE + year + PDF_EXTENSION
+
+        Map reportParams = new LinkedHashMap()
+        reportParams.put(ROOT_DIR, rootDir)
+        reportParams.put(LOGO_DIR, logoDir)
+        reportParams.put(REPORT_DIR, reportDir)
+        reportParams.put(SUBREPORT_DIR, reportDir + File.separator)
+        reportParams.put(REPORT_TITLE_LBL, titleStr)
+        reportParams.put(SERVICE_ID, serviceId)
+        reportParams.put(SERVICE_NAME, service.name)
+        reportParams.put(YEAR, year)
+
+        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+                parameters: reportParams, folder: reportDir)
+        ByteArrayOutputStream baos = jasperService.generateReport(reportDef)
+        try {
+            File theDir = new File(BACKUP_DIR);
+            if (!theDir.exists()) {
+                System.out.println("creating directory: " + theDir.getName());
+                boolean result = false;
+                try{
+                    theDir.mkdir();
+                    result = true;
+                }
+                catch(SecurityException se){
+                    //handle it
+                }
+                if(result) {
+                    System.out.println("DIR created");
+                }
+            }
+            FileOutputStream fos = new FileOutputStream (new File(BACKUP_DIR+outputFileName));
+            baos.writeTo(fos);
+            baos.flush();
+            baos.close();
+            fos.flush();
+            fos.close();
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public void deleteInvalidIndicatorDetails(long indicatorId, String start, String end) {
+        if (start == 'February') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+        } else if (start == 'March') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+        } else if (start == 'April') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+        } else if (start == 'May') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+        } else if (start == 'June') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+        } else if (start == 'July') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+        } else if (start == 'August') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+        } else if (start == 'September') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+        } else if (start == 'October') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+        } else if (start == 'November') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+        } else if (start == 'December') {
+            PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
+            jan?.delete()
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+        }
+
+        if (end == 'January') {
+            PmActionsIndicatorDetails feb = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'February')
+            feb?.delete()
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        }else if (end == 'February') {
+            PmActionsIndicatorDetails mar = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'March')
+            mar?.delete()
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'March') {
+            PmActionsIndicatorDetails apr = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'April')
+            apr?.delete()
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'April') {
+            PmActionsIndicatorDetails may = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'May')
+            may?.delete()
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'May') {
+            PmActionsIndicatorDetails june = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'June')
+            june?.delete()
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'June') {
+            PmActionsIndicatorDetails july = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'July')
+            july?.delete()
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'July') {
+            PmActionsIndicatorDetails aug = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'August')
+            aug?.delete()
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'August') {
+            PmActionsIndicatorDetails sep = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'September')
+            sep?.delete()
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'September') {
+            PmActionsIndicatorDetails oct = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'October')
+            oct?.delete()
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'October') {
+            PmActionsIndicatorDetails nov = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'November')
+            nov?.delete()
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        } else if (end == 'November') {
+            PmActionsIndicatorDetails dec = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'December')
+            dec?.delete()
+        }
     }
 }

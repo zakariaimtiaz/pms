@@ -12,7 +12,7 @@
 
     <style>
     body {
-        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='20px' width='35px'><text x='5' y='15' fill='lightgray' font-size='10'>SP</text></svg>");
+        background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='20px' width='35px'><text x='5' y='15' fill='lightgray' font-size='10'>SAP</text></svg>");
     }
     </style>
 </head>

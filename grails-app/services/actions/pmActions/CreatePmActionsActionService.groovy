@@ -52,6 +52,7 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
             int count = Integer.parseInt(result.indicatorCount.toString())
             int max = Integer.parseInt(result.indicatorMaxId.toString())
             actions.totalIndicator = count
+            actions.isEditable = Boolean.TRUE
             actions.save()
 
             String str = result.indicator.toString()
@@ -116,7 +117,8 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                     } catch (Exception e) {
                     }
                 }
-            } else {
+            }
+            else {
                 String[] ind = str.split(",");
                 for (int i = 0; i < max; i++) {
                     try {

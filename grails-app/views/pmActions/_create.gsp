@@ -23,7 +23,6 @@
                         <div class="col-md-10">
                             <app:dropDownService
                                     class="kendo-drop-down" readonly="true"
-                                    onchange="javascript:populateGoals();"
                                     id="serviceId" name="serviceId"
                                     data-bind="value: actions.serviceId"
                                     data_model_name="dropDownService">
@@ -100,7 +99,6 @@
                                         <option value="Repeatable">Repeatable</option>
                                         <option value="Repeatable%">Repeatable(%)</option>
                                         <option value="Repeatable++">Repeatable(+/-)</option>
-                                        <option value="Repeatable%++">Repeatable(%)(+/-)</option>
                                     </select>
                                     </td>
                                     <td width="20%">

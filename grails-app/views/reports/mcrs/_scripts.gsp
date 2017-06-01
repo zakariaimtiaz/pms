@@ -27,7 +27,7 @@
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }
-        if(${isTopMan}){
+        if(${isTopMan} || ${isSysAdmin}){
             isApplicable = true;
         }
         var str = moment().subtract(1, 'months').format('MMMM YYYY');
@@ -167,14 +167,14 @@
                             width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
                             attributes: {style: setAlignCenter()},
-                            template: "#=formatIndicator(indicator_type,cum_tar)#"
+                            template: "#=formatCumulativeIndicator(indicator_type,cum_tar)#"
                         },
                         {
                             field: "cum_acv", title: "Acv",
                             width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
                             attributes: {style: setAlignCenter()},
-                            template: "#=formatIndicator(indicator_type,cum_acv)#"
+                            template: "#=formatCumulativeIndicator(indicator_type,cum_acv)#"
                         },
                         {
                             field: "cum_acv", title: "Var",
@@ -206,7 +206,8 @@
                             field: "mon_var", title: "Var",
                             width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
-                            attributes: {style: setAlignCenter()}
+                            attributes: {style: setAlignCenter()},
+                            template: "#=calculateVariance(mon_tar,mon_acv)#"
                         }
                     ]
                 },
@@ -337,6 +338,7 @@
         });
         return false;
     });
+
     function calculateVariance(tar,ach){
         var perc="";
         if(isNaN(tar) || isNaN(ach) || tar == 0 || tar=='N/A'|| ach=='N/A'){
@@ -352,6 +354,15 @@
             }
         }
         return perc;
+    }
+    function formatCumulativeIndicator(indicatorType,target){
+        if(indicatorType.match('Repeatable')){
+            return target + ' % ';
+        }
+        if(indicatorType.match('%')){
+            return target + ' % ';
+        }
+        return target
     }
     function formatIndicator(indicatorType,target){
         if(indicatorType.match('%')){
@@ -379,24 +390,25 @@
         }
         var params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&indicatorLight="+indicatorLight+"&filterType="+filterType;
         var url ="${createLink(controller: 'reports', action: 'listMcrs')}" + params;
-        var dashboard ="${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+"&month="+month+
-                "&template=/reports/mcrs/ViewED";
         populateGridKendo(gridMRP, url);
         populateGridKendo(gridMRPAddi, url);
 
-        jQuery.ajax({
-            type: 'post',
-            url: dashboard,
-            success: function (data, textStatus) {
-                $('#tableData').html('');
-                $('#tableData').html(data.tableHtml);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-            }
+        /*
+         var dashboard =" ${createLink(controller: 'edDashboard', action: 'list')}?serviceId=" + serviceId+
+         "&month="+month+"&template=/reports/mcrs/ViewED";
+         jQuery.ajax({
+         type: 'post',
+         url: dashboard,
+         success: function (data, textStatus) {
+         $('#tableData').html('');
+         $('#tableData').html(data.tableHtml);
+         },
+         error: function (XMLHttpRequest, textStatus, errorThrown) {
+         },
+         complete: function (XMLHttpRequest, textStatus) {
+         }
 
-        });
+         });*/
         return false;
     };
 
@@ -557,8 +569,8 @@
         }
         showLoadingSpinner(true);
         var msg = 'Do you want to download the MCRS report now?',
-            params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&checked="+checked,
-            url = "${createLink(controller: 'reports', action:  'downloadMcrs')}" + params;
+                params = "?serviceId=" +serviceId+"&month="+month+"&indicatorType="+indicatorType+"&checked="+checked,
+                url = "${createLink(controller: 'reports', action:  'downloadMcrs')}" + params;
         confirmDownload(msg, url);
         return false;
     }

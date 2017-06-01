@@ -623,17 +623,24 @@ class BaseService extends Tools {
     }
     public List<Long> currentUserDepartmentList(){
         SecUser user = currentUserObject()
+        if(isUserOnlyDepartmental()){
+            List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
+            return lstIds
+        }
+        List<Long> lstIds = PmServiceSector.list().id
+        return lstIds
+    }
+    public boolean isUserOnlyDepartmental() {
+        SecUser user = currentUserObject()
         boolean isSysAdmin = isUserSystemAdmin(user.id)
         boolean isTop = isUserTopManagement(user.id)
         boolean isEdAssist = isEdAssistantRole(user.id)
         boolean isEdAdmin = isEdAdminRole(user.id)
 
         if(!isSysAdmin && !isTop && !isEdAssist && !isEdAdmin){
-            List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
-            return lstIds
+            return true
         }
-        List<Long> lstIds = PmServiceSector.list().id
-        return lstIds
+        return false
     }
     public boolean isUserSystemAdmin(long userId) {
         SecUser user = SecUser.read(userId)

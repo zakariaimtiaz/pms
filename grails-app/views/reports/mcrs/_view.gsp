@@ -19,14 +19,14 @@
             <g:form name='detailsForm' id='detailsForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div class="form-group">
-                        <label class="col-md-1 control-label label-optional" for="month"style="padding-left: 0px;">Month:</label>
+                        <label class="col-md-1 control-label label-optional" for="month">Month:</label>
 
-                        <div class="col-md-2" style="padding-left: 0px;padding-right: 0px;">
+                        <div class="col-md-2" style="width: 160px;">
                             <input type='text' tabindex="1" required="required" onkeydown="return false;"
                                    class="kendo-date-picker" id="month" name="month"
                                    placeholder="Month" validationMessage="Required"/>
                         </div>
-                        <label class="col-md-1 control-label label-optional" style="padding-left: 0px;padding-right: 0px;"
+                        <label class="col-md-1 control-label label-optional"
                                for="serviceId">Service:</label>
 
                         <div class="col-md-3">
@@ -36,10 +36,10 @@
                                     data_model_name="dropDownService">
                             </app:dropDownService>
                         </div>
-                        <div class="col-md-2" style="padding-left: 0px;">
+                        <div class="col-md-2">
                             <select class="kendo-drop-down" id="indicatorType" name="indicatorType" onchange="showResetPreference();" tabindex="3"></select>
                         </div>
-                        <div class="col-md-1" style="padding-left: 0px;padding-right: 0px;">
+                        <div class="col-md-1" style="width: 120px;">
                             <select class="kendo-drop-down" id="indicatorLight" name="indicatorLight" tabindex="4"></select>
                         </div>
                         <div class="col-md-1">
@@ -49,7 +49,7 @@
                                     aria-disabled="false"><span class="k-icon k-i-search"></span>View
                             </button>
                         </div>
-                        <div class="col-md-1" style="padding-left: 0px;padding-right: 0px;">
+                        <div class="col-md-1">
                             <button id="reset" name="reset" type="submit" data-role="button"
                                     class="k-button k-button-icontext" style="display: none;"
                                     role="button" tabindex="6"
@@ -66,7 +66,7 @@
         <ul class="nav nav-tabs">
             <li><a data-toggle="tab" href="#menu1">MRP</a></li>
             <li><a data-toggle="tab" href="#menu2">MRP Additional</a></li>
-            <li><a data-toggle="tab" href="#menu3">ED's Dashboard</a></li>
+            %{--<li><a data-toggle="tab" href="#menu3">ED's Dashboard</a></li>--}%
         </ul>
 
         <div class="tab-content">
@@ -80,13 +80,13 @@
                     <div id="gridMRPAddi"></div>
                 </div>
             </div>
-            <div id="menu3" class="tab-pane fade">
+%{--            <div id="menu3" class="tab-pane fade">
                 <div class="panel-primary">
                     <div class="form-group" id="tableData">
                         <g:render template='/reports/mcrs/ViewED'/>
                     </div>
                 </div>
-            </div>
+            </div>--}%
         </div>
     </div>
 </div>

@@ -9,6 +9,7 @@ import actions.reports.monthly.ListSpMonthlyPlanActionService
 import actions.reports.spSummary.DownloadSpSummaryActionService
 import actions.reports.spSummary.ListReportSpSummaryActionService
 import actions.reports.yearly.DownloadYearlySPActionService
+import actions.reports.yearly.DownloadYearlySPDetailsActionService
 import actions.reports.yearly.ListYearlySPActionService
 import com.pms.PmMcrsLog
 import com.pms.SecUser
@@ -31,6 +32,7 @@ class ReportsController  extends BaseController  {
 
     ListYearlySPActionService listYearlySPActionService
     DownloadYearlySPActionService downloadYearlySPActionService
+    DownloadYearlySPDetailsActionService downloadYearlySPDetailsActionService
 
     ListEdDashBoardActionService listEdDashBoardActionService
     DownloadEdDashBoardActionService downloadEdDashBoardActionService
@@ -160,7 +162,7 @@ class ReportsController  extends BaseController  {
         renderOutput(listYearlySPActionService,params)
     }
     def downloadYearlySPDetails() {
-        Map result = (Map) getReportResponse(downloadYearlySPActionService, params).report
+        Map result = (Map) getReportResponse(downloadYearlySPDetailsActionService, params).report
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     //################## Yearly End ###########################

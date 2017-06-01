@@ -35,7 +35,7 @@
         dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
 
         initializeForm($("#detailsForm"), onSubmitForm);
-        defaultPageTile("Strategic Plan", 'reports/showYearlySP');
+        defaultPageTile("Strategic Action Plan", 'reports/showYearlySP');
     }
 
     function initGrid() {
@@ -267,7 +267,7 @@
             return false;
         }
         showLoadingSpinner(true);
-        var msg = 'Do you want to download the yearly SP report now?',
+        var msg = 'Do you want to download the yearly SAP report now?',
             params = "?serviceId=" +serviceId+"&year="+year+"&indicatorType="+indicatorType+"&checked="+checked,
             url = "${createLink(controller: 'reports', action:  'downloadYearlySP')}" + params;
         confirmDownload(msg, url);

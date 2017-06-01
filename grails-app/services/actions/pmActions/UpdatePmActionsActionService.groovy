@@ -11,6 +11,7 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.PmActionsService
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -19,6 +20,7 @@ import java.text.SimpleDateFormat
 class UpdatePmActionsActionService extends BaseService implements ActionServiceIntf {
 
     SpringSecurityService springSecurityService
+    PmActionsService pmActionsService
     private static final String UPDATE_SUCCESS_MESSAGE = "Action has been updated successfully"
     private static final String ACTIONS_OBJ = "pmAction"
 
@@ -51,7 +53,13 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
 
             String str = result.indicator.toString()
             String deletedIndicatorIds = result.deletedIndicatorIds.toString()
-            if(!deletedIndicatorIds.isEmpty()){
+            if (deletedIndicatorIds.startsWith(",")) {
+                deletedIndicatorIds = deletedIndicatorIds.substring(1);
+            }
+            if (deletedIndicatorIds.endsWith(",")) {
+                deletedIndicatorIds = deletedIndicatorIds.substring(0, deletedIndicatorIds.length() - 1);
+            }
+            if (!deletedIndicatorIds.isEmpty()) {
                 String query1 = """
                 DELETE FROM pm_actions_indicator WHERE id IN (${deletedIndicatorIds})
             """
@@ -65,10 +73,12 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
             Calendar cal = Calendar.getInstance();
             cal.setTime(actions.start);
             int monthNoStart = cal.get(Calendar.MONTH);
+            String startName = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH )
 
             cal = Calendar.getInstance();
             cal.setTime(actions.end);
             int monthEnd = cal.get(Calendar.MONTH);
+            String endName = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH )
 
             if (monthNoStart == monthEnd) {
                 String monthStr = result.start.toString()
@@ -104,7 +114,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         }
                         PmActionsIndicator indicator = new PmActionsIndicator()
                         if (result.get("indicatorId" + (i + 1)).toString().isEmpty()) {
-
                             indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
                             indicator.year = actions.year
@@ -126,12 +135,11 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.unitStr = unitIdStr
                             indicator.unitId = unitId
                             indicator.save()
-
-                            List<PmActionsIndicatorDetails> lstIndDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorId(actions.id,id)
-                            for (PmActionsIndicatorDetails pmActionsIndicatorDetails : lstIndDetails) {
-                                pmActionsIndicatorDetails.delete()
-                            }
                         }
+                        String query = """
+                             DELETE FROM pm_actions_indicator_details WHERE indicator_id = ${indicator.id}
+                         """
+                        boolean indicatorDetailsDel = executeSql(query)
 
                         PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
                         details.actionsId = actions.id
@@ -141,7 +149,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         details.createBy = springSecurityService.principal.id
                         details.createDate = new Date()
                         details.save()
-
                     } catch (Exception e) {
                     }
                 }
@@ -153,7 +160,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                         long unitId = 0
                         String unitIdStr = ''
                         String tempStr = result.get("unitId" + (i + 1)).toString()
-                        if(!tempStr.isEmpty()) {
+                        if (!tempStr.isEmpty()) {
                             try {
                                 unitId = Long.parseLong(tempStr)
                                 SystemEntity se = SystemEntity.read(unitId)
@@ -173,7 +180,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                 }
                             }
                         }
-                        if(result.get("indicatorId" + (i + 1)).toString().isEmpty()){
+                        if (result.get("indicatorId" + (i + 1)).toString().isEmpty()) {
                             PmActionsIndicator indicator = new PmActionsIndicator()
                             indicator.actionsId = actions.id
                             indicator.year = actions.year
@@ -185,7 +192,6 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.save()
 
                             if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
-
                                 int tmpCount = (monthEnd - monthNoStart) + 1
                                 int monthCount = monthNoStart
 
@@ -193,7 +199,7 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                     PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
                                     details.actionsId = actions.id
                                     details.indicatorId = indicator.id
-                                    String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
+                                    String name = DateUtility.fullMonthName(j)
 
                                     details.monthName = name
                                     details.target = indicator.target
@@ -202,40 +208,8 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                                     details.save()
                                     monthCount++
                                 }
-                            } else {
-                                String[] couple = ""
-                                for (int k = 0; k < max; k++) {
-                                    couple = ind[k].split("&");
-                                    if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
-                                        break;
-                                    }
-                                }
-                                int tmpCount = Integer.parseInt(couple[4].split("=")[1].replaceAll("^\\d.]", ""))
-
-                                int t = 6;
-                                for (int j = 0; j < tmpCount; j++) {
-                                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                                    details.actionsId = actions.id
-                                    details.indicatorId = indicator.id
-                                    String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-                                    String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
-                                    int targetInt = 0
-                                    try {
-                                        targetInt = Integer.parseInt(target)
-                                    } catch (Exception e) {
-                                        targetInt = 0
-                                    }
-
-                                    details.monthName = name
-                                    details.target = targetInt
-                                    details.createBy = springSecurityService.principal.id
-                                    details.createDate = new Date()
-                                    details.save()
-                                    t += 2
-                                }
-
                             }
-                        }else{
+                        } else {
                             Long id = Long.parseLong(result.get("indicatorId" + (i + 1)).toString())
                             PmActionsIndicator indicator = PmActionsIndicator.read(id)
                             indicator.actionsId = actions.id
@@ -247,64 +221,35 @@ class UpdatePmActionsActionService extends BaseService implements ActionServiceI
                             indicator.unitId = unitId
                             indicator.save()
 
-                            List<PmActionsIndicatorDetails> lstIndDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorId(actions.id,id)
-                            for (PmActionsIndicatorDetails pmActionsIndicatorDetails : lstIndDetails) {
-                                pmActionsIndicatorDetails.delete()
-                            }
+                            pmActionsService.deleteInvalidIndicatorDetails(indicator.id, startName, endName)
+
                             if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
 
                                 int tmpCount = (monthEnd - monthNoStart) + 1
                                 int monthCount = monthNoStart
 
                                 for (int j = 0; j < tmpCount; j++) {
-                                    String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
-                                    PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
+                                    String name = DateUtility.fullMonthName(j)
 
-                                    details.actionsId = actions.id
-                                    details.indicatorId = indicator.id
-
-                                    details.monthName = name
-                                    details.target = indicator.target
-                                    details.createBy = springSecurityService.principal.id
-                                    details.createDate = new Date()
-                                    details.save()
-                                    monthCount++
-                                }
-                            } else {
-                                String[] couple = ""
-                                for (int k = 0; k < max; k++) {
-                                    couple = ind[k].split("&");
-                                    if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
-                                        break;
-                                    }
-                                }
-                                int tmpCount = Integer.parseInt(couple[5].split("=")[1].replaceAll("^\\d.]", ""))
-
-                                int t = 6;
-                                for (int j = 0; j < tmpCount; j++) {
-                                    String name = couple[t].split("=")[1].replaceAll("^\\d.]", "")
-
+                                    PmActionsIndicatorDetails dtl = PmActionsIndicatorDetails.findByActionsIdAndIndicatorIdAndMonthName(actions.id,indicator.id,name)
+                                    if(dtl){
+                                        dtl.target = indicator.target
+                                        dtl.save()
+                                    }else{
                                         PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
-                                        int targetInt = 0
-                                        try {
-                                            String target = couple[t + 1].split("=")[1].replaceAll("[^\\d.]", "")
-                                            targetInt = Integer.parseInt(target)
-                                        } catch (Exception e) {
-                                            targetInt = 0
-                                        }
                                         details.actionsId = actions.id
                                         details.indicatorId = indicator.id
                                         details.monthName = name
-                                        details.target = targetInt
+                                        details.target = indicator.target
                                         details.createBy = springSecurityService.principal.id
                                         details.createDate = new Date()
                                         details.save()
-
-                                    t += 2
+                                    }
+                                    monthCount++
                                 }
                             }
                         }
-                            indSplitCount++
+
                     } catch (Exception e) {
                         indSplitCount++
                     }

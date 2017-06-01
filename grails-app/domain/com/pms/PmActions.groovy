@@ -20,6 +20,7 @@ class PmActions {
     Integer year
     Date start
     Date end
+    Boolean isEditable = Boolean.FALSE
 
     static mapping = {
         serviceId index: 'service_id_idx'
@@ -44,5 +45,6 @@ class PmActions {
         note(nullable: true)
         indicator(nullable: true)
         year(nullable: true)
+        isEditable(nullable: true)
     }
 }

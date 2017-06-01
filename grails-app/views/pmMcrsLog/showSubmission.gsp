@@ -10,7 +10,7 @@
 </style>
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid2" class="kendoGridMenu">
-    <sec:access url="/pmMcrsLog/submissionMRP">
+    <sec:access url="/pmMcrsLog/submission">
         <li onclick="mrpSubmission();"><i class="fa fa-gavel"></i>MRP Submit</li>
     </sec:access>
     <sec:access url="/pmMcrsLog/submissionDashBoard">
@@ -165,7 +165,7 @@
             return false;
         }
         var msg = 'Are you sure you want to submit the selected MRP?',
-                url = "${createLink(controller: 'pmMcrsLog', action:  'submissionMRP')}";
+                url = "${createLink(controller: 'pmMcrsLog', action:  'submission')}";
         confirmActionForEdit(msg, url, gridMCRSSubmission);
     }
     function dashboardSubmission() {

@@ -24,9 +24,6 @@ class DateUtility {
     private static final String TIME_END = "23:59:59"
     private static final String dd_MMM_yy_hh_mm_ss = "dd-MMM-yy hh:mm:ss"
     private static final String dd_MMM_yy_DASH = "dd-MMM-yy"
-    public static final int DATE_RANGE_THIRTY = 30
-    public static final int DATE_RANGE_SEVEN = 7
-    public static final int DATE_RANGE_HUNDRED_EIGHTY = 180
 
     public static Date getOnlyDate(Date dtParam) {
         Date dt = dtParam
@@ -371,5 +368,10 @@ class DateUtility {
         Calendar calCurrent = Calendar.getInstance()
         int yearCurrent = calCurrent.get(Calendar.YEAR)
         return yearCurrent
+    }
+
+    public static String fullMonthName(int month){
+        String[] monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        return monthNames[month];
     }
 }
