@@ -61,7 +61,7 @@ class UpdatePmSpLogActionService extends BaseService implements ActionServiceInt
 
             if (spLog.isEditable && spLog.isEditable != oldObject.isEditable) {
                 /// set backup actions code here
-//                pmActionsService.sapDetailsBackup(spLog.serviceId, spLog.year)
+                pmActionsService.sapDetailsBackup(spLog.serviceId, spLog.year)
 
                 String query = """
                  UPDATE pm_actions SET is_editable = TRUE WHERE service_id = ${spLog.serviceId} AND year = ${spLog.year}

@@ -79,7 +79,7 @@
             pageable: false,
             columns: [
                 {field: "service", title: "CSU/Sector", width: 150, sortable: false, filterable: false},
-                {field: "submission_date", title: "Submission Date", width: 80, sortable: false, filterable: false,
+                {field: "submission_date", title: "Last Submission Date", width: 80, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template:"#=checkDeadLine(log_id,dead_line,submission_date)#"
                 },
@@ -97,6 +97,9 @@
     }
 
     function checkDeadLine(logId, deadLine, submit){
+        if(!submit){
+            return  "<a style='cursor: pointer' onclick='javascript:showSpLogDetails("+logId+");'><b style='color: darkred'>"+"OPEN</b></a>";
+        }
         var d1 = new Date(submit);
         var d2 = new Date(deadLine);
         if(d1.getTime()== 0){

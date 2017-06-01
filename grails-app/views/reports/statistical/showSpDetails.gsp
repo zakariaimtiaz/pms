@@ -26,7 +26,7 @@
 
 .page-size {
     width: 7in;
-    height: 4.5in;
+    height: 6in;
 }
 
 .pdf-page {

@@ -2,6 +2,7 @@ package service
 
 import com.pms.PmActionsIndicatorDetails
 import com.pms.PmServiceSector
+import com.pms.PropertiesReader
 import com.pms.SecUser
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
@@ -11,11 +12,15 @@ import org.codehaus.groovy.grails.plugins.jasper.JasperService
 import pms.BaseService
 import pms.utility.DateUtility
 import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
+import pms.utility.Tools
+
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 @Transactional
 class PmActionsService extends BaseService {
+
+    JasperService jasperService
 
     public List<GroovyRowResult> lstActionsByServiceIdAndYear(long serviceId, String year) {
         String queryForList = """
@@ -294,7 +299,7 @@ class PmActionsService extends BaseService {
         return lst
     }
 
-    private static final String BACKUP_DIR = 'F:/backup_sap/'
+    private static final String BACKUP_DIR = PropertiesReader.getProperty("sap.backup.location", PropertiesReader.CONFIG_FILE_DB)
     private static final String REPORT_FOLDER = 'pmActions/yearly/Details'
     private static final String JASPER_FILE = 'sapDetails'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
@@ -304,20 +309,20 @@ class PmActionsService extends BaseService {
     private static final String YEAR = "year"
 
     public void sapDetailsBackup(long serviceId, int year) {
-        JasperService jasperService
         PmServiceSector service = PmServiceSector.read(serviceId)
         String rootDir = SCH.servletContext.getRealPath('/reports') + File.separator
         String logoDir = SCH.servletContext.getRealPath('/images') + File.separator
         String reportDir = rootDir + REPORT_FOLDER
-        String subReportDir = reportDir
         String titleStr = service.shortName + REPORT_TITLE + EMPTY_SPACE + year
-        String outputFileName = DateUtility.getDateTimeFormatAsString(new Date())+ service.shortName + year + PDF_EXTENSION
+        Date date = new Date() ;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+        String outputFileName = dateFormat.format(date) + UNDERSCORE + service.shortName + UNDERSCORE + year + PDF_EXTENSION
 
         Map reportParams = new LinkedHashMap()
         reportParams.put(ROOT_DIR, rootDir)
         reportParams.put(LOGO_DIR, logoDir)
         reportParams.put(REPORT_DIR, reportDir)
-        reportParams.put(SUBREPORT_DIR, subReportDir)
+        reportParams.put(SUBREPORT_DIR, reportDir + File.separator)
         reportParams.put(REPORT_TITLE_LBL, titleStr)
         reportParams.put(SERVICE_ID, serviceId)
         reportParams.put(SERVICE_NAME, service.name)
@@ -327,8 +332,26 @@ class PmActionsService extends BaseService {
                 parameters: reportParams, folder: reportDir)
         ByteArrayOutputStream baos = jasperService.generateReport(reportDef)
         try {
+            File theDir = new File(BACKUP_DIR);
+            if (!theDir.exists()) {
+                System.out.println("creating directory: " + theDir.getName());
+                boolean result = false;
+                try{
+                    theDir.mkdir();
+                    result = true;
+                }
+                catch(SecurityException se){
+                    //handle it
+                }
+                if(result) {
+                    System.out.println("DIR created");
+                }
+            }
             FileOutputStream fos = new FileOutputStream (new File(BACKUP_DIR+outputFileName));
             baos.writeTo(fos);
+            baos.flush();
+            baos.close();
+            fos.flush();
             fos.close();
         } catch(IOException ioe) {
             ioe.printStackTrace();
