@@ -11,6 +11,7 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.PmActionsService
 
 @Transactional
 class UpdatePmSpLogActionService extends BaseService implements ActionServiceIntf {
@@ -19,6 +20,8 @@ class UpdatePmSpLogActionService extends BaseService implements ActionServiceInt
     private static final String ALREADY_EXIST = "CSU/Sector for this year already exist"
     private static final String SP_LOG_OBJ = "pmSpLog"
     private static final String OLD_OBJ = "oldObject"
+
+    PmActionsService pmActionsService
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -58,7 +61,7 @@ class UpdatePmSpLogActionService extends BaseService implements ActionServiceInt
 
             if (spLog.isEditable && spLog.isEditable != oldObject.isEditable) {
                 /// set backup actions code here
-
+//                pmActionsService.sapDetailsBackup(spLog.serviceId, spLog.year)
 
                 String query = """
                  UPDATE pm_actions SET is_editable = TRUE WHERE service_id = ${spLog.serviceId} AND year = ${spLog.year}

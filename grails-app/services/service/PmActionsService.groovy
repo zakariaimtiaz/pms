@@ -1,12 +1,16 @@
 package service
 
-import com.pms.PmActions
 import com.pms.PmActionsIndicatorDetails
+import com.pms.PmServiceSector
 import com.pms.SecUser
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
+import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
+import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
+import org.codehaus.groovy.grails.plugins.jasper.JasperService
 import pms.BaseService
-
+import pms.utility.DateUtility
+import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -289,6 +293,48 @@ class PmActionsService extends BaseService {
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
+
+    private static final String BACKUP_DIR = 'F:/backup_sap/'
+    private static final String REPORT_FOLDER = 'pmActions/yearly/Details'
+    private static final String JASPER_FILE = 'sapDetails'
+    private static final String REPORT_TITLE_LBL = 'reportTitle'
+    private static final String REPORT_TITLE = ' -Strategic Action Plan '
+    private static final String SERVICE_ID = "serviceId"
+    private static final String SERVICE_NAME = "serviceName"
+    private static final String YEAR = "year"
+
+    public void sapDetailsBackup(long serviceId, int year) {
+        JasperService jasperService
+        PmServiceSector service = PmServiceSector.read(serviceId)
+        String rootDir = SCH.servletContext.getRealPath('/reports') + File.separator
+        String logoDir = SCH.servletContext.getRealPath('/images') + File.separator
+        String reportDir = rootDir + REPORT_FOLDER
+        String subReportDir = reportDir
+        String titleStr = service.shortName + REPORT_TITLE + EMPTY_SPACE + year
+        String outputFileName = DateUtility.getDateTimeFormatAsString(new Date())+ service.shortName + year + PDF_EXTENSION
+
+        Map reportParams = new LinkedHashMap()
+        reportParams.put(ROOT_DIR, rootDir)
+        reportParams.put(LOGO_DIR, logoDir)
+        reportParams.put(REPORT_DIR, reportDir)
+        reportParams.put(SUBREPORT_DIR, subReportDir)
+        reportParams.put(REPORT_TITLE_LBL, titleStr)
+        reportParams.put(SERVICE_ID, serviceId)
+        reportParams.put(SERVICE_NAME, service.name)
+        reportParams.put(YEAR, year)
+
+        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+                parameters: reportParams, folder: reportDir)
+        ByteArrayOutputStream baos = jasperService.generateReport(reportDef)
+        try {
+            FileOutputStream fos = new FileOutputStream (new File(BACKUP_DIR+outputFileName));
+            baos.writeTo(fos);
+            fos.close();
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
     public void deleteInvalidIndicatorDetails(long indicatorId, String start, String end) {
         if (start == 'February') {
             PmActionsIndicatorDetails jan = PmActionsIndicatorDetails.findByIndicatorIdAndMonthName(indicatorId, 'January')
