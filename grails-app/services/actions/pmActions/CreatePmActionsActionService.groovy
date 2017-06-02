@@ -154,17 +154,16 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                         indicator.unitId = unitId
                         indicator.unitStr = unitIdStr
                         indicator.save()
-                        if (indicator.indicatorType == "Repeatable"|| indicator.indicatorType=="Repeatable%") {
 
-                            int tmpCount = (monthEnd - monthNoStart) + 1
-                            int monthCount = monthNoStart
+                        int tmpCount = (monthEnd - monthNoStart) + 1
+                        int monthCount = monthNoStart
+                        if (indicator.indicatorType == "Repeatable" || indicator.indicatorType == "Repeatable%") {
 
-                            for (int j = 0; j < tmpCount; j++) {
+                            for (int j = monthNoStart; j < monthNoStart + tmpCount; j++) {
                                 PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
                                 details.actionsId = actions.id
-                                indicator.year = actions.year
                                 details.indicatorId = indicator.id
-                                String name = monthCount == 0 ? "January" : monthCount == 1 ? "February" : monthCount == 2 ? "March" : monthCount == 3 ? "April" : monthCount == 4 ? "May" : monthCount == 5 ? "June" : monthCount == 6 ? "July" : monthCount == 7 ? "August" : monthCount == 8 ? "September" : monthCount == 9 ? "October" : monthCount == 10 ? "November" : "December"
+                                String name = DateUtility.fullMonthName(j)
 
                                 details.monthName = name
                                 details.target = indicator.target
@@ -173,18 +172,12 @@ class CreatePmActionsActionService extends BaseService implements ActionServiceI
                                 details.save()
                                 monthCount++
                             }
-                        } else {
-                            String[] couple = ""
-                            for (int k = 0; k < max; k++) {
-                                couple = ind[k].split("&");
-                                if (couple[0].split("=")[1].replaceAll("^\\d.]", "") == ("indicator" + (i + 1))) {
-                                    break;
-                                }
-                            }
-                            int tmpCount = Integer.parseInt(couple[5].split("=")[1].replaceAll("^\\d.]", ""))
-
-                            int t = 6;
-                            for (int j = 0; j < tmpCount; j++) {
+                        }
+                        else {
+                            String[] couple = ind[i].split("&");
+                            int tmpCount2 = Integer.parseInt(couple[6].split("=")[1].replaceAll("^\\d.]", ""))
+                            int t = 7;
+                            for (int j = 0; j < tmpCount2; j++) {
                                 PmActionsIndicatorDetails details = new PmActionsIndicatorDetails()
                                 details.actionsId = actions.id
                                 details.indicatorId = indicator.id

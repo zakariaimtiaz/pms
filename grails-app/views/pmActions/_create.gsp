@@ -15,6 +15,7 @@
                     <input type="hidden" name="indicatorMaxId" id="indicatorMaxId" value=""/>
                     <input type="hidden" name="indicator" id="indicator" data-bind="value: actions.indicator"/>
                     <input type="hidden" name="deletedIndicatorIds" id="deletedIndicatorIds"/>
+                    <input type="hidden" id="newIndCount" name="newIndCount" value=""/>
 
                     <div class="form-group" style="display: none">
                         <label class="col-md-1 control-label label-optional"
