@@ -10,7 +10,9 @@ class EdDashboard {
     String edAdvice
     Date monthFor
     Date followupMonthFor
+    Date statusChangeDate
     Boolean isFollowup
+    Boolean isResolve
     Date createDate
     long createBy
 
@@ -18,6 +20,7 @@ class EdDashboard {
         createDate    sqlType: 'date'
         monthFor      sqlType: 'date'
         followupMonthFor      sqlType: 'date'
+        statusChangeDate      sqlType: 'date'
         description   sqlType: 'text'
         remarks       sqlType: 'text'
         edAdvice      sqlType: 'text'
@@ -32,5 +35,7 @@ class EdDashboard {
         edAdvice(nullable: true)
         followupMonthFor(nullable: true)
         isFollowup(nullable: true)
+        isResolve(nullable: true)
+        statusChangeDate(nullable: true)
     }
 }

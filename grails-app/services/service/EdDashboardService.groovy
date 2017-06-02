@@ -40,30 +40,19 @@ class EdDashboardService  extends BaseService{
         Date month = DateUtility.getSqlDate(c.getTime())
         long userServiceId = currentUserObject().serviceId
         String queryForList = """
-        SELECT tbl.*,CASE WHEN lg.is_submitted THEN TRUE ELSE FALSE END AS crisis_remarks_g,
-                CASE WHEN ${userServiceId}!=${serviceId} THEN TRUE ELSE CASE WHEN lg.is_submitted THEN TRUE ELSE FALSE END END AS crisis_remarks_s,
-                TRUE AS advice_g,FALSE AS advice_s
-         FROM (SELECT  edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
-        ,ed.is_followup,ed.followup_month_for FROM  ed_dashboard_issues edi LEFT JOIN ed_dashboard ed ON ed.issue_id=edi.id
-        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE (edi.is_additional<>1 OR edi.is_heading<>0)
-        UNION ALL
-        SELECT edi.id ,edi.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,edi.is_heading,edi.is_additional
-        ,ed.is_followup,ed.followup_month_for FROM  ed_dashboard_issues edi RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id
-        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE edi.is_additional=1)tbl
-        LEFT JOIN pm_mcrs_log lg ON lg.service_id = ${serviceId} AND lg.month =MONTH('${month}') AND lg.year = YEAR('${month}')
-        LEFT JOIN pm_service_sector ss ON ss.id=${serviceId}
-        ORDER BY tbl.id;
+        SELECT ed.id ,ed.version,edi.issue_name as issueName ,ed.description,ed.remarks,ed.ed_advice as edAdvice
+        FROM  ed_dashboard_issues edi RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id
+        AND ed.service_id = ${serviceId} AND DATE(ed.month_for)=DATE('${month}') WHERE edi.is_heading<>1 AND is_followup<>1
+        ORDER BY edi.id
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
     public List<GroovyRowResult> lstEdDashboardSectorOrCSUIssue(long serviceId,Date month) {
         String queryForList = """
-        SELECT  ed.id ,ed.description AS name
-        FROM ed_dashboard_issues edi
-        INNER JOIN ed_dashboard ed ON ed.service_id = ${serviceId} AND ed.issue_id=edi.id AND MONTH(ed.month_for)=MONTH('${month}') AND YEAR(ed.month_for)=YEAR('${month}')
-        WHERE edi.is_additional =TRUE
-        ORDER BY edi.id;
+        SELECT id,issue_name AS name FROM ed_dashboard_issues WHERE is_additional<>TRUE AND id NOT IN
+            (SELECT issue_id FROM ed_dashboard WHERE service_id=${serviceId} AND MONTH(month_for)=MONTH('${month}') AND YEAR(month_for)=YEAR('${month}'))
+        ORDER BY id ASC
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
@@ -77,12 +66,37 @@ class EdDashboardService  extends BaseService{
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
-    public long minimumAdditionalIssuesId() {
+    public long minimumAdditionalIssuesId(long serviceId,Date month) {
         String query = """
-        SELECT MIN(id) AS COUNT FROM ed_dashboard_issues WHERE is_additional=1 AND is_heading<>1
+        SELECT CASE WHEN COALESCE(MAX(ed.issue_id),0)>6 THEN MAX(ed.issue_id)+1 ELSE MIN(edi.id) END AS cnt
+        FROM ed_dashboard_issues edi LEFT JOIN ed_dashboard ed ON edi.id=ed.issue_id AND
+        ed.service_id=${serviceId} AND MONTH(ed.month_for)=MONTH('${month}') AND YEAR(ed.month_for)=YEAR('${month}') AND ed.is_followup<>1
+        WHERE  edi.is_additional<>0
         """
         List<GroovyRowResult> max = executeSelectSql(query)
         long con = max[0].count
         return con
+    }
+    public List<GroovyRowResult> lstUnresolveEdDashboardIssue(long serviceId,String d ) {
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        Date start = originalFormat.parse(d.toString());
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+        Date month = DateUtility.getSqlDate(c.getTime())
+        long userServiceId = currentUserObject().serviceId
+        String queryForList = """
+     SELECT ed.id ,ed.version,edi.issue_name ,ed.description,ed.remarks,ed.ed_advice,ed.is_resolve
+,ed.is_followup,ed.followup_month_for,CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr
+,CASE WHEN ed.is_followup=1 AND ed.is_resolve <> 1 THEN 'Follow-up' WHEN ed.is_resolve = 1 THEN 'Resolve' ELSE 'Unresolve' END AS issue_status
+ FROM  ed_dashboard ed INNER JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
+INNER JOIN pm_mcrs_log lg ON lg.service_id = ed.service_id AND MONTH(ed.month_for)=MONTH(lg.submission_date_db) AND YEAR(ed.month_for)>= YEAR(lg.submission_date_db)
+WHERE ed.service_id = ${serviceId}  AND COALESCE(lg.is_submitted_db,FALSE) =1 AND DATE(ed.month_for)<DATE('${month}') AND ((ed.is_followup<>1
+AND ed.is_resolve <> 1) OR COALESCE(MONTH(ed.status_change_date),DATE('${month}'))> MONTH(lg.submission_date_db) AND COALESCE(YEAR(ed.status_change_date),DATE('${month}'))>= YEAR(lg.submission_date_db))
+GROUP BY  ed.issue_id,ed.month_for
+ORDER BY ed.issue_id,ed.month_for;
+        """
+        List<GroovyRowResult>  lst = executeSelectSql(queryForList)
+        return lst
     }
 }

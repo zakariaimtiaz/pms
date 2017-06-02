@@ -9,7 +9,6 @@
 
             <g:form name='edDashboardForm' id='edDashboardForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
-                    <input type="hidden" id="hfSubmissionDate" name="hfSubmissionDate" value=""/>
                     <div class="form-group">
                         <label class="col-md-1 control-label label-optional"
                                for="serviceId">Sector/CSU:</label>
@@ -18,7 +17,6 @@
                         <div class="col-md-4">
                             <app:dropDownService
                                     class="kendo-drop-down" is_in_sp="true"
-                                    onchange="makeNonEditable();"
                                     id="serviceId" name="serviceId" tabindex="1"
                                     data_model_name="dropDownService">
                             </app:dropDownService>
@@ -30,11 +28,14 @@
                 </div>
                     <div class="col-md-2" >
                         <button id="view" name="view" type="button" data-role="button"
-                                class="k-button k-button-icontext" onclick="loadTableData();"
+                                class="k-button k-button-icontext" onclick="loadData();"
                                 role="button" tabindex="3"
                                 aria-disabled="false"><span class="k-icon k-i-search"></span>View
                         </button>
                     </div>
+                    </div>
+                    <div class="row">
+                        <div id="gridIssues"></div>
                     </div>
 
                     <div class="form-group" id="tableData">
