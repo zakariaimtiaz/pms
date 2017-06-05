@@ -701,12 +701,19 @@ class BaseService extends Tools {
         Long month=1
         Long year=1900
         String submissionDate=""
-        def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
+       // def d=PmMcrsLog.executeQuery("select max(submissionDate) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmitted=True ")
+        String queryForList = """
+            SELECT  MONTH, YEAR FROM pm_mcrs_log WHERE service_id='${serviceId}'  AND is_submitted=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1
+        """
+        List<GroovyRowResult>  d = executeSelectSql(queryForList)
         if(d[0]) {
             try {
-                Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
-                month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
-                year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
+                //Date subDate = DateUtility.getSqlDate(DateUtility.parseDateForDB(d[0].toString()))
+               // month = PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).month+1
+               // year=PmMcrsLog.findBySubmissionDateAndServiceId(subDate,serviceId).year
+                month = d[0]['month']+1
+                year=d[0]['year']
                 submissionDate= (month>12?(year+1):year).toString()+'-'+(month<=9 ? '0'+month:month>12?'01':month).toString()+'-'+'01'
 
             }catch(Exception ex){}
@@ -717,7 +724,6 @@ class BaseService extends Tools {
         Long month=1
         Long year=1900
         String submissionDate=""
-        //def d=PmMcrsLog.executeQuery("select max(submissionDateDb) as submissionDate from PmMcrsLog where serviceId='${serviceId}'  AND isSubmittedDb=True ")
 
         String queryForList = """
             SELECT  MONTH, YEAR FROM pm_mcrs_log WHERE service_id='${serviceId}'  AND is_submitted_db=TRUE
