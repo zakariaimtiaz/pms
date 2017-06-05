@@ -9,6 +9,7 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.EdDashboardService
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -22,19 +23,19 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     private static final String ED_DASHBOARD = "edDashboard"
 
     private Logger log = Logger.getLogger(getClass())
-
+    BaseService baseService
+    EdDashboardService edDashboardService
 
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if(!params.type) {
+            if (!params.type) {
                 if (!params.hfId && !params.description) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
-            }
-            else{
-                if (!params.hfClickingRowNo) {
+            } else {
+                if (!params.hfClickingRowNo && !params.selection) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
             }
@@ -48,7 +49,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional
     public Map execute(Map result) {
         try {
-            if(!result.type) {
+            if (!result.type) {
                 Long id = Long.parseLong(result.hfId)
                 EdDashboard edDashboard = EdDashboard.findById(id)
 
@@ -56,30 +57,41 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                 edDashboard.remarks = result.remarks
 
                 edDashboard.save()
-            }
-            else {
+            } else {
                 Long id = Long.parseLong(result.hfClickingRowNo)
+                long serviceId = Long.parseLong(result.hfServiceIdModal.toString())
+
+                DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+                Calendar c = Calendar.getInstance();
+                Date start = originalFormat.parse(result.hfMonthModal.toString());
+                c = Calendar.getInstance();
+                c.setTime(start);
+                c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+                Date statusChangeDate = DateUtility.getSqlDate(c.getTime())
+
+                EdDashboard edDashboardOld = EdDashboard.findById(id)
+                String subDate = baseService.lastDashboardSubmissionDate(serviceId)
+                long oldId = edDashboardService.ExistedInFutureDate(serviceId, edDashboardOld.monthFor, subDate)
+                if (oldId > 0) {
+                    EdDashboard edDashboardOld2 = EdDashboard.findById(oldId)
+                    edDashboardOld2.delete()
+                }
                 if (result.selection == 'Resolve') {
-                    EdDashboard edDashboard = EdDashboard.findById(id)
-                    edDashboard.isResolve=true
-                    edDashboard.isFollowup=false
-                    edDashboard.followupMonthFor=null
-                    edDashboard.statusChangeDate=DateUtility.getSqlDate(new Date())
-                    edDashboard.save()
+                    edDashboardOld.isResolve = true
+                    edDashboardOld.isFollowup = false
+                    edDashboardOld.followupMonthFor = null
+                    edDashboardOld.statusChangeDate = statusChangeDate
+                    edDashboardOld.save()
                 }
                 else {
-                    EdDashboard edDashboardOld = EdDashboard.findById(id)
-                    EdDashboard edDashboard = new EdDashboard()
-
                     String followupDateStr = result.followupMonth
-                    DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-                    Date start = originalFormat.parse(followupDateStr);
-                    Calendar c = Calendar.getInstance();
+                    start = originalFormat.parse(followupDateStr);
                     c = Calendar.getInstance();
                     c.setTime(start);
                     c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
                     Date monthFor = DateUtility.getSqlDate(c.getTime())
-                    long serviceId = Long.parseLong(result.hfServiceIdModal.toString())
+
+                    EdDashboard edDashboard = new EdDashboard()
 
                     edDashboard.serviceId = serviceId
                     edDashboard.monthFor = monthFor
@@ -89,13 +101,8 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                     edDashboard.createBy = springSecurityService?.principal?.id
                     edDashboard.createDate = DateUtility.getSqlDate(new Date())
                     edDashboard.edAdvice = EMPTY_SPACE
-                    edDashboard.isFollowup =  true
-                    edDashboard.isResolve=false
-                    start = originalFormat.parse(result.hfMonthModal.toString());
-                    c = Calendar.getInstance();
-                    c.setTime(start);
-                    c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-                    edDashboard.statusChangeDate=DateUtility.getSqlDate(c.getTime())
+                    edDashboard.isFollowup = true
+                    edDashboard.isResolve = false
                     if (edDashboard.isFollowup) {
                         edDashboard.followupMonthFor = edDashboardOld.monthFor
                     }

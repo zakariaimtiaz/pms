@@ -30,27 +30,30 @@ class EdDashboardController extends BaseController {
     def show() {
         SecUser user = baseService.currentUserObject()
         String subDate = baseService.lastDashboardSubmissionDate(user.serviceId)
-        render(view: "/edDashboard/show", model: [ subDate: subDate,serviceId: user.serviceId])
+        render(view: "/edDashboard/show", model: [subDate: subDate, serviceId: user.serviceId])
     }
 
     def create() {
         renderOutput(createEdDashboardActionService, params)
     }
+
     def update() {
         renderOutput(updateEdDashboardActionService, params)
     }
+
     def delete() {
         renderOutput(deleteEdDashboardIssueActionService, params)
     }
 
     def list() {
-            SecUser user = baseService.currentUserObject()
-            long sId = Long.parseLong(params.serviceId.toString())
-            List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardIssue(sId, params.month)
-            Map map = new LinkedHashMap()
-            map.put('list', listValue)
-            render map as JSON
+        SecUser user = baseService.currentUserObject()
+        long sId = Long.parseLong(params.serviceId.toString())
+        List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardIssue(sId, params.month)
+        Map map = new LinkedHashMap()
+        map.put('list', listValue)
+        render map as JSON
     }
+
     def unresolveList() {
         try {
             SecUser user = baseService.currentUserObject()
@@ -73,33 +76,18 @@ class EdDashboardController extends BaseController {
 
     def retrieveIssueAndMonthData() {
         try {
-            SecUser user = baseService.currentUserObject()
-            boolean isEdAssistant = baseService.isEdAssistantRole(user.id)
-            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-            Date start = originalFormat.parse(params.month.toString());
-            Calendar c = Calendar.getInstance();
-            c.setTime(start);
-            c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-            Date monthFor = DateUtility.getSqlDate(c.getTime())
-            long sId = Long.parseLong(params.serviceId.toString())
             if (params.type) {
+                DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+                Date start = originalFormat.parse(params.month.toString());
+                Calendar c = Calendar.getInstance();
+                c.setTime(start);
+                c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+                Date monthFor = DateUtility.getSqlDate(c.getTime())
+                long sId = Long.parseLong(params.serviceId.toString())
                 List<GroovyRowResult> lst = edDashboardService.lstEdDashboardSectorOrCSUIssue(sId, monthFor)
                 List<GroovyRowResult> lstKendo = BaseService.listForKendoDropdown(lst, null, null)
                 Map result = [lst: lstKendo]
                 render result as JSON
-            } else {
-            }
-
-            if (!params.dashboardId) {
-
-                    long issuesId = Long.parseLong(params.issueId.toString())
-
-                    // EdDashboard edDashboard = EdDashboard.findByServiceIdAndMonthForAndIssueId(sId, monthFor, issuesId)
-                    List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardDescriptionAndRemarks(sId, monthFor, issuesId)
-                    Map result = new LinkedHashMap()
-                    result.put('lst', listValue)
-                    render result as JSON
-
             } else {
                 long edDashboardId = Long.parseLong(params.dashboardId.toString())
                 EdDashboard edDashboard = EdDashboard.findById(edDashboardId)
@@ -111,6 +99,7 @@ class EdDashboardController extends BaseController {
         } catch (Exception ex) {
         }
     }
+
     def retrieveIssueAndMonthDataOld() {
         try {
             if (!params.dashboardId) {

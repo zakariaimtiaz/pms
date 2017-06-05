@@ -28,7 +28,8 @@ function loadData(){
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
-            depth: "year"
+            depth: "year",
+            change:loadData
         }).data("kendoDatePicker");
         m.min(moment(subDate).format('YYYY-MM-DD'));
         $('#month').val(moment().format('MMMM YYYY'));
@@ -305,6 +306,7 @@ function loadData(){
             $('#selectionFollowup').prop('checked', true);
             loadFollowupMonth();
             $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
+            loadRemarksAndEdAdvice(rowIdx);
             $('#divRemarks').show();
         }
     }
