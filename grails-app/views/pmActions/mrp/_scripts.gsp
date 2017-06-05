@@ -12,6 +12,9 @@
         onLoadInfoPage();
         initListView();
         initGrid();
+        if('${submissionDate}'!=''){
+            onSubmitForm();
+        }
     });
     function onLoadInfoPage() {
         serviceId = ${serviceId};
@@ -30,6 +33,7 @@
             start.min(submissionDate);
             start.max(st);
             $('#month').val(moment(submissionDate).format('MMMM YYYY'));
+
         } else{
             start.min(new Date(moment(new Date()).startOf('year')));
             start.max(new Date(moment(new Date()).endOf('year')));

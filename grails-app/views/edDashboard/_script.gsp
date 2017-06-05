@@ -1,6 +1,6 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-        <li><label class="control-label" style="font-weight: bold; padding-bottom: 5px;">This Month</label></li>
+        <li><label class="control-label" style="font-weight: bold; padding-bottom: 5px;">Issues For This Month</label></li>
         <li onclick="showEdDashboardEntryModal();"><i class="fa fa-plus-square"></i>Add</li>
 
         <li onclick="editDashboard();"><i class="fa fa-edit"></i>Edit</li>
@@ -15,7 +15,9 @@
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
-        loadData();
+        if('${subDate}'!='') {
+            loadData();
+        }
     });
 function loadData(){
     initIssueGrid();
@@ -32,7 +34,7 @@ function loadData(){
             change:loadData
         }).data("kendoDatePicker");
         m.min(moment(subDate).format('YYYY-MM-DD'));
-        $('#month').val(moment().format('MMMM YYYY'));
+        $('#month').val(moment(subDate).format('MMMM YYYY'));
         initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
         defaultPageTile("Create Ed Dashboard",null);
         dropDownService.value(serviceId);
@@ -236,11 +238,14 @@ function loadData(){
             $('#remarks').val('');
             $('#divfollowupMonth').hide();
             $('#divRemarks').hide();
-
+            $('#divResolveNote').show();
+            $('#resolveNote').val('');
         }
         else {
+            $('#divResolveNote').hide();
             $('#divRemarks').show();
             $('#divfollowupMonth').show();
+            $("#remarks").val('');
             var fMonth =  $('#followupMonth').kendoDatePicker({
                 format: "MMMM yyyy",
                 parseFormats: ["yyyy-MM-dd"],
@@ -260,6 +265,7 @@ function loadData(){
         if(descId>0) {
             descriptionId=descId;
         }
+        $("#oldRemarks").html('');
         var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
 
             jQuery.ajax({
@@ -294,13 +300,14 @@ function loadData(){
         $('#headingLabel').text($('#issue' + rowIdx).text() + ' Issue');
         $('#followupMonth').prop('readOnly',false);
         $('#description').val($('#description' + rowIdx).val());
-        $('#remarks').val($('#remarks' + rowIdx).val());
+        $('#oldRemarks').html($('#remarks' + rowIdx).val());
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
         $('#issuedMonth').text($('#issuedMonth'+rowIdx).text());
 
         if($('#hfIsResolve'+rowIdx).val()=='true') {
             $('#selectionResolve').prop('checked', true);
+            $('#divResolveNote').show();
         }
         if($('#hfIsFollowup'+rowIdx).val()=='true') {
             $('#selectionFollowup').prop('checked', true);
@@ -308,6 +315,8 @@ function loadData(){
             $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
             loadRemarksAndEdAdvice(rowIdx);
             $('#divRemarks').show();
+            $('#divResolveNote').hide();
+            $('#remarks').val($('#remarks' + rowIdx).val());
         }
     }
     function hideFollowupDashboardModal() {
@@ -316,8 +325,10 @@ function loadData(){
         $('#selectionFollowup').attr('checked',false);
         $('#divfollowupMonth').hide();
         $('#divRemarks').hide();
+        $('#divResolveNote').hide();
         $("#oldRemarks").html('');
         $('#remarks').val('');
+        $('#resolveNote').val('');
         $('#description').val('');
         $('#hfServiceIdModal').val('');
         $('#hfMonthModal').val('');
@@ -344,11 +355,17 @@ function loadData(){
             data: jQuery("#createEdFollowupForm").serialize(),
             url: "${createLink(controller:'edDashboard', action: 'update')}",
             success: function (data, textStatus) {
-                hideFollowupDashboardModal();
+                alert(data.isError);
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
                 executePostCondition(data);
+                hideFollowupDashboardModal();
                 loadUnresolveData();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                showError(textStatus.message());
             },
             complete: function (XMLHttpRequest, textStatus) {
                 showLoadingSpinner(false);

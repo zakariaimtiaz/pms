@@ -1,6 +1,6 @@
 <table class="table table-bordered table-hover">
     <tr style="background-color: #c2c9f6">
-        <td colspan="4" style="padding-top: 0px;padding-bottom: 0px;">
+        <td colspan="6" style="padding-top: 0px;padding-bottom: 0px;">
 
             <label class=" control-label" style="font-weight: bold; padding-bottom: 5px;">Unresolve Issues From Previous Months</label>
         </td>

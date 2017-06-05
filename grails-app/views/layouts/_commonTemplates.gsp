@@ -218,9 +218,9 @@
                     <input type="hidden" id="type" name="type" value="Followup"/>
 
                     <div class="form-group">
-                        <div class="col-md-4" style="padding-right: 0px;">
-                            <strong class="label-optional">Issued Month:</strong>
-                            <strong class="label-optional" id="issuedMonth"></strong>
+                        <div class="col-md-3" style="padding-right: 0px;">
+                            <label class="control-label label-optional">  <strong class="label-optional">Initiated On:</strong>
+                            <strong class="label-optional" id="issuedMonth"></strong></label>
                             </div>
                         <div class="col-md-3" style="padding-right: 0px;">
                             <strong class="label-required">Status:</strong>
@@ -231,9 +231,9 @@
                         </div>
 
                         <div id="divfollowupMonth" style="display: none;" class="col-md-5">
-                            <div class="col-md-2">
-                                <label class="control-label label-required"> <strong>Month:</strong></label></div>
-                            <div class="col-md-9">
+                            <div class="col-md-4" style="padding-right: 0px;">
+                                <label class="control-label label-required"> <strong>Follow Month:</strong></label></div>
+                            <div class="col-md-8">
                             <input type="text" id="followupMonth" name="followupMonth"
                                    placeholder="Select month"></div>
                         </div>
@@ -261,10 +261,21 @@
                     </div>
                     <div class="form-group" id="divRemarks" style="display: none;">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
+                            <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Current Remarks and Recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <textarea id="remarks" name="remarks" rows="5"
+                                      style="padding: 0 0 0 0 ! important;"
+                                      class="form-control" ></textarea>
+                        </div>
+
+                    </div>
+                    <div class="form-group" id="divResolveNote" style="display: none;">
+                        <div align="left" style=" padding-left: 15px;">
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolve Note(If any):</strong></label>
+                        </div>
+                        <div class="col-md-12">
+                            <textarea id="resolveNote" name="resolveNote" rows="5"
                                       style="padding: 0 0 0 0 ! important;"
                                       class="form-control" ></textarea>
                         </div>

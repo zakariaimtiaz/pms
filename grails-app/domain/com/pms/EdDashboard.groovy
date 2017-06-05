@@ -8,6 +8,7 @@ class EdDashboard {
     String description
     String remarks
     String edAdvice
+    String resolveNote
     Date monthFor
     Date followupMonthFor
     Date statusChangeDate
@@ -37,5 +38,6 @@ class EdDashboard {
         isFollowup(nullable: true)
         isResolve(nullable: true)
         statusChangeDate(nullable: true)
+        resolveNote(nullable: true)
     }
 }

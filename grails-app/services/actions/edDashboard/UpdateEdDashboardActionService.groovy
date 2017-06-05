@@ -38,6 +38,9 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                 if (!params.hfClickingRowNo && !params.selection) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
+                else if(params.selection != 'Resolve' && !params.remarks && !params.followupMonth){
+                    return super.setError(params, INVALID_INPUT_MSG)
+                }
             }
             return params
         } catch (Exception ex) {
@@ -81,6 +84,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                     edDashboardOld.isFollowup = false
                     edDashboardOld.followupMonthFor = null
                     edDashboardOld.statusChangeDate = statusChangeDate
+                    edDashboardOld.resolveNote = result.resolveNote
                     edDashboardOld.save()
                 }
                 else {
