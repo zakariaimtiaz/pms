@@ -19,7 +19,9 @@
     var gridActions, dataSource, dataSourceUnit, calYear, actionsModel, dropDownService, serviceId, dropDownGoals,
             supportDepartment, sourceOfFund, dropDownEmployee, st, isSubmit, isAdmin;
     var map = {};
+    var resultArray = {};
     var indCount = 1;
+    var newIndCount = 0;
     var deletedIndicatorIds = '';
 
     $(document).ready(function () {
@@ -292,7 +294,9 @@
         dropDownService.value(serviceId);
         dropDownGoals.value('');
         map = {};
-        deletedIndicatorIds = ''
+        resultArray = {};
+        newIndCount = 0;
+        deletedIndicatorIds = '';
         dropDownGoals.readonly(false);
         clearIndicatorTable();
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
@@ -300,12 +304,14 @@
     function resetForm() {
         clearForm($("#actionForm"), null);
         initObservable();
+        newIndCount = 0;
+        resultArray = {};
         dropDownService.value(serviceId);
         dropDownGoals.value('');
         dropDownGoals.readonly(false);
         clearIndicatorTable();
         map = {};
-        deletedIndicatorIds = ''
+        deletedIndicatorIds = '';
         $("#rowAction").hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
@@ -435,6 +441,8 @@
                 "</tr>";
         $('#tab_logic').append(trData);
         indCount = 1;
+        newIndCount = 0;
+        resultArray = {};
         deletedIndicatorIds = '';
         makeKendoDropDownList('unitId1');
     }
@@ -476,7 +484,7 @@
             } else {
                 var indicatorId = $(indId).val();
                 if(indicatorId.isEmpty()){
-                    showIndicatorModal(indName, indicator, tmpTar, target, count, list, type);
+                    showIndicatorModalNewUpdate(indName, indicator, tmpTar, target, count, list, type);
                 }else{
                     jQuery.ajax({
                         type: 'post',
@@ -563,6 +571,33 @@
             if (val) {
                 tmpAmt = val.split('&')[7 + t].split('=')[1];
             }
+            var trId = 'iddr' + (i + 1);
+            var trData = "<tr id='" + trId + "'>" +
+                    "<td width='60%'>" +
+                    "<input name='month" + (i + 1) + "' value='" + list[i] + "' type='text' readonly='true' class='form-control'/>" +
+                    "</td>" +
+                    "<td width='20%'>" +
+                    "<input id='tempTr" + (i + 1) + "' name='tempTr" + (i + 1) + "' tabindex=" + (i + 9) + " " +
+                    "class='form-control amount' value='" + tmpAmt + "' type='text' placeholder='Target'>" +
+                    "</td>" +
+                    "</tr>";
+            $('#i_logic').append(trData);
+            t += 2;
+        }
+    }
+    function showIndicatorModalNewUpdate(indName, indicator, tmpTar, target, count, list, indType) {
+        $("#createIndicatorModal").modal('show');
+        $('#indicatorIdModal').val(indName);
+        $('#indicatorModalIndicatorLbl').text(indicator);
+        $('#tempTargetNameModal').val(tmpTar);
+        $('#tempCountModal').val(count);
+        $("#i_logic tr").remove();
+        $('#indicatorModalTargetLbl').text(target);
+        $('#indTypeIdModal').val(indType);
+
+        var t = 0;
+        for (var i = 0; i < count; i++) {
+            var tmpAmt = '';
             var trId = 'iddr' + (i + 1);
             var trData = "<tr id='" + trId + "'>" +
                     "<td width='60%'>" +
@@ -672,7 +707,6 @@
         $('#tempTargetNameModal').val('');
         $("#createIndicatorModal").modal('hide');
     }
-
     function onClickCreateIndicatorModal() {
         calculateTarget();
         var target = $('#hidSumModal').val();
@@ -685,8 +719,17 @@
         var values = jQuery("#createIndicatorForm").serialize();
         var index = $("#indicatorIdModal").val();
         map[index] = values;
-        $("#indicator").val(JSON.stringify(map));
-        if(!$("#id").val().isEmpty()){
+        resultArray[index] = values;
+        if($("#id").val().isEmpty()){
+            $("#indicator").val(JSON.stringify(map));
+        }
+        if(!$("#id").val().isEmpty()&&$("#indIdModal").val().isEmpty()){
+            newIndCount+=1;
+            $("#newIndCount").val(newIndCount);
+            $("#indicator").val(JSON.stringify(resultArray));
+            console.log($("#indicator").val());
+        }
+        if(!$("#indIdModal").val().isEmpty()){
             jQuery.ajax({
                 type: 'post',
                 data: values,
