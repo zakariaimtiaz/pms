@@ -1,29 +1,34 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
-        <li><label class="control-label" style="font-weight: bold; padding-bottom: 5px;">Issues For This Month</label></li>
-        <li onclick="showEdDashboardEntryModal();"><i class="fa fa-plus-square"></i>Add</li>
+    <li onclick="showEdDashboardEntryModal();"><i class="fa fa-plus-square"></i>Add</li>
 
-        <li onclick="editDashboard();"><i class="fa fa-edit"></i>Edit</li>
+    <li onclick="editDashboard();"><i class="fa fa-edit"></i>Edit</li>
 
-        <li onclick="deleteDashboard();"><i class="fa fa-trash-o"></i>Delete</li>
+    <li onclick="deleteDashboard();"><i class="fa fa-trash-o"></i>Delete</li>
 
 </ul>
 </script>
 
 <script language="javascript">
-    var serviceId,subDate;
+    var serviceId, subDate, gridIssues, dataSource;
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
-        if('${subDate}'!='') {
+        if ('${subDate}' != '') {
             loadData();
         }
     });
-function loadData(){
-    initIssueGrid();
-    loadUnresolveData();
-}
+    function activaTab(tab) {
+        $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+    }
+    function loadData() {
+        initIssueGrid();
+        loadUnresolveData();
+        initResolvedIssueGrid();
+        initUpcomingIssueGrid();
+    }
     function onLoadEdDashboardPage() {
+        activaTab('menu1');
         serviceId = ${serviceId};
         subDate = '${subDate}';
         var m= $('#month').kendoDatePicker({
@@ -31,22 +36,22 @@ function loadData(){
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year",
-            change:loadData
+            change: loadData
         }).data("kendoDatePicker");
         m.min(moment(subDate).format('YYYY-MM-DD'));
         $('#month').val(moment(subDate).format('MMMM YYYY'));
         initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
-        defaultPageTile("Create Ed Dashboard",null);
+        defaultPageTile("Create Ed Dashboard", null);
         dropDownService.value(serviceId);
     }
     function initDataSource() {
-        serviceId=$('#serviceId').val();
-        var month=$('#month').val();
+        serviceId = $('#serviceId').val();
+        var month = $('#month').val();
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
                     url: "${createLink(controller: 'edDashboard', action: 'list')}",
-                    data: {serviceId:serviceId,month:month},
+                    data: {serviceId: serviceId, month: month},
                     dataType: "json",
                     type: "post"
                 }
@@ -56,12 +61,12 @@ function loadData(){
                 data: "list", total: "count",
                 model: {
                     fields: {
-                        id: { type: "number" },
-                        version: { type: "number" },
-                        issueName: { type: "string" },
-                        description: { type: "string" },
-                        remarks: { type: "string" },
-                        edAdvice: { type: "string" }
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        issueName: {type: "string"},
+                        description: {type: "string"},
+                        remarks: {type: "string"},
+                        edAdvice: {type: "string"}
                     }
                 },
                 parse: function (data) {
@@ -81,7 +86,7 @@ function loadData(){
         initDataSource();
         $("#gridIssues").kendoGrid({
             dataSource: dataSource,
-           // height: getGridHeightKendo(),
+            // height: getGridHeightKendo(),
             selectable: true,
             sortable: true,
             resizable: true,
@@ -90,7 +95,13 @@ function loadData(){
             columns: [
                 {field: "issueName", title: "Issue", width: "10%", sortable: false, filterable: false},
                 {field: "description", title: "Description", width: "35%", sortable: false, filterable: false},
-                {field: "remarks", title: "Remarks and Recommendations", width: "30%", sortable: false, filterable: false},
+                {
+                    field: "remarks",
+                    title: "Remarks and Recommendations",
+                    width: "30%",
+                    sortable: false,
+                    filterable: false
+                },
                 {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false},
             ],
             filterable: {
@@ -101,13 +112,14 @@ function loadData(){
         gridIssues = $("#gridIssues").data("kendoGrid");
         $("#menuGrid").kendoMenu();
     }
-    function loadUnresolveData(){
+
+    function loadUnresolveData() {
         var actionUrl = "${createLink(controller:'edDashboard', action: 'unresolveList')}";
-        serviceId=$('#serviceId').val();
-        var month=$('#month').val();
+        serviceId = $('#serviceId').val();
+        var month = $('#month').val();
         jQuery.ajax({
             type: 'post',
-            data: {serviceId:serviceId,month:month},
+            data: {serviceId: serviceId, month: month},
             url: actionUrl,
             success: function (data, textStatus) {
                 $('#tableData').html('');
@@ -144,7 +156,8 @@ function loadData(){
         $('#descriptionNew').val(issues.description);
         $('#remarksNew').val(issues.remarks);
     }
-    function resetForm(){}
+    function resetForm() {
+    }
 
     function showEdDashboardEntryModal() {
         $("#createEdDashboardModal").modal('show');
@@ -156,7 +169,7 @@ function loadData(){
         loadIssueDDL();
         dropDownEdDashboardIssues.value('');
     }
-    function loadIssueDDL(){
+    function loadIssueDDL() {
         $('#issueIdDDL').kendoDropDownList({
             dataTextField: "name",
             dataValueField: "id",
@@ -168,10 +181,10 @@ function loadData(){
         var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
         serviceId = $('#serviceId').val();
         var month = $('#month').val();
-        var type='New';
+        var type = 'New';
         jQuery.ajax({
             type: 'post',
-            data: {serviceId: serviceId, month: month,type:type},
+            data: {serviceId: serviceId, month: month, type: type},
             url: actionUrl,
             success: function (data, textStatus) {
                 if (data.isError) {
@@ -193,7 +206,6 @@ function loadData(){
         if (executePreCondition() == false) {
             return false;
         }
-
         showLoadingSpinner(true);
 
         var actionUrl = null;
@@ -232,8 +244,8 @@ function loadData(){
         $("#createEdDashboardModal").modal('hide');
     }
 
-    function loadFollowupMonth(){
-        if(document.querySelector('input[name=selection]:checked').value=='Resolve') {
+    function loadFollowupMonth() {
+        if (document.querySelector('input[name=selection]:checked').value == 'Resolve') {
             $('#followupMonth').val('');
             $('#remarks').val('');
             $('#divfollowupMonth').hide();
@@ -246,74 +258,74 @@ function loadData(){
             $('#divRemarks').show();
             $('#divfollowupMonth').show();
             $("#remarks").val('');
-            var fMonth =  $('#followupMonth').kendoDatePicker({
+            var fMonth = $('#followupMonth').kendoDatePicker({
                 format: "MMMM yyyy",
                 parseFormats: ["yyyy-MM-dd"],
                 start: "year",
                 depth: "year"
             }).data("kendoDatePicker");
-            if($('#month').val()!='') {
-                var sDate= moment($('#month').val(),'MMMM YYYY').format('YYYY-MM-DD');
+            if ($('#month').val() != '') {
+                var sDate = moment($('#month').val(), 'MMMM YYYY').format('YYYY-MM-DD');
                 fMonth.min(sDate);
-            }else{
-                var sDate= new Date();
+            } else {
+                var sDate = new Date();
                 fMonth.min(moment(sDate).format('YYYY-MM-DD'));
             }
+            loadRemarksAndEdAdvice($('#hfClickingRowNo').val());
         }
     }
-    function loadRemarksAndEdAdvice(descId){
-        if(descId>0) {
-            descriptionId=descId;
+    function loadRemarksAndEdAdvice(descId) {
+        if (descId > 0) {
+            descriptionId = descId;
         }
         $("#oldRemarks").html('');
         var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
 
-            jQuery.ajax({
-                type: 'post',
-                data: {dashboardId:descriptionId},
-                url: actionUrl,
-                success: function (data, textStatus) {
-                    if (data.isError) {
-                        showError(data.message);
-                        return false;
-                    }
-
-                    if (data.lst != null && data.lst.length>0) {
-                        $("#oldRemarks").html(data.lst[0].remarks);
-                        //$("#remarks").attr('title', data.lst.remarks);
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log(errorThrown);
-                    //console.info('error in 2');
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    console.info('complete');
+        jQuery.ajax({
+            type: 'post',
+            data: {dashboardId: descriptionId},
+            url: actionUrl,
+            success: function (data, textStatus) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
                 }
 
-            });
+                if (data.lst != null && data.lst.length > 0) {
+                    $("#oldRemarks").html(data.lst[0].remarks);
+                    //$("#remarks").attr('title', data.lst.remarks);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
+                //console.info('error in 2');
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                console.info('complete');
+            }
+
+        });
 
     }
     function showRemarksModal(rowIdx) {
         $("#createEdFollowupModal").modal('show');
         $('#hfClickingRowNo').val(rowIdx);
-        $('#headingLabel').text($('#issue' + rowIdx).text() + ' Issue');
-        $('#followupMonth').prop('readOnly',false);
-        $('#description').val($('#description' + rowIdx).val());
+        $('#headingLabel').text($('#issue' + rowIdx).text());
+        $('#followupMonth').prop('readOnly', false);
+        $('#description').html($('#description' + rowIdx).val());
         $('#oldRemarks').html($('#remarks' + rowIdx).val());
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
-        $('#issuedMonth').text($('#issuedMonth'+rowIdx).text());
+        $('#issuedMonth').text($('#issuedMonth' + rowIdx).text());
 
-        if($('#hfIsResolve'+rowIdx).val()=='true') {
+        if ($('#hfIsResolve' + rowIdx).val() == 'true') {
             $('#selectionResolve').prop('checked', true);
             $('#divResolveNote').show();
         }
-        if($('#hfIsFollowup'+rowIdx).val()=='true') {
+        if ($('#hfIsFollowup' + rowIdx).val() == 'true') {
             $('#selectionFollowup').prop('checked', true);
             loadFollowupMonth();
             $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
-            loadRemarksAndEdAdvice(rowIdx);
             $('#divRemarks').show();
             $('#divResolveNote').hide();
             $('#remarks').val($('#remarks' + rowIdx).val());
@@ -321,15 +333,15 @@ function loadData(){
     }
     function hideFollowupDashboardModal() {
         $('#hfClickingRowNo').val('');
-        $('#selectionResolve').attr('checked',false);
-        $('#selectionFollowup').attr('checked',false);
+        $('#selectionResolve').attr('checked', false);
+        $('#selectionFollowup').attr('checked', false);
         $('#divfollowupMonth').hide();
         $('#divRemarks').hide();
         $('#divResolveNote').hide();
         $("#oldRemarks").html('');
         $('#remarks').val('');
         $('#resolveNote').val('');
-        $('#description').val('');
+        $('#description').html('');
         $('#hfServiceIdModal').val('');
         $('#hfMonthModal').val('');
         $('#followupMonth').val('');
@@ -355,7 +367,6 @@ function loadData(){
             data: jQuery("#createEdFollowupForm").serialize(),
             url: "${createLink(controller:'edDashboard', action: 'update')}",
             success: function (data, textStatus) {
-                alert(data.isError);
                 if (data.isError) {
                     showError(data.message);
                     return false;
@@ -382,6 +393,163 @@ function loadData(){
         }
         showLoadingSpinner(false);
 
+    }
+
+    function initDataSourceResolved() {
+        serviceId = $('#serviceId').val();
+        dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "${createLink(controller: 'edDashboard', action: 'resolvedList')}",
+                    data: {serviceId: serviceId},
+                    dataType: "json",
+                    type: "post"
+                }
+            },
+            schema: {
+                type: 'json',
+                data: "list", total: "count",
+                model: {
+                    fields: {
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        issueName: {type: "string"},
+                        month: {type: "string"},
+                        resolvedMonth: {type: "string"},
+                        description: {type: "string"},
+                        remarks: {type: "string"},
+                        edAdvice: {type: "string"}
+                    }
+                },
+                parse: function (data) {
+                    checkIsErrorGridKendo(data);
+                    return data;
+                }
+            },
+            sort: {field: 'id', dir: 'asc'},
+            pageSize: false,
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
+        });
+    }
+    function initResolvedIssueGrid() {
+        initDataSourceResolved();
+        $("#gridResolvedIssues").kendoGrid({
+            dataSource: dataSource,
+            // height: getGridHeightKendo(),
+            selectable: false,
+            sortable: true,
+            resizable: true,
+            reorderable: true,
+            pageable: false,
+            columns: [
+                {field: "issueName", title: "Issue", width: "10%", sortable: false, filterable: false},
+                {field: "month", title: "Month", width: "20%", sortable: false, filterable: false,
+                template: "Initiated :<b>#= month #</b> <br/> Resolved :<b>#= resolvedMonth #</b>"},
+                {field: "description", title: "Description", width: "30%", sortable: false, filterable: false},
+                {field: "remarks",title: "Remarks and Recommendations",width: "35%", sortable: false,filterable: false},
+                {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false},
+                { command: { text: " Details", click: showDetails,className: "fa fa-map-marker" }, width: "10%" }
+            ],
+            filterable: {
+                mode: "row"
+            }
+        });
+    }
+
+    function showDetails(){
+        $("#createEdFollowupModal").modal('show');
+        $('#hfClickingRowNo').val(rowIdx);
+        $('#headingLabel').text($('#issue' + rowIdx).text());
+        $('#followupMonth').prop('readOnly', false);
+        $('#description').html($('#description' + rowIdx).val());
+        $('#oldRemarks').html($('#remarks' + rowIdx).val());
+        $('#hfServiceIdModal').val($('#serviceId').val());
+        $('#hfMonthModal').val($('#month').val());
+        $('#issuedMonth').text($('#issuedMonth' + rowIdx).text());
+
+        if ($('#hfIsResolve' + rowIdx).val() == 'true') {
+            $('#selectionResolve').prop('checked', true);
+            $('#divResolveNote').show();
+        }
+        if ($('#hfIsFollowup' + rowIdx).val() == 'true') {
+            $('#selectionFollowup').prop('checked', true);
+            loadFollowupMonth();
+            $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
+            $('#divRemarks').show();
+            $('#divResolveNote').hide();
+            $('#remarks').val($('#remarks' + rowIdx).val());
+        }
+    }
+
+    function initDataSourceUpcoming() {
+        serviceId = $('#serviceId').val();
+        var month = $('#month').val();
+        dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "${createLink(controller: 'edDashboard', action: 'upcomingFollowupList')}",
+                    data: {serviceId: serviceId, month: month},
+                    dataType: "json",
+                    type: "post"
+                }
+            },
+            schema: {
+                type: 'json',
+                data: "list", total: "count",
+                model: {
+                    fields: {
+                        id: {type: "number"},
+                        version: {type: "number"},
+                        issueName: {type: "string"},
+                        month: {type: "string"},
+                        nextFollowup: {type: "string"},
+                        description: {type: "string"},
+                        remarks: {type: "string"},
+                        edAdvice: {type: "string"}
+                    }
+                },
+                parse: function (data) {
+                    checkIsErrorGridKendo(data);
+                    return data;
+                }
+            },
+            sort: {field: 'id', dir: 'asc'},
+            pageSize: false,
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
+        });
+    }
+    function initUpcomingIssueGrid() {
+        initDataSourceUpcoming();
+        $("#gridUpcomingIssues").kendoGrid({
+            dataSource: dataSource,
+            // height: getGridHeightKendo(),
+            selectable: false,
+            sortable: true,
+            resizable: true,
+            reorderable: true,
+            pageable: false,
+            columns: [
+                {field: "issueName", title: "Issue", width: "10%", sortable: false, filterable: false},
+                {field: "month", title: "Month", width: "10%", sortable: false, filterable: false},
+                {field: "nextFollowup", title: "Next Followup", width: "10%", sortable: false, filterable: false},
+                {field: "description", title: "Description", width: "25%", sortable: false, filterable: false},
+                {
+                    field: "remarks",
+                    title: "Remarks and Recommendations",
+                    width: "25%",
+                    sortable: false,
+                    filterable: false
+                },
+                {field: "edAdvice", title: "ED's Advice", width: "20%", sortable: false, filterable: false},
+            ],
+            filterable: {
+                mode: "row"
+            }
+        });
     }
 
 </script>

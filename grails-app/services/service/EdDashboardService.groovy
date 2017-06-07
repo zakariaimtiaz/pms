@@ -48,6 +48,36 @@ class EdDashboardService  extends BaseService{
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
+    public List<GroovyRowResult> lstEdDashboardResolvedIssue(long serviceId) {
+        String queryForList = """
+        SELECT ed.id ,ed.version,edi.issue_name AS issueName ,DATE_FORMAT(month_for, '%M %Y') month,
+        DATE_FORMAT(status_change_date, '%M %Y') resolvedMonth,ed.description,ed.remarks,ed.ed_advice AS edAdvice
+            FROM  ed_dashboard_issues edi
+            RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND ed.service_id = ${serviceId}
+        WHERE  service_id = ${serviceId} AND is_resolve = TRUE
+        ORDER BY edi.id
+        """
+        List<GroovyRowResult>  lst = executeSelectSql(queryForList)
+        return lst
+    }
+    public List<GroovyRowResult> lstEdDashboardUpcomingFollowUpIssue(long serviceId,String d ) {
+        DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+        Date start = originalFormat.parse(d.toString());
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+        Date month = DateUtility.getSqlDate(c.getTime())
+        String queryForList = """
+        SELECT ed.id ,ed.version,edi.issue_name as issueName,DATE_FORMAT(month_for, '%M %Y') month,
+        DATE_FORMAT(followup_month_for, '%M %Y') nextFollowup,ed.description,ed.remarks,ed.ed_advice as edAdvice
+        FROM  ed_dashboard_issues edi
+        RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND ed.service_id =  ${serviceId}
+        WHERE ed.service_id = ${serviceId}  AND followup_month_for > DATE('${month}')
+        ORDER BY edi.id
+        """
+        List<GroovyRowResult>  lst = executeSelectSql(queryForList)
+        return lst
+    }
     public List<GroovyRowResult> lstEdDashboardSectorOrCSUIssue(long serviceId,Date month) {
         String queryForList = """
         SELECT id,issue_name AS name FROM ed_dashboard_issues WHERE is_additional<>TRUE AND id NOT IN
@@ -59,7 +89,7 @@ class EdDashboardService  extends BaseService{
     }
     public List<GroovyRowResult> lstEdDashboardDescriptionAndRemarks(long serviceId,Date month,long issuesId) {
         String queryForList = """
-        SELECT description,GROUP_CONCAT(CONCAT('<FONT color="#79a9f7">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
+        SELECT description,GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
             FROM ed_dashboard WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}' AND
             month_for<(SELECT MAX(submission_date_db) FROM pm_mcrs_log WHERE service_id =${serviceId} AND COALESCE(is_submitted_db,FALSE)=1)
             GROUP BY description
@@ -90,8 +120,8 @@ class EdDashboardService  extends BaseService{
        SELECT ed.id ,ed.version,edi.issue_name ,ed.is_resolve
         ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN 'true' ELSE
          ed.is_followup END AS is_followup,(SELECT MAX(month_for) FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id) AS followup_month_for,CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr
-        ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN 'Follow-up'
-        WHEN ed.is_resolve = 1 THEN 'Resolve' ELSE 'Unresolve' END AS issue_status
+        ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id AND ed.month_for>DATE('${month}') GROUP BY followup_month_for)>0 THEN 'Follow-up'
+        WHEN ed.is_resolve = 1 THEN 'Resolved' ELSE 'Unresolve' END AS issue_status
         ,ed.description,ed.ed_advice,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN
         (SELECT remarks FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id ORDER BY id DESC LIMIT 1) ELSE ed.remarks END AS remarks
          FROM  ed_dashboard ed INNER JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id

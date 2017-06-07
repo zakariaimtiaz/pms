@@ -219,21 +219,21 @@
 
                     <div class="form-group">
                         <div class="col-md-3" style="padding-right: 0px;">
-                            <label class="control-label label-optional">  <strong class="label-optional">Initiated On:</strong>
+                            <label class="control-label label-optional">  <strong class="label-optional">Initiated On:&nbsp;&nbsp;</strong>
                             <strong class="label-optional" id="issuedMonth"></strong></label>
                             </div>
-                        <div class="col-md-3" style="padding-right: 0px;">
-                            <strong class="label-required">Status:</strong>
+                        <div class="col-md-4" style="padding-right: 0px;">
+                            <strong class="label-required">Current Status:&nbsp;&nbsp;</strong>
                         <input type="radio" name="selection" id="selectionResolve"
-                               onchange="loadFollowupMonth();" value="Resolve"><label>Resolve</label>&nbsp;&nbsp;
+                               onchange="loadFollowupMonth();" value="Resolve"><label>&nbsp;Resolved</label>&nbsp;&nbsp;
                         <input type="radio" name="selection" id="selectionFollowup"
-                               onchange="loadFollowupMonth();" value="Followup"><label>Follow-up</label>
+                               onchange="loadFollowupMonth();" value="Followup"><label>&nbsp;Follow-up</label>
                         </div>
 
                         <div id="divfollowupMonth" style="display: none;" class="col-md-5">
                             <div class="col-md-4" style="padding-right: 0px;">
-                                <label class="control-label label-required"> <strong>Follow Month:</strong></label></div>
-                            <div class="col-md-8">
+                                <label class="control-label label-required"> <strong>Followup Month:</strong></label></div>
+                            <div class="col-md-6" style="padding-left: 0px;!important;">
                             <input type="text" id="followupMonth" name="followupMonth"
                                    placeholder="Select month"></div>
                         </div>
@@ -241,12 +241,15 @@
 
                     <div class="form-group">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-required" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
                         </div>
                         <div class="col-md-12">
-                                <textarea id="description" name="description" rows="5" class="form-control" readonly></textarea>
+                            <div id="description" name="description" class="form-control"  style="padding: 0 0 0 0 ! important;
+                                background-color: #eee; height: 110px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
+                             unselectable='true'>
                             </div>
                         </div>
+                    </div>
                     <div class="form-group">
                         <div align="left" style=" padding-left: 15px;">
                             <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous Remarks and Recommendations:</strong></label>
@@ -265,18 +268,18 @@
                         </div>
                         <div class="col-md-12">
                             <textarea id="remarks" name="remarks" rows="5"
-                                      style="padding: 0 0 0 0 ! important;"
+                                      style="font-size:12px;padding: 0 0 0 0 ! important;"
                                       class="form-control" ></textarea>
                         </div>
 
                     </div>
                     <div class="form-group" id="divResolveNote" style="display: none;">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolve Note(If any):</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolved Note(If any):</strong></label>
                         </div>
                         <div class="col-md-12">
                             <textarea id="resolveNote" name="resolveNote" rows="5"
-                                      style="padding: 0 0 0 0 ! important;"
+                                      style="font-size:12px;padding: 0 0 0 0 ! important;"
                                       class="form-control" ></textarea>
                         </div>
 

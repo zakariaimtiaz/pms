@@ -19,7 +19,7 @@
         initGridNP();
         initGridCssp();
         activaTab('menu1');
-        populateKendoChart();
+        populateAllDashboard();
     });
     function onLoadInfoPage() {
         var str = moment().subtract(1, 'months').format('MMMM YYYY');
@@ -29,7 +29,7 @@
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year",
-            change: populateKendoChart
+            change: populateAllDashboard
         }).data("kendoDatePicker");
         $('#month').val(str);
 
@@ -566,7 +566,7 @@
         gridCssp = $("#gridCssp").data("kendoGrid");
     }
 
-    function populateKendoChart() {
+    function populateAllDashboard() {
         tmp1 = '';
         var serviceId = $('#serviceId').val();
         if(serviceId==''){ serviceId = 0;}
@@ -590,13 +590,13 @@
         var month = $('#month').val();
         var str = moment(month, 'MMMM YYYY').subtract(1, 'months').format('MMMM YYYY');
         $('#month').val(str);
-        populateKendoChart();
+        populateAllDashboard();
     }
     function setNextMonth() {
         var month = $('#month').val();
         var str = moment(month, 'MMMM YYYY').add(1, 'months').format('MMMM YYYY');
         $('#month').val(str);
-        populateKendoChart();
+        populateAllDashboard();
     }
     function formatIssue(FOLLOWUP_MONTH, ISSUE) {
         return '<font color="#8b0000">First issued at ' + FOLLOWUP_MONTH + '</font> <br/>' + ISSUE;

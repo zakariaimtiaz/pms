@@ -53,6 +53,21 @@ class EdDashboardController extends BaseController {
         map.put('list', listValue)
         render map as JSON
     }
+    def resolvedList() {
+        long sId = Long.parseLong(params.serviceId.toString())
+        List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardResolvedIssue(sId)
+        Map map = new LinkedHashMap()
+        map.put('list', listValue)
+        render map as JSON
+    }
+    def upcomingFollowupList() {
+        long sId = Long.parseLong(params.serviceId.toString())
+        String month = params.month.toString()
+        List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardUpcomingFollowUpIssue(sId, month)
+        Map map = new LinkedHashMap()
+        map.put('list', listValue)
+        render map as JSON
+    }
 
     def unresolveList() {
         try {
