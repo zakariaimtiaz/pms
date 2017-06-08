@@ -30,7 +30,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         try {
             long serviceId = Long.parseLong(result.serviceId.toString())
             String serviceStr = EMPTY_SPACE
-            if(serviceId > 0){
+            if (serviceId > 0) {
                 serviceStr = " AND ss.id = ${serviceId}"
             }
 
@@ -43,34 +43,39 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
             Date month = DateUtility.getSqlDate(c.getTime());
 
             if (result.containsKey("hr")) {
-                List lstVal = buildResultList(month,1L,serviceStr)
+                List lstVal = buildResultList(month, 1L, serviceStr)
                 result.put("hr", lstVal)
                 result.put("hrCount", lstVal.size())
             }
             if (result.containsKey("fld")) {
-                List lstVal = buildResultList(month,2L,serviceStr)
+                List lstVal = buildResultList(month, 2L, serviceStr)
                 result.put("fld", lstVal)
                 result.put("fldCount", lstVal.size())
             }
             if (result.containsKey("govt")) {
-                List lstVal = buildResultList(month,3L,serviceStr)
+                List lstVal = buildResultList(month, 3L, serviceStr)
                 result.put("govt", lstVal)
                 result.put("govtCount", lstVal.size())
             }
             if (result.containsKey("dnr")) {
-                List lstVal = buildResultList(month,4L,serviceStr)
+                List lstVal = buildResultList(month, 4L, serviceStr)
                 result.put("dnr", lstVal)
                 result.put("dnrCount", lstVal.size())
             }
             if (result.containsKey("np")) {
-                List lstVal = buildResultList(month,5L,serviceStr)
+                List lstVal = buildResultList(month, 5L, serviceStr)
                 result.put("np", lstVal)
                 result.put("npCount", lstVal.size())
             }
             if (result.containsKey("cssp")) {
-                List lstVal = buildResultCsspList(month,serviceStr)
+                List lstVal = buildResultCsspList(month, serviceStr)
                 result.put("cssp", lstVal)
                 result.put("csspCount", lstVal.size())
+            }
+            if (result.containsKey("noIssue")) {
+                List lstVal = buildResultNoIssueList(month)
+                result.put("noIssue", lstVal)
+                result.put("noIssueCount", lstVal.size())
             }
             return result
         } catch (Exception e) {
@@ -107,7 +112,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(Date month,long issueId, String serviceStr) {
+    private List<GroovyRowResult> buildResultList(Date month, long issueId, String serviceStr) {
         String query = """
         SELECT ed.id 'ID',ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE', ed.remarks 'REMARKS', ed.ed_advice 'ADVICE',
         CASE WHEN ed.is_followup = TRUE  THEN TRUE ELSE FALSE END 'IS_FOLLOWUP',
@@ -126,6 +131,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
     }
+
     private List<GroovyRowResult> buildResultCsspList(Date month, String serviceStr) {
         String query = """
         SELECT ed.id 'ID',ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE',  ed.remarks 'REMARKS',
@@ -138,6 +144,19 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A'
         ${serviceStr}
         ORDER BY ss.short_name;
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
+    }
+
+    private List<GroovyRowResult> buildResultNoIssueList(Date month) {
+        String query = """
+        SELECT sc.id ID,sc.id SERVICE_ID,sc.name SERVICE, sc.department_head  DEPARTMENT_HEAD
+        FROM pm_service_sector sc
+        WHERE sc.is_displayble = TRUE AND sc.is_in_sp = TRUE
+        AND sc.id NOT IN (SELECT DISTINCT(service_id)
+        FROM ed_dashboard WHERE month_for = '${month}' OR followup_month_for = '${month}')
+        ORDER BY sc.name ASC;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue

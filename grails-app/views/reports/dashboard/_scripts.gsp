@@ -9,7 +9,7 @@
 </style>
 
 <script language="javascript">
-    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp, tmp1 = '';
+    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue, tmp1 = '';
     $(document).ready(function () {
         onLoadInfoPage();
         initGridHR();
@@ -18,6 +18,7 @@
         initGridDonor();
         initGridNP();
         initGridCssp();
+        initGridNoIssue();
         activaTab('menu1');
         populateAllDashboard();
     });
@@ -565,6 +566,56 @@
         });
         gridCssp = $("#gridCssp").data("kendoGrid");
     }
+    function initGridNoIssue() {
+        $("#gridNoIssue").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false,
+                        dataType: "json",
+                        type: "post"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "noIssue",total: "noIssueCount",
+                    model: {
+                        fields: {
+                            ID             : {type: "number"},
+                            SERVICE_ID     : {type: "number"},
+                            SERVICE        : {type: "string"},
+                            DEPARTMENT_HEAD: {type: "string"}
+                        }
+                    },
+                    parse: function (data) {
+                        if(data.noIssueCount!='undefined'){
+                            $("#spanNoIssue").html('');
+                            $("#spanNoIssue").html('CSU/Sector Without Issue (' + data.noIssueCount + ')');
+                        }
+                        return data;
+                    }
+                },
+                batch: true,
+                serverPaging: true,
+                serverSorting: true
+            },
+            autoBind: false,
+            height: getGridHeightKendo() - 140,
+            selectable: true,
+            sortable: false,
+            pageable: false,
+            columns: [
+                {
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false
+                },
+                {
+                    field: "DEPARTMENT_HEAD", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false,
+                    template: "<q> I have no issue </q><br/> --- #= DEPARTMENT_HEAD#"
+                }
+            ]
+        });
+        gridNoIssue = $("#gridNoIssue").data("kendoGrid");
+    }
 
     function populateAllDashboard() {
         tmp1 = '';
@@ -577,12 +628,14 @@
         var urlDnr  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&dnr=true";
         var urlNp   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&np=true";
         var urlCssp = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&cssp=true";
+        var urlNoIssue = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&noIssue=true";
         populateGridKendo(gridHR, urlHR);
         populateGridKendo(gridField, urlFld);
         populateGridKendo(gridGovt, urlGovt);
         populateGridKendo(gridDonor, urlDnr);
         populateGridKendo(gridNP, urlNp);
         populateGridKendo(gridCssp, urlCssp);
+        populateGridKendo(gridNoIssue, urlNoIssue);
         return false;
     }
 

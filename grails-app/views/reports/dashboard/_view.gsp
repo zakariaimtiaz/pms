@@ -41,6 +41,7 @@
             <li><a data-toggle="tab" href="#menu4"><span id="spanDnr">Donor Issues (0)</span></a></li>
             <li><a data-toggle="tab" href="#menu5"><span id="spanNP">New Project Issues (0)</span></a></li>
             <li><a data-toggle="tab" href="#menu6"><span id="spanCssp">CSU/Sector Specific Issues (0)</span></a></li>
+            <li><a data-toggle="tab" href="#menu7"><span id="spanNoIssue" style="color: darkred">CSU/Sector Without Issue (0)</span></a></li>
         </ul>
 
         <div class="tab-content">
@@ -72,6 +73,11 @@
             <div id="menu6" class="tab-pane fade in active">
                 <div class="panel-primary">
                     <div id="gridCssp"></div>
+                </div>
+            </div>
+            <div id="menu7" class="tab-pane fade in active">
+                <div class="panel-primary">
+                    <div id="gridNoIssue"></div>
                 </div>
             </div>
         </div>
