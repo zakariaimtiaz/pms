@@ -73,7 +73,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
                 result.put("csspCount", lstVal.size())
             }
             if (result.containsKey("noIssue")) {
-                List lstVal = buildResultNoIssueList(month)
+                List lstVal = buildResultNoIssueList(month, serviceStr)
                 result.put("noIssue", lstVal)
                 result.put("noIssueCount", lstVal.size())
             }
@@ -149,14 +149,18 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         return lstValue
     }
 
-    private List<GroovyRowResult> buildResultNoIssueList(Date month) {
+    private List<GroovyRowResult> buildResultNoIssueList(Date month, String serviceStr) {
         String query = """
-        SELECT sc.id ID,sc.id SERVICE_ID,sc.name SERVICE, sc.department_head  DEPARTMENT_HEAD
-        FROM pm_service_sector sc
-        WHERE sc.is_displayble = TRUE AND sc.is_in_sp = TRUE
-        AND sc.id NOT IN (SELECT DISTINCT(service_id)
-        FROM ed_dashboard WHERE month_for = '${month}' OR followup_month_for = '${month}')
-        ORDER BY sc.name ASC;
+        SELECT ss.id ID,ss.id SERVICE_ID,ss.name SERVICE, ss.department_head  DEPARTMENT_HEAD
+        FROM pm_service_sector ss
+        WHERE ss.is_displayble = TRUE AND ss.is_in_sp = TRUE
+        AND ss.id NOT IN (
+            SELECT DISTINCT(service_id)
+            FROM ed_dashboard
+            WHERE month_for = '${month}' OR followup_month_for = '${month}'
+            )
+        ${serviceStr}
+        ORDER BY ss.name ASC;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
