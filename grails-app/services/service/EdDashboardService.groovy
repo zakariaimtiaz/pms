@@ -89,9 +89,11 @@ class EdDashboardService  extends BaseService{
     }
     public List<GroovyRowResult> lstEdDashboardDescriptionAndRemarks(long serviceId,Date month,long issuesId) {
         String queryForList = """
-        SELECT description,GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
-            FROM ed_dashboard WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}' AND
-            month_for<(SELECT MAX(submission_date_db) FROM pm_mcrs_log WHERE service_id =${serviceId} AND COALESCE(is_submitted_db,FALSE)=1)
+        SELECT DATE_FORMAT(month_for,'%M %Y') initiated_on,DATE_FORMAT(status_change_date,'%M %Y') resolved_on,description,resolve_note,
+            GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
+            FROM ed_dashboard
+            WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}' AND
+                month_for<(SELECT MAX(submission_date_db) FROM pm_mcrs_log WHERE service_id =${serviceId} AND COALESCE(is_submitted_db,FALSE)=1)
             GROUP BY description
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
@@ -115,7 +117,6 @@ class EdDashboardService  extends BaseService{
         c.setTime(start);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         Date month = DateUtility.getSqlDate(c.getTime())
-        long userServiceId = currentUserObject().serviceId
         String queryForList = """
        SELECT ed.id ,ed.version,edi.issue_name ,ed.is_resolve
         ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN 'true' ELSE

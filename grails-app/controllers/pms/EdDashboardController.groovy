@@ -71,15 +71,12 @@ class EdDashboardController extends BaseController {
 
     def unresolveList() {
         try {
-            SecUser user = baseService.currentUserObject()
-            boolean isEdAssistant = baseService.isEdAssistantRole(user.id)
             long sId = Long.parseLong(params.serviceId.toString())
+            String month = params.month.toString()
             List<GroovyRowResult> listValue
-            if (params.month) {
-                listValue = edDashboardService.lstUnresolveEdDashboardIssue(sId, params.month)
+            if (month) {
+                listValue = edDashboardService.lstUnresolveEdDashboardIssue(sId, month)
                 String template = params.template ? params.template : '/edDashboard/table'
-                long i = 0
-
                 def gString = g.render(template: template, model: [list: listValue])
                 Map map = new LinkedHashMap()
                 map.put('tableHtml', gString)
@@ -113,6 +110,13 @@ class EdDashboardController extends BaseController {
             }
         } catch (Exception ex) {
         }
+    }
+
+    def individualIssueDetails(){
+       long id = Long.parseLong(params.id.toString())
+        EdDashboard dashboard = EdDashboard.read(id)
+        List<GroovyRowResult> detailsVal = edDashboardService.lstEdDashboardDescriptionAndRemarks(dashboard.serviceId, dashboard.monthFor, dashboard.issueId)
+        render detailsVal[0] as JSON
     }
 
 }

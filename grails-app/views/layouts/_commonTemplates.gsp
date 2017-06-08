@@ -365,5 +365,78 @@
     </div>
 </div>
 
+<!-- Ed Dashboard Modal for individual issue details -->
+<div class="modal fade" id="viewEdIssueDetailsModal" role="dialog" tabindex="-1"
+     aria-labelledby="viewEdIssueDetailsLabel">
+    <div class="modal-dialog" role="document" style=" width:70%;">
+        <div class="modal-content">
+            <div class="modal-header "style=" background:#81ecef;border-top-left-radius: 5px;
+            border-top-right-radius: 5px; height: 30px; padding-top: 5px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onclick="hideDetailsDashboardModal();"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="headingDetailsLabel"></h4>
+            </div>
+
+            <div class="modal-body" style="padding-top: 5px;padding-bottom: 5px;">
+                <form class="form-horizontal form-widgets" id="viewEdIssueDetailsForm" name="viewEdIssueDetailsForm">
+
+                    <div class="form-group">
+                        <div class="col-md-3" style="padding-right: 0px;">
+                            <label class="control-label label-optional">  <strong class="label-optional">Initiated On:&nbsp;&nbsp;</strong>
+                                <strong class="label-optional" id="issuedInitiateMonth"></strong></label>
+                        </div>
+                        <div class="col-md-3" style="padding-right: 0px;">
+                            <label class="control-label label-optional">  <strong class="label-optional">Resolved On:&nbsp;&nbsp;</strong>
+                                <strong class="label-optional" id="issuedResolvedMonth"></strong></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div align="left" style=" padding-left: 15px;">
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
+                        </div>
+                        <div class="col-md-12">
+                            <div id="descriptionDetails" name="description" class="form-control"  style="padding: 0 0 0 0 ! important;
+                            background-color: #eee; height: 100px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
+                                 unselectable='true'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div align="left" style=" padding-left: 15px;">
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
+                        </div>
+                        <div class="col-md-12">
+                            <div id="remarksDetails" name="remarksDetails" class="form-control"  style="padding: 0 0 0 0 ! important;
+                            background-color: #eee; height: 150px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
+                                 unselectable='true'>
+                            </div>
+                        </div>
+
+                    </div>
+                <div class="form-group">
+                    <div align="left" style=" padding-left: 15px;">
+                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolved Note:</strong></label>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="resolvedNoteDetails" name="resolvedNoteDetails" class="form-control"  style="padding: 0 0 0 0 ! important;
+                        background-color: #eee; height: 80px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
+                             unselectable='true'>
+                        </div>
+                    </div>
+
+                </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-default" type="button" value="Close" onclick="hideDetailsDashboardModal();"
+                       data-dismiss="modal" tabindex="3">
+            </div>
+        </div>
+    </div>
+</div>
+
 
 

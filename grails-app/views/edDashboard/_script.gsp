@@ -1,11 +1,8 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid" class="kendoGridMenu">
     <li onclick="showEdDashboardEntryModal();"><i class="fa fa-plus-square"></i>Add</li>
-
     <li onclick="editDashboard();"><i class="fa fa-edit"></i>Edit</li>
-
     <li onclick="deleteDashboard();"><i class="fa fa-trash-o"></i>Delete</li>
-
 </ul>
 </script>
 
@@ -41,8 +38,8 @@
         m.min(moment(subDate).format('YYYY-MM-DD'));
         $('#month').val(moment(subDate).format('MMMM YYYY'));
         initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
-        defaultPageTile("Create Ed Dashboard", null);
         dropDownService.value(serviceId);
+        defaultPageTile("Create Ed Dashboard", "edDashboard/show");
     }
     function initDataSource() {
         serviceId = $('#serviceId').val();
@@ -156,8 +153,7 @@
         $('#descriptionNew').val(issues.description);
         $('#remarksNew').val(issues.remarks);
     }
-    function resetForm() {
-    }
+    function resetForm() {    }
 
     function showEdDashboardEntryModal() {
         $("#createEdDashboardModal").modal('show');
@@ -449,40 +445,47 @@
                 template: "Initiated :<b>#= month #</b> <br/> Resolved :<b>#= resolvedMonth #</b>"},
                 {field: "description", title: "Description", width: "30%", sortable: false, filterable: false},
                 {field: "remarks",title: "Remarks and Recommendations",width: "35%", sortable: false,filterable: false},
-                {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false},
-                { command: { text: " Details", click: showDetails,className: "fa fa-map-marker" }, width: "10%" }
+                {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false}
+//                ,{ command: { text: " Details", className: "vCardButton" }, width: "10%" }
             ],
             filterable: {
                 mode: "row"
             }
         });
     }
+    $("#gridResolvedIssues").delegate(".vCardButton", "click", function(e) {
+        var grid = $("#gridResolvedIssues").data("kendoGrid");
+        var myVar = grid.dataItem(grid.tbody.find(">tr"));
+        var actionUrl = "${createLink(controller:'edDashboard', action: 'individualIssueDetails')}";
+        jQuery.ajax({
+            type: 'post',
+            data: {id: myVar.id},
+            url: actionUrl,
+            success: function (result, textStatus) {
+                $("#viewEdIssueDetailsModal").modal('show');
+                $('#headingDetailsLabel').text(myVar.issueName);
+                $('#issuedInitiateMonth').text(result.initiated_on);
+                $('#issuedResolvedMonth').text(result.resolved_on);
+                $('#descriptionDetails').html(result.description);
+                $('#remarksDetails').html(result.remarks);
+                $('#resolvedNoteDetails').html(result.resolve_note);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+            }
+        });
 
-    function showDetails(){
-        $("#createEdFollowupModal").modal('show');
-        $('#hfClickingRowNo').val(rowIdx);
-        $('#headingLabel').text($('#issue' + rowIdx).text());
-        $('#followupMonth').prop('readOnly', false);
-        $('#description').html($('#description' + rowIdx).val());
-        $('#oldRemarks').html($('#remarks' + rowIdx).val());
-        $('#hfServiceIdModal').val($('#serviceId').val());
-        $('#hfMonthModal').val($('#month').val());
-        $('#issuedMonth').text($('#issuedMonth' + rowIdx).text());
-
-        if ($('#hfIsResolve' + rowIdx).val() == 'true') {
-            $('#selectionResolve').prop('checked', true);
-            $('#divResolveNote').show();
-        }
-        if ($('#hfIsFollowup' + rowIdx).val() == 'true') {
-            $('#selectionFollowup').prop('checked', true);
-            loadFollowupMonth();
-            $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
-            $('#divRemarks').show();
-            $('#divResolveNote').hide();
-            $('#remarks').val($('#remarks' + rowIdx).val());
-        }
+    });
+    function hideDetailsDashboardModal(){
+        $("#viewEdIssueDetailsModal").modal('hide');
+        $('#headingDetailsLabel').text('');
+        $('#issuedInitiateMonth').text('');
+        $('#issuedResolvedMonth').text('');
+        $('#descriptionDetails').html('');
+        $('#remarksDetails').html('');
+        $('#resolvedNoteDetails').html('');
     }
-
     function initDataSourceUpcoming() {
         serviceId = $('#serviceId').val();
         var month = $('#month').val();
