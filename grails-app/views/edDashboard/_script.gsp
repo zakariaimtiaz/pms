@@ -326,6 +326,7 @@
             $('#divResolveNote').hide();
             $('#remarks').val($('#remarks' + rowIdx).val());
         }
+        loadRemarksAndEdAdvice($('#hfClickingRowNo').val());
     }
     function hideFollowupDashboardModal() {
         $('#hfClickingRowNo').val('');

@@ -89,25 +89,6 @@
                     field: "monthStr", title: "Month", width: 30, sortable: false, filterable: false
                 },
                 {
-                    title: "Submitted", headerAttributes: {style: setAlignCenter()},filterable: false,
-                    columns: [
-                        {
-                            field: "isSubmitted", title: "MRP",
-                            width: 30, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignCenter()},
-                            attributes: {style: setAlignCenter()},
-                            template: "#=isSubmitted?'YES':'NO'#"
-                        },
-                        {
-                            field: "isSubmittedDb", title: "ED's Dashboard",
-                            width: 40, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignCenter()},
-                            attributes: {style: setAlignCenter()},
-                            template: "#=isSubmittedDb?'YES':'NO'#"
-                        }
-                    ]
-                },
-                {
                     title: "Submission Date", headerAttributes: {style: setAlignCenter()},filterable: false,
                     columns: [
                         {
@@ -115,33 +96,14 @@
                             width: 30, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
                             attributes: {style: setAlignCenter()},
-                            template: "#=isSubmitted?kendo.toString(kendo.parseDate(submissionDate, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
+                            template: "#=isSubmitted?kendo.toString(kendo.parseDate(submissionDate, 'yyyy-MM-dd'), 'dd-MMMM-yyyy'):''#"
                         },
                         {
                             field: "submissionDateDb", title: "ED's Dashboard",
                             width: 40, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
                             attributes: {style: setAlignCenter()},
-                            template: "#=submissionDateDb?kendo.toString(kendo.parseDate(submissionDateDb, 'yyyy-MM-dd'), 'dd-MM-yyyy'):''#"
-                        }
-                    ]
-                },
-                {
-                    title: "Editable", headerAttributes: {style: setAlignCenter()},filterable: false,
-                    columns: [
-                        {
-                            field: "isEditable", title: "MRP",
-                            width: 30, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignCenter()},
-                            attributes: {style: setAlignCenter()},
-                            template: "#=isEditable?'YES':'NO'#"
-                        },
-                        {
-                            field: "isEditableDb", title: "ED's Dashboard",
-                            width: 40, sortable: false, filterable: false,
-                            headerAttributes: {style: setAlignCenter()},
-                            attributes: {style: setAlignCenter()},
-                            template: "#=isEditableDb?'YES':'NO'#"
+                            template: "#=submissionDateDb?kendo.toString(kendo.parseDate(submissionDateDb, 'yyyy-MM-dd'), 'dd-MMMM-yyyy'):''#"
                         }
                     ]
                 }
