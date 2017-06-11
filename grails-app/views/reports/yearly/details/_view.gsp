@@ -33,12 +33,9 @@
                             </app:dropDownService>
                         </div>
                         <div class="col-md-2">
-                            <select class="kendo-drop-down" id="indicatorType" name="indicatorType" tabindex="3"></select>
-                        </div>
-                        <div class="col-md-2">
                             <button id="create" name="create" type="submit" data-role="button"
                                     class="k-button k-button-icontext"
-                                    role="button" tabindex="4"
+                                    role="button" tabindex="3"
                                     aria-disabled="false"><span class="k-icon k-i-search"></span>View Result
                             </button>
                         </div>
