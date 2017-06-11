@@ -24,13 +24,6 @@
         }).data("kendoDatePicker");
         $('#year').val(str);
 
-        $('#indicatorType').kendoDropDownList({
-            dataSource: {
-                data: data
-            }
-        });
-        dropDownIndicatorType = $("#indicatorType").data("kendoDropDownList");
-
         initializeForm($("#detailsForm"), onSubmitForm);
         defaultPageTile("Strategic Action Plan", 'reports/showYearlySPDetails');
     }
@@ -38,12 +31,11 @@
         tmp1='',tmp2='',tmp3='',tmp4='',tmp5='',tmp6='',tmp7='',tmp8='';
         var year = $('#year').val();
         var serviceId = dropDownService.value();
-        var indicatorType = dropDownIndicatorType.value();
         if(serviceId==''){
             showError('Please select any service');
             return false;
         }
-        var params = "?serviceId=" +serviceId+"&year="+year+"&indicatorType="+indicatorType;
+        var params = "?serviceId=" +serviceId+"&year="+year;
         var url ="${createLink(controller: 'reports', action: 'listYearlySPDetails')}" + params;
         populateGridKendo(gridYearlySP, url);
         return false;
@@ -76,53 +68,33 @@
             columns: [
                 {
                     field: "sequence", title: "ID#", width: 40, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template:"#=omitRepeated1(sequence,sequence)#"
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "actions", title: "Action", width: 250, sortable: false, filterable: false,
-                    template:"#=omitRepeated2(sequence,actions)#"
+                {field: "actions", title: "Action", width: 250, sortable: false, filterable: false
                 },
                 {
-                    field: "start", title: "Start Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated3(sequence,kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM'))#"
+                    field: "start", title: "Start Date", width: 80, sortable: false, filterable: false
+                    ,template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM')#"
                 },
                 {
-                    field: "end", title: "End Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
-                },
-                {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
-                {field: "tot_tar", title: "Target", width: 80, sortable: false, filterable: false,
-                    headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
-                    template:"#=formatIndicator(indicator_type,tot_tar)#"
-                },
-                {
-                    field: "tot_acv", title: "Achievement",
-                    width: 90, sortable: false, filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=formatIndicator(indicator_type,tot_acv)#"
-                },
-                {
-                    field: "total_acv", title: "Variance",
-                    width: 90, sortable: false, filterable: false,
-                    headerAttributes: {style: setAlignRight()},
-                    attributes: {style: setAlignRight()},
-                    template: "#=calculateVariance(tot_tar,tot_acv)#"
+                    field: "end", title: "End Date", width: 80, sortable: false, filterable: false
+                    ,template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
                 },
                 {
                     field: "remarks", title: "Action Remarks",
-                    template: "#=trimTextForKendo(omitRepeated8(sequence,remarks),70)#",
                     width: 200, sortable: false,filterable: false
+                    ,template: "#=trimTextForKendo(remarks,70)#"
+
                 },
-                {field: "responsiblePerson", title: "Responsible Person", width: 200, sortable: false, filterable: false,
-                    template:"#=omitRepeated5(sequence,responsiblePerson)#"
+                {field: "responsiblePerson", title: "Responsible Person", width: 200, sortable: false, filterable: false
                 },
                 {
                     field: "supportDepartment", title: "Support Department", width: 150,
-                    sortable: false, filterable: false,template:"#=trimTextForKendo(omitRepeated6(sequence,supportDepartment),50)#"
+                    sortable: false, filterable: false
+                    ,template:"#=trimTextForKendo(supportDepartment,50)#"
                 },
-                {field: "project", title: "Project", width: 150, sortable: false, filterable: false,
-                    template:"#=trimTextForKendo(omitRepeated7(sequence,project),50)#"
+                {field: "project", title: "Project", width: 150, sortable: false, filterable: false
+                    ,template:"#=trimTextForKendo(project,50)#"
                 }
             ]
         });
@@ -164,7 +136,6 @@
     function initDetails(e) {
         var row = e.masterRow[0];
         var indicator = $(row).closest('tr').find('td').eq(1).text();
-        var indicatorType = e.data.indicatorType;
         var unitStr = e.data.unitStr;
         var target = e.data.target;
         $("<div/>").appendTo(e.detailCell).kendoGrid({
@@ -251,7 +222,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(9)",
+        filter: "td:nth-child(6)",
         width: 300,
         position: "top",
         content: function(e){
@@ -268,7 +239,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(11)",
+        filter: "td:nth-child(8)",
         width: 300,
         position: "top",
         content: function(e){
@@ -285,7 +256,7 @@
         hide:function(e){
             this.content.parent().css("visibility", "hidden");
         },
-        filter: "td:nth-child(12)",
+        filter: "td:nth-child(9)",
         width: 300,
         position: "top",
         content: function(e){
@@ -293,46 +264,6 @@
             return dataItem.project;
         }
     }).data("kendoTooltip");
-    function omitRepeated1(seq,val){
-        if(tmp1==seq){return ''}
-        tmp1 = seq;
-        return val;
-    }
-    function omitRepeated2(seq,val){
-        if(tmp2==seq){return ''}
-        tmp2 = seq;
-        return val;
-    }
-    function omitRepeated3(seq,val){
-        if(tmp3==seq){return ''}
-        tmp3 = seq;
-        return val;
-    }
-    function omitRepeated4(seq,val){
-        if(tmp4==seq){return ''}
-        tmp4 = seq;
-        return val;
-    }
-    function omitRepeated5(seq,val){
-        if(tmp5==seq || val== null){return ''}
-        tmp5 = seq;
-        return val;
-    }
-    function omitRepeated6(seq,val){
-        if(tmp6==seq || val== null){return ''}
-        tmp6 = seq;
-        return val;
-    }
-    function omitRepeated7(seq,val){
-        if(tmp7==seq || val== null){return ''}
-        tmp7 = seq;
-        return val;
-    }
-    function omitRepeated8(seq,val){
-        if(tmp8==seq || val== null){return ''}
-        tmp8 = seq;
-        return val;
-    }
 
     function downloadYearlySpReport() {
         var year = $('#year').val();
