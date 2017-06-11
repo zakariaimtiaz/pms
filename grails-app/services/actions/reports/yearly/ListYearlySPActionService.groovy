@@ -26,7 +26,13 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         try {
             int year = Integer.parseInt(result.year.toString())
             long serviceId = Long.parseLong(result.serviceId.toString())
-            List lstVal = buildResultList(serviceId, year,result.indicatorType.toString())
+            if(result.containsKey("indicatorType")){
+                List lstVal = buildResultList(serviceId, year,result.indicatorType.toString())
+                result.put(LIST, lstVal)
+                result.put(COUNT, lstVal.size())
+                return result
+            }
+            List lstVal = buildResultList(serviceId, year)
             result.put(LIST, lstVal)
             result.put(COUNT, lstVal.size())
             return result
@@ -64,7 +70,7 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(long serviceId,int year,String type) {
+    private List<GroovyRowResult> buildResultList(long serviceId,int year) {
 
         String query = """
         SELECT a.id AS id,CONCAT(g.sequence,'. ',g.goal) goal,
@@ -77,6 +83,42 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         JOIN pm_goals g ON g.id = a.goal_id
         JOIN pm_service_sector sc ON sc.id = a.service_id
         WHERE a.year = ${year} AND sc.id = ${serviceId}
+        ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq;
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
+    }
+
+    private List<GroovyRowResult> buildResultList(long serviceId,int year,String type) {
+        String actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.actions_id = a.id"
+        if(type.equals("Action Indicator")){
+            actionIndicatorJoin = "JOIN (SELECT pai.* FROM pm_actions_indicator pai " +
+                    "JOIN (SELECT MIN(id) id  FROM pm_actions_indicator GROUP BY actions_id ) tmp ON pai.id=tmp.id) ai ON ai.actions_id = a.id"
+        }else if(type.equals("Preferred Indicator")){
+            actionIndicatorJoin = "JOIN pm_actions_indicator ai ON ai.year = ${year} AND ai.actions_id = a.id AND ai.is_preference = TRUE"
+        }
+
+        String query = """
+        SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+        a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+        ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+
+        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END tot_tar,
+        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END tot_acv,
+
+        a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
+        (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
+        (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
+
+        FROM pm_actions a
+        JOIN pm_goals g ON g.id = a.goal_id
+        ${actionIndicatorJoin}
+        JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
+        JOIN custom_month cm ON cm.name=idd.month_name
+        JOIN pm_service_sector sc ON sc.id = a.service_id,
+        (SELECT @rownum := 0) r
+        WHERE a.year=${year} AND ai.year = ${year} AND sc.id = ${serviceId}
+        GROUP BY ai.id
         ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
