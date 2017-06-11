@@ -99,7 +99,7 @@
                     sortable: false,
                     filterable: false
                 },
-                {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false},
+                {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false}
             ],
             filterable: {
                 mode: "row"
@@ -308,7 +308,8 @@
         $('#hfClickingRowNo').val(rowIdx);
         $('#headingLabel').text($('#issue' + rowIdx).text());
         $('#followupMonth').prop('readOnly', false);
-        $('#description').html($('#description' + rowIdx).val());
+        $('#descriptionDiv').html($('#description' + rowIdx).val());
+        $('#description').val($('#description' + rowIdx).val());
         $('#oldRemarks').html($('#remarks' + rowIdx).val());
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
@@ -338,7 +339,8 @@
         $("#oldRemarks").html('');
         $('#remarks').val('');
         $('#resolveNote').val('');
-        $('#description').html('');
+        $('#descriptionDiv').html('');
+        $('#description').val('');
         $('#hfServiceIdModal').val('');
         $('#hfMonthModal').val('');
         $('#followupMonth').val('');
@@ -447,37 +449,19 @@
                 {field: "description", title: "Description", width: "30%", sortable: false, filterable: false},
                 {field: "remarks",title: "Remarks and Recommendations",width: "35%", sortable: false,filterable: false},
                 {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false}
-//                ,{ command: { text: " Details", className: "vCardButton" }, width: "10%" }
+                ,{ command: { text: " Details", click: showDetails },  width: "10%" }
             ],
             filterable: {
                 mode: "row"
             }
         });
     }
-    $("#gridResolvedIssues").delegate(".vCardButton", "click", function(e) {
-        var grid = $("#gridResolvedIssues").data("kendoGrid");
-        var myVar = grid.dataItem(grid.tbody.find(">tr"));
-        var actionUrl = "${createLink(controller:'edDashboard', action: 'individualIssueDetails')}";
-        jQuery.ajax({
-            type: 'post',
-            data: {id: myVar.id},
-            url: actionUrl,
-            success: function (result, textStatus) {
-                $("#viewEdIssueDetailsModal").modal('show');
-                $('#headingDetailsLabel').text(myVar.issueName);
-                $('#issuedInitiateMonth').text(result.initiated_on);
-                $('#issuedResolvedMonth').text(result.resolved_on);
-                $('#descriptionDetails').html(result.description);
-                $('#remarksDetails').html(result.remarks);
-                $('#resolvedNoteDetails').html(result.resolve_note);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-            }
-        });
 
-    });
+    function showDetails(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        showRemarksModal(dataItem.id);
+    }
     function hideDetailsDashboardModal(){
         $("#viewEdIssueDetailsModal").modal('hide');
         $('#headingDetailsLabel').text('');
@@ -548,7 +532,8 @@
                     sortable: false,
                     filterable: false
                 },
-                {field: "edAdvice", title: "ED's Advice", width: "20%", sortable: false, filterable: false},
+                {field: "edAdvice", title: "ED's Advice", width: "20%", sortable: false, filterable: false}
+//                ,{ command: { text: " Details", click: showDetails },  width: "10%" }
             ],
             filterable: {
                 mode: "row"

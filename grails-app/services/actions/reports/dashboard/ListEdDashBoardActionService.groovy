@@ -140,7 +140,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         LEFT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND MONTH(ed.month_for)=MONTH('${month}')
         AND YEAR(ed.month_for)=YEAR('${month}')
         LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id AND ss.is_in_sp = TRUE
-        WHERE edi.id IN (7,8,9,10,11,12) AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
+        WHERE edi.id IN (7,8,9,10,11,12,13,14,15,16,17,18,19,20) AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A'
         ${serviceStr}
         ORDER BY ss.short_name;

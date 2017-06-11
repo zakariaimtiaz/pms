@@ -216,6 +216,7 @@
                     <input type="hidden" id="hfServiceIdModal" name="hfServiceIdModal" value=""/>
                     <input type="hidden" id="hfMonthModal" name="hfMonthModal" value=""/>
                     <input type="hidden" id="type" name="type" value="Followup"/>
+                    <input type="hidden" id="description" name="description" value=""/>
 
                     <div class="form-group">
                         <div class="col-md-3" style="padding-right: 0px;">
@@ -244,7 +245,7 @@
                             <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
                         </div>
                         <div class="col-md-12">
-                            <div id="description" name="description" class="form-control"  style="padding: 0 0 0 0 ! important;
+                            <div id="descriptionDiv"class="form-control"  style="padding: 0 0 0 0 ! important;
                                 background-color: #eee; height: 110px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
                              unselectable='true'>
                             </div>

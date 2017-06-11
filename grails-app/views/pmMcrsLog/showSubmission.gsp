@@ -11,10 +11,10 @@
 <script type="text/x-kendo-template" id="gridToolbar">
 <ul id="menuGrid2" class="kendoGridMenu">
     <sec:access url="/pmMcrsLog/submission">
-        <li onclick="mrpSubmission();"><i class="fa fa-gavel"></i>MRP Submit</li>
+        <li onclick="mrpSubmission();"><i class="fa fa-gavel"></i>Submit MRP</li>
     </sec:access>
     <sec:access url="/pmMcrsLog/submissionDashBoard">
-        <li onclick="dashboardSubmission();"><i class="fa fa-gavel"></i>ED's Dashboard Submit</li>
+        <li onclick="dashboardSubmission();"><i class="fa fa-gavel"></i>Submit ED's Dashboard</li>
     </sec:access>
 </ul>
 </script>

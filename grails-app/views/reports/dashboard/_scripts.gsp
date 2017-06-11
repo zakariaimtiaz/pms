@@ -610,7 +610,7 @@
                 },
                 {
                     field: "DEPARTMENT_HEAD", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false,
-                    template: "<q> I have no issue </q><br/> --- #= DEPARTMENT_HEAD#"
+                    template: "<q> I have no issue on current month </q><br/> --- #= DEPARTMENT_HEAD#"
                 }
             ]
         });

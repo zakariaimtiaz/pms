@@ -72,7 +72,7 @@ class EdDashboardService  extends BaseService{
         DATE_FORMAT(followup_month_for, '%M %Y') nextFollowup,ed.description,ed.remarks,ed.ed_advice as edAdvice
         FROM  ed_dashboard_issues edi
         RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND ed.service_id =  ${serviceId}
-        WHERE ed.service_id = ${serviceId}  AND followup_month_for > DATE('${month}')
+        WHERE ed.service_id = ${serviceId}  AND month_for > DATE('${month}')
         ORDER BY edi.id
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
@@ -128,16 +128,32 @@ class EdDashboardService  extends BaseService{
          FROM  ed_dashboard ed INNER JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
         INNER JOIN pm_mcrs_log lg ON lg.service_id = ed.service_id AND COALESCE(lg.is_submitted_db,FALSE) =1
         AND MONTH(ed.month_for)=lg.month AND YEAR(ed.month_for)= lg.year
-        WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_followup,FALSE)<>1 AND COALESCE(ed.is_resolve,FALSE) <> 1
-        OR (DATE(ed.status_change_date)=DATE('${month}') AND COALESCE(ed.is_followup,FALSE) <> 1)
+        WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_followup,FALSE)<>1 AND (COALESCE(ed.is_resolve,FALSE) <> 1
+        OR (DATE(ed.status_change_date)=DATE('${month}') AND COALESCE(ed.is_followup,FALSE) <> 1))
         ORDER BY ed.issue_id,ed.month_for;
         """
+/*        String queryForList = """
+         SELECT ed.id ,ed.version,edi.issue_name,IFNULL(ed.is_resolve,FALSE) is_resolve,
+             IFNULL(ed.is_followup,FALSE) is_followup,ed.followup_month_for,
+             CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr,
+             'Unresolve' issue_status,ed.description,ed.ed_advice,ed.remarks
+         FROM  ed_dashboard ed
+         LEFT JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
+         WHERE ed.service_id = ${serviceId} AND ed.is_resolve IS NOT TRUE
+            AND (ed.month_for = '${month}' OR ed.followup_month_for < DATE_ADD('${month}', INTERVAL 1 DAY)
+            OR ed.followup_month_for IS NULL)
+         GROUP BY ed.month_for,ed.issue_id;
+        """*/
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
     public Long ExistedInFutureDate(long serviceId,Date d,String subDate ) {
         String queryForList = """
-      SELECT id FROM ed_dashboard WHERE service_id='${serviceId}' AND followup_month_for=DATE('${d}') AND month_for>=DATE('${subDate}')
+        SELECT id
+            FROM ed_dashboard
+        WHERE service_id='${serviceId}'
+            AND followup_month_for=DATE('${d}')
+            AND month_for>=DATE('${subDate}')
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         Long id=0
