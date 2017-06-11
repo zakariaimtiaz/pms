@@ -29,11 +29,16 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
     public Map execute(Map result) {
         try {
             long serviceId = Long.parseLong(result.serviceId.toString())
+            List<Long> lst = currentUserDepartmentList()
+
             String serviceStr = EMPTY_SPACE
             if (serviceId > 0) {
                 serviceStr = " AND ss.id = ${serviceId}"
             }
-
+            if(serviceId == 0 && lst.size() > 1){
+                String serviceIds = buildCommaSeparatedStringOfIds(lst)
+                serviceStr = " AND ss.id IN (${serviceIds})"
+            }
             String monthStr = result.month.toString()
             DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 

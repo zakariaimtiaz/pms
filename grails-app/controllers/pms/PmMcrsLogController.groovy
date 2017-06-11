@@ -45,6 +45,11 @@ class PmMcrsLogController extends BaseController {
     }
     def showSubmission() {
         SecUser user = baseService.currentUserObject()
+        List<Long> lst = baseService.currentUserDepartmentList()
+        if(lst.size() > 1){
+            render(view: "/pmMcrsLog/showSubmissionWithDeptLst", model: [serviceId:user.serviceId])
+            return
+        }
         render(view: "/pmMcrsLog/showSubmission", model: [serviceId:user.serviceId])
     }
     def submission() {
