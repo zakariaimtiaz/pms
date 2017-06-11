@@ -107,7 +107,7 @@ class EdDashboardService  extends BaseService{
         WHERE  edi.is_additional<>0
         """
         List<GroovyRowResult> max = executeSelectSql(query)
-        long con = max[0].count
+        long con = max[0].cnt
         return con
     }
     public List<GroovyRowResult> lstUnresolveEdDashboardIssue(long serviceId,String d ) {

@@ -460,7 +460,14 @@
     function showDetails(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        showRemarksModal(dataItem.id);
+        //showRemarksModal(dataItem.id);
+        $("#createEdFollowupModal").modal('show');
+        $('#selectionResolve').prop('checked', true);
+        $('#divResolveNote').show();
+        $('#headingLabel').text(dataItem.issueName);
+        $('#issuedMonth').text(dataItem.month);
+        loadRemarksAndEdAdvice(dataItem.id);
+
     }
     function hideDetailsDashboardModal(){
         $("#viewEdIssueDetailsModal").modal('hide');

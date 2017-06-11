@@ -56,7 +56,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             Long issueId = Long.parseLong(result.issueIdDDL)
 
             if (EdDashboardIssues.findById(issueId).isHeading) {
-                issueId = edDashboardService.minimumAdditionalIssuesId()
+                issueId = edDashboardService.minimumAdditionalIssuesId(serviceId,monthFor)
             }
             EdDashboard edDashboard = new EdDashboard()
             edDashboard.serviceId = serviceId
