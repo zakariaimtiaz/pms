@@ -69,7 +69,7 @@ class EdDashboardService  extends BaseService{
         Date month = DateUtility.getSqlDate(c.getTime())
         String queryForList = """
         SELECT ed.id ,ed.version,edi.issue_name as issueName,DATE_FORMAT(month_for, '%M %Y') month,
-        DATE_FORMAT(followup_month_for, '%M %Y') nextFollowup,ed.description,ed.remarks,ed.ed_advice as edAdvice
+        DATE_FORMAT(followup_month_for, '%M %Y') followupFor,ed.description,ed.remarks,ed.ed_advice as edAdvice
         FROM  ed_dashboard_issues edi
         RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND ed.service_id =  ${serviceId}
         WHERE ed.service_id = ${serviceId}  AND month_for > DATE('${month}')
@@ -107,7 +107,7 @@ class EdDashboardService  extends BaseService{
         WHERE  edi.is_additional<>0
         """
         List<GroovyRowResult> max = executeSelectSql(query)
-        long con = max[0].cnt
+        long con = max[0].c
         return con
     }
     public List<GroovyRowResult> lstUnresolveEdDashboardIssue(long serviceId,String d ) {

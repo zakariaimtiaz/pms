@@ -241,19 +241,19 @@
     }
 
     function loadFollowupMonth() {
+        $("#remarks").val('');
+        $('#resolveNote').val('');
         if (document.querySelector('input[name=selection]:checked').value == 'Resolve') {
             $('#followupMonth').val('');
-            $('#remarks').val('');
             $('#divfollowupMonth').hide();
             $('#divRemarks').hide();
             $('#divResolveNote').show();
-            $('#resolveNote').val('');
+
         }
         else {
             $('#divResolveNote').hide();
             $('#divRemarks').show();
             $('#divfollowupMonth').show();
-            $("#remarks").val('');
             var fMonth = $('#followupMonth').kendoDatePicker({
                 format: "MMMM yyyy",
                 parseFormats: ["yyyy-MM-dd"],
@@ -267,7 +267,6 @@
                 var sDate = new Date();
                 fMonth.min(moment(sDate).format('YYYY-MM-DD'));
             }
-            loadRemarksAndEdAdvice($('#hfClickingRowNo').val());
         }
     }
     function loadRemarksAndEdAdvice(descId) {
@@ -289,7 +288,7 @@
 
                 if (data.lst != null && data.lst.length > 0) {
                     $("#oldRemarks").html(data.lst[0].remarks);
-                    //$("#remarks").attr('title', data.lst.remarks);
+                    $("#resolveNote").val(data.lst[0].resolve_note);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -331,19 +330,23 @@
     }
     function hideFollowupDashboardModal() {
         $('#hfClickingRowNo').val('');
+        document.getElementById("selectionResolve").disabled=false;
+        document.getElementById("selectionFollowup").disabled=false;
         $('#selectionResolve').attr('checked', false);
         $('#selectionFollowup').attr('checked', false);
+        $("#resolveNote").prop('readonly',false);
+        $('#resolveNote').val('');
+        $('#divResolveNote').hide();
+        $('#followupMonth').val('');
         $('#divfollowupMonth').hide();
         $('#divRemarks').hide();
-        $('#divResolveNote').hide();
-        $("#oldRemarks").html('');
         $('#remarks').val('');
-        $('#resolveNote').val('');
+        $("#oldRemarks").html('');
         $('#descriptionDiv').html('');
         $('#description').val('');
         $('#hfServiceIdModal').val('');
         $('#hfMonthModal').val('');
-        $('#followupMonth').val('');
+        $('#btnCreate').show();
 
         $("#createEdFollowupModal").modal('hide');
     }
@@ -460,12 +463,17 @@
     function showDetails(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        //showRemarksModal(dataItem.id);
         $("#createEdFollowupModal").modal('show');
         $('#selectionResolve').prop('checked', true);
+        document.getElementById("selectionResolve").disabled=true;
+        document.getElementById("selectionFollowup").disabled=true;
         $('#divResolveNote').show();
+        $('#btnCreate').hide();
         $('#headingLabel').text(dataItem.issueName);
         $('#issuedMonth').text(dataItem.month);
+        $('#descriptionDiv').text(dataItem.description);
+        $("#resolveNote").prop('readonly',true)
+
         loadRemarksAndEdAdvice(dataItem.id);
 
     }
@@ -499,7 +507,7 @@
                         version: {type: "number"},
                         issueName: {type: "string"},
                         month: {type: "string"},
-                        nextFollowup: {type: "string"},
+                        followupFor: {type: "string"},
                         description: {type: "string"},
                         remarks: {type: "string"},
                         edAdvice: {type: "string"}
@@ -529,8 +537,8 @@
             pageable: false,
             columns: [
                 {field: "issueName", title: "Issue", width: "10%", sortable: false, filterable: false},
-                {field: "month", title: "Month", width: "10%", sortable: false, filterable: false},
-                {field: "nextFollowup", title: "Next Followup", width: "10%", sortable: false, filterable: false},
+                {field: "followupFor", title: "Issued On", width: "10%", sortable: false, filterable: false},
+                {field: "month", title: "Follow-up Month", width: "10%", sortable: false, filterable: false},
                 {field: "description", title: "Description", width: "25%", sortable: false, filterable: false},
                 {
                     field: "remarks",
@@ -540,12 +548,32 @@
                     filterable: false
                 },
                 {field: "edAdvice", title: "ED's Advice", width: "20%", sortable: false, filterable: false}
-//                ,{ command: { text: " Details", click: showDetails },  width: "10%" }
+                ,{ command: { text: " Details", click: showDetailsForUpcommingIssues },  width: "10%" }
             ],
             filterable: {
                 mode: "row"
             }
         });
+    }
+    function showDetailsForUpcommingIssues(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        $("#createEdFollowupModal").modal('show');
+        $('#selectionFollowup').prop('checked', true);
+        document.getElementById("selectionResolve").disabled=true;
+        document.getElementById("selectionFollowup").disabled=true;
+        $('#btnCreate').hide();
+        $('#headingLabel').text(dataItem.issueName);
+        $('#issuedMonth').text(dataItem.month);
+        $('#descriptionDiv').text(dataItem.description);
+        loadFollowupMonth();
+        $('#followupMonth').val(dataItem.month);
+        $('#divResolveNote').hide();
+        $('#divRemarks').show();
+        $('#remarks').val(dataItem.remarks);
+
+        loadRemarksAndEdAdvice(dataItem.id);
+
     }
 
 </script>

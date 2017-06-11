@@ -290,7 +290,7 @@
 
             <div class="modal-footer">
                 <input class="btn btn-primary" type="button" value="Save" onclick="onSubmitFollowupDashboard();"
-                       tabindex="2">
+                       tabindex="2" id="btnCreate">
                 <input class="btn btn-default" type="button" value="Close" onclick="hideFollowupDashboardModal();"
                        data-dismiss="modal" tabindex="3">
             </div>

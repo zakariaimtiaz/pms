@@ -41,8 +41,8 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                 else if(params.selection != 'Resolve' && !params.remarks && !params.followupMonth){
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
-                else if( params.remarks=='' || params.description==''){
-                    return super.setError(params, "Invalid current remarks & recommendations.")
+                else if(params.selection != 'Resolve' && (params.remarks=='' || params.description=='')){
+                    return super.setError(params, INVALID_INPUT_MSG)
                 }
             }
             return params
