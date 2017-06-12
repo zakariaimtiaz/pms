@@ -15,7 +15,7 @@
                     <div class="col-md-3 pager">
                         <app:dropDownService
                                 class="kendo-drop-down" is_in_sp="true" hints_text="ALL CSU/Sector"
-                                id="serviceId" name="serviceId" tabindex="1" onchange="populateKendoChart();"
+                                id="serviceId" name="serviceId" tabindex="1" onchange="populateAllDashboard();"
                                 data_model_name="dropDownService">
                         </app:dropDownService>
                     </div>

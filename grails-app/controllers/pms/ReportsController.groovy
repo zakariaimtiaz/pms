@@ -74,6 +74,11 @@ class ReportsController  extends BaseController  {
     //################## MCRS Start ###########################
     def showMcrs() {
         SecUser user = baseService.currentUserObject()
+        List<Long> lst = baseService.currentUserDepartmentList()
+        boolean isMultiDept = Boolean.FALSE
+        if(lst.size() > 1){
+            isMultiDept = Boolean.TRUE
+        }
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isHOD = baseService.isUserHOD(user.id)
@@ -97,6 +102,7 @@ class ReportsController  extends BaseController  {
                                                    isTopMan: isTopMan,isHOD: isHOD,
                                                    serviceId:user.serviceId,
                                                    isSpAdmin:isSpAdmin,
+                                                   isMultiDept:isMultiDept,
                                                    submissionDate:submissionDate])
     }
     def listMcrs() {
@@ -135,9 +141,15 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+        List<Long> lst = baseService.currentUserDepartmentList()
+        boolean isMultiDept = Boolean.FALSE
+        if(lst.size() > 1){
+            isMultiDept = Boolean.TRUE
+        }
         render(view: "/reports/yearly/show", model: [isSysAdmin:isSysAdmin,
                                                      isTopMan: isTopMan,
                                                      isSpAdmin: isSpAdmin,
+                                                     isMultiDept:isMultiDept,
                                                      serviceId:user.serviceId])
     }
     def listYearlySP() {
@@ -153,9 +165,15 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+        List<Long> lst = baseService.currentUserDepartmentList()
+        boolean isMultiDept = Boolean.FALSE
+        if(lst.size() > 1){
+            isMultiDept = Boolean.TRUE
+        }
         render(view: "/reports/yearly/details/show", model: [isSysAdmin:isSysAdmin,
                                                      isTopMan: isTopMan,
                                                      isSpAdmin: isSpAdmin,
+                                                     isMultiDept:isMultiDept,
                                                      serviceId:user.serviceId])
     }
     def listYearlySPDetails() {
@@ -174,11 +192,16 @@ class ReportsController  extends BaseController  {
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isAssist = baseService.isEdAssistantRole(user.id)
         boolean isSpAdmin = baseService.isEdAdminRole(user.id)
-
+        List<Long> lst = baseService.currentUserDepartmentList()
+        boolean isMultiDept = Boolean.FALSE
+        if(lst.size() > 1){
+            isMultiDept = Boolean.TRUE
+        }
         render(view: "/reports/dashboard/show", model: [isSysAdmin:isSysAdmin,
                                                         isTopMan: isTopMan,
                                                         isAssist: isAssist,
                                                         isSpAdmin: isSpAdmin,
+                                                        isMultiDept:isMultiDept,
                                                         serviceId:user.serviceId])
     }
     def listEdDashBoard() {
@@ -196,8 +219,12 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
         boolean isTopMan = baseService.isUserTopManagement(user.id)
         boolean isSpAdmin = baseService.isEdAdminRole(user.id)
-
-        render(view: "/reports/spSummary/show", model: [isSysAdmin:isSysAdmin,
+        List<Long> lst = baseService.currentUserDepartmentList()
+        boolean isMultiDept = Boolean.FALSE
+        if(lst.size() > 1){
+            isMultiDept = Boolean.TRUE
+        }
+        render(view: "/reports/spSummary/show", model: [isSysAdmin:isSysAdmin,isMultiDept:isMultiDept,
                                                         isTopMan: isTopMan, isSpAdmin: isSpAdmin,
                                                         serviceId:user.serviceId])
     }

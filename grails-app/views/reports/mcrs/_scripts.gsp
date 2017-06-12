@@ -18,12 +18,12 @@
         initGrid();
         initGridAdditional();
         activeTab('menu1');
-        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}) {
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}) {
             onSubmitMCRSForm();
         }
     });
     function onLoadInfoPage() {
-        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
         }

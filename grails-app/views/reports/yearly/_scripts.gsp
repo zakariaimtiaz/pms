@@ -5,13 +5,13 @@
     $(document).ready(function () {
         onLoadInfoPage();
         initGrid();
-        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             onSubmitForm();
         }
     });
     function onLoadInfoPage() {
         var data = [];
-        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin}){
+        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
             data = ["All Indicator", "Action Indicator"];
