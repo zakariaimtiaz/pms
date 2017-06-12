@@ -91,6 +91,12 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                     edDashboardOld.save()
                 }
                 else {
+                    edDashboardOld.isResolve = false
+                    edDashboardOld.isFollowup = false
+                    edDashboardOld.followupMonthFor = null
+                    edDashboardOld.statusChangeDate = null
+                    edDashboardOld.save()
+
                     String followupDateStr = result.followupMonth
                     start = originalFormat.parse(followupDateStr);
                     c = Calendar.getInstance();

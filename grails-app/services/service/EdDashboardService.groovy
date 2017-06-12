@@ -121,7 +121,7 @@ class EdDashboardService  extends BaseService{
         Date month = DateUtility.getSqlDate(c.getTime())
         String queryForList = """
        SELECT ed.id ,ed.version,edi.issue_name ,ed.is_resolve
-        ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN 'true' ELSE
+        ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN true ELSE
          ed.is_followup END AS is_followup,(SELECT MAX(month_for) FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id) AS followup_month_for,CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr
         ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id AND ed.month_for>DATE('${month}') GROUP BY followup_month_for)>0 THEN 'Follow-up'
         WHEN ed.is_resolve = 1 THEN 'Resolved' ELSE 'Unresolve' END AS issue_status

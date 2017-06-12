@@ -306,7 +306,6 @@
         $("#createEdFollowupModal").modal('show');
         $('#hfClickingRowNo').val(rowIdx);
         $('#headingLabel').text($('#issue' + rowIdx).text());
-        $('#followupMonth').prop('readOnly', false);
         $('#descriptionDiv').html($('#description' + rowIdx).val());
         $('#description').val($('#description' + rowIdx).val());
         $('#oldRemarks').html($('#remarks' + rowIdx).val());
@@ -318,7 +317,7 @@
             $('#selectionResolve').prop('checked', true);
             $('#divResolveNote').show();
         }
-        if ($('#hfIsFollowup' + rowIdx).val() == 'true') {
+        if ($('#hfIsFollowup' + rowIdx).val()== '1') {
             $('#selectionFollowup').prop('checked', true);
             loadFollowupMonth();
             $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
