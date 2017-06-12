@@ -68,11 +68,13 @@ class EdDashboardService  extends BaseService{
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         Date month = DateUtility.getSqlDate(c.getTime())
         String queryForList = """
-        SELECT ed.id ,ed.version,edi.issue_name as issueName,DATE_FORMAT(month_for, '%M %Y') month,
-        DATE_FORMAT(followup_month_for, '%M %Y') followupFor,ed.description,ed.remarks,ed.ed_advice as edAdvice
+        SELECT ed1.id,ed.version,edi.issue_name AS issueName,DATE_FORMAT(ed.month_for, '%M %Y') month
+        ,DATE_FORMAT(ed.followup_month_for, '%M %Y') followupFor,ed.description,ed.remarks,ed.ed_advice AS edAdvice
         FROM  ed_dashboard_issues edi
         RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND ed.service_id =  ${serviceId}
-        WHERE ed.service_id = ${serviceId}  AND month_for > DATE('${month}')
+        INNER JOIN ed_dashboard ed1 ON ed.followup_month_for=ed1.month_for AND ed1.is_followup <>1
+        AND ed1.service_id = ed.service_id AND ed.issue_id=ed1.issue_id
+        WHERE ed.service_id = ${serviceId}  AND ed.month_for > DATE('${month}')
         ORDER BY edi.id
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
@@ -147,13 +149,13 @@ class EdDashboardService  extends BaseService{
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
-    public Long ExistedInFutureDate(long serviceId,Date d,String subDate ) {
+    public Long ExistedInFutureDate(long serviceId,Date d,String subDate,long issueId ) {
         String queryForList = """
         SELECT id
             FROM ed_dashboard
         WHERE service_id='${serviceId}'
             AND followup_month_for=DATE('${d}')
-            AND month_for>=DATE('${subDate}')
+            AND month_for>=DATE('${subDate}') AND issue_id='${issueId}'
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         Long id=0

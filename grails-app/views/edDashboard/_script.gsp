@@ -341,12 +341,14 @@
         $('#divfollowupMonth').hide();
         $('#divRemarks').hide();
         $('#remarks').val('');
+        $('#remarks').prop('readonly',false);
         $("#oldRemarks").html('');
         $('#descriptionDiv').html('');
         $('#description').val('');
         $('#hfServiceIdModal').val('');
         $('#hfMonthModal').val('');
         $('#btnCreate').show();
+        $('#followupMonth').data('kendoDatePicker').enable(true);
 
         $("#createEdFollowupModal").modal('hide');
     }
@@ -538,7 +540,7 @@
             columns: [
                 {field: "issueName", title: "Issue", width: "10%", sortable: false, filterable: false},
                 {field: "followupFor", title: "Issued On", width: "10%", sortable: false, filterable: false},
-                {field: "month", title: "Follow-up Month", width: "10%", sortable: false, filterable: false},
+                {field: "month", title: "Follow-up On", width: "10%", sortable: false, filterable: false},
                 {field: "description", title: "Description", width: "25%", sortable: false, filterable: false},
                 {
                     field: "remarks",
@@ -571,6 +573,8 @@
         $('#divResolveNote').hide();
         $('#divRemarks').show();
         $('#remarks').val(dataItem.remarks);
+        $('#remarks').prop('readonly',true);
+        $('#followupMonth').data('kendoDatePicker').enable(false);
 
         loadRemarksAndEdAdvice(dataItem.id);
 

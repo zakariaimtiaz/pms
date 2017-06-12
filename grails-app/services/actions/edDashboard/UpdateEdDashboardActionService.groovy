@@ -77,7 +77,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
 
                 EdDashboard edDashboardOld = EdDashboard.findById(id)
                 String subDate = baseService.lastDashboardSubmissionDate(serviceId)
-                long oldId = edDashboardService.ExistedInFutureDate(serviceId, edDashboardOld.monthFor, subDate)
+                long oldId = edDashboardService.ExistedInFutureDate(serviceId, edDashboardOld.monthFor, subDate,edDashboardOld.issueId)
                 if (oldId > 0) {
                     EdDashboard edDashboardOld2 = EdDashboard.findById(oldId)
                     edDashboardOld2.delete()
