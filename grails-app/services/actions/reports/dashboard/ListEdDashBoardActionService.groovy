@@ -82,6 +82,11 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
                 result.put("noIssue", lstVal)
                 result.put("noIssueCount", lstVal.size())
             }
+            if (result.containsKey("notSubmitted")) {
+                List lstVal = buildResultNotSubmittedList(month, serviceStr)
+                result.put("notSubmitted", lstVal)
+                result.put("notSubmitCount", lstVal.size())
+            }
             return result
         } catch (Exception e) {
             log.error(e.getMessage())
@@ -129,6 +134,10 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id AND ss.is_in_sp = TRUE
         WHERE edi.id = ${issueId} AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A'
+        AND ss.id IN (
+           SELECT DISTINCT(service_id) FROM pm_mcrs_log
+                  WHERE is_submitted_db = TRUE AND month_str = MONTHNAME('${month}')
+            )
         ${serviceStr}
         GROUP BY ss.id
         ORDER BY ss.short_name;
@@ -147,6 +156,10 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id AND ss.is_in_sp = TRUE
         WHERE edi.id IN (7,8,9,10,11,12,13,14,15,16,17,18,19,20) AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A'
+        AND ss.id IN (
+           SELECT DISTINCT(service_id) FROM pm_mcrs_log
+                  WHERE is_submitted_db = TRUE AND month_str = MONTHNAME('${month}')
+            )
         ${serviceStr}
         ORDER BY ss.short_name;
         """
@@ -160,11 +173,27 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         FROM pm_service_sector ss
         WHERE ss.is_displayble = TRUE AND ss.is_in_sp = TRUE
         AND ss.id NOT IN (
+           SELECT DISTINCT(service_id) FROM pm_mcrs_log
+                  WHERE is_submitted_db <> TRUE AND month_str = MONTHNAME('${month}')
+            )
+        AND ss.id NOT IN (
             SELECT DISTINCT(service_id)
             FROM ed_dashboard
             WHERE month_for = '${month}' OR followup_month_for = '${month}'
             )
         ${serviceStr}
+        ORDER BY ss.name ASC;
+        """
+        List<GroovyRowResult> lstValue = executeSelectSql(query)
+        return lstValue
+    }
+    private List<GroovyRowResult> buildResultNotSubmittedList(Date month, String serviceStr) {
+        String query = """
+        SELECT ss.id ID, ss.id SERVICE_ID, ss.name SERVICE
+            FROM pm_mcrs_log l
+        LEFT JOIN pm_service_sector ss ON l.service_id = ss.id AND ss.is_in_sp = TRUE
+            WHERE l.is_submitted_db <> TRUE AND l.month_str = MONTHNAME('${month}')
+            ${serviceStr}
         ORDER BY ss.name ASC;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)

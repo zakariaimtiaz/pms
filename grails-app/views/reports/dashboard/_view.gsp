@@ -29,6 +29,18 @@
                             <li style="cursor: pointer;"><a onclick="setNextMonth();" style="width: 80px;">Next</a></li>
                         </ul>
                     </div>
+                    <div class="col-md-3">
+                        <ul class="pager" id="btnDiv">
+                        <button type="submit" data-role="button" class="k-button k-button-icontext"
+                                role="button" aria-disabled="false" onclick="onclickWithoutIssue();">
+                            <span id="lblWithoutIssue">Show Without Issue</span>
+                        </button>
+                        <button type="submit" data-role="button" class="k-button k-button-icontext"
+                                role="button" aria-disabled="false" onclick="onclickNotSubmit();">
+                            <span id="lblNotSubmit">Show Not Submitted</span>
+                        </button>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -41,7 +53,8 @@
             <li><a data-toggle="tab" href="#menu4"><span id="spanDnr">Donor Issues (0)</span></a></li>
             <li><a data-toggle="tab" href="#menu5"><span id="spanNP">New Project Issues (0)</span></a></li>
             <li><a data-toggle="tab" href="#menu6"><span id="spanCssp">CSU/Sector Specific Issues (0)</span></a></li>
-            <li><a data-toggle="tab" href="#menu7"><span id="spanNoIssue" style="color: darkred">CSU/Sector Without Issue (0)</span></a></li>
+            <li id="lst7"><a data-toggle="tab" href="#menu7"><span id="spanNoIssue" style="color: darkred">CSU/Sector Without Issue (0)</span></a></li>
+            <li id="lst8"><a data-toggle="tab" href="#menu8"><span id="spanNotSubmit" style="color: darkred">Not Submitted (0)</span></a></li>
         </ul>
 
         <div class="tab-content">
@@ -78,6 +91,11 @@
             <div id="menu7" class="tab-pane fade in active">
                 <div class="panel-primary">
                     <div id="gridNoIssue"></div>
+                </div>
+            </div>
+            <div id="menu8" class="tab-pane fade in active">
+                <div class="panel-primary">
+                    <div id="gridNotSubmitted"></div>
                 </div>
             </div>
         </div>

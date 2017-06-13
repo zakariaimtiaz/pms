@@ -9,7 +9,7 @@
 </style>
 
 <script language="javascript">
-    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue, tmp1 = '';
+    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue,notSubmitted, tmp1 = '';
     $(document).ready(function () {
         onLoadInfoPage();
         initGridHR();
@@ -19,6 +19,7 @@
         initGridNP();
         initGridCssp();
         initGridNoIssue();
+        initGridNotSubmitted();
         activaTab('menu1');
         populateAllDashboard();
     });
@@ -37,13 +38,46 @@
         if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
+            $("#btnDiv").hide();
         }
+        hideSettingTabs();
         defaultPageTile("Ed's Dashboard", 'reports/showEdDashBoard');
     }
     function activaTab(tab) {
         $('.nav-tabs a[href="#' + tab + '"]').tab('show');
     }
-
+    function hideSettingTabs(){
+        document.getElementById("lst7").children[0].style.display = "none";
+        document.getElementById("lst8").children[0].style.display = "none";
+    }
+    function onclickWithoutIssue(){
+        var x = document.getElementById('lst7').children[0];
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+            activaTab('menu7');
+            $("#lblWithoutIssue").text('');
+            $("#lblWithoutIssue").text('Hide Without Issue');
+        } else {
+            x.style.display = 'none';
+            activaTab('menu1');
+            $("#lblWithoutIssue").text('');
+            $("#lblWithoutIssue").text('Show Without Issue');
+        }
+    }
+    function onclickNotSubmit(){
+        var x = document.getElementById('lst8').children[0];
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+            activaTab('menu8');
+            $("#lblNotSubmit").text('');
+            $("#lblNotSubmit").text('Hide Not Submitted');
+        } else {
+            x.style.display = 'none';
+            activaTab('menu1');
+            $("#lblNotSubmit").text('');
+            $("#lblNotSubmit").text('Show Not Submitted');
+        }
+    }
     function initGridHR() {
         $("#gridHR").kendoGrid({
             dataSource: {
@@ -616,6 +650,51 @@
         });
         gridNoIssue = $("#gridNoIssue").data("kendoGrid");
     }
+    function initGridNotSubmitted() {
+        $("#gridNotSubmitted").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: false,
+                        dataType: "json",
+                        type: "post"
+                    }
+                },
+                schema: {
+                    type: 'json',
+                    data: "notSubmitted",total: "notSubmitCount",
+                    model: {
+                        fields: {
+                            ID             : {type: "number"},
+                            SERVICE_ID     : {type: "number"},
+                            SERVICE        : {type: "string"}
+                        }
+                    },
+                    parse: function (data) {
+                        if(data.notSubmitCount!='undefined'){
+                            $("#spanNotSubmit").html('');
+                            $("#spanNotSubmit").html('Not Submitted (' + data.notSubmitCount + ')');
+                        }
+                        return data;
+                    }
+                },
+                batch: true,
+                serverPaging: true,
+                serverSorting: true
+            },
+            autoBind: false,
+            height: getGridHeightKendo() - 140,
+            selectable: true,
+            sortable: false,
+            pageable: false,
+            columns: [
+                {
+                    field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false
+                }
+            ]
+        });
+        gridNotSubmitted = $("#gridNotSubmitted").data("kendoGrid");
+    }
 
     function populateAllDashboard() {
         tmp1 = '';
@@ -629,6 +708,7 @@
         var urlNp   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&np=true";
         var urlCssp = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&cssp=true";
         var urlNoIssue = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&noIssue=true";
+        var notSubmitted = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&notSubmitted=true";
         populateGridKendo(gridHR, urlHR);
         populateGridKendo(gridField, urlFld);
         populateGridKendo(gridGovt, urlGovt);
@@ -636,6 +716,7 @@
         populateGridKendo(gridNP, urlNp);
         populateGridKendo(gridCssp, urlCssp);
         populateGridKendo(gridNoIssue, urlNoIssue);
+        populateGridKendo(gridNotSubmitted, notSubmitted);
         return false;
     }
 
