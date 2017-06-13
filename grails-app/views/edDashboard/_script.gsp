@@ -473,7 +473,7 @@
         $('#headingLabel').text(dataItem.issueName);
         $('#issuedMonth').text(dataItem.month);
         $('#descriptionDiv').text(dataItem.description);
-        $("#resolveNote").prop('readonly',true)
+        $("#resolveNote").prop('readonly',true);
 
         loadRemarksAndEdAdvice(dataItem.id);
 
