@@ -124,9 +124,9 @@ environments {
     production {
         dataSource {
             dbCreate    = "update"
-            url         = PropertiesReader.getProperty("dataSource.prod.db.url", PropertiesReader.CONFIG_FILE_DB)
-            username    = PropertiesReader.getProperty("dataSource.prod.db.username", PropertiesReader.CONFIG_FILE_DB);
-            password    = PropertiesReader.getProperty("dataSource.prod.db.password", PropertiesReader.CONFIG_FILE_DB);
+            url         = PropertiesReader.getProperty("dataSource.db.url", PropertiesReader.CONFIG_FILE_DB)
+            username    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.db.username", PropertiesReader.CONFIG_FILE_DB))
+            password    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.db.password", PropertiesReader.CONFIG_FILE_DB))
             logSql = false
             properties {
                 jmxEnabled = true
