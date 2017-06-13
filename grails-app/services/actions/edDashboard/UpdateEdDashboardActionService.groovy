@@ -19,6 +19,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
 
     SpringSecurityService springSecurityService
     private static final String SAVE_SUCCESS_MESSAGE = "Issue has been updated successfully"
+    private static final String ADVICE_SUCCESS_MESSAGE = "Advice added successfully"
     private static final String ALREADY_EXIST = "Issue already exist"
     private static final String ED_DASHBOARD = "edDashboard"
 
@@ -27,9 +28,21 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     EdDashboardService edDashboardService
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Map executePreCondition(Map params) {
         try {
+            if(params.containsKey("models[0][ID]")){
+                String idStr = params.get("models[0][ID]")
+                String adviceStr = params.get("models[0][ADVICE]")
+                if (!idStr && !adviceStr) {
+                    return super.setError(params, INVALID_INPUT_MSG)
+                }
+                EdDashboard dashboard = EdDashboard.read(Long.parseLong(idStr))
+                dashboard.edAdvice = adviceStr
+                dashboard.save()
+                return params
+            }
+
             if (!params.type) {
                 if (!params.hfId && !params.description) {
                     return super.setError(params, INVALID_INPUT_MSG)
@@ -55,6 +68,9 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional
     public Map execute(Map result) {
         try {
+            if(result.containsKey("models[0][ID]")){
+                return result
+            }
             if (!result.type) {
                 Long id = Long.parseLong(result.hfId)
                 EdDashboard edDashboard = EdDashboard.findById(id)
@@ -143,6 +159,9 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
      * @return - map containing success message
      */
     public Map buildSuccessResultForUI(Map result) {
+        if(result.containsKey("models[0][ID]")){
+            return super.setSuccess(result, ADVICE_SUCCESS_MESSAGE)
+        }
         return super.setSuccess(result, SAVE_SUCCESS_MESSAGE)
     }
     /**
