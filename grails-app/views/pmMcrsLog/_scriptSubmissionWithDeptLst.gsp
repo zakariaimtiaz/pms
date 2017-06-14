@@ -15,11 +15,11 @@
         serviceId = ${serviceId};
         dropDownService.value(serviceId);
         initMcrsLogGrid();
-
-        initializeForm($("#detailsForm"), onSubmitForm);
+        loadGridData();
+        initializeForm($("#detailsForm"), loadGridData);
         defaultPageTile("Submission", 'pmMcrsLog/show');
     });
-    function onSubmitForm(){
+    function loadGridData(){
         var serviceId = $("#serviceId").val();
         var params = "?serviceId=" +serviceId;
         var url ="${createLink(controller: 'pmMcrsLog', action: 'list')}" + params;
