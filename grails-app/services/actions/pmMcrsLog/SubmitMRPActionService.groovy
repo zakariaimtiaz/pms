@@ -16,6 +16,7 @@ class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
     def mailService
 
     private static final String SAVE_SUCCESS_MESSAGE = "MRP has been submitted successfully"
+    private static final String MRP_STR = "MRP"
     private static final String PM_MCRS_LOG = "pmMcrsLog"
     private static final String THANK_YOU_MAIL = "THANK_YOU_MAIL"
     private static final String THANK_YOU_MAIL_AFTER_DEADLINE = "THANK_YOU_MAIL_AFTER_DEADLINE"
@@ -96,10 +97,12 @@ class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
     private String sendMail(String user,String email,String transactionCode, String genderStr,Date deadLine,String monthStr,int year) {
         AppMail appMail = AppMail.findByTransactionCodeAndIsActive(transactionCode, true)
         String subjectStr = """${appMail.subject}"""
+        subjectStr = subjectStr?.replaceAll("__MCRS_TYPE__",MRP_STR)
         String mailBody = """${appMail.body}"""
         mailBody = mailBody?.replaceAll("__APP_USER__",user+SINGLE_SPACE+genderStr)
                             .replaceAll("_MONTH_NAME_",monthStr+SINGLE_SPACE+year)
                             .replaceAll("__DEADLINE__",DateUtility.getDateForUI(deadLine))
+                            .replaceAll("__MCRS_TYPE__",MRP_STR)
 
         Thread trd = new Thread() {
             public void run() {

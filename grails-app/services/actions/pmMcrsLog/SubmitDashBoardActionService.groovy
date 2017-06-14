@@ -16,6 +16,7 @@ class SubmitDashBoardActionService extends BaseService implements ActionServiceI
     def mailService
 
     private static final String SAVE_SUCCESS_MESSAGE = "ED's Dashboard has been submitted successfully"
+    private static final String ED_DASHBOARD = "ED's Dashboard"
     private static final String PM_MCRS_LOG = "pmMcrsLog"
     private static final String THANK_YOU_MAIL = "THANK_YOU_MAIL"
     private static final String THANK_YOU_MAIL_AFTER_DEADLINE = "THANK_YOU_MAIL_AFTER_DEADLINE"
@@ -96,10 +97,12 @@ class SubmitDashBoardActionService extends BaseService implements ActionServiceI
     private String sendMail(String user,String email,String transactionCode, String genderStr,Date deadLine,String monthStr,int year) {
         AppMail appMail = AppMail.findByTransactionCodeAndIsActive(transactionCode, true)
         String subjectStr = """${appMail.subject}"""
+        subjectStr = subjectStr?.replaceAll("__MCRS_TYPE__",ED_DASHBOARD)
         String mailBody = """${appMail.body}"""
         mailBody = mailBody?.replaceAll("__APP_USER__",user+SINGLE_SPACE+genderStr)
                 .replaceAll("_MONTH_NAME_",monthStr+SINGLE_SPACE+year)
                 .replaceAll("__DEADLINE__",DateUtility.getDateForUI(deadLine))
+                .replaceAll("__MCRS_TYPE__",ED_DASHBOARD)
 
         Thread trd = new Thread() {
             public void run() {

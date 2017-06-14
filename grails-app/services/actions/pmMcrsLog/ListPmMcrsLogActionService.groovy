@@ -23,7 +23,7 @@ class ListPmMcrsLogActionService extends BaseService implements ActionServiceInt
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
-            if (result.containsKey("serviceId")&&result.containsKey("year")) {
+            if (result.containsKey("serviceId") && result.containsKey("year")) {
                 long serviceId = Long.parseLong(result.serviceId.toString())
                 Closure param = {
                     'eq'('serviceId', serviceId)
@@ -34,9 +34,9 @@ class ListPmMcrsLogActionService extends BaseService implements ActionServiceInt
                 result.put(COUNT, resultMap.count)
                 return result
             } else {
-                SecUser user = currentUserObject()
+                long serviceId = Long.parseLong(result.serviceId.toString())
                 Closure param = {
-                    'eq'('serviceId', user.serviceId)
+                    'eq'('serviceId', serviceId)
                 }
                 Map resultMap = super.getSearchResult(result, ListPmMcrsLogActionServiceModel, param)
                 result.put(LIST, resultMap.list)

@@ -2,9 +2,11 @@ import com.pms.PropertiesReader
 import com.pms.Quartz
 import grails.converters.JSON
 import pms.ConfigureService
+import service.QuartzService
 
 class BootStrap {
 
+    QuartzService quartzService
     ConfigureService configureService
 
     def init = { servletContext ->
@@ -31,6 +33,7 @@ class BootStrap {
             quartz.isRunning = false
             quartz.save()
         }
+        quartzService.startScheduler()
     }
     def destroy = {
     }
