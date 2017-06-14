@@ -31,31 +31,25 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional
     public Map executePreCondition(Map params) {
         try {
-            if(params.containsKey("models[0][ID]")){
-                String idStr = params.get("models[0][ID]")
-                String adviceStr = params.get("models[0][ADVICE]")
-                if (!idStr && !adviceStr) {
-                    return super.setError(params, INVALID_INPUT_MSG)
-                }
-                EdDashboard dashboard = EdDashboard.read(Long.parseLong(idStr))
-                dashboard.edAdvice = adviceStr
-                dashboard.save()
-                return params
-            }
-
             if (!params.type) {
                 if (!params.hfId && !params.description) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
-            } else {
-                if (!params.hfClickingRowNo && !params.selection) {
-                    return super.setError(params, INVALID_INPUT_MSG)
-                }
-                else if(params.selection != 'Resolve' && !params.remarks && !params.followupMonth){
-                    return super.setError(params, INVALID_INPUT_MSG)
-                }
-                else if(params.selection != 'Resolve' && (params.remarks=='' || params.description=='')){
-                    return super.setError(params, 'Invalid current remarks and recommendations.')
+            }
+            else {
+                if(params.type=='EdAdvice'){
+                    EdDashboard dashboard = EdDashboard.read(Long.parseLong(params.hfDashboardId))
+                    dashboard.edAdvice = params.edAdvice
+                    dashboard.save()
+                    return params
+                }else {
+                    if (!params.hfClickingRowNo && !params.selection) {
+                        return super.setError(params, INVALID_INPUT_MSG)
+                    } else if (params.selection != 'Resolve' && !params.remarks && !params.followupMonth) {
+                        return super.setError(params, INVALID_INPUT_MSG)
+                    } else if (params.selection != 'Resolve' && (params.remarks == '' || params.description == '')) {
+                        return super.setError(params, 'Invalid current remarks and recommendations.')
+                    }
                 }
             }
             return params
@@ -68,7 +62,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional
     public Map execute(Map result) {
         try {
-            if(result.containsKey("models[0][ID]")){
+            if(result.type=='EdAdvice'){
                 return result
             }
             if (!result.type) {

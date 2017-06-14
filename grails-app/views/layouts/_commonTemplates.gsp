@@ -366,9 +366,9 @@
     </div>
 </div>
 
-<!-- Ed Dashboard Modal for individual issue details -->
-<div class="modal fade" id="viewEdIssueDetailsModal" role="dialog" tabindex="-1"
-     aria-labelledby="viewEdIssueDetailsLabel">
+<!-- Ed Dashboard Modal for ED Advice Entry -->
+<div class="modal fade" id="viewEdAdviceEntryModal" role="dialog" tabindex="-1"
+     aria-labelledby="viewEdAdviceEntryLabel">
     <div class="modal-dialog" role="document" style=" width:70%;">
         <div class="modal-content">
             <div class="modal-header "style=" background:#81ecef;border-top-left-radius: 5px;
@@ -380,16 +380,16 @@
             </div>
 
             <div class="modal-body" style="padding-top: 5px;padding-bottom: 5px;">
-                <form class="form-horizontal form-widgets" id="viewEdIssueDetailsForm" name="viewEdIssueDetailsForm">
-
+                <form class="form-horizontal form-widgets" id="viewEdAdviceEntryForm" name="viewEdAdviceEntryForm">
+                    <input type="hidden" id="hfDashboardId" name="hfDashboardId" value=""/>
                     <div class="form-group">
+                        <div class="col-md-3" style="padding-right: 0px;">
+                            <label class="control-label label-optional">  <strong class="label-optional">Service:&nbsp;&nbsp;</strong>
+                                <strong class="label-optional" id="serviceName"></strong></label>
+                        </div>
                         <div class="col-md-3" style="padding-right: 0px;">
                             <label class="control-label label-optional">  <strong class="label-optional">Initiated On:&nbsp;&nbsp;</strong>
                                 <strong class="label-optional" id="issuedInitiateMonth"></strong></label>
-                        </div>
-                        <div class="col-md-3" style="padding-right: 0px;">
-                            <label class="control-label label-optional">  <strong class="label-optional">Resolved On:&nbsp;&nbsp;</strong>
-                                <strong class="label-optional" id="issuedResolvedMonth"></strong></label>
                         </div>
                     </div>
 
@@ -399,7 +399,7 @@
                         </div>
                         <div class="col-md-12">
                             <div id="descriptionDetails" name="description" class="form-control"  style="padding: 0 0 0 0 ! important;
-                            background-color: #eee; height: 100px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
+                            background-color: #eee; height: 80px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
                                  unselectable='true'>
                             </div>
                         </div>
@@ -409,7 +409,7 @@
                             <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
-                            <div id="remarksDetails" name="remarksDetails" class="form-control"  style="padding: 0 0 0 0 ! important;
+                            <div id="allRemarksAdvice" name="allRemarksAdvice" class="form-control"  style="padding: 0 0 0 0 ! important;
                             background-color: #eee; height: 150px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
                                  unselectable='true'>
                             </div>
@@ -418,13 +418,13 @@
                     </div>
                 <div class="form-group">
                     <div align="left" style=" padding-left: 15px;">
-                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolved Note:</strong></label>
+                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>ED's Advice:</strong></label>
                     </div>
                     <div class="col-md-12">
-                        <div id="resolvedNoteDetails" name="resolvedNoteDetails" class="form-control"  style="padding: 0 0 0 0 ! important;
-                        background-color: #eee; height: 80px;width: 100%; overflow: auto;font-size: inherit;" contentEditable='false'
-                             unselectable='true'>
-                        </div>
+                        <textarea id="edAdvice" name="edAdvice" rows="5"
+                                  style="padding: 0 0 0 0 ! important;"
+                                  class="form-control" ></textarea>
+
                     </div>
 
                 </div>
@@ -432,6 +432,8 @@
             </div>
 
             <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Save" onclick="onSubmitEdAdviceModal();"
+                       tabindex="2">
                 <input class="btn btn-default" type="button" value="Close" onclick="hideDetailsDashboardModal();"
                        data-dismiss="modal" tabindex="3">
             </div>

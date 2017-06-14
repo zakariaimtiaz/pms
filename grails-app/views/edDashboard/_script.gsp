@@ -29,7 +29,7 @@
         serviceId = ${serviceId};
         subDate = '${subDate}';
         $('#hfSubmissionDate').val(subDate);
-        var m= $('#month').kendoDatePicker({
+        var m = $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
@@ -154,7 +154,8 @@
         $('#descriptionNew').val(issues.description);
         $('#remarksNew').val(issues.remarks);
     }
-    function resetForm() {    }
+    function resetForm() {
+    }
 
     function showEdDashboardEntryModal() {
         $("#createEdDashboardModal").modal('show');
@@ -318,7 +319,7 @@
             $('#selectionResolve').prop('checked', true);
             $('#divResolveNote').show();
         }
-        if ($('#hfIsFollowup' + rowIdx).val()== '1') {
+        if ($('#hfIsFollowup' + rowIdx).val() == '1') {
             $('#selectionFollowup').prop('checked', true);
             loadFollowupMonth();
             $('#followupMonth').val(moment($('#hfFollowupMonthFor' + rowIdx).val()).format('MMMM YYYY'));
@@ -330,11 +331,11 @@
     }
     function hideFollowupDashboardModal() {
         $('#hfClickingRowNo').val('');
-        document.getElementById("selectionResolve").disabled=false;
-        document.getElementById("selectionFollowup").disabled=false;
+        document.getElementById("selectionResolve").disabled = false;
+        document.getElementById("selectionFollowup").disabled = false;
         $('#selectionResolve').attr('checked', false);
         $('#selectionFollowup').attr('checked', false);
-        $("#resolveNote").prop('readonly',false);
+        $("#resolveNote").prop('readonly', false);
         $('#resolveNote').val('');
         $('#divResolveNote').hide();
         $('#followupMonth').val('');
@@ -421,7 +422,8 @@
                         resolvedMonth: {type: "string"},
                         description: {type: "string"},
                         remarks: {type: "string"},
-                        edAdvice: {type: "string"}
+                        edAdvice: {type: "string"},
+                        isEditable: {type: "boolean"}
                     }
                 },
                 parse: function (data) {
@@ -444,17 +446,30 @@
             selectable: false,
             sortable: true,
             resizable: true,
-            reorderable: true,
-            pageable: false,
             columns: [
                 {field: "issueName", title: "Issue", width: "10%", sortable: false, filterable: false},
-                {field: "month", title: "Month", width: "20%", sortable: false, filterable: false,
-                template: "Initiated :<b>#= month #</b> <br/> Resolved :<b>#= resolvedMonth #</b>"},
+                {
+                    field: "month", title: "Month", width: "20%", sortable: false, filterable: false,
+                    template: "Initiated :<b>#= month #</b> <br/> Resolved :<b>#= resolvedMonth #</b>"
+                },
                 {field: "description", title: "Description", width: "30%", sortable: false, filterable: false},
-                {field: "remarks",title: "Remarks and Recommendations",width: "35%", sortable: false,filterable: false},
+                {
+                    field: "remarks",title: "Remarks and Recommendations", width: "35%",sortable: false,filterable: false
+                },
                 {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false}
-                ,{ command: { text: " Details", click: showDetails },  width: "10%" }
+
+                , {command: {text: 'isEditable'?" Edit":"dddd", click: showDetails}, width: "10%"}
+
+                ,{
+                    field : "",
+                    title : "",
+                    template: "<a onclick='showDetails();' class='k-button k-button-icontext btn-destroy k-grid-Select'>#= data.isEditable == true ? ' Edit' : ' Details' #</a>",
+                    width  : "10%"
+                }
+
             ],
+            reorderable: true,
+            pageable: false,
             filterable: {
                 mode: "row"
             }
@@ -475,7 +490,7 @@
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
 
-        if(moment($('#hfSubmissionDate').val()).format('YYYY-MM-DD') > moment(dataItem.resolvedMonth,'MMMM YYYY').format('YYYY-MM-DD') ) {
+        if (moment($('#hfSubmissionDate').val()).format('YYYY-MM-DD') > moment(dataItem.resolvedMonth, 'MMMM YYYY').format('YYYY-MM-DD')) {
             document.getElementById("selectionResolve").disabled = true;
             document.getElementById("selectionFollowup").disabled = true;
             $('#btnCreate').hide();
@@ -484,15 +499,6 @@
 
         loadRemarksAndEdAdvice(dataItem.id);
 
-    }
-    function hideDetailsDashboardModal(){
-        $("#viewEdIssueDetailsModal").modal('hide');
-        $('#headingDetailsLabel').text('');
-        $('#issuedInitiateMonth').text('');
-        $('#issuedResolvedMonth').text('');
-        $('#descriptionDetails').html('');
-        $('#remarksDetails').html('');
-        $('#resolvedNoteDetails').html('');
     }
     function initDataSourceUpcoming() {
         serviceId = $('#serviceId').val();
@@ -556,7 +562,7 @@
                     filterable: false
                 },
                 {field: "edAdvice", title: "ED's Advice", width: "20%", sortable: false, filterable: false}
-                ,{ command: { text: " Edit", click: showDetailsForUpcomingIssues },  width: "10%" }
+                , {command: {text: " Edit", click: showDetailsForUpcomingIssues}, width: "10%"}
             ],
             filterable: {
                 mode: "row"

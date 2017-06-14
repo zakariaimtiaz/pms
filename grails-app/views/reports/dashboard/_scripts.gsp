@@ -23,6 +23,7 @@
         activaTab('menu1');
         populateAllDashboard();
     });
+
     function onLoadInfoPage() {
         var str = moment().subtract(1, 'months').format('MMMM YYYY');
 
@@ -57,11 +58,13 @@
             activaTab('menu7');
             $("#lblWithoutIssue").text('');
             $("#lblWithoutIssue").text('Hide Without Issue');
+            document.getElementById("btn1").style.background ='#5cb85c';
         } else {
             x.style.display = 'none';
             activaTab('menu1');
             $("#lblWithoutIssue").text('');
             $("#lblWithoutIssue").text('Show Without Issue');
+            document.getElementById("btn1").style.background ='#f3f3f4';
         }
     }
     function onclickNotSubmit(){
@@ -71,11 +74,13 @@
             activaTab('menu8');
             $("#lblNotSubmit").text('');
             $("#lblNotSubmit").text('Hide Not Submitted');
+            document.getElementById("btn2").style.background ='#5cb85c';
         } else {
             x.style.display = 'none';
             activaTab('menu1');
             $("#lblNotSubmit").text('');
             $("#lblNotSubmit").text('Show Not Submitted');
+            document.getElementById("btn2").style.background ='#f3f3f4';
         }
     }
     function initGridHR() {
@@ -86,26 +91,6 @@
                         url: false,
                         dataType: "json",
                         type: "post"
-                    },
-                    update: {
-                        url: "${createLink(controller: 'edDashboard', action: 'update')}",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                requestEnd: function (e) {
-                    var response = e.response;
-                    if (e.type == 'update') {
-                        var isError = response["isError"];
-                        var message = response["message"];
-                        if (isError) {
-                            showError(message);
-                        }else{
-                            showSuccess(message);
-                        }
-                        var grid = $("#gridHR").data("kendoGrid");
-                        var data = grid.dataSource;
-                        data.read();
                     }
                 },
                 schema: {
@@ -141,10 +126,6 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "popup",
-            edit: function(e) {
-                 editableTemplateModify(e);
-            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -159,7 +140,7 @@
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
-                ,{command: [{name:"edit",text:{edit: "Advice",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "80px"}
+                , {command: {text: " Advice", click: showDetails}, width: "10%"}
                 </g:if>
             ]
         });
@@ -173,26 +154,6 @@
                         url: false,
                         dataType: "json",
                         type: "post"
-                    },
-                    update: {
-                        url: "${createLink(controller: 'edDashboard', action: 'update')}",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                requestEnd: function (e) {
-                    var response = e.response;
-                    if (e.type == 'update') {
-                        var isError = response["isError"];
-                        var message = response["message"];
-                        if (isError) {
-                            showError(message);
-                        }else{
-                            showSuccess(message);
-                        }
-                        var grid = $("#gridField").data("kendoGrid");
-                        var data = grid.dataSource;
-                        data.read();
                     }
                 },
                 schema: {
@@ -228,10 +189,6 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "popup",
-            edit: function(e) {
-                editableTemplateModify(e);
-            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -246,7 +203,7 @@
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
-                ,{command: [{name:"edit",text:{edit: "Advice",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "80px"}
+                , {command: {text: " Advice", click: showDetails}, width: "10%"}
                 </g:if>
             ]
         });
@@ -260,26 +217,6 @@
                         url: false,
                         dataType: "json",
                         type: "post"
-                    },
-                    update: {
-                        url: "${createLink(controller: 'edDashboard', action: 'update')}",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                requestEnd: function (e) {
-                    var response = e.response;
-                    if (e.type == 'update') {
-                        var isError = response["isError"];
-                        var message = response["message"];
-                        if (isError) {
-                            showError(message);
-                        }else{
-                            showSuccess(message);
-                        }
-                        var grid = $("#gridGovt").data("kendoGrid");
-                        var data = grid.dataSource;
-                        data.read();
                     }
                 },
                 schema: {
@@ -315,10 +252,6 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "popup",
-            edit: function(e) {
-                editableTemplateModify(e);
-            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -333,7 +266,7 @@
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
-                ,{command: [{name:"edit",text:{edit: "Advice",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "80px"}
+                , {command: {text: " Advice", click: showDetails}, width: "10%"}
                 </g:if>
             ]
         });
@@ -347,26 +280,6 @@
                         url: false,
                         dataType: "json",
                         type: "post"
-                    },
-                    update: {
-                        url: "${createLink(controller: 'edDashboard', action: 'update')}",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                requestEnd: function (e) {
-                    var response = e.response;
-                    if (e.type == 'update') {
-                        var isError = response["isError"];
-                        var message = response["message"];
-                        if (isError) {
-                            showError(message);
-                        }else{
-                            showSuccess(message);
-                        }
-                        var grid = $("#gridDonor").data("kendoGrid");
-                        var data = grid.dataSource;
-                        data.read();
                     }
                 },
                 schema: {
@@ -402,10 +315,6 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "popup",
-            edit: function(e) {
-                editableTemplateModify(e);
-            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -420,7 +329,7 @@
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
-                ,{command: [{name:"edit",text:{edit: "Advice",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "80px"}
+                , {command: {text: " Advice", click: showDetails}, width: "10%"}
                 </g:if>
             ]
         });
@@ -434,26 +343,6 @@
                         url: false,
                         dataType: "json",
                         type: "post"
-                    },
-                    update: {
-                        url: "${createLink(controller: 'edDashboard', action: 'update')}",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                requestEnd: function (e) {
-                    var response = e.response;
-                    if (e.type == 'update') {
-                        var isError = response["isError"];
-                        var message = response["message"];
-                        if (isError) {
-                            showError(message);
-                        }else{
-                            showSuccess(message);
-                        }
-                        var grid = $("#gridNP").data("kendoGrid");
-                        var data = grid.dataSource;
-                        data.read();
                     }
                 },
                 schema: {
@@ -489,10 +378,6 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "popup",
-            edit: function(e) {
-                editableTemplateModify(e);
-            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -507,7 +392,7 @@
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
-                ,{command: [{name:"edit",text:{edit: "Advice",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "80px"}
+                , {command: {text: " Advice", click: showDetails}, width: "10%"}
                 </g:if>
             ]
         });
@@ -521,26 +406,6 @@
                         url: false,
                         dataType: "json",
                         type: "post"
-                    },
-                    update: {
-                        url: "${createLink(controller: 'edDashboard', action: 'update')}",
-                        dataType: "json",
-                        type: "post"
-                    }
-                },
-                requestEnd: function (e) {
-                    var response = e.response;
-                    if (e.type == 'update') {
-                        var isError = response["isError"];
-                        var message = response["message"];
-                        if (isError) {
-                            showError(message);
-                        }else{
-                            showSuccess(message);
-                        }
-                        var grid = $("#gridCssp").data("kendoGrid");
-                        var data = grid.dataSource;
-                        data.read();
                     }
                 },
                 schema: {
@@ -576,10 +441,6 @@
             selectable: true,
             sortable: false,
             pageable: false,
-            editable: "popup",
-            edit: function(e) {
-                editableTemplateModify(e);
-            },
             columns: [
                 {
                     field: "SERVICE", title: "<b>CSU/Sector</b>", width: 180, sortable: false, filterable: false,
@@ -594,7 +455,7 @@
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
-                ,{command: [{name:"edit",text:{edit: "Advice",	update: "Save",	cancel: "Cancel"}}], title: "&nbsp;", width: "80px"}
+                , {command: {text: " Advice", click: showDetails}, width: "10%"}
                 </g:if>
             ]
         });
@@ -740,17 +601,102 @@
         tmp1 = SERVICE_ID;
         return SERVICE;
     }
-    function editableTemplateModify(e){
-        e.container.data("kendoWindow").title("Ed's Advice Panel");
-        e.container.find("label[for=SERVICE]").parent("div .k-edit-label").hide();
-        e.container.find("label[for=SERVICE]").parent().next("div .k-edit-field").hide();
-        e.container.find("label[for=ISSUE]").parent("div .k-edit-label").hide();
-        e.container.find("label[for=ISSUE]").parent().next("div .k-edit-field").hide();
-        e.container.find("label[for=REMARKS]").parent("div .k-edit-label").hide();
-        e.container.find("label[for=REMARKS]").parent().next("div .k-edit-field").hide();
-    }
     function textAreaInitialize(container, options) {
         $('<textarea name="' + options.field + '" style="width: 326px;height: 220px" />').appendTo(container);
     }
+    function showDetails(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        $("#viewEdAdviceEntryModal").modal('show');
+        $('#hfDashboardId').val(dataItem.ID);
+        $('#headingDetailsLabel').text("ED's Advice Panel");
+        $('#serviceName').text(dataItem.SERVICE);
+        $('#issuedInitiateMonth').text($('#month').val());
+        $('#descriptionDetails').text(dataItem.ISSUE);
+        $('#edAdvice').val(dataItem.ADVICE);
+        loadRemarksAndEdAdvice(dataItem.id);
 
+    }
+    function hideDetailsDashboardModal() {
+        $("#viewEdAdviceEntryModal").modal('hide');
+        $('#headingDetailsLabel').text('');
+        $('#serviceName').text('');
+        $('#issuedInitiateMonth').text('');
+        $('#descriptionDetails').html('');
+        $('#allRemarksAdvice').html('');
+        $('#edAdvice').val('');
+        $('#hfDashboardId').val('');
+    }
+    function executePreCondition() {
+        if (!validateForm($("#viewEdAdviceEntryForm"))) {
+            return false;
+        }
+        return true;
+    }
+    function onSubmitEdAdviceModal() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller:'edDashboard', action: 'update')}?type=EdAdvice";
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#viewEdAdviceEntryForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                hideDetailsDashboardModal();
+                executePostCondition(data);
+                populateAllDashboard();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+        }
+        showLoadingSpinner(false);
+
+    }
+    function loadRemarksAndEdAdvice(descId) {
+        if (descId > 0) {
+            descriptionId = descId;
+        }
+        $("#allRemarksAdvice").html('');
+        var actionUrl = "${createLink(controller:'edDashboard', action: 'retrieveIssueAndMonthData')}";
+
+        jQuery.ajax({
+            type: 'post',
+            data: {dashboardId: descriptionId},
+            url: actionUrl,
+            success: function (data, textStatus) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
+                if (data.lst != null && data.lst.length > 0) {
+
+                    $("#allRemarksAdvice").html(data.lst[0].remarks);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(errorThrown);
+                //console.info('error in 2');
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                console.info('complete');
+            }
+
+        });
+
+    }
 </script>

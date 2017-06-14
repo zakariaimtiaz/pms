@@ -52,6 +52,10 @@ class EdDashboardService  extends BaseService{
         String queryForList = """
         SELECT ed.id ,ed.version,edi.issue_name AS issueName ,DATE_FORMAT(month_for, '%M %Y') month,
         DATE_FORMAT(status_change_date, '%M %Y') resolvedMonth,ed.description,ed.remarks,ed.ed_advice AS edAdvice
+        ,CASE WHEN DATE(ed.status_change_date) > (SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE
+            service_id=ed.service_id  AND is_submitted_db=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1) THEN TRUE ELSE FALSE END AS isEditable
+
             FROM  ed_dashboard_issues edi
             RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id AND ed.service_id = ${serviceId}
         WHERE  service_id = ${serviceId} AND is_resolve = TRUE

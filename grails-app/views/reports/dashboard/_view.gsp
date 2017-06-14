@@ -31,11 +31,11 @@
                     </div>
                     <div class="col-md-3">
                         <ul class="pager" id="btnDiv">
-                        <button type="submit" data-role="button" class="k-button k-button-icontext"
+                        <button type="submit" id="btn1" data-role="button" class="k-button k-button-icontext"
                                 role="button" aria-disabled="false" onclick="onclickWithoutIssue();">
                             <span id="lblWithoutIssue">Show Without Issue</span>
                         </button>
-                        <button type="submit" data-role="button" class="k-button k-button-icontext"
+                        <button type="submit" id="btn2" data-role="button" class="k-button k-button-icontext"
                                 role="button" aria-disabled="false" onclick="onclickNotSubmit();">
                             <span id="lblNotSubmit">Show Not Submitted</span>
                         </button>
