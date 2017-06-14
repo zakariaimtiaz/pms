@@ -1,4 +1,5 @@
 import com.pms.PropertiesReader
+import com.pms.SourceFinder
 
 dataSource {
     driverClassName = PropertiesReader.getProperty("dataSource.driverClassName", PropertiesReader.CONFIG_FILE_DB)
@@ -24,8 +25,8 @@ environments {
         dataSource {
             dbCreate    = "update"
             url         = PropertiesReader.getProperty("dataSource.db.url", PropertiesReader.CONFIG_FILE_DB)
-            username    = PropertiesReader.getProperty("dataSource.db.username", PropertiesReader.CONFIG_FILE_DB);
-            password    = PropertiesReader.getProperty("dataSource.db.password", PropertiesReader.CONFIG_FILE_DB);
+            username    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.db.username", PropertiesReader.CONFIG_FILE_DB));
+            password    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.db.password", PropertiesReader.CONFIG_FILE_DB));
             logSql = false
             properties {
                 jmxEnabled = true
@@ -57,8 +58,8 @@ environments {
         dataSource_mis {
             dbCreate    = "update"
             url         = PropertiesReader.getProperty("dataSource.mis.db.url", PropertiesReader.CONFIG_FILE_DB)
-            username    = PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB)
-            password    = PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB)
+            username    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB))
+            password    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB))
             logSql = false
             properties {
                 jmxEnabled = true
@@ -90,8 +91,8 @@ environments {
         dataSource_comn {
             dbCreate    = "update"
             url         = PropertiesReader.getProperty("dataSource.comn.db.url", PropertiesReader.CONFIG_FILE_DB)
-            username    = PropertiesReader.getProperty("dataSource.comn.db.username", PropertiesReader.CONFIG_FILE_DB)
-            password    = PropertiesReader.getProperty("dataSource.comn.db.password", PropertiesReader.CONFIG_FILE_DB)
+            username    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.comn.db.username", PropertiesReader.CONFIG_FILE_DB))
+            password    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.comn.db.password", PropertiesReader.CONFIG_FILE_DB))
             logSql = false
             properties {
                 jmxEnabled = true
@@ -150,8 +151,8 @@ environments {
         dataSource_mis {
             dbCreate    = "update"
             url         = PropertiesReader.getProperty("dataSource.mis.db.url", PropertiesReader.CONFIG_FILE_DB)
-            username    = PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB)
-            password    = PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB)
+            username    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.mis.db.username", PropertiesReader.CONFIG_FILE_DB))
+            password    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.mis.db.password", PropertiesReader.CONFIG_FILE_DB))
             logSql = false
             properties {
                 jmxEnabled = true
@@ -176,8 +177,8 @@ environments {
         dataSource_comn {
             dbCreate    = "update"
             url         = PropertiesReader.getProperty("dataSource.comn.db.url", PropertiesReader.CONFIG_FILE_DB)
-            username    = PropertiesReader.getProperty("dataSource.comn.db.username", PropertiesReader.CONFIG_FILE_DB)
-            password    = PropertiesReader.getProperty("dataSource.comn.db.password", PropertiesReader.CONFIG_FILE_DB)
+            username    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.comn.db.username", PropertiesReader.CONFIG_FILE_DB))
+            password    = SourceFinder.findAppropriate(PropertiesReader.getProperty("dataSource.comn.db.password", PropertiesReader.CONFIG_FILE_DB))
             logSql = false
             properties {
                 jmxEnabled = true
