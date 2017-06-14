@@ -119,7 +119,7 @@ class EdDashboardService  extends BaseService{
         c.setTime(start);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         Date month = DateUtility.getSqlDate(c.getTime())
-        String queryForList = """
+        /*String queryForList = """
        SELECT ed.id ,ed.version,edi.issue_name ,ed.is_resolve
         ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN true ELSE
          ed.is_followup END AS is_followup,(SELECT MAX(month_for) FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id AND issue_id=ed.issue_id) AS followup_month_for,CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr
@@ -133,19 +133,30 @@ class EdDashboardService  extends BaseService{
         WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_followup,FALSE)<>1 AND (COALESCE(ed.is_resolve,FALSE) <> 1
         OR (DATE(ed.status_change_date)=DATE('${month}') AND COALESCE(ed.is_followup,FALSE) <> 1))
         ORDER BY ed.issue_id,ed.month_for;
-        """
-/*        String queryForList = """
-         SELECT ed.id ,ed.version,edi.issue_name,IFNULL(ed.is_resolve,FALSE) is_resolve,
-             IFNULL(ed.is_followup,FALSE) is_followup,ed.followup_month_for,
-             CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr,
-             'Unresolve' issue_status,ed.description,ed.ed_advice,ed.remarks
-         FROM  ed_dashboard ed
-         LEFT JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
-         WHERE ed.service_id = ${serviceId} AND ed.is_resolve IS NOT TRUE
-            AND (ed.month_for = '${month}' OR ed.followup_month_for < DATE_ADD('${month}', INTERVAL 1 DAY)
-            OR ed.followup_month_for IS NULL)
-         GROUP BY ed.month_for,ed.issue_id;
         """*/
+        String queryForList = """
+       SELECT ed.id ,ed.version,edi.issue_name ,ed.is_resolve
+        ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id
+        AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN TRUE ELSE
+         ed.is_followup END AS is_followup,(SELECT MAX(month_for) FROM ed_dashboard WHERE followup_month_for=ed.month_for
+         AND service_id=ed.service_id AND issue_id=ed.issue_id) AS followup_month_for
+         ,CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr
+        ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id
+        AND issue_id=ed.issue_id AND month_for=DATE('${month}') GROUP BY followup_month_for)>0 THEN 'Follow-up'
+        WHEN ed.is_resolve = 1 THEN 'Resolved' ELSE 'Unresolve' END AS issue_status
+        ,ed.description,ed.ed_advice,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for
+        AND service_id=ed.service_id AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN
+        (SELECT remarks FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id
+        AND issue_id=ed.issue_id ORDER BY id DESC LIMIT 1) ELSE ed.remarks END AS remarks
+         FROM  ed_dashboard ed INNER JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
+         LEFT JOIN ed_dashboard ed1 ON ed.followup_month_for=ed1.month_for AND ed1.is_followup <>1
+        INNER JOIN pm_mcrs_log lg ON lg.service_id = ed.service_id AND COALESCE(lg.is_submitted_db,FALSE) =1
+        AND MONTH(ed.month_for)=lg.month AND YEAR(ed.month_for)= lg.year
+        WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_resolve,FALSE) <> 1 AND COALESCE(ed.is_followup,FALSE)<>1
+        AND ed.month_for NOT IN (SELECT followup_month_for FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id
+        AND issue_id=ed.issue_id AND month_for>DATE('${month}'))
+        ORDER BY ed.issue_id,ed.month_for;
+        """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
