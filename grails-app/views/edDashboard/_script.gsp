@@ -28,6 +28,7 @@
         activaTab('menu1');
         serviceId = ${serviceId};
         subDate = '${subDate}';
+        $('#hfSubmissionDate').val(subDate);
         var m= $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
@@ -340,15 +341,12 @@
         $('#divfollowupMonth').hide();
         $('#divRemarks').hide();
         $('#remarks').val('');
-        $('#remarks').prop('readonly',false);
         $("#oldRemarks").html('');
         $('#descriptionDiv').html('');
         $('#description').val('');
         $('#hfServiceIdModal').val('');
         $('#hfMonthModal').val('');
         $('#btnCreate').show();
-        $('#followupMonth').data('kendoDatePicker').enable(true);
-
         $("#createEdFollowupModal").modal('hide');
     }
 
@@ -377,6 +375,8 @@
                 executePostCondition(data);
                 hideFollowupDashboardModal();
                 loadUnresolveData();
+                initResolvedIssueGrid();
+                initUpcomingIssueGrid();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 showError(textStatus.message());
@@ -466,14 +466,21 @@
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         $("#createEdFollowupModal").modal('show');
         $('#selectionResolve').prop('checked', true);
-        document.getElementById("selectionResolve").disabled=true;
-        document.getElementById("selectionFollowup").disabled=true;
         $('#divResolveNote').show();
-        $('#btnCreate').hide();
         $('#headingLabel').text(dataItem.issueName);
         $('#issuedMonth').text(dataItem.month);
         $('#descriptionDiv').text(dataItem.description);
-        $("#resolveNote").prop('readonly',true);
+        $('#hfClickingRowNo').val(dataItem.id);
+        $('#description').val(dataItem.description);
+        $('#hfServiceIdModal').val($('#serviceId').val());
+        $('#hfMonthModal').val($('#month').val());
+
+        if(moment($('#hfSubmissionDate').val()).format('YYYY-MM-DD') > moment(dataItem.resolvedMonth,'MMMM YYYY').format('YYYY-MM-DD') ) {
+            document.getElementById("selectionResolve").disabled = true;
+            document.getElementById("selectionFollowup").disabled = true;
+            $('#btnCreate').hide();
+            $("#resolveNote").prop('readonly', true)
+        }
 
         loadRemarksAndEdAdvice(dataItem.id);
 
@@ -549,32 +556,30 @@
                     filterable: false
                 },
                 {field: "edAdvice", title: "ED's Advice", width: "20%", sortable: false, filterable: false}
-                ,{ command: { text: " Details", click: showDetailsForUpcommingIssues },  width: "10%" }
+                ,{ command: { text: " Edit", click: showDetailsForUpcomingIssues },  width: "10%" }
             ],
             filterable: {
                 mode: "row"
             }
         });
     }
-    function showDetailsForUpcommingIssues(e) {
+    function showDetailsForUpcomingIssues(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         $("#createEdFollowupModal").modal('show');
         $('#selectionFollowup').prop('checked', true);
-        document.getElementById("selectionResolve").disabled=true;
-        document.getElementById("selectionFollowup").disabled=true;
-        $('#btnCreate').hide();
         $('#headingLabel').text(dataItem.issueName);
         $('#issuedMonth').text(dataItem.month);
-        $('#descriptionDiv').text(dataItem.description);
+        $('#descriptionDiv').html(dataItem.description);
+        $('#hfClickingRowNo').val(dataItem.id);
+        $('#description').val(dataItem.description);
+        $('#hfServiceIdModal').val($('#serviceId').val());
+        $('#hfMonthModal').val($('#month').val());
         loadFollowupMonth();
         $('#followupMonth').val(dataItem.month);
         $('#divResolveNote').hide();
         $('#divRemarks').show();
         $('#remarks').val(dataItem.remarks);
-        $('#remarks').prop('readonly',true);
-        $('#followupMonth').data('kendoDatePicker').enable(false);
-
         loadRemarksAndEdAdvice(dataItem.id);
 
     }

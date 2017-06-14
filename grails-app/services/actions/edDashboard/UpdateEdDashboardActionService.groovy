@@ -55,7 +55,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
                 else if(params.selection != 'Resolve' && (params.remarks=='' || params.description=='')){
-                    return super.setError(params, INVALID_INPUT_MSG)
+                    return super.setError(params, 'Invalid current remarks and recommendations.')
                 }
             }
             return params

@@ -10,9 +10,9 @@
             <g:form name='edDashboardForm' id='edDashboardForm' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div class="form-group">
+                        <input type="hidden" id="hfSubmissionDate" name="hfSubmissionDate" value=""/>
                         <label class="col-md-1 control-label label-optional"
                                for="serviceId">Sector/CSU:</label>
-
 
                         <div class="col-md-4">
                             <app:dropDownService
