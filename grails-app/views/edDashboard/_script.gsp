@@ -458,14 +458,7 @@
                 },
                 {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false}
 
-                , {command: {text: 'isEditable'?" Edit":"dddd", click: showDetails}, width: "10%"}
-
-                ,{
-                    field : "",
-                    title : "",
-                    template: "<a onclick='showDetails();' class='k-button k-button-icontext btn-destroy k-grid-Select'>#= data.isEditable == true ? ' Edit' : ' Details' #</a>",
-                    width  : "10%"
-                }
+                , {command: {text: " Edit", click: showDetails}, width: "10%"}
 
             ],
             reorderable: true,

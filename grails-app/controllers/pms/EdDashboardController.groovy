@@ -103,7 +103,14 @@ class EdDashboardController extends BaseController {
             } else {
                 long edDashboardId = Long.parseLong(params.dashboardId.toString())
                 EdDashboard edDashboard = EdDashboard.findById(edDashboardId)
-                List<GroovyRowResult> listValue = edDashboardService.lstEdDashboardDescriptionAndRemarks(edDashboard.serviceId, edDashboard.monthFor, edDashboard.issueId)
+                SecUser user = baseService.currentUserObject()
+                List<GroovyRowResult> listValue
+                if(baseService.isEdAssistantRole(user.id)&& edDashboard.followupMonthFor) {
+                    listValue = edDashboardService.lstEdDashboardDescriptionAndRemarks(edDashboard.serviceId, edDashboard.followupMonthFor, edDashboard.issueId)
+                }
+                else{
+                    listValue = edDashboardService.lstEdDashboardDescriptionAndRemarks(edDashboard.serviceId, edDashboard.monthFor, edDashboard.issueId)
+                }
                 Map result = new LinkedHashMap()
                 result.put('lst', listValue)
                 render result as JSON

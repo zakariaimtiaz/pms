@@ -1,5 +1,8 @@
 package service
 
+import com.pms.SecRole
+import com.pms.SecUser
+import com.pms.SecUserSecRole
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import pms.BaseService
@@ -95,13 +98,30 @@ class EdDashboardService  extends BaseService{
     }
     public List<GroovyRowResult> lstEdDashboardDescriptionAndRemarks(long serviceId,Date month,long issuesId) {
         String queryForList = """
+        SELECT DATE_FORMAT(month_for,'%M %Y') initiated_on,DATE_FORMAT(status_change_date,'%M %Y') resolved_on,resolve_note,
+            GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
+            FROM (SELECT resolve_note,month_for,remarks,ed_advice,description,status_change_date FROM ed_dashboard
+            WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}' AND
+               month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1)
+             ORDER BY month_for ASC ) tbl GROUP BY description
+        """
+        /*SecUser user = currentUserObject()
+
+        if(isEdAssistantRole(user.id)){
+            queryForList = """
         SELECT DATE_FORMAT(month_for,'%M %Y') initiated_on,DATE_FORMAT(status_change_date,'%M %Y') resolved_on,description,resolve_note,
             GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
-            FROM ed_dashboard
-            WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}' AND
-                month_for<(SELECT MAX(submission_date_db) FROM pm_mcrs_log WHERE service_id =${serviceId} AND COALESCE(is_submitted_db,FALSE)=1)
-            GROUP BY description
+            FROM (SELECT resolve_note,month_for,remarks,ed_advice,description,status_change_date FROM ed_dashboard
+           WHERE service_id=${serviceId}  AND issue_id=${issuesId} AND month_for<DATE('${month}') AND
+            (month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1)
+            OR followup_month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1))
+            ORDER BY month_for ASC ) tbl GROUP BY description
         """
+        }*/
+        boolean l=executeSql("SET SESSION group_concat_max_len = 1000000")
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst
     }
@@ -141,9 +161,9 @@ class EdDashboardService  extends BaseService{
         String queryForList = """
        SELECT ed.id ,ed.version,edi.issue_name ,ed.is_resolve
         ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id
-        AND issue_id=ed.issue_id GROUP BY followup_month_for)>0 THEN TRUE ELSE
-         ed.is_followup END AS is_followup,(SELECT MAX(month_for) FROM ed_dashboard WHERE followup_month_for=ed.month_for
-         AND service_id=ed.service_id AND issue_id=ed.issue_id) AS followup_month_for
+        AND issue_id=ed.issue_id AND month_for=DATE('${month}') GROUP BY followup_month_for)>0 THEN TRUE ELSE
+         ed.is_followup END AS is_followup,(SELECT month_for FROM ed_dashboard WHERE followup_month_for=ed.month_for
+         AND service_id=ed.service_id AND issue_id=ed.issue_id AND month_for=DATE('${month}')) AS followup_month_for
          ,CONCAT(MONTHNAME(ed.month_for),' ',YEAR(ed.month_for)) AS issuedMonthStr
         ,CASE WHEN (SELECT COUNT(id)FROM ed_dashboard WHERE followup_month_for=ed.month_for AND service_id=ed.service_id
         AND issue_id=ed.issue_id AND month_for=DATE('${month}') GROUP BY followup_month_for)>0 THEN 'Follow-up'
