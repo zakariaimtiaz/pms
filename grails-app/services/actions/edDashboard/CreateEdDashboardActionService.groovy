@@ -30,7 +30,10 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
-            if (!params.hfServiceIdModal && !params.hfMonthModal && !params.description) {
+            if (!params.hfServiceIdModal && !params.hfMonthModal && !params.description && !params.issueIdDDL) {
+                return super.setError(params, INVALID_INPUT_MSG)
+            }
+            else if(params.hfServiceIdModal=='' || params.hfMonthModal=='' || params.description=='' || params.issueIdDDL==''){
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             return params

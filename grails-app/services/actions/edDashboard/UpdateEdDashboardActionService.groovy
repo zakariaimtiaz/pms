@@ -35,6 +35,9 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                 if (!params.hfId && !params.description) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
+                else if(params.hfId=='' || params.description==''){
+                    return super.setError(params, INVALID_INPUT_MSG)
+                }
             }
             else {
                 if(params.type=='EdAdvice'){

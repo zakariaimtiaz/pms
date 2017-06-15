@@ -154,9 +154,9 @@
         $('#descriptionNew').val(issues.description);
         $('#remarksNew').val(issues.remarks);
     }
-    function resetForm() {
-    }
-
+function resetForm(){
+    //This function used for after successful delete
+}
     function showEdDashboardEntryModal() {
         $("#createEdDashboardModal").modal('show');
         $('#hfServiceIdNewModal').val($('#serviceId').val());
@@ -217,6 +217,10 @@
             data: jQuery("#createEdDashboardForm").serialize(),
             url: actionUrl,
             success: function (data, textStatus) {
+                if (data.isError) {
+                    showError(data.message);
+                    return false;
+                }
                 hideEdDashboardModal();
                 executePostCondition(data);
                 initIssueGrid();
@@ -376,8 +380,12 @@
                 executePostCondition(data);
                 hideFollowupDashboardModal();
                 loadUnresolveData();
-                initResolvedIssueGrid();
-                initUpcomingIssueGrid();
+                var resolveIssue = "${createLink(controller: 'edDashboard', action: 'resolvedList')}";
+                var upComingissue = "${createLink(controller: 'edDashboard', action: 'upcomingFollowupList')}";
+                populateGridKendo($("#gridResolvedIssues").data("kendoGrid"), resolveIssue);
+                populateGridKendo($("#gridUpcomingIssues").data("kendoGrid"), upComingissue);
+                //initResolvedIssueGrid();
+               // initUpcomingIssueGrid();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 showError(textStatus.message());
@@ -458,7 +466,7 @@
                 },
                 {field: "edAdvice", title: "ED's Advice", width: "25%", sortable: false, filterable: false}
 
-                , {command: {text: " Edit", click: showDetails}, width: "10%"}
+                , {command: {text: " Details", click: showDetails}, width: "10%"}
 
             ],
             reorderable: true,
@@ -564,22 +572,22 @@
     }
     function showDetailsForUpcomingIssues(e) {
         e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var dataItem2 = this.dataItem($(e.currentTarget).closest("tr"));
         $("#createEdFollowupModal").modal('show');
         $('#selectionFollowup').prop('checked', true);
-        $('#headingLabel').text(dataItem.issueName);
-        $('#issuedMonth').text(dataItem.month);
-        $('#descriptionDiv').html(dataItem.description);
-        $('#hfClickingRowNo').val(dataItem.id);
-        $('#description').val(dataItem.description);
+        $('#headingLabel').text(dataItem2.issueName);
+        $('#issuedMonth').text(dataItem2.month);
+        $('#descriptionDiv').html(dataItem2.description);
+        $('#hfClickingRowNo').val(dataItem2.id);
+        $('#description').val(dataItem2.description);
         $('#hfServiceIdModal').val($('#serviceId').val());
         $('#hfMonthModal').val($('#month').val());
         loadFollowupMonth();
-        $('#followupMonth').val(dataItem.month);
+        $('#followupMonth').val(dataItem2.month);
         $('#divResolveNote').hide();
         $('#divRemarks').show();
-        $('#remarks').val(dataItem.remarks);
-        loadRemarksAndEdAdvice(dataItem.id);
+        $('#remarks').val(dataItem2.remarks);
+        loadRemarksAndEdAdvice(dataItem2.id);
 
     }
 
