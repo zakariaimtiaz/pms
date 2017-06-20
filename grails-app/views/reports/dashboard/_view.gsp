@@ -1,9 +1,19 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-heading" style="height: 30px;">
-                <div class="panel-title text-center">
+        <div id="application_top_panel" class="panel panel-primary">
+            <div class="panel-heading" style="height: 34px;">
+                <div class="panel-title">
                     ED's Dashboard
+
+                    <button id="downloadDashboard" name="downloadDashboard" type="button" data-role="button"
+                            class="k-button k-button-icontext pull-right" role="button" style="font-size: 12px;"
+                            aria-disabled="false" onclick='downloadEdDashboardReport();'><span
+                            class="fa fa-file-pdf-o"></span>&nbsp;Download
+                    </button>
+                    <div class="col-md-2 pull-right">
+                        <select class="kendo-drop-down" id="statusType" style="font-size: 12px;" name="statusType" onchange="populateAllDashboard();" tabindex="3"></select>
+                    </div>
+
                 </div>
             </div>
 
@@ -12,7 +22,7 @@
                     <label class="col-md-1 control-label label-optional pager"
                            for="serviceId">Service:</label>
 
-                    <div class="col-md-3 pager">
+                    <div class="col-md-3 pager" style="padding-left: 0px;">
                         <app:dropDownService
                                 class="kendo-drop-down" is_in_sp="true" hints_text="ALL CSU/Sector"
                                 id="serviceId" name="serviceId" tabindex="1" onchange="populateAllDashboard();"
@@ -20,7 +30,7 @@
                         </app:dropDownService>
                     </div>
 
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <ul class="pager">
                             <li style="cursor: pointer;"><a onclick="setPreviousMonth();" style="width: 80px;">Previous</a></li>
                             <li><a><input type='text' class="kendo-date-picker" id="month" name="month"
@@ -29,7 +39,7 @@
                             <li style="cursor: pointer;"><a onclick="setNextMonth();" style="width: 80px;">Next</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" style="padding-left: 0px;padding-right: 0px; ">
                         <ul class="pager" id="btnDiv">
                         <button type="submit" id="btn1" data-role="button" class="k-button k-button-icontext"
                                 role="button" aria-disabled="false" onclick="onclickWithoutIssue();">

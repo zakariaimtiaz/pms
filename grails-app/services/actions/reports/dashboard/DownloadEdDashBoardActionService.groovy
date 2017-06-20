@@ -17,20 +17,17 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
 
     JasperService jasperService
 
-    private static final String REPORT_FOLDER_ALL_IND = 'pmActions/monthly/allIndicator'
-    private static final String JASPER_FILE_ALL_IND = 'spWithAllIndicator'
-    private static final String JASPER_FILE_ALL_IND_EXC = 'spWithAllIndicatorExc'
+    private static final String REPORT_FOLDER = 'edDashboard'
+    private static final String JASPER_FILE_RESOLVE_ISSUE = 'edDashboardResolve'
+    private static final String JASPER_FILE_UNRESOLVE_ISSUE = 'edDashboardUnresolve'
+    private static final String JASPER_FILE_UPCOMING_ISSUE = 'edDashboardUpcoming'
 
-    private static final String REPORT_FOLDER_ACTION_IND = 'pmActions/monthly/actionIndicator'
-    private static final String JASPER_FILE_ACTION_IND = 'spActionIndicator'
-    private static final String JASPER_FILE_ACTION_IND_EXC = 'spActionIndicatorExc'
-
-    private static final String REPORT_FOLDER_PREFERENCE = 'pmActions/monthly/preference'
-    private static final String JASPER_FILE_PREFERENCE = 'spPreferenceIndicator'
-    private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceIndicatorExc'
+    private static final String JASPER_FILE_RESOLVE_ALL = 'edDashboardResolve_All'
+    private static final String JASPER_FILE_UNRESOLVE_ALL = 'edDashboardUnresolve_All'
+    private static final String JASPER_FILE_UPCOMING_ALL = 'edDashboardUpcoming_All'
 
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' -SP Report of '
+    private static final String REPORT_TITLE = ' -ED Dashboard of '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
@@ -38,7 +35,7 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
     private static final String MONTH_INT = "monthInt"
     private static final String DOT_STR = ". "
     private static final String MONTH_STR = "monthStr"
-    private static final String CURRENT_MONTH = "currentMonth"
+    private static final String MONTH_DATE = "month"
 
 
     /**
@@ -57,20 +54,23 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         int year = c.get(Calendar.YEAR)
-        int monthInt = c.get(Calendar.MONTH)+ 1
-        Date currentMonth = DateUtility.getSqlDate(c.getTime());
+        int monthInt = c.get(Calendar.MONTH)+ 1;
+        Date monthDate=DateUtility.getSqlDate(c.getTime());
 
         String monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
 
-        long serviceId = Long.parseLong(params.serviceId.toString())
-        PmServiceSector service = PmServiceSector.read(serviceId)
+        long serviceId = 0
+        if(params.serviceId!='') {
+            serviceId = Long.parseLong(params.serviceId.toString())
+            PmServiceSector service = PmServiceSector.read(serviceId)
+            params.put(SERVICE_NAME, service.name)
+            params.put(SERVICE_SHORT_NAME, service.shortName)
+        }
         params.put(SERVICE_ID, serviceId)
-        params.put(SERVICE_NAME, service.name)
-        params.put(SERVICE_SHORT_NAME, service.shortName)
         params.put(YEAR, year)
-        params.put(CURRENT_MONTH, currentMonth)
         params.put(MONTH_STR, monthName)
         params.put(MONTH_INT, monthInt)
+        params.put(MONTH_DATE, monthDate)
 
         return params
     }
@@ -118,46 +118,44 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
         return result
     }
     private Map getReport(Map result) {
-        boolean isChecked = Boolean.parseBoolean(result.checked.toString())
-        String reportFolder = REPORT_FOLDER_ALL_IND
-        String jesperFile = JASPER_FILE_ALL_IND
-        if(isChecked){
-            if(result.indicatorType.equals("Action Indicator")){
-                reportFolder = REPORT_FOLDER_ACTION_IND
-                jesperFile = JASPER_FILE_ACTION_IND
-            }else if(result.indicatorType.equals("Preferred Indicator")){
-                reportFolder = REPORT_FOLDER_PREFERENCE
-                jesperFile = JASPER_FILE_PREFERENCE
+        String s=result.get(MONTH_STR) + SINGLE_SPACE + result.get(YEAR);
+        String reportFolder = REPORT_FOLDER
+        String jesperFile = JASPER_FILE_UNRESOLVE_ALL
+        if(result.get(SERVICE_ID)>0)
+            jesperFile = JASPER_FILE_UNRESOLVE_ISSUE
+
+             if(result.statusType.equals("Resolved Issue")){
+                jesperFile = JASPER_FILE_RESOLVE_ALL
+                 if(result.get(SERVICE_ID)>0)
+                jesperFile = JASPER_FILE_RESOLVE_ISSUE
+                 s="Resolved Issue"
+            }else if(result.statusType.equals("Upcoming Issue")) {
+                 jesperFile = JASPER_FILE_UPCOMING_ALL
+                 if(result.get(SERVICE_ID)>0)
+                     jesperFile = JASPER_FILE_UPCOMING_ISSUE
+                 s="Upcoming Issue"
             }
-        }else{
-            if(result.indicatorType.equals("Action Indicator")){
-                reportFolder = REPORT_FOLDER_ACTION_IND
-                jesperFile = JASPER_FILE_ACTION_IND_EXC
-            }else if(result.indicatorType.equals("Preferred Indicator")){
-                reportFolder = REPORT_FOLDER_PREFERENCE
-                jesperFile = JASPER_FILE_PREFERENCE_EXC
-            }else{
-                jesperFile = JASPER_FILE_ALL_IND_EXC
-            }
-        }
         String rootDir = result.reportDirectory + File.separator
         String logoDir = result.logoDirectory + File.separator
         String reportDir = result.reportDirectory + File.separator + reportFolder
-        String subReportDir = reportDir + File.separator
-        String outputFileName = result.get(MONTH_INT)+ DOT_STR + result.get(SERVICE_SHORT_NAME) + REPORT_TITLE + result.get(MONTH_STR) + SINGLE_SPACE + result.get(YEAR) + PDF_EXTENSION
-        String titleStr = result.get(SERVICE_NAME) + REPORT_TITLE + EMPTY_SPACE + result.get(MONTH_STR) + SINGLE_SPACE + result.get(YEAR)
+        String outputFileName =""
+        String titleStr =""
+        if(result.get(SERVICE_ID)>0) {
+            outputFileName = result.get(MONTH_INT) + DOT_STR + result.get(SERVICE_SHORT_NAME) + REPORT_TITLE + s + PDF_EXTENSION
+            titleStr = result.get(SERVICE_NAME) + REPORT_TITLE + EMPTY_SPACE + s
+        }
+        else{
+            outputFileName = result.get(MONTH_INT) + DOT_STR + REPORT_TITLE + s + PDF_EXTENSION
+            titleStr = "ED's Dashboard of " + EMPTY_SPACE + s
+        }
 
         Map reportParams = new LinkedHashMap()
         reportParams.put(ROOT_DIR, rootDir)
         reportParams.put(LOGO_DIR, logoDir)
         reportParams.put(REPORT_DIR, reportDir)
-        reportParams.put(SUBREPORT_DIR, subReportDir)
         reportParams.put(REPORT_TITLE_LBL, titleStr)
         reportParams.put(SERVICE_ID, result.get(SERVICE_ID))
-        reportParams.put(SERVICE_NAME, result.get(SERVICE_NAME))
-        reportParams.put(YEAR, result.get(YEAR))
-        reportParams.put(MONTH_STR, result.get(MONTH_STR))
-        reportParams.put(CURRENT_MONTH, result.get(CURRENT_MONTH))
+        reportParams.put(MONTH_DATE, result.get(MONTH_DATE))
 
         JasperReportDef reportDef = new JasperReportDef(name: jesperFile, fileFormat: JasperExportFormat.PDF_FORMAT,
                 parameters: reportParams, folder: reportDir)

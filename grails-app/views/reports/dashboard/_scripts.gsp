@@ -9,7 +9,7 @@
 </style>
 
 <script language="javascript">
-    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue,notSubmitted, tmp1 = '';
+    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue,notSubmitted, tmp1 = '',dropDownStatusType;
     $(document).ready(function () {
         onLoadInfoPage();
         initGridHR();
@@ -35,7 +35,12 @@
             change: populateAllDashboard
         }).data("kendoDatePicker");
         $('#month').val(str);
-
+        $('#statusType').kendoDropDownList({
+            dataSource: {
+                data: ["Current Month Issue", "Resolved Issue", "Upcoming Issue"]
+            }
+        });
+        dropDownStatusType = $("#statusType").data("kendoDropDownList");
         if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             dropDownService.value(${serviceId});
             dropDownService.readonly(true);
@@ -132,11 +137,11 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    field: "ISSUE", title: "<b>Crisis and Highlights</b>", width: 250, sortable: false, filterable: false,
                     template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks and Recommendations</b>", width: 250, sortable: false, filterable: false
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
@@ -195,11 +200,11 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    field: "ISSUE", title: "<b>Crisis and Highlights</b>", width: 250, sortable: false, filterable: false,
                     template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks and Recommendations</b>", width: 250, sortable: false, filterable: false
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
@@ -258,11 +263,11 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    field: "ISSUE", title: "<b>Crisis and Highlights</b>", width: 250, sortable: false, filterable: false,
                     template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks and Recommendations</b>", width: 250, sortable: false, filterable: false
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
@@ -321,11 +326,11 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    field: "ISSUE", title: "<b>Crisis and Highlights</b>", width: 250, sortable: false, filterable: false,
                     template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks and Recommendations</b>", width: 250, sortable: false, filterable: false
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
@@ -384,11 +389,11 @@
                     template: "<b>#=SERVICE#</b>"
                 },
                 {
-                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    field: "ISSUE", title: "<b>Crisis and Highlights</b>", width: 250, sortable: false, filterable: false,
                     template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks and Recommendations</b>", width: 250, sortable: false, filterable: false
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
@@ -447,11 +452,11 @@
                     template: "<b>#=omitRepeated(SERVICE_ID,SERVICE)#</b>"
                 },
                 {
-                    field: "ISSUE", title: "<b>Issues & Crisis</b>", width: 250, sortable: false, filterable: false,
+                    field: "ISSUE", title: "<b>Crisis and Highlights</b>", width: 250, sortable: false, filterable: false,
                     template: "#=IS_FOLLOWUP?formatIssue(FOLLOWUP_MONTH,ISSUE):ISSUE#"
                 },
                 {
-                    field: "REMARKS", title: "<b>Remarks</b>", width: 250, sortable: false, filterable: false
+                    field: "REMARKS", title: "<b>Remarks and Recommendations</b>", width: 250, sortable: false, filterable: false
                 },
                 {field: "ADVICE", title: "<b>ED's Advice</b>", width: "250px",editor: textAreaInitialize }
                 <g:if test="${isAssist}">
@@ -562,12 +567,13 @@
         var serviceId = $('#serviceId').val();
         if(serviceId==''){ serviceId = 0;}
         var month = $('#month').val();
-        var urlHR   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&hr=true";
-        var urlFld  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&fld=true";
-        var urlGovt = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&govt=true";
-        var urlDnr  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&dnr=true";
-        var urlNp   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&np=true";
-        var urlCssp = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&cssp=true";
+        var statusType=$('#statusType').val();
+        var urlHR   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&hr=true&statusType="+statusType;
+        var urlFld  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&fld=true&statusType="+statusType;
+        var urlGovt = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&govt=true&statusType="+statusType;
+        var urlDnr  = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&dnr=true&statusType="+statusType;
+        var urlNp   = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&np=true&statusType="+statusType;
+        var urlCssp = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&cssp=true&statusType="+statusType;
         var urlNoIssue = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&noIssue=true";
         var notSubmitted = "${createLink(controller: 'reports', action: 'listEdDashBoard')}?month=" + month + "&serviceId=" + serviceId + "&notSubmitted=true";
         populateGridKendo(gridHR, urlHR);
@@ -698,5 +704,21 @@
 
         });
 
+    }
+    function downloadEdDashboardReport() {
+
+        var month = $('#month').val();
+        var serviceId = dropDownService.value();
+        var statusType = dropDownStatusType.value();
+        /*if(serviceId==''){
+            showError('Please select any service');
+            return false;
+        }*/
+        showLoadingSpinner(true);
+        var msg = 'Do you want to download the ED\'s Dashboard now?',
+                params = "?serviceId=" +serviceId+"&month="+month+"&statusType="+statusType,
+                url = "${createLink(controller: 'reports', action:  'downloadEdDashBoard')}" + params;
+        confirmDownload(msg, url);
+        return false;
     }
 </script>
