@@ -27,7 +27,7 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
     private static final String JASPER_FILE_UPCOMING_ALL = 'edDashboardUpcoming_All'
 
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' -ED Dashboard of '
+    private static final String REPORT_TITLE = ' ED Dashboard of '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
@@ -124,17 +124,17 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
         if(result.get(SERVICE_ID)>0)
             jesperFile = JASPER_FILE_UNRESOLVE_ISSUE
 
-             if(result.statusType.equals("Resolved Issue")){
-                jesperFile = JASPER_FILE_RESOLVE_ALL
-                 if(result.get(SERVICE_ID)>0)
-                jesperFile = JASPER_FILE_RESOLVE_ISSUE
-                 s="Resolved Issue"
-            }else if(result.statusType.equals("Upcoming Issue")) {
-                 jesperFile = JASPER_FILE_UPCOMING_ALL
-                 if(result.get(SERVICE_ID)>0)
-                     jesperFile = JASPER_FILE_UPCOMING_ISSUE
-                 s="Upcoming Issue"
-            }
+        if(result.statusType.equals("Resolved Issue")){
+            jesperFile = JASPER_FILE_RESOLVE_ALL
+        if(result.get(SERVICE_ID)>0)
+            jesperFile = JASPER_FILE_RESOLVE_ISSUE
+            s="Resolved Issue"
+        }else if(result.statusType.equals("Upcoming Issue")) {
+            jesperFile = JASPER_FILE_UPCOMING_ALL
+        if(result.get(SERVICE_ID)>0)
+            jesperFile = JASPER_FILE_UPCOMING_ISSUE
+            s="Upcoming Issue"
+        }
         String rootDir = result.reportDirectory + File.separator
         String logoDir = result.logoDirectory + File.separator
         String reportDir = result.reportDirectory + File.separator + reportFolder
