@@ -16,7 +16,7 @@ class DownloadYearlySPDetailsActionService extends BaseService implements Action
     private static final String REPORT_FOLDER = 'pmActions/yearly/Details'
     private static final String JASPER_FILE = 'sapDetails'
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' -Strategic Plan '
+    private static final String REPORT_TITLE = ' -Strategic Action Plan '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"

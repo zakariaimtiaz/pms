@@ -31,7 +31,7 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
     private static final String JASPER_FILE_PREFERENCE_EXC = 'mcrsPreferenceIndicatorExc'
 
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' -MCRS Report of '
+    private static final String REPORT_TITLE = ' -MRP Report of '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
