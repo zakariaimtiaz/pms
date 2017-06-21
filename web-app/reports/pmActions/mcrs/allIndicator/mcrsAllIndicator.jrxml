@@ -18,7 +18,7 @@
 COUNT(DISTINCT(addi.id)) AS addi_count
 FROM pm_goals g
 LEFT JOIN pm_actions a ON a.goal_id = g.id AND ($P{year} <= year(a.end) AND $P{year} >= year(a.start))
-LEFT JOIN pm_actions_indicator_details ad ON ad.actions_id = a.id AND month_name =$P{monthStr} AND target > 0
+LEFT JOIN pm_actions_indicator_details ad ON ad.actions_id = a.id AND month_name =$P{monthStr} AND (target > 0 or achievement>0)
 LEFT JOIN pm_additional_actions addi ON addi.goal_id = g.id AND ($P{year} <= YEAR(addi.end) AND $P{year} >= YEAR(addi.start)) AND addi.service_id
 
 WHERE g.service_id=$P{serviceId}
@@ -435,7 +435,4 @@ GROUP BY a.goal_id]]>
 			</textField>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="1"/>
-	</summary>
 </jasperReport>

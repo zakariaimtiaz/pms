@@ -367,43 +367,4 @@ GROUP BY a.goal_id]]>
 			</subreport>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="20">
-			<subreport>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="2b454f7f-8997-4b14-97f7-20e06904e544"/>
-				<subreportParameter name="SUBREPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="LOGO_DIR">
-					<subreportParameterExpression><![CDATA[$P{LOGO_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="monthStr">
-					<subreportParameterExpression><![CDATA[$P{monthStr}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="ROOT_DIR">
-					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="reportTitle">
-					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="serviceId">
-					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="REPORT_DIR">
-					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="currentMonth">
-					<subreportParameterExpression><![CDATA[$P{currentMonth}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="year">
-					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="specificIssueCount">
-					<subreportParameterExpression><![CDATA[$P{specificIssueCount}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mcrsPreferenceIndicator_subreport2Exc.jasper"]]></subreportExpression>
-			</subreport>
-		</band>
-	</summary>
 </jasperReport>

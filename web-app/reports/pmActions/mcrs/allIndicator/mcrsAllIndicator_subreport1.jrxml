@@ -53,7 +53,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
                 GROUP BY ai.id
                 ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0,@curmon := MONTH(DATE($P{currentMonth}))) r
- WHERE tmp.t_mon_var!=0;]]>
+ WHERE tmp.t_mon_var!=0 OR tmp.mon_acv!=0;]]>
 	</queryString>
 	<field name="row_number" class="java.lang.Double"/>
 	<field name="action_id" class="java.lang.Long"/>
@@ -86,6 +86,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 	<field name="mon_tar" class="java.lang.String"/>
 	<field name="mon_acv" class="java.lang.String"/>
 	<field name="mon_var" class="java.lang.String"/>
+	<field name="variance" class="java.math.BigDecimal"/>
 	<field name="cum_tar" class="java.lang.String"/>
 	<field name="cum_acv" class="java.lang.String"/>
 	<field name="cum_var" class="java.lang.String"/>
@@ -356,7 +357,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{mon_var}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{mon_var}==null ? "N/A":$F{mon_var}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="423" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
@@ -369,7 +370,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cum_var}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cum_var}==null ? "N/A" : $F{cum_var}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement stretchType="RelativeToTallestObject" x="540" y="0" width="91" height="20" uuid="f6fe814a-1494-465b-bbb2-28fc08665063">
