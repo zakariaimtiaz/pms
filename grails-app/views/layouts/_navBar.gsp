@@ -64,7 +64,7 @@
                             </sec:ifAnyUrls>
                             <sec:access url="/reports/showMcrs">
                                 <li>
-                                    <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MCRS</a>
+                                    <a href="#reports/showMcrs"><i class="fa fa-object-ungroup"></i>&nbsp;MRP</a>
                                 </li>
                             </sec:access>
                             <sec:access url="/reports/showEdDashBoard">

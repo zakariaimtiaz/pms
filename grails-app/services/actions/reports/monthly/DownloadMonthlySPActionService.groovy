@@ -30,7 +30,7 @@ class DownloadMonthlySPActionService extends BaseService implements ActionServic
     private static final String JASPER_FILE_PREFERENCE_EXC = 'spPreferenceIndicatorExc'
 
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' -SP Report of '
+    private static final String REPORT_TITLE = ' -SAP Report of '
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
