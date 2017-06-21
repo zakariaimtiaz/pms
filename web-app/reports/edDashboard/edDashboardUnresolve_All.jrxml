@@ -57,6 +57,29 @@
 	</field>
 	<group name="GroupByIssueId">
 		<groupExpression><![CDATA[$F{issueId}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<textField isStretchWithOverflow="true">
+					<reportElement stretchType="RelativeToTallestObject" x="44" y="14" width="235" height="15" uuid="bfabe1ef-e7e5-4b07-9ed7-a0d2f5ca399a"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{issueName}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="14" width="44" height="15" uuid="0953a782-0b4a-4921-a2d0-dcb48e51e682"/>
+					<textElement verticalAlignment="Top" markup="none">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Issue:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
 	</group>
 	<group name="GroupByServiceId">
 		<groupExpression><![CDATA[$F{service_id}]]></groupExpression>
@@ -111,18 +134,6 @@
 					</textElement>
 					<text><![CDATA[Issued On: ]]></text>
 				</staticText>
-				<textField isStretchWithOverflow="true">
-					<reportElement stretchType="RelativeToTallestObject" x="32" y="4" width="235" height="15" uuid="bfabe1ef-e7e5-4b07-9ed7-a0d2f5ca399a"/>
-					<box leftPadding="2" rightPadding="2">
-						<topPen lineWidth="0.0"/>
-						<leftPen lineWidth="0.0"/>
-						<bottomPen lineWidth="0.0"/>
-					</box>
-					<textElement>
-						<font size="9"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{issueName}]]></textFieldExpression>
-				</textField>
 				<textField>
 					<reportElement x="409" y="4" width="156" height="15" uuid="8b6d4750-2b06-467f-8a86-a6a01a7947a7"/>
 					<textFieldExpression><![CDATA[$F{issuedMonthStr}]]></textFieldExpression>
@@ -147,13 +158,6 @@
 					<reportElement x="408" y="22" width="157" height="15" uuid="ac814fb7-2335-4b6e-abe3-153b4728f14d"/>
 					<textFieldExpression><![CDATA[$F{issue_status}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement x="-12" y="4" width="44" height="15" uuid="0953a782-0b4a-4921-a2d0-dcb48e51e682"/>
-					<textElement verticalAlignment="Top" markup="none">
-						<font isBold="true"/>
-					</textElement>
-					<text><![CDATA[Issue:]]></text>
-				</staticText>
 				<staticText>
 					<reportElement x="-12" y="22" width="44" height="15" uuid="08076e36-a416-4572-bfd2-b7c4bcc833f8"/>
 					<textElement verticalAlignment="Top" markup="none">
