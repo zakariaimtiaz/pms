@@ -371,7 +371,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 		</band>
-		<band height="22">
+		<band height="20">
 			<subreport>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="09a20222-6b61-44fb-b320-824a77b97d5a"/>
 				<subreportParameter name="SUBREPORT_DIR">
@@ -436,6 +436,6 @@ GROUP BY a.goal_id]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="2"/>
+		<band height="1"/>
 	</summary>
 </jasperReport>
