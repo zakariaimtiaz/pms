@@ -29,7 +29,7 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 	<field name="issueName" class="java.lang.String"/>
 	<field name="issueStr" class="java.lang.String"/>
 	<field name="preIndx" class="java.lang.String"/>
-	<group name="GroupByIssueId">
+	<group name="GroupByIssueId" isStartNewPage="true">
 		<groupExpression><![CDATA[$F{issueId}]]></groupExpression>
 		<groupHeader>
 			<band height="23">
