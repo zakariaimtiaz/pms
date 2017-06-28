@@ -86,8 +86,13 @@
                                     <ul class="nav nav-third-level">
                                         <sec:access url="/reports/showMeetingStatus">
                                             <li>
-                                                <a href="#reports/showMeetingStatus"><i
-                                                        class="fa fa-wikipedia-w"></i>&nbsp;Weekly
+                                                <a href="#reports/showMeetingStatus?type=Weekly">
+                                                    <i class="fa fa-wikipedia-w"></i>&nbsp;Weekly
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#reports/showMeetingStatus?type=Monthly">
+                                                    <i class="fa fa-maxcdn"></i>&nbsp;Monthly
                                                 </a>
                                             </li>
                                         </sec:access>
@@ -128,6 +133,10 @@
                             <sec:access url="/meetingLog/show">
                                 <li>
                                     <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#meetingLog/show?type=Monthly"><i class="fa fa-maxcdn"></i>&nbsp;Monthly
                                     </a>
                                 </li>
                             </sec:access>

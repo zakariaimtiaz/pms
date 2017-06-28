@@ -2,6 +2,7 @@ package actions.meetingLog
 
 import com.model.ListMeetingLogActionServiceModel
 import com.pms.MeetingLog
+import com.pms.SystemEntity
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -13,8 +14,11 @@ import service.MeetingLogService
 class CreateMeetingLogActionService extends BaseService implements ActionServiceIntf {
 
     private static final String SAVE_SUCCESS_MESSAGE = "Log has been saved successfully"
-    private static final String ALREADY_EXIST = "Meeting already held for this week"
+    private static final String ALREADY_EXIST_WEEK = "Meeting already held for this week"
+    private static final String ALREADY_EXIST_MONTH = "Meeting already held for this month"
     private static final String MEETING_LOG = "meetingLog"
+    private static final String WEEKLY = "Weekly"
+    private static final String MONTHLY = "Monthly"
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -27,11 +31,20 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             long serviceId = Long.parseLong(params.serviceId.toString())
+            long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
+            SystemEntity meetingType = SystemEntity.read(meetingTypeId)
+            Date date = DateUtility.parseMaskedDate(params.heldOn.toString())
 
-            boolean isWeeklyMeetingHeld = meetingLogService.isWeeklyMeetingHeld(DateUtility.parseMaskedDate(params.heldOn.toString()),serviceId)
-
-            if (isWeeklyMeetingHeld) {
-                return super.setError(params, ALREADY_EXIST)
+            if(meetingType.name.equals(WEEKLY)){
+                boolean isWeeklyMeetingHeld = meetingLogService.isWeeklyMeetingHeld(date,serviceId,meetingTypeId)
+                if (isWeeklyMeetingHeld) {
+                    return super.setError(params, ALREADY_EXIST_WEEK)
+                }
+            }else if(meetingType.name.equals(MONTHLY)){
+                boolean isMonthlyMeetingHeld = meetingLogService.isMonthlyMeetingHeld(date,serviceId,meetingTypeId)
+                if (isMonthlyMeetingHeld) {
+                    return super.setError(params, ALREADY_EXIST_MONTH)
+                }
             }
 
             MeetingLog meetingLog = buildObject(params,serviceId)

@@ -4,8 +4,6 @@ import actions.meetingLog.CreateMeetingLogActionService
 import actions.meetingLog.DeleteMeetingLogActionService
 import actions.meetingLog.ListMeetingLogActionService
 import actions.meetingLog.UpdateMeetingLogActionService
-import com.pms.MeetingLog
-import com.pms.PmServiceSector
 import com.pms.SecUser
 import com.pms.SystemEntity
 import grails.converters.JSON
@@ -41,11 +39,12 @@ class MeetingLogController extends BaseController {
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
         List<GroovyRowResult> lstEmployee = secUserService.currentDepartmentEmpList(user)
         lstEmployee.remove(0)
-        long meetingTypeId = SystemEntity.findByNameAndTypeId("Weekly",5L).id
-        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.Type.toString(),5L)
-        if(meetingType) meetingTypeId = meetingType.id
-        render(view: "/meetingLog/show", model: [isAdmin:isAdmin,serviceId:user.serviceId,
-                                                 lstEmployee: lstEmployee as JSON,meetingTypeId:meetingTypeId])
+        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),5L)
+        render(view: "/meetingLog/show", model: [isAdmin:isAdmin,
+                                                 serviceId:user.serviceId,
+                                                 lstEmployee: lstEmployee as JSON,
+                                                 meetingTypeId:meetingType.id,
+                                                 meetingType: meetingType.name])
     }
     def create() {
         renderOutput(createMeetingLogActionService, params)
@@ -64,10 +63,12 @@ class MeetingLogController extends BaseController {
     }
     def detailsLog(){
         long serviceId = Long.parseLong(params.serviceId.toString())
+        long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
+        SystemEntity meetingType = SystemEntity.read(meetingTypeId)
         SimpleDateFormat simpleDF = new SimpleDateFormat("dd-MMM-yy")
         Date heldOn = simpleDF.parse(params.heldOn.toString());
-        List<GroovyRowResult> resultSet = meetingLogService.dateWiseMeetingDetails(serviceId, DateUtility.getSqlDate(heldOn))
-        render(view: "/reports/statistical/showMeetingDetails", model: [resultSet:resultSet[0]])
+        List<GroovyRowResult> resultSet = meetingLogService.dateWiseMeetingDetails(meetingTypeId,serviceId, DateUtility.getSqlDate(heldOn))
+        render(view: "/reports/statistical/showMeetingDetails", model: [resultSet:resultSet[0],meetingType: meetingType.name])
     }
 
 }

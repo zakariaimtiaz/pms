@@ -25,7 +25,7 @@
 </style>
 <script language="javascript">
     $(document).ready(function () {
-        defaultPageTile("Meeting Log details","reports/showMeetingStatus");
+        defaultPageTile("Meeting Log details","reports/showMeetingStatus?type=${meetingType}");
     });
 </script>
 <div id="dd">
@@ -40,6 +40,10 @@
         <tr>
             <td width="20%" class="active">Sector/CSU</td>
             <td>${resultSet.service}</td>
+        </tr>
+        <tr>
+            <td width="20%" class="active">Meeting Type</td>
+            <td>${resultSet.meeting_type}</td>
         </tr>
         <tr>
             <td width="20%" class="active">Date</td>

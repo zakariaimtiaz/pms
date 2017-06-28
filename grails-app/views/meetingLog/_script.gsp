@@ -13,7 +13,7 @@
 </script>
 
 <script language="javascript">
-    var gridMeetingLog,dataSource,logModel,heldOn,dropDownService,multiSelectAttendees,serviceId, isSubmit;
+    var gridMeetingLog,dataSource,logModel,heldOn,dropDownService,multiSelectAttendees,serviceId,isSubmit;
 
     $(document).ready(function () {
         onLoadLogPage();
@@ -178,7 +178,7 @@
         dataSource = new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "${createLink(controller: 'meetingLog', action: 'list')}",
+                    url: "${createLink(controller: 'meetingLog', action: 'list')}?meetingTypeId=" + ${meetingTypeId},
                     dataType: "json",
                     type: "post"
                 }

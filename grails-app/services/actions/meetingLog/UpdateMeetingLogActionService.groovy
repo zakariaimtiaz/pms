@@ -2,6 +2,7 @@ package actions.meetingLog
 
 import com.model.ListMeetingLogActionServiceModel
 import com.pms.MeetingLog
+import com.pms.SystemEntity
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -13,8 +14,11 @@ import service.MeetingLogService
 class UpdateMeetingLogActionService extends BaseService implements ActionServiceIntf {
 
     private static final String UPDATE_SUCCESS_MESSAGE = "Log has been updated successfully"
-    private static final String ALREADY_EXIST = "Meeting already held for this week"
+    private static final String ALREADY_EXIST_WEEK = "Meeting already held for this week"
+    private static final String ALREADY_EXIST_MONTH = "Meeting already held for this month"
     private static final String MEETING_LOG = "meetingLog"
+    private static final String WEEKLY = "Weekly"
+    private static final String MONTHLY = "Monthly"
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -27,12 +31,21 @@ class UpdateMeetingLogActionService extends BaseService implements ActionService
             }
             long id = Long.parseLong(params.id.toString())
             long serviceId = Long.parseLong(params.serviceId.toString())
-
-            boolean isWeeklyMeetingHeld = meetingLogService.isWeeklyMeetingHeldUpdate(DateUtility.parseMaskedDate(params.heldOn.toString()),serviceId,id)
-
-            if (isWeeklyMeetingHeld) {
-                return super.setError(params, ALREADY_EXIST)
+            long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
+            SystemEntity meetingType = SystemEntity.read(meetingTypeId)
+            Date date = DateUtility.parseMaskedDate(params.heldOn.toString())
+            if(meetingType.name.equals(WEEKLY)){
+                boolean isWeeklyMeetingHeld = meetingLogService.isWeeklyMeetingHeldUpdate(date,serviceId,id,meetingTypeId)
+                if (isWeeklyMeetingHeld) {
+                    return super.setError(params, ALREADY_EXIST_WEEK)
+                }
+            }else if(meetingType.name.equals(MONTHLY)){
+                boolean isMonthlyMeetingHeld = meetingLogService.isMonthlyMeetingHeldUpdate(date, serviceId, id, meetingTypeId)
+                if (isMonthlyMeetingHeld) {
+                    return super.setError(params, ALREADY_EXIST_MONTH)
+                }
             }
+
             MeetingLog oldObject = MeetingLog.read(id)
             MeetingLog meetingLog = buildObject(params,oldObject)
             params.put(MEETING_LOG, meetingLog)

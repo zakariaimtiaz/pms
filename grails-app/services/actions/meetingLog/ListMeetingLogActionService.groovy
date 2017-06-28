@@ -18,9 +18,11 @@ class ListMeetingLogActionService extends BaseService implements ActionServiceIn
     @Transactional(readOnly = true)
     public Map execute(Map result) {
         try {
+            long meetingTypeId = Long.parseLong(result.meetingTypeId.toString())
             try{
                 long serviceId = Long.parseLong(result.serviceId.toString())
                 Closure additionalParam = {
+                    'eq'('meetingTypeId', meetingTypeId)
                     'eq'('serviceId', serviceId)
                 }
                 Map resultMap = super.getSearchResult(result, ListMeetingLogActionServiceModel.class,additionalParam)
@@ -30,6 +32,7 @@ class ListMeetingLogActionService extends BaseService implements ActionServiceIn
             } catch (Exception ex) {}
             List<Long> lst = currentUserDepartmentList()
             Closure additionalParam = {
+                'eq'('meetingTypeId', meetingTypeId)
                 'in'('serviceId', lst)
             }
             Map resultMap = super.getSearchResult(result, ListMeetingLogActionServiceModel.class,additionalParam)

@@ -17,7 +17,7 @@
             change: populateMeetingGrid
         }).data("kendoDatePicker");
         $('#year').val(str);
-        defaultPageTile("Weekly meeting",null);
+        defaultPageTile("${meetingType} meeting","reports/showMeetingStatus?type=${meetingType}");
     }
 
     function populateMeetingGrid(){
@@ -26,7 +26,7 @@
             showError('Please select year');
             return false;
         }
-        var params = "?year="+year;
+        var params = "?year="+year+"&meetingTypeId=" + ${meetingTypeId};
         var url ="${createLink(controller: 'reports', action: 'listMeetingStatus')}" + params;
         populateGridKendo(gridMeeting, url);
         return false;
@@ -48,6 +48,7 @@
                         SERVICE_ID: { type: "number" },
                         SERVICE_NAME: { type: "string" },
                         SERVICE_STR: { type: "string" },
+                        MEETING_TYPE: { type: "string" },
                         January: { type: "string" },
                         February: { type: "string" },
                         March: { type: "string" },
@@ -88,41 +89,52 @@
             columns: [
                 {field: "SERVICE_STR", title: "Sector/CSU", width: 150, sortable: false, filterable: false},
                 {field: "JANUARY", title: "January", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JANUARY)#"
                 },
                 {field: "FEBRUARY", title: "February", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,FEBRUARY)#"
                 },
                 {field: "MARCH", title: "March", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,MARCH)#"
                 },
                 {field: "APRIL", title: "April", width: 80, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=formatDate(SERVICE_ID,APRIL)#"
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,APRIL)#"
                 },
                 {field: "MAY", title: "May", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,MAY)#"
                 },
                 {field: "JUNE", title: "June", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JUNE)#"
                 },
                 {field: "JULY", title: "July", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JULY)#"
                 },
                 {field: "AUGUST", title: "August", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,AUGUST)#"
                 },
                 {field: "SEPTEMBER", title: "September", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,SEPTEMBER)#"
                 },
                 {field: "OCTOBER", title: "October", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,OCTOBER)#"
                 },
                 {field: "NOVEMBER", title: "November", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,NOVEMBER)#"
                 },
                 {field: "DECEMBER", title: "December", width: 80, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=formatDate(MEETING_TYPE,SERVICE_ID,DECEMBER)#"
                 }
             ],
             filterable: {
@@ -131,19 +143,30 @@
         });
         gridMeeting = $("#gridMeeting").data("kendoGrid");
     }
-    function formatDate(serviceId,dateStr){
+    function formatDate(meetingType,serviceId,dateStr){
         var result = ''
         var temp = new Array();
         temp = dateStr.split(",");
-        for (a in temp) {
-            if(temp[a]!= ''){
-                result += '<a><span style="cursor:pointer;" onclick="loadPage(' + serviceId + ',\'' + temp[a] + '\');">'+ temp[a]+ '</span></a><br/>';
+
+        var isSysAdmin = ${isSysAdmin},
+            userServiceId = ${userServiceId};
+        if(!isSysAdmin && userServiceId!=serviceId && meetingType=='Weekly'){
+            for (a in temp) {
+                if(temp[a]!= ''){
+                    result += '<span style="cursor:pointer;">'+ temp[a]+ '</span><br/>';
+                }
+            }
+        }else{
+            for (a in temp) {
+                if(temp[a]!= ''){
+                    result += '<a><span style="cursor:pointer;" onclick="loadPage(' + ${meetingTypeId} + ','+ serviceId + ',\'' + temp[a] + '\');">'+ temp[a]+ '</span></a><br/>';
+                }
             }
         }
         return result;
     }
-    function loadPage(serviceId, date) {
-        var url = "${createLink(controller: 'meetingLog', action: 'detailsLog')}?serviceId=" + serviceId + "&heldOn=" + date;
+    function loadPage(meetingTypeId,serviceId, date) {
+        var url = "${createLink(controller: 'meetingLog', action: 'detailsLog')}?serviceId=" + serviceId + "&meetingTypeId=" + meetingTypeId+ "&heldOn=" + date;
         router.navigate(formatLink(url));
     }
 

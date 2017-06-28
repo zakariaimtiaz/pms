@@ -13,14 +13,18 @@ import actions.reports.yearly.DownloadYearlySPDetailsActionService
 import actions.reports.yearly.ListYearlySPActionService
 import com.pms.PmMcrsLog
 import com.pms.SecUser
+import com.pms.SystemEntity
 import grails.converters.JSON
+import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
 import pms.utility.DateUtility
 import service.MeetingLogService
 import service.PmActionsService
 
 class ReportsController  extends BaseController  {
+
     BaseService baseService
+    SpringSecurityService springSecurityService
     PmActionsService pmActionsService
     MeetingLogService meetingLogService
 
@@ -62,10 +66,17 @@ class ReportsController  extends BaseController  {
     }
 
     def showMeetingStatus() {
-        render(view: "/reports/statistical/showMeeting")
+        def loggedUser = springSecurityService.principal
+        SecUser user = SecUser.read(loggedUser.id)
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+
+        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),5L)
+        render(view: "/reports/statistical/showMeeting", model: [isSysAdmin: isSysAdmin,meetingTypeId:meetingType.id,
+                                                                 userServiceId: user.serviceId, meetingType: meetingType.name])
     }
     def listMeetingStatus() {
-        List<GroovyRowResult> lst = meetingLogService.lstDepartmentWeeklyMeetingStatus(params.year.toString())
+        long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
+        List<GroovyRowResult> lst = meetingLogService.lstDepartmentWeeklyMeetingStatus(params.year.toString(), meetingTypeId)
         render lst as JSON
     }
 
