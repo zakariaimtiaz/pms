@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="edDashboardUnresolve_All_subreport1" language="groovy" pageWidth="832" pageHeight="572" orientation="Landscape" columnWidth="832" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6fdbea04-6465-4ee7-8c30-265e7b8be426">
+	<property name="ireport.zoom" value="0.9090909090909121"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="serviceId" class="java.lang.Long"/>
+	<parameter name="month" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ROOT_DIR" class="java.lang.String"/>
+	<parameter name="issueStr" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT ed.id ,ed.version,ed.service_id,pss.name,
+case when edi.is_additional = true then 'Sector/CSU Specific Issues'
+else edi.issue_name end AS issueName,
+case when edi.is_additional = true then 6 else edi.id end AS issueId,
+case when edi.is_additional = true then 'F'
+else edi.pre_indx end AS pre_indx,ed.is_resolve,ed.followup_month_for,
+CASE WHEN ed.is_followup=1 THEN DATE_FORMAT(ed.followup_month_for, '%M %Y')
+ELSE DATE_FORMAT(ed.month_for, '%M %Y')END AS issuedMonthStr,
+CASE WHEN ed.is_followup=1 THEN 'Follow-up'
+WHEN ed.is_resolve = 1 THEN 'Resolved' ELSE 'New' END AS issue_status,
+ed.description,ed.ed_advice AS edAdvice,ed.remarks AS remarks
+FROM  ed_dashboard ed
+JOIN ed_dashboard_issues edi ON ed.issue_id=edi.id
+LEFT JOIN pm_service_sector pss ON ed.service_id=pss.id
+WHERE ed.month_for =DATE($P{month})
+AND edi.id IN($P!{issueStr})
+AND ed.service_id IN (SELECT DISTINCT(service_id) FROM pm_mcrs_log
+WHERE is_submitted_db = TRUE AND MONTH = MONTH($P{month}) AND YEAR=YEAR($P{month}))
+ORDER BY pss.name;]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="version" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="service_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issueName" class="java.lang.String"/>
+	<field name="issueId" class="java.lang.Long"/>
+	<field name="pre_indx" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="is_resolve" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="followup_month_for" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuedMonthStr" class="java.lang.String"/>
+	<field name="issue_status" class="java.lang.String"/>
+	<field name="description" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="edAdvice" class="java.lang.String"/>
+	<field name="remarks" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="service" keepTogether="true">
+		<groupExpression><![CDATA[$F{service_id}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true">
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="831" height="20" uuid="de12f757-abe0-4f6b-84f7-cab624abff9b"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA["CSU/Sector : "+ $F{name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="303" y="0" width="237" height="20" isPrintWhenDetailOverflows="true" uuid="95550cb1-8516-4972-894c-5aab4e44bdcb"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="540" y="0" width="191" height="20" isPrintWhenDetailOverflows="true" uuid="0066fc4c-b955-471f-8723-10dcbbcb8318"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{edAdvice}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="731" y="0" width="100" height="20" isPrintWhenDetailOverflows="true" uuid="d450274f-cf66-4e47-b01e-7c196fd519bf"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Issued On : "+$F{issuedMonthStr} + "\n" +
+"Issue Status : " + $F{issue_status}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="303" height="20" isPrintWhenDetailOverflows="true" uuid="ae1d1104-a574-4577-8264-eceb702c0648"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
