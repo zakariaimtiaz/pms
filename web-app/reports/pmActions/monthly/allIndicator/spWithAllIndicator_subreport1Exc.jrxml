@@ -21,7 +21,7 @@ CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(cum_acv, '%') ELSE cum_
 CONCAT(FLOOR((cum_acv/cum_tar * 100)-100), '%') AS cum_var,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
-a.actions,a.start,a.end, ai.indicator,ai.indicator_type,idd.remarks ind_remarks,
+a.actions,a.start,a.end, ai.indicator,ai.indicator_type,(SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
 SUM(CASE WHEN  cm.sl_index=MONTH(DATE($P{currentMonth})) THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=MONTH(DATE($P{currentMonth})) THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
 SUM(CASE WHEN  cm.sl_index=MONTH(DATE($P{currentMonth})) THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
@@ -355,13 +355,11 @@ WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND a.service_id = $P{service
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="604" y="0" width="118" height="20" uuid="afa990f3-081f-4bfc-adf7-df553b9971a8">
-					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
-				</reportElement>
+				<reportElement stretchType="RelativeToTallestObject" x="604" y="0" width="118" height="20" uuid="afa990f3-081f-4bfc-adf7-df553b9971a8"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.0" lineColor="#939597"/>
+					<bottomPen lineWidth="0.25" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center">

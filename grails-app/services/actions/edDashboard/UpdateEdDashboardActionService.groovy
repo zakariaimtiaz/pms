@@ -32,10 +32,10 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
     public Map executePreCondition(Map params) {
         try {
             if (!params.type) {
-                if (!params.hfId && !params.description) {
+                if (!params.hfId && !params.description && !params.remarks) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
-                else if(params.hfId=='' || params.description==''){
+                else if(params.hfId=='' || params.description=='' || params.remarks==''){
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
             }

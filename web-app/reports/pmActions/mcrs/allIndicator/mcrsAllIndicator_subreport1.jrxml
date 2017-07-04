@@ -384,13 +384,11 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="540" y="0" width="91" height="20" uuid="84b33c34-ebd4-47f3-9f01-cb8b774509e2">
-					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
-				</reportElement>
+				<reportElement stretchType="RelativeToTallestObject" x="540" y="0" width="91" height="20" uuid="84b33c34-ebd4-47f3-9f01-cb8b774509e2"/>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.0" lineColor="#939597"/>
+					<bottomPen lineWidth="0.25" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center">

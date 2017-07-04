@@ -340,7 +340,7 @@
                         </div>
                     </div>
                     <div align="left">
-                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
+                        <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
                     </div>
                     <div class="form-group">
 

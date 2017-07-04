@@ -11,6 +11,9 @@
 	<parameter name="month" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Workings\\pms\\web-app\\reports\\edDashboard\\"]]></defaultValueExpression>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT CASE WHEN edi.is_additional = TRUE THEN 6 ELSE edi.id END issueId,
 CASE WHEN edi.is_additional = TRUE THEN 'Sector/CSU Specific Issues' ELSE edi.issue_name END  issueName,
@@ -75,10 +78,10 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 			<staticText>
 				<reportElement x="0" y="39" width="303" height="20" uuid="5da20647-085f-4f96-bc0f-91a8c428240b"/>
 				<box leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" pdfFontName="Helvetica-Bold"/>
@@ -88,10 +91,10 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 			<staticText>
 				<reportElement x="303" y="39" width="237" height="20" uuid="fe046b74-1352-4464-804f-29bcc54f2766"/>
 				<box leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" pdfFontName="Helvetica-Bold"/>
@@ -101,10 +104,11 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 			<staticText>
 				<reportElement x="540" y="39" width="191" height="20" uuid="9fcd053f-cb95-4d33-91be-3a1e815e1edd"/>
 				<box leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<pen lineColor="#999999"/>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" pdfFontName="Helvetica-Bold"/>
@@ -114,10 +118,10 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 			<staticText>
 				<reportElement x="731" y="39" width="100" height="20" uuid="b88f7b73-901e-4748-9974-1de616a324a2"/>
 				<box leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" pdfFontName="Helvetica-Bold"/>
@@ -167,4 +171,34 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 			</textField>
 		</band>
 	</pageFooter>
+	<summary>
+		<band height="27">
+			<subreport>
+				<reportElement x="0" y="4" width="832" height="22" uuid="21dd48cb-2b74-4c77-9c82-93b41ecc3c2b"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO_DIR">
+					<subreportParameterExpression><![CDATA[$P{LOGO_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROOT_DIR">
+					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="serviceId">
+					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="month">
+					<subreportParameterExpression><![CDATA[$P{month}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "/edDashboardUnresolve_All_subreport2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
 </jasperReport>
