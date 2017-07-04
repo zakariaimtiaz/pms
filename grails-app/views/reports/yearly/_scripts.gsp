@@ -13,7 +13,7 @@
         var data = [];
         if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             dropDownService.value(${serviceId});
-            dropDownService.readonly(true);
+//            dropDownService.readonly(true);
             data = ["All Indicator", "Action Indicator"];
         }else{
             data = ["All Indicator", "Action Indicator", "Without Achievement"];

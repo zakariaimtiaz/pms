@@ -19,6 +19,7 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
     private static final String DEFAULT_VALUE = 'defaultValue'
     private static final String REQUIRED = 'required'
     private static final String IS_IN_SP = 'is_in_sp'
+    private static final String CONSIDER_ALL = 'consider_all'
     private static final String VALIDATION_MESSAGE = 'validationmessage'
     private static final String DEFAULT_MESSAGE = 'Required'
     private static final String DATA_MODEL_NAME = 'data_model_name'
@@ -50,6 +51,7 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
             params.put(SHOW_HINTS, params.show_hints ? new Boolean(Boolean.parseBoolean(params.show_hints.toString())) : Boolean.TRUE)
             params.put(REQUIRED, params.required ? new Boolean(Boolean.parseBoolean(params.required.toString())) : Boolean.FALSE)
             params.put(IS_IN_SP, params.is_in_sp ? new Boolean(Boolean.parseBoolean(params.is_in_sp.toString())) : Boolean.FALSE)
+            params.put(CONSIDER_ALL, params.consider_all ? new Boolean(Boolean.parseBoolean(params.consider_all.toString())) : Boolean.FALSE)
             params.put(VALIDATION_MESSAGE, params.validationmessage ? params.validationmessage : DEFAULT_MESSAGE)
             params.put(DEFAULT_VALUE, params.defaultValue ? new Long(Long.parseLong(params.defaultValue.toString())) : null)
 
@@ -69,7 +71,8 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
     public Map execute(Map result) {
         try {
             boolean isInSP = (boolean) result.get(IS_IN_SP)
-            List<GroovyRowResult> lstServices = (List<GroovyRowResult>) listServices(isInSP)
+            boolean considerAll = (boolean) result.get(CONSIDER_ALL)
+            List<GroovyRowResult> lstServices = (List<GroovyRowResult>) listServices(isInSP,considerAll)
             String html = buildDropDown(lstServices, result)
             result.html = html
             return result
@@ -163,15 +166,17 @@ class GetDropDownServiceTaglibActionService extends BaseService implements Actio
         return html + script
     }
 
-    private List<GroovyRowResult> listServices(boolean isInSP) {
+    private List<GroovyRowResult> listServices(boolean isInSP,boolean considerAll) {
         String spStr = EMPTY_SPACE
-        if(isInSP) spStr = "AND is_in_sp IN (${isInSP})"
+        String considerStr = EMPTY_SPACE
         String param = currentUserDepartmentListStr()
+        if(isInSP) spStr = " AND is_in_sp IN (${isInSP}) "
+        if(!considerAll) considerStr = " AND id IN (${param}) "
         String queryForList = """
             SELECT id, CONCAT(name,' (',short_name,')') AS name
                 FROM mis.service
-            WHERE is_displayble = TRUE AND id IN (${param})
-            ${spStr}
+            WHERE is_displayble = TRUE
+            ${considerStr} ${spStr}
             ORDER BY name ASC
         """
         List<GroovyRowResult> lstServices = groovySql_mis.rows(queryForList)
