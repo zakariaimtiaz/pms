@@ -13,7 +13,7 @@
         var data = ["All Indicator", "Action Indicator"];
         if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}){
             dropDownService.value(${serviceId});
-//            dropDownService.readonly(true);
+            dropDownService.readonly(true);
         }
         var str = moment().format('YYYY');
         $('#year').kendoDatePicker({
