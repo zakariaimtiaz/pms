@@ -33,6 +33,7 @@
                             <app:dropDownService
                                     class="kendo-drop-down" is_in_sp="true"
                                     id="serviceId" name="serviceId" tabindex="2"
+                                    consider_all="true"
                                     data_model_name="dropDownService">
                             </app:dropDownService>
                         </div>
