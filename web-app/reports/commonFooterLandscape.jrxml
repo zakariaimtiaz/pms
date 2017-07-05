@@ -4,9 +4,9 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<title>
-		<band height="18" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<staticText>
-				<reportElement x="641" y="2" width="170" height="16" forecolor="#2C2A2B" uuid="1d01fb13-653c-4d58-aeb7-81041653d316"/>
+				<reportElement x="650" y="0" width="170" height="17" forecolor="#2C2A2B" uuid="1d01fb13-653c-4d58-aeb7-81041653d316"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Cambria" size="8"/>
@@ -14,11 +14,11 @@
 				<text><![CDATA[Application developed by MIS Department.]]></text>
 			</staticText>
 			<textField pattern="dd-MMM-yyyy">
-				<reportElement x="9" y="0" width="168" height="17" forecolor="#2C2A2B" uuid="0c3833a9-d9ef-4d30-aadc-9f710090dabd"/>
-				<textElement verticalAlignment="Bottom">
+				<reportElement x="9" y="1" width="256" height="16" forecolor="#2C2A2B" uuid="0c3833a9-d9ef-4d30-aadc-9f710090dabd"/>
+				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Downloaded On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" mode="Transparent" x="0" y="0" width="832" height="1" backcolor="#FFFFFF" uuid="731dc29a-0466-4de0-b781-13c4399f656e"/>

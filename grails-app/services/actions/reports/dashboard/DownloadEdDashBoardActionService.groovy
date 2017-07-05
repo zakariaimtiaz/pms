@@ -27,7 +27,7 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
     private static final String JASPER_FILE_UPCOMING_ALL = 'edDashboardUpcoming_All'
 
     private static final String REPORT_TITLE_LBL = 'reportTitle'
-    private static final String REPORT_TITLE = ' ED Dashboard of '
+    private static final String REPORT_TITLE = " ED\'s Dashboard of "
     private static final String SERVICE_ID = "serviceId"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
@@ -142,7 +142,7 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
         String titleStr =""
         if(result.get(SERVICE_ID)>0) {
             outputFileName = result.get(MONTH_INT) + DOT_STR + result.get(SERVICE_SHORT_NAME) + REPORT_TITLE + s + PDF_EXTENSION
-            titleStr = result.get(SERVICE_NAME) + REPORT_TITLE + EMPTY_SPACE + s
+            titleStr = REPORT_TITLE + result.get(SERVICE_NAME) + EMPTY_SPACE +" for "+ s
         }
         else{
             outputFileName = result.get(MONTH_INT) + DOT_STR + REPORT_TITLE + s + PDF_EXTENSION
