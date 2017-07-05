@@ -48,7 +48,12 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                     details.achievement = Integer.parseInt(achievementStr)
                 else
                     details.achievement = 0
-                details.save()
+
+                if(details.target>0 && details.achievement==0 && remarksStr.isEmpty()){
+                    return super.setError(params, "Sorry! Remarks is mandatory when achievement is 0.")
+                }else {
+                    details.save()
+                }
             }
             return params
         } catch (Exception ex) {

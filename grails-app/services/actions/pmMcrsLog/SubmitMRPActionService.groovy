@@ -9,12 +9,13 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.PmActionsService
 
 @Transactional
 class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
 
     def mailService
-
+    PmActionsService pmActionsService
     private static final String SAVE_SUCCESS_MESSAGE = "MRP has been submitted successfully"
     private static final String MRP_STR = "MRP"
     private static final String PM_MCRS_LOG = "pmMcrsLog"
@@ -28,6 +29,10 @@ class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
         try {
             long id = Long.parseLong(params.id.toString())
             PmMcrsLog pmMcrsLog = PmMcrsLog.read(id)
+            boolean isSubmittable=pmActionsService.isMRPSubmittable(pmMcrsLog.serviceId,pmMcrsLog.monthStr,pmMcrsLog.year)
+            if(!isSubmittable){
+                return super.setError(params, "Sorry! MRP achievement claim is not fully completed.")
+            }
             params.put(PM_MCRS_LOG, pmMcrsLog)
             return params
         } catch (Exception ex) {
