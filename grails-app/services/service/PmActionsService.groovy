@@ -649,4 +649,20 @@ class PmActionsService extends BaseService {
             dec?.delete()
         }
     }
+    public boolean isMRPSubmittable(long serviceId,String monthName,long year) {
+        String queryForList = """
+            SELECT COUNT(a.id) c
+                FROM pm_actions a
+                LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id AND a.service_id=${serviceId} AND a.year=${year}
+                LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthName}'
+                WHERE  idd.target > 0 AND COALESCE(idd.achievement,0)=0 AND (idd.remarks IS NULL OR idd.remarks='')
+        """
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        int count =(int) lst[0].c
+        boolean isSubmittable=true
+        if(count>0){
+            isSubmittable=false
+        }
+        return isSubmittable
+    }
 }

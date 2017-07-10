@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsAllIndicator" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="10" bottomMargin="20" isSummaryNewPage="true" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
 	<property name="ireport.zoom" value="1.000000000000004"/>
-	<property name="ireport.x" value="12"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REPORT_DIR" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -39,7 +39,7 @@ GROUP BY a.goal_id]]>
 		<band height="85">
 			<staticText>
 				<reportElement x="771" y="55" width="61" height="30" uuid="bd6c9983-86c6-461b-b877-c8593b57977b"/>
-				<box topPadding="1">
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -52,7 +52,7 @@ GROUP BY a.goal_id]]>
 			</staticText>
 			<staticText>
 				<reportElement x="540" y="55" width="91" height="30" uuid="c7906e53-f968-466b-9448-3f374dad666b"/>
-				<box topPadding="1">
+				<box topPadding="3" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -130,7 +130,7 @@ GROUP BY a.goal_id]]>
 			</staticText>
 			<staticText>
 				<reportElement x="716" y="55" width="55" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
-				<box topPadding="1">
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -143,7 +143,7 @@ GROUP BY a.goal_id]]>
 			</staticText>
 			<staticText>
 				<reportElement x="631" y="55" width="85" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
-				<box topPadding="1">
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -234,7 +234,7 @@ GROUP BY a.goal_id]]>
 			</staticText>
 			<staticText>
 				<reportElement x="230" y="55" width="96" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+				<box topPadding="3" leftPadding="2" bottomPadding="2" rightPadding="3">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -333,7 +333,7 @@ GROUP BY a.goal_id]]>
 					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mcrsAllIndicator_subreport1.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+ "mcrsAllIndicator_subreport1.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="30" height="20" uuid="fda4ee4a-8501-4019-88c9-8c34976052bf"/>

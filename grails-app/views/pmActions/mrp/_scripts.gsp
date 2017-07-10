@@ -210,7 +210,7 @@
             return ' 0% ';
         }
         if (!target && !indicatorType.match('%')) {
-            return '0';
+            return ' 0 ';
         }
         if (indicatorType.match('%')) {
             return target + ' % ';

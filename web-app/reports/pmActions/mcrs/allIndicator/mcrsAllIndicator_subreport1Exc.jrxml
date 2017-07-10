@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsAllIndicator_subreport1Exc" language="groovy" pageWidth="832" pageHeight="572" orientation="Landscape" columnWidth="832" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6fdbea04-6465-4ee7-8c30-265e7b8be426">
 	<property name="ireport.zoom" value="1.0000000000000029"/>
-	<property name="ireport.x" value="4"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="serviceId" class="java.lang.Long"/>
 	<parameter name="year" class="java.lang.Integer"/>
@@ -49,7 +49,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN pm_service_sector sc ON sc.id = a.service_id
- WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId}
+ WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId} AND (DATE($P{currentMonth}) <= a.end AND DATE($P{currentMonth}) >= a.start)
                 GROUP BY ai.id
                 ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0,@curmon := MONTH(DATE($P{currentMonth}))) r
@@ -86,7 +86,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 	<field name="mon_tar" class="java.lang.String"/>
 	<field name="mon_acv" class="java.lang.String"/>
 	<field name="mon_var" class="java.lang.String"/>
-	<field name="variance" class="java.lang.Number"/>
+	<field name="variance" class="java.math.BigDecimal"/>
 	<field name="cum_tar" class="java.lang.String"/>
 	<field name="cum_acv" class="java.lang.String"/>
 	<field name="cum_var" class="java.lang.String"/>
@@ -132,10 +132,9 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="230" y="0" width="133" height="20" uuid="99c06809-6f82-4a42-b424-6c66542634cb"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
@@ -144,11 +143,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="363" y="0" width="38" height="20" uuid="fef2c3b5-b92b-44b7-8be2-f7905841ab6a"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -157,11 +155,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="489" y="0" width="30" height="20" uuid="509f553c-599f-4d95-9b24-05e7016a08f1"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -170,11 +167,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="519" y="0" width="29" height="20" uuid="9361af7f-9670-4864-9cbb-a37564016c6b"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -183,11 +179,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="401" y="0" width="30" height="20" uuid="19736e2b-092f-4bf2-a59a-9978fc0fdf2a"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -196,11 +191,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="431" y="0" width="29" height="20" uuid="8ba3160b-46ef-4fb4-820b-e107a6f51137"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -266,9 +260,9 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 					<printWhenExpression><![CDATA[$F{row_number}!=1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -276,10 +270,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<reportElement stretchType="RelativeToTallestObject" x="180" y="0" width="50" height="20" uuid="cd00fb67-397d-4e08-9233-d7a5a1d25bd9">
 					<printWhenExpression><![CDATA[$F{row_number}!=1]]></printWhenExpression>
 				</reportElement>
-				<box>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -287,20 +281,19 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<reportElement stretchType="RelativeToTallestObject" x="722" y="0" width="110" height="20" uuid="856aab38-d0ac-4b96-b0d1-5fb6ad0a5b61">
 					<printWhenExpression><![CDATA[$F{row_number}!=1]]></printWhenExpression>
 				</reportElement>
-				<box>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="548" y="0" width="29" height="20" uuid="2135c8b2-a92e-431b-8895-a36a0d56dfb6"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -309,11 +302,10 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="460" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -335,17 +327,25 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<reportElement stretchType="RelativeToTallestObject" x="577" y="0" width="145" height="20" uuid="82b003ca-957c-470b-ab00-2fdabadef000">
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
-				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.0" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ind_remarks}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="ab04a3bd-d996-42fe-a8c4-70e5ed169acf"/>
+				<box>
+					<topPen lineWidth="0.25" lineColor="#939597"/>
+					<leftPen lineWidth="0.25" lineColor="#939597"/>
+					<bottomPen lineWidth="0.25" lineColor="#939597"/>
+					<rightPen lineWidth="0.25" lineColor="#939597"/>
+				</box>
+			</frame>
 		</band>
 	</detail>
 </jasperReport>
