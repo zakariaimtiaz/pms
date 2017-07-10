@@ -9,7 +9,7 @@
 </style>
 
 <script language="javascript">
-    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue,notSubmitted, tmp1 = '',dropDownStatusType;
+    var dropDownService,gridHR, gridField, gridGovt, gridDonor, gridNP, gridCssp,gridNoIssue,notSubmitted, tmp1 = '',dropDownStatusType,activeTabId='';
     $(document).ready(function () {
         onLoadInfoPage();
         initGridHR();
@@ -20,8 +20,9 @@
         initGridCssp();
         initGridNoIssue();
         initGridNotSubmitted();
-        activaTab('menu1');
+       // activaTab('menu1');
         populateAllDashboard();
+
     });
 
     function onLoadInfoPage() {
@@ -118,6 +119,12 @@
                         if(data.hrCount!='undefined'){
                             $("#spanHR").html('');
                             $("#spanHR").html('HR Issues (' + data.hrCount + ')');
+
+                            if(data.hrCount>0 && activeTabId=='') {
+                                activeTabId = 'menu1';
+                                    activaTab(activeTabId);
+
+                            }
                         }
                         return data;
                     }
@@ -181,6 +188,11 @@
                         if(data.fldCount!='undefined'){
                             $("#spanFld").html('');
                             $("#spanFld").html('Beneficiary/Field Issues (' + data.fldCount + ')');
+
+                            if(data.fldCount>0 && activeTabId==''){
+                                activeTabId='menu2';
+                                    activaTab(activeTabId);
+                            }
                         }
                         return data;
                     }
@@ -244,6 +256,11 @@
                         if(data.govtCount!='undefined'){
                             $("#spanGvt").html('');
                             $("#spanGvt").html('Government Issues (' + data.govtCount + ')');
+
+                            if(data.govtCount>0 && activeTabId==''){
+                                activeTabId='menu3';
+                                    activaTab(activeTabId);
+                            }
                         }
                         return data;
                     }
@@ -307,6 +324,11 @@
                         if(data.dnrCount!='undefined'){
                             $("#spanDnr").html('');
                             $("#spanDnr").html('Donor Issues (' + data.dnrCount + ')');
+
+                            if(data.dnrCount>0 && activeTabId==''){
+                                activeTabId='menu4';
+                                    activaTab(activeTabId);
+                            }
                         }
                         return data;
                     }
@@ -370,6 +392,11 @@
                         if(data.npCount!='undefined'){
                             $("#spanNP").html('');
                             $("#spanNP").html('New Project Issues (' + data.npCount + ')');
+
+                            if(data.npCount>0 && activeTabId==''){
+                                activeTabId='menu5';
+                                    activaTab(activeTabId);
+                            }
                         }
                         return data;
                     }
@@ -433,6 +460,14 @@
                         if(data.csspCount!='undefined'){
                             $("#spanCssp").html('');
                             $("#spanCssp").html('CSU/Sector Specific Issues (' + data.csspCount + ')');
+
+                            if(data.csspCount>0 && activeTabId==''){
+                                activeTabId='menu6';
+                                activaTab(activeTabId);
+                            }
+                            else{
+                                activaTab('menu1');
+                            }
                         }
                         return data;
                     }
@@ -564,6 +599,7 @@
 
     function populateAllDashboard() {
         tmp1 = '';
+        activeTabId='';
         var serviceId = $('#serviceId').val();
         if(serviceId==''){ serviceId = 0;}
         var month = $('#month').val();
