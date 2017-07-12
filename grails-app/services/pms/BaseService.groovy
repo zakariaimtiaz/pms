@@ -672,6 +672,12 @@ class BaseService extends Tools {
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
         return count > 0
     }
+    public boolean isUserDashboardRestricted(long userId) {
+        SecUser user = SecUser.read(userId)
+        SecRole roleMan = SecRole.findByAuthority("ROLE_RESTRICTED_ED_DB_USER")
+        int count = SecUserSecRole.countBySecRoleAndSecUser(roleMan, user)
+        return count > 0
+    }
 
     public long currentUserEmployeeId(){
         SecUser user = currentUserObject()
