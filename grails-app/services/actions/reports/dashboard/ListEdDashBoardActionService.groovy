@@ -36,11 +36,6 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         try {
             long serviceId = Long.parseLong(result.serviceId.toString())
             List<Long> lst = currentUserDepartmentList()
-            boolean isRestricted=baseService.isUserDashboardRestricted(springSecurityService.principal.id)
-            String restrictedStr = EMPTY_SPACE
-            if(isRestricted){
-                restrictedStr= " AND COALESCE(ss.is_restricted,FALSE) <> TRUE"
-            }
 
             String serviceStr = EMPTY_SPACE
             if (serviceId > 0) {
@@ -60,42 +55,42 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
             String statusType=result.statusType;
 
             if (result.containsKey("hr")) {
-                List lstVal = buildResultList(month, 1L, serviceStr,statusType,restrictedStr)
+                List lstVal = buildResultList(month, 1L, serviceStr,statusType)
                 result.put("hr", lstVal)
                 result.put("hrCount", lstVal.size())
             }
             if (result.containsKey("fld")) {
-                List lstVal = buildResultList(month, 2L, serviceStr,statusType,restrictedStr)
+                List lstVal = buildResultList(month, 2L, serviceStr,statusType)
                 result.put("fld", lstVal)
                 result.put("fldCount", lstVal.size())
             }
             if (result.containsKey("govt")) {
-                List lstVal = buildResultList(month, 3L, serviceStr,statusType,restrictedStr)
+                List lstVal = buildResultList(month, 3L, serviceStr,statusType)
                 result.put("govt", lstVal)
                 result.put("govtCount", lstVal.size())
             }
             if (result.containsKey("dnr")) {
-                List lstVal = buildResultList(month, 4L, serviceStr,statusType,restrictedStr)
+                List lstVal = buildResultList(month, 4L, serviceStr,statusType)
                 result.put("dnr", lstVal)
                 result.put("dnrCount", lstVal.size())
             }
             if (result.containsKey("np")) {
-                List lstVal = buildResultList(month, 5L, serviceStr,statusType,restrictedStr)
+                List lstVal = buildResultList(month, 5L, serviceStr,statusType)
                 result.put("np", lstVal)
                 result.put("npCount", lstVal.size())
             }
             if (result.containsKey("cssp")) {
-                List lstVal = buildResultCsspList(month, serviceStr,statusType,restrictedStr)
+                List lstVal = buildResultCsspList(month, serviceStr,statusType)
                 result.put("cssp", lstVal)
                 result.put("csspCount", lstVal.size())
             }
             if (result.containsKey("noIssue")) {
-                List lstVal = buildResultNoIssueList(month, serviceStr,restrictedStr)
+                List lstVal = buildResultNoIssueList(month, serviceStr)
                 result.put("noIssue", lstVal)
                 result.put("noIssueCount", lstVal.size())
             }
             if (result.containsKey("notSubmitted")) {
-                List lstVal = buildResultNotSubmittedList(month, serviceStr,restrictedStr)
+                List lstVal = buildResultNotSubmittedList(month, serviceStr)
                 result.put("notSubmitted", lstVal)
                 result.put("notSubmitCount", lstVal.size())
             }
@@ -134,7 +129,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         return result
     }
 
-    private List<GroovyRowResult> buildResultList(Date month, long issueId, String serviceStr,String statusType,String restrictedStr) {
+    private List<GroovyRowResult> buildResultList(Date month, long issueId, String serviceStr,String statusType) {
         String query = """
         SELECT ed.id 'ID',ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE', ed.remarks 'REMARKS', ed.ed_advice 'ADVICE',
         CASE WHEN ed.is_followup = TRUE  THEN TRUE ELSE FALSE END 'IS_FOLLOWUP',
@@ -150,7 +145,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
            SELECT DISTINCT(service_id) FROM pm_mcrs_log
                   WHERE is_submitted_db = TRUE AND MONTH = MONTH('${month}') AND YEAR=YEAR('${month}')
             )
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         GROUP BY ss.id
         ORDER BY ss.short_name;
         """
@@ -165,7 +160,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id AND ss.is_in_sp = TRUE
         WHERE edi.id = ${issueId} AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A' AND ed.is_resolve=1
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         GROUP BY ss.id
         ORDER BY ss.short_name;
         """
@@ -182,7 +177,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         WHERE edi.id = ${issueId} AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A' AND ed.month_for>DATE('${month}')
         AND ed.is_followup=1
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         GROUP BY ss.id
         ORDER BY ss.short_name;
         """
@@ -191,7 +186,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         return lstValue
     }
 
-    private List<GroovyRowResult> buildResultCsspList(Date month, String serviceStr,String statusType,String restrictedStr) {
+    private List<GroovyRowResult> buildResultCsspList(Date month, String serviceStr,String statusType) {
         String query = """
         SELECT ed.id 'ID',ss.id 'SERVICE_ID',ss.name 'SERVICE', ed.description 'ISSUE',  ed.remarks 'REMARKS',
          ed.ed_advice 'ADVICE', ed.is_followup 'IS_FOLLOWUP', DATE_FORMAT(ed.followup_month_for,'%M %Y')  'FOLLOWUP_MONTH'
@@ -205,7 +200,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
            SELECT DISTINCT(service_id) FROM pm_mcrs_log
                   WHERE is_submitted_db = TRUE AND MONTH = MONTH('${month}') AND YEAR=YEAR('${month}')
             )
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         ORDER BY ss.short_name;
         """
         if(statusType=="Resolved Issue") {
@@ -217,7 +212,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         LEFT JOIN pm_service_sector ss ON ed.service_id=ss.id AND ss.is_in_sp = TRUE
         WHERE edi.id IN (7,8,9,10,11,12,13,14,15,16,17,18,19,20) AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A' AND ed.is_resolve=1
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         ORDER BY ss.short_name;
         """
         }
@@ -231,7 +226,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         WHERE edi.id IN (7,8,9,10,11,12,13,14,15,16,17,18,19,20) AND ed.description IS NOT NULL AND ed.description != '' AND ed.description != 'n/a'
         AND ed.description != 'na' AND ed.description != 'NA' AND ed.description != 'N/A' AND ed.month_for>DATE('${month}')
         AND ed.is_followup=1
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         ORDER BY ss.short_name;
         """
         }
@@ -239,7 +234,7 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
         return lstValue
     }
 
-    private List<GroovyRowResult> buildResultNoIssueList(Date month, String serviceStr,String restrictedStr) {
+    private List<GroovyRowResult> buildResultNoIssueList(Date month, String serviceStr) {
         String query = """
         SELECT ss.id ID,ss.id SERVICE_ID,ss.name SERVICE, ss.department_head  DEPARTMENT_HEAD
         FROM pm_service_sector ss
@@ -253,19 +248,19 @@ class ListEdDashBoardActionService extends BaseService implements ActionServiceI
             FROM ed_dashboard
             WHERE month_for = '${month}' OR followup_month_for = '${month}'
             )
-        ${serviceStr} ${restrictedStr}
+        ${serviceStr}
         ORDER BY ss.name ASC;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
         return lstValue
     }
-    private List<GroovyRowResult> buildResultNotSubmittedList(Date month, String serviceStr,String restrictedStr) {
+    private List<GroovyRowResult> buildResultNotSubmittedList(Date month, String serviceStr) {
         String query = """
         SELECT ss.id ID, ss.id SERVICE_ID, ss.name SERVICE
             FROM pm_mcrs_log l
         LEFT JOIN pm_service_sector ss ON l.service_id = ss.id AND ss.is_in_sp = TRUE
             WHERE l.is_submitted_db <> TRUE AND l.month = MONTH('${month}') AND l.year=YEAR('${month}')
-            ${serviceStr} ${restrictedStr}
+            ${serviceStr}
         ORDER BY ss.name ASC;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)

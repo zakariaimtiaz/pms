@@ -16,12 +16,10 @@ class PmServiceSector {
     String departmentHeadGender
     String contactDesignation
     String contactEmail
-    boolean isRestricted = false
 
     static constraints = {
         staticName(nullable: true)
         departmentHead(nullable: true)
         departmentHeadGender(nullable: true)
-        isRestricted(nullable: true)
     }
 }
