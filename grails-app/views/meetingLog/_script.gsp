@@ -13,22 +13,24 @@
 </script>
 
 <script language="javascript">
-    var gridMeetingLog,dataSource,logModel,heldOn,dropDownService,multiSelectAttendees,serviceId,isSubmit;
+    var gridMeetingLog,dataSource,logModel,heldOn,multiSelectAttendees,isSubmit;
 
     $(document).ready(function () {
         onLoadLogPage();
         initMeetingLogGrid();
         initObservable();
+        <g:if test="${meetingType=='Monthly'}">
+            dropDownCategory.value('');
+            if(${categoryId==2}){
+                dropDownCategory.value(2);
+                dropDownCategory.readonly(true);
+            }
+        </g:if>
     });
 
     function onLoadLogPage() {
         $("#rowMeetingLog").hide();
-        serviceId = ${serviceId};
-        if(!${isAdmin}){
-            $("#serviceId").val(serviceId);
-            dropDownService.readonly(true);
-        }
-        $("#issues").kendoEditor({
+        $("#logStr").kendoEditor({
             encoded: false,
             resizable: {
                 content: false,
@@ -38,7 +40,6 @@
                 "bold",
                 "italic",
                 "underline",
-                "foreColor",
                 "justifyLeft",
                 "justifyCenter",
                 "justifyRight",
@@ -47,7 +48,7 @@
                 "insertOrderedList"
             ]
         });
-        $("#logStr").kendoEditor({
+        $("#descStr").kendoEditor({
             encoded: false,
             resizable: {
                 content: false,
@@ -67,6 +68,7 @@
                 "insertOrderedList"
             ]
         });
+
         $("#attendees").kendoMultiSelect({
             dataTextField: "name",
             dataValueField: "id",
@@ -81,11 +83,18 @@
     }
 
     function executePreCondition() {
+        <g:if test="${meetingType=='Monthly'}">
+        if(dropDownCategory.value()==''){
+            showError('Please select meeting category');
+            return false;
+        }
+        </g:if>
         var serviceId = $("#serviceId").val(),
         heldOn = $("#heldOn").val(),
         attendees = $("#attendees").val(),
         issues = $("#issues").val(),
-        logStr = $("#logStr").val();
+        logStr = $("#logStr").val(),
+        descStr = $("#descStr").val();
         if (serviceId=='') {
             showError('Please select service');
             return false;
@@ -100,6 +109,9 @@
             return false;
         }else if (logStr == ''){
             showError('Please insert meeting action log');
+            return false;
+        }else if (descStr == ''){
+            showError('Please insert meeting description');
             return false;
         }
         return true;
@@ -165,11 +177,9 @@
     function emptyForm() {
         clearForm($("#meetingLogForm"), $('#serviceId'));
         initObservable();
-        dropDownService.value(serviceId);
     }
     function resetForm() {
         initObservable();
-        dropDownService.value(serviceId);
         $('#rowMeetingLog').hide();
         $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
@@ -193,12 +203,15 @@
                         attendees: { type: "string" },
                         attendeesStr: { type: "string" },
                         serviceId: { type: "number" },
+                        meetingCatId: { type: "number" },
+                        meetingCat: { type: "string" },
                         meetingTypeId: { type: "number" },
                         meetingType: { type: "string" },
                         service: { type: "string" },
                         heldOn: { type: "date" },
                         issues: { type: "string" },
-                        logStr: { type: "string" }
+                        logStr: { type: "string" },
+                        descStr: { type: "string" }
                     }
                 },
                 parse: function (data) {
@@ -206,7 +219,7 @@
                     return data;
                 }
             },
-            sort: {field: 'id', dir: 'asc'},
+            sort: {field: 'heldOn', dir: 'desc'},
             pageSize: getDefaultPageSize(),
             serverPaging: true,
             serverFiltering: true,
@@ -229,27 +242,25 @@
                 buttonCount: 4
             },
             columns: [
-            <g:if test="${isAdmin}">
-                {field: "service", title: "Sector/CSU", width: 120, sortable: false, filterable: kendoCommonFilterable(97)},
-            </g:if>
-            <g:else>
-                {field: "service", title: "Sector/CSU", width: 120, sortable: false, filterable: false},
-            </g:else>
-                {field: "meetingType", title: "Type", width: 50, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
-                },
                 {field: "heldOn", title: "Date", width: 70, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(heldOn, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "attendeesStr", title: "Attendees", width: 150, sortable: false, filterable: false,
+                {field: "meetingCat", title: "Category", width: 70, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "issues", title: "Agenda",width: 100, sortable: false, filterable: false,
-                    template: "#=htmlDecode(issues)#"
+                {field: "attendeesStr", title: "Attendees", width: 100, sortable: false, filterable: false,
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
+                    template: "#=trimTextForKendo(attendeesStr,200)#"
                 },
-                {field: "logStr", title: "Action Log",width: 250, sortable: false, filterable: false,
-                    template: "#=htmlDecode(logStr)#"
+                {field: "issues", title: "Agenda",width: 150, sortable: false, filterable: false,
+                    template: "#=trimTextForKendo(issues,200)#"
+                },
+                {field: "logStr", title: "Action Log",width: 200, sortable: false, filterable: false,
+                    template: "#=trimTextForKendo(htmlDecode(logStr),300)#"
+                },
+                {field: "descStr", title: "Description",width: 300, sortable: false, filterable: false,
+                    template: "#=trimTextForKendo(htmlDecode(descStr),300)#"
                 }
             ],
             filterable: {
@@ -270,11 +281,13 @@
                         id: "",
                         version: "",
                         attendees: "",
+                        serviceId: ${serviceId},
                         meetingTypeId: ${meetingTypeId},
+                        meetingCatId: "",
                         heldOn: "",
                         issues: "",
                         logStr: "",
-                        serviceId: ""
+                        descStr: ""
                     }
                 }
         );
@@ -291,7 +304,6 @@
     }
     function addNewLog(){
         $("#rowMeetingLog").show();
-        dropDownService.value(serviceId);
     }
     function editMeetingLog() {
         if (executeCommonPreConditionForSelectKendo(gridMeetingLog, 'log') == false) {
@@ -305,12 +317,79 @@
     function resetFormValue(meetingLog) {
         $('html,body').scrollTop(0);
         logModel.set('meetingLog', meetingLog);
-        var issues = $("#issues").data("kendoEditor");
-        issues.value(htmlDecode(meetingLog.issues));
+        var descStr = $("#descStr").data("kendoEditor");
+        descStr.value(htmlDecode(meetingLog.descStr));
         var logStr = $("#logStr").data("kendoEditor");
         logStr.value(htmlDecode(meetingLog.logStr));
         if (meetingLog.attendees) multiSelectAttendees.value(meetingLog.attendees.split(","));
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
-
+    $("#gridMeetingLog").kendoTooltip({
+        show: function(e){
+            if(this.content.text().length > 200){
+                this.content.parent().css("visibility", "visible");
+            }
+        },
+        hide:function(e){
+            this.content.parent().css("visibility", "hidden");
+        },
+        filter: "td:nth-child(2)",
+        width: 300,
+        position: "top",
+        content: function (e) {
+            var dataItem = $("#gridMeetingLog").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.attendeesStr;
+        }
+    }).data("kendoTooltip");
+    $("#gridMeetingLog").kendoTooltip({
+        show: function(e){
+            if(this.content.text().length > 200){
+                this.content.parent().css("visibility", "visible");
+            }
+        },
+        hide:function(e){
+            this.content.parent().css("visibility", "hidden");
+        },
+        filter: "td:nth-child(3)",
+        width: 300,
+        position: "top",
+        content: function (e) {
+            var dataItem = $("#gridMeetingLog").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.issues;
+        }
+    }).data("kendoTooltip");
+    $("#gridMeetingLog").kendoTooltip({
+        show: function(e){
+            if(this.content.text().length > 200){
+                this.content.parent().css("visibility", "visible");
+            }
+        },
+        hide:function(e){
+            this.content.parent().css("visibility", "hidden");
+        },
+        filter: "td:nth-child(4)",
+        width: 300,
+        position: "top",
+        content: function (e) {
+            var dataItem = $("#gridMeetingLog").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.logStr;
+        }
+    }).data("kendoTooltip");
+    $("#gridMeetingLog").kendoTooltip({
+        show: function(e){
+            if(this.content.text().length > 200){
+                this.content.parent().css("visibility", "visible");
+            }
+        },
+        hide:function(e){
+            this.content.parent().css("visibility", "hidden");
+        },
+        filter: "td:nth-child(5)",
+        width: 300,
+        position: "top",
+        content: function (e) {
+            var dataItem = $("#gridMeetingLog").data("kendoGrid").dataItem(e.target.closest("tr"));
+            return dataItem.descStr;
+        }
+    }).data("kendoTooltip");
 </script>

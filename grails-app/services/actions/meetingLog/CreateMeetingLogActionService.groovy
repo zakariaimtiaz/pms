@@ -1,8 +1,10 @@
 package actions.meetingLog
 
 import com.model.ListMeetingLogActionServiceModel
+import com.pms.MeetingCategory
 import com.pms.MeetingLog
 import com.pms.SystemEntity
+import com.pms.SystemEntityType
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -19,6 +21,8 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
     private static final String MEETING_LOG = "meetingLog"
     private static final String WEEKLY = "Weekly"
     private static final String MONTHLY = "Monthly"
+    private static final String CATEGORY = "Meeting Category"
+    private static final String INTERNAL = "Inter Department"
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -34,20 +38,23 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
             long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
             SystemEntity meetingType = SystemEntity.read(meetingTypeId)
             Date date = DateUtility.parseMaskedDate(params.heldOn.toString())
+            long catId = 0L
 
             if(meetingType.name.equals(WEEKLY)){
+                catId = MeetingCategory.findByMeetingTypeIdAndName(meetingType.id, INTERNAL).id
                 boolean isWeeklyMeetingHeld = meetingLogService.isWeeklyMeetingHeld(date,serviceId,meetingTypeId)
                 if (isWeeklyMeetingHeld) {
                     return super.setError(params, ALREADY_EXIST_WEEK)
                 }
             }else if(meetingType.name.equals(MONTHLY)){
-                boolean isMonthlyMeetingHeld = meetingLogService.isMonthlyMeetingHeld(date,serviceId,meetingTypeId)
+                catId = Long.parseLong(params.meetingCatId.toString())
+                boolean isMonthlyMeetingHeld = meetingLogService.isMonthlyMeetingHeld(date,serviceId,meetingTypeId,catId)
                 if (isMonthlyMeetingHeld) {
                     return super.setError(params, ALREADY_EXIST_MONTH)
                 }
             }
 
-            MeetingLog meetingLog = buildObject(params,serviceId)
+            MeetingLog meetingLog = buildObject(params,serviceId, catId)
             params.put(MEETING_LOG, meetingLog)
             return params
         } catch (Exception ex) {
@@ -95,10 +102,11 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
         return result
     }
 
-    private static MeetingLog buildObject(Map parameterMap,long serviceId) {
+    private static MeetingLog buildObject(Map parameterMap,long serviceId, long catId) {
         parameterMap.heldOn = DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.heldOn.toString()))
         MeetingLog meetingLog = new MeetingLog(parameterMap)
         meetingLog.serviceId = serviceId
+        meetingLog.meetingCatId = catId
         return meetingLog
     }
 }

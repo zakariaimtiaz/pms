@@ -5,18 +5,21 @@ class MeetingLog {
     long id
     long version
     long meetingTypeId
+    long meetingCatId
     long serviceId
     String attendees
     String logStr
+    String descStr
     String issues
     Date heldOn
 
     static mapping = {
         meetingTypeId index: 'meeting_type_id_idx'
-        serviceId index: 'service_id_idx'
-        heldOn sqlType: 'date'
-        issues sqlType: 'text'
-        logStr sqlType: 'text'
+        meetingCatId  index: 'meeting_cat_id_idx'
+        serviceId     index: 'service_id_idx'
+        heldOn        sqlType: 'date'
+        descStr       sqlType: 'text'
+        logStr        sqlType: 'text'
     }
 
     static constraints = {

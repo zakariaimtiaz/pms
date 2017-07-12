@@ -46,6 +46,10 @@
             <td>${resultSet.meeting_type}</td>
         </tr>
         <tr>
+            <td width="20%" class="active">Category</td>
+            <td>${resultSet.meeting_cat}</td>
+        </tr>
+        <tr>
             <td width="20%" class="active">Date</td>
             <td>${resultSet.held_on}</td>
         </tr>
@@ -60,6 +64,10 @@
         <tr>
             <td width="20%" class="active">Action Log</td>
             <td>${resultSet.log_str}</td>
+        </tr>
+        <tr>
+            <td width="20%" class="active">Description</td>
+            <td>${resultSet.desc_str}</td>
         </tr>
         </tr>
         </tbody>

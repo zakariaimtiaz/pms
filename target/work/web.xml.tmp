@@ -38,9 +38,6 @@
     <listener>
         <listener-class>org.codehaus.groovy.grails.web.context.GrailsContextLoaderListener</listener-class>
     </listener>
-    <listener>
-        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-    </listener>
 
     <!-- Grails dispatcher servlet -->
     <servlet>
@@ -66,8 +63,8 @@
     </servlet-mapping>
 
     <session-config>
-        <!-- 30 minutes -->
-        <session-timeout>30</session-timeout>
+        <!-- 240 minutes -->
+        <session-timeout>240</session-timeout>
     </session-config>
 
     <welcome-file-list>

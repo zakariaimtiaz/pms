@@ -4,8 +4,11 @@ import actions.meetingLog.CreateMeetingLogActionService
 import actions.meetingLog.DeleteMeetingLogActionService
 import actions.meetingLog.ListMeetingLogActionService
 import actions.meetingLog.UpdateMeetingLogActionService
+import com.pms.PmServiceSector
 import com.pms.SecUser
+import com.pms.ServiceCategory
 import com.pms.SystemEntity
+import com.pms.SystemEntityType
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
@@ -17,6 +20,8 @@ import java.text.SimpleDateFormat
 
 
 class MeetingLogController extends BaseController {
+
+    private static final String MEETING_TYPE = "Meeting Type"
 
     static allowedMethods = [
             show: "POST", create: "POST", update: "POST",delete: "POST", list: "POST"
@@ -36,12 +41,15 @@ class MeetingLogController extends BaseController {
     def show() {
         def loggedUser = springSecurityService.principal
         SecUser user = SecUser.read(loggedUser.id)
+        PmServiceSector service = PmServiceSector.read(user.serviceId)
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
         List<GroovyRowResult> lstEmployee = secUserService.currentDepartmentEmpList(user)
         lstEmployee.remove(0)
-        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),5L)
+        SystemEntityType type = SystemEntityType.findByName(MEETING_TYPE)
+        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),type.id)
         render(view: "/meetingLog/show", model: [isAdmin:isAdmin,
                                                  serviceId:user.serviceId,
+                                                 categoryId:service.categoryId,
                                                  lstEmployee: lstEmployee as JSON,
                                                  meetingTypeId:meetingType.id,
                                                  meetingType: meetingType.name])
@@ -62,12 +70,10 @@ class MeetingLogController extends BaseController {
         renderOutput(listMeetingLogActionService, params)
     }
     def detailsLog(){
-        long serviceId = Long.parseLong(params.serviceId.toString())
+        long id = Long.parseLong(params.id.toString())
         long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
         SystemEntity meetingType = SystemEntity.read(meetingTypeId)
-        SimpleDateFormat simpleDF = new SimpleDateFormat("dd-MMM-yy")
-        Date heldOn = simpleDF.parse(params.heldOn.toString());
-        List<GroovyRowResult> resultSet = meetingLogService.dateWiseMeetingDetails(meetingTypeId,serviceId, DateUtility.getSqlDate(heldOn))
+        List<GroovyRowResult> resultSet = meetingLogService.meetingDetails(id)
         render(view: "/reports/statistical/showMeetingDetails", model: [resultSet:resultSet[0],meetingType: meetingType.name])
     }
 

@@ -146,6 +146,7 @@
     function formatDate(meetingType,serviceId,dateStr){
         var result = ''
         var temp = new Array();
+        var temp2 = new Array();
         temp = dateStr.split(",");
 
         var isSysAdmin = ${isSysAdmin},
@@ -153,20 +154,22 @@
         if(!isSysAdmin && userServiceId!=serviceId && meetingType=='Weekly'){
             for (a in temp) {
                 if(temp[a]!= ''){
-                    result += '<span style="cursor:pointer;">'+ temp[a]+ '</span><br/>';
+                    temp2 = temp[a].split("&");
+                    result += '<span style="cursor:pointer;">'+ temp2[1]+ '</span><br/>';
                 }
             }
         }else{
             for (a in temp) {
                 if(temp[a]!= ''){
-                    result += '<a><span style="cursor:pointer;" onclick="loadPage(' + ${meetingTypeId} + ','+ serviceId + ',\'' + temp[a] + '\');">'+ temp[a]+ '</span></a><br/>';
+                    temp2 = temp[a].split("&");
+                    result += '<a><span style="cursor:pointer;" onclick="loadPage(' + temp2[0] + ',' + ${meetingTypeId} +');">' + temp2[1] + '</span></a><br/>';
                 }
             }
         }
         return result;
     }
-    function loadPage(meetingTypeId,serviceId, date) {
-        var url = "${createLink(controller: 'meetingLog', action: 'detailsLog')}?serviceId=" + serviceId + "&meetingTypeId=" + meetingTypeId+ "&heldOn=" + date;
+    function loadPage(id, meetingTypeId) {
+        var url = "${createLink(controller: 'meetingLog', action: 'detailsLog')}?id=" + id + "&meetingTypeId=" + meetingTypeId;
         router.navigate(formatLink(url));
     }
 

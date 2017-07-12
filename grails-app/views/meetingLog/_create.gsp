@@ -12,21 +12,25 @@
                     <input type="hidden" name="id" id="id" data-bind="value: meetingLog.id"/>
                     <input type="hidden" name="version" id="version" data-bind="value: meetingLog.version"/>
                     <input type="hidden" name="meetingTypeId" id="meetingTypeId" data-bind="value: meetingLog.meetingTypeId"/>
+                    <input type="hidden" name="serviceId" id="serviceId" data-bind="value: meetingLog.serviceId"/>
 
                     <div class="form-group">
                         <div class="col-md-5">
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="serviceId">Sector/CSU:</label>
+                            <g:if test="${meetingType=='Monthly'}">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required" for="meetingCatId">Category:</label>
 
-                                <div class="col-md-9">
-                                    <app:dropDownService
-                                            class="kendo-drop-down"
-                                            id="serviceId" name="serviceId" tabindex="1"
-                                            data-bind="value: meetingLog.serviceId"
-                                            data_model_name="dropDownService">
-                                    </app:dropDownService>
+                                    <div class="col-md-9">
+                                        <app:dropDownMeetingCategory
+                                                class="kendo-drop-down"
+                                                id="meetingCatId" name="meetingCatId" tabindex="1"
+                                                meeting_type = "${meetingType}"
+                                                data-bind="value: meetingLog.meetingCatId"
+                                                data_model_name="dropDownCategory">
+                                        </app:dropDownMeetingCategory>
+                                    </div>
                                 </div>
-                            </div>
+                            </g:if>
                             <div class="form-group">
                                 <label class="col-md-2 control-label label-required" for="heldOn">Date:</label>
 
@@ -48,28 +52,53 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="issues">Agenda:</label>
+                            <g:if test="${meetingType=='Monthly'}">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required" for="issues">Agenda:</label>
 
-                                <div class="col-md-9">
-                                    <textarea id="issues" name="issues"
-                                              style="height:50px;!important;"
-                                              class="form-control" tabindex="4"
-                                              data-bind="value: meetingLog.issues"
-                                              placeholder="Issues"></textarea>
+                                    <div class="col-md-9">
+                                        <textarea id="issues" name="issues" rows="2"
+                                                  class="form-control" tabindex="4"
+                                                  data-bind="value: meetingLog.issues"
+                                                  placeholder="Agenda"></textarea>
+                                    </div>
+                                </div>
+                            </g:if>
+                            <g:else>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required" for="issues">Agenda:</label>
+
+                                    <div class="col-md-9">
+                                        <textarea id="issues" name="issues" rows="4"
+                                                  class="form-control" tabindex="4"
+                                                  data-bind="value: meetingLog.issues"
+                                                  placeholder="Agenda"></textarea>
+                                    </div>
+                                </div>
+                            </g:else>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label label-required" for="logStr">Action Log:</label>
+
+                                    <div class="col-md-9">
+                                        <textarea id="logStr" name="logStr" style="height:150px;"
+                                                  class="form-control" tabindex="5"
+                                                  data-bind="value: meetingLog.logStr"
+                                                  placeholder="Summary"></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-7">
                             <div class="form-group">
-                                <label class="col-md-2 control-label label-required" for="logStr">Action Log:</label>
+                                <label class="col-md-2 control-label label-required" for="descStr">Description:</label>
 
                                 <div class="col-md-10">
-                                    <textarea id="logStr" name="logStr" style="height:315px;"
-                                              class="form-control" tabindex="5"
-                                              data-bind="value: meetingLog.logStr"
-                                              placeholder="Summary"></textarea>
+                                    <textarea id="descStr" name="descStr" style="height:400px;"
+                                              class="form-control" tabindex="6"
+                                              data-bind="value: meetingLog.descStr"
+                                              placeholder="Description"></textarea>
                                 </div>
                             </div>
                         </div>
