@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'kendo/kendo.common.min.css')}"/>
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'kendo/kendo.dataviz.min.css')}"/>
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'kendo/kendo.silver.min.css')}"/>
-<link rel="stylesheet" href="${resource(dir: 'css', file: 'font-awesome-4.4.0/css/font-awesome.min.css')}"/>
+<link rel="stylesheet" href="${resource(dir: 'css', file: 'font-awesome-4.7.0/css/font-awesome.min.css')}"/>
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap/css/bootstrap.min.css')}"/>
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap/css/bootstrap-theme.min.css')}"/>
 
