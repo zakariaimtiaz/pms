@@ -95,6 +95,11 @@
                                                     <i class="fa fa-maxcdn"></i>&nbsp;Monthly
                                                 </a>
                                             </li>
+                                            <li>
+                                                <a href="#reports/showMeetingStatus?type=Quarterly">
+                                                    <i class="fa fa-quora"></i>&nbsp;Quarterly
+                                                </a>
+                                            </li>
                                         </sec:access>
                                     </ul>
                                 </li>
