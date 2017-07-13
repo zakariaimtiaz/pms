@@ -1,5 +1,9 @@
 package actions.reports.dashboard
 
+import com.pms.SecRole
+import com.pms.SecUser
+import com.pms.SecUserSecRole
+import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
@@ -14,6 +18,8 @@ import java.text.SimpleDateFormat
 class ListEdDashBoardActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
+    BaseService baseService
+    SpringSecurityService springSecurityService
 
     /**
      * No pre conditions required for searching project domains
