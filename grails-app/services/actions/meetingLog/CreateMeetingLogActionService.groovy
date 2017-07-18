@@ -4,13 +4,14 @@ import com.model.ListMeetingLogActionServiceModel
 import com.pms.MeetingCategory
 import com.pms.MeetingLog
 import com.pms.SystemEntity
-import com.pms.SystemEntityType
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
 import service.MeetingLogService
+
+import javax.servlet.ServletContext
 
 @Transactional
 class CreateMeetingLogActionService extends BaseService implements ActionServiceIntf {
@@ -21,8 +22,10 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
     private static final String MEETING_LOG = "meetingLog"
     private static final String WEEKLY = "Weekly"
     private static final String MONTHLY = "Monthly"
+    private static final String FUNCTIONAL = "Functional"
     private static final String CATEGORY = "Meeting Category"
     private static final String INTERNAL = "Inter Department"
+    ServletContext servletContext
 
     private Logger log = Logger.getLogger(getClass())
 
@@ -34,6 +37,7 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
             if (!params.serviceId) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
+
             long serviceId = Long.parseLong(params.serviceId.toString())
             long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
             SystemEntity meetingType = SystemEntity.read(meetingTypeId)
@@ -53,7 +57,33 @@ class CreateMeetingLogActionService extends BaseService implements ActionService
                     return super.setError(params, ALREADY_EXIST_MONTH)
                 }
             }
-
+            else if(meetingType.name.equals(FUNCTIONAL)) {
+                catId = MeetingCategory.findByMeetingTypeId(meetingTypeId).id
+                boolean isMonthlyMeetingHeld = meetingLogService.isMonthlyMeetingHeld(date, serviceId, meetingTypeId, catId)
+                if (isMonthlyMeetingHeld) {
+                    return super.setError(params, ALREADY_EXIST_MONTH)
+                }
+            }
+            else if(meetingType.name.equals("Quarterly")){
+                catId = MeetingCategory.findByMeetingTypeId(meetingTypeId).id
+                params.endDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(params.endDate.toString()))
+                boolean isAnyMeetingHeld = meetingLogService.isAnyMeetingHeldForQuarterAnnual(DateUtility.getSqlDate(date),params.endDate,serviceId)
+                if (isAnyMeetingHeld) {
+                    return super.setError(params, "Meeting already held on this time.")
+                }
+                String prefix=DateUtility.getSqlDate(date).toString().replace("-","")
+                params.fileName=meetingLogService.fileUploader(params.fileName,prefix)
+            }
+            else if(meetingType.name.equals("Annually")){
+                catId = MeetingCategory.findByMeetingTypeId(meetingTypeId).id
+                params.endDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(params.endDate.toString()))
+                boolean isAnyMeetingHeld = meetingLogService.isAnyMeetingHeldForQuarterAnnual(DateUtility.getSqlDate(date),params.endDate,serviceId)
+                if (isAnyMeetingHeld) {
+                    return super.setError(params, "Meeting already held on this time.")
+                }
+                String prefix=DateUtility.getSqlDate(date).toString().replace("-","")
+                params.fileName=meetingLogService.fileUploader(params.fileName,prefix)
+            }
             MeetingLog meetingLog = buildObject(params,serviceId, catId)
             params.put(MEETING_LOG, meetingLog)
             return params

@@ -18,6 +18,7 @@ import org.hibernate.SQLQuery
 import org.hibernate.Session
 import pms.utility.DateUtility
 import pms.utility.Tools
+import service.PmActionsService
 
 import javax.sql.DataSource
 
@@ -672,7 +673,10 @@ class BaseService extends Tools {
         int count = SecUserSecRole.countBySecRoleAndSecUser(roleHead, user)
         return count > 0
     }
-
+    public long serviceIdByRole(){
+        PmServiceSector service = PmServiceSector.findByStaticName(STRATEGIC_PLANNING)
+        return service.id
+    }
     public long currentUserEmployeeId(){
         SecUser user = currentUserObject()
         String query = """
@@ -681,14 +685,6 @@ class BaseService extends Tools {
         List<GroovyRowResult> result = groovySql_mis.rows(query)
         long empId =(long) result[0].id
         return empId
-    }
-    public long userEmployeeId(long empId){
-        String query = """
-            SELECT id FROM employee WHERE employee_id = ${empId}
-        """
-        List<GroovyRowResult> result = groovySql_mis.rows(query)
-        long id =(long) result[0]
-        return id
     }
     public String responsiblePersonName(long id){
         String query = """

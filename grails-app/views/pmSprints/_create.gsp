@@ -132,7 +132,7 @@
                 <div class="panel-footer">
                     <button id="create" name="create" type="submit" data-role="button"
                             class="k-button k-button-icontext" role="button" tabindex="5"
-                            aria-disabled="false"><span class="k-icon k-i-plus"></span>Create
+                            aria-disabled="false"><span class="k-icon k-i-plus"></span>Save
                     </button>
 
                     <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"

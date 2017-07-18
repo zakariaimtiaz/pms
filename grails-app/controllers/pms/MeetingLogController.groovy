@@ -6,18 +6,13 @@ import actions.meetingLog.ListMeetingLogActionService
 import actions.meetingLog.UpdateMeetingLogActionService
 import com.pms.PmServiceSector
 import com.pms.SecUser
-import com.pms.ServiceCategory
 import com.pms.SystemEntity
 import com.pms.SystemEntityType
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
-import pms.utility.DateUtility
 import service.MeetingLogService
 import service.SecUserService
-
-import java.text.SimpleDateFormat
-
 
 class MeetingLogController extends BaseController {
 
@@ -56,7 +51,6 @@ class MeetingLogController extends BaseController {
     }
     def create() {
         renderOutput(createMeetingLogActionService, params)
-
     }
     def update() {
         renderOutput(updateMeetingLogActionService, params)
@@ -74,7 +68,19 @@ class MeetingLogController extends BaseController {
         long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())
         SystemEntity meetingType = SystemEntity.read(meetingTypeId)
         List<GroovyRowResult> resultSet = meetingLogService.meetingDetails(id)
-        render(view: "/reports/statistical/showMeetingDetails", model: [resultSet:resultSet[0],meetingType: meetingType.name])
+        render(view: "/reports/meetingLog/showMeetingDetails", model: [resultSet:resultSet[0],meetingType: meetingType.name])
+    }
+    def showQuarterAnnual() {
+        def loggedUser = springSecurityService.principal
+        SecUser user = SecUser.read(loggedUser.id)
+        long serviceId= baseService.serviceIdByRole()
+        boolean isAdmin = baseService.isUserSystemAdmin(user.id)
+        SystemEntityType type = SystemEntityType.findByName(MEETING_TYPE)
+        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),type.id)
+        render(view: "/meetingLog/quarterAnnual/show", model: [isAdmin:isAdmin,
+                                                 serviceId:serviceId,
+                                                 meetingTypeId:meetingType.id,
+                                                 meetingType: meetingType.name])
     }
 
 }

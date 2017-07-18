@@ -123,7 +123,7 @@
             showError('Please insert indicator.');
             return false;
         } else if ($("#target1").val() == '') {
-            showError('Please insert target.');
+            showError('Please insert achievement.');
             return false;
         } else if ($("#unitId1").val() == '') {
             showError('Please insert unit.');
@@ -498,7 +498,7 @@
                             "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
                             "</td>" +
                             "<td width='13%'>" +
-                            "<input  id='target" + trIdNo + "' name='target" + trIdNo + "'  value='" + data.list[i].target + "'  type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control' >" +
+                            "<input  id='target" + trIdNo + "' name='target" + trIdNo + "'  value='" + data.list[i].target + "'  type='text' onkeypress='return validateQty(event);' placeholder='Achievement' class='form-control' >" +
                             "</td>" +
                             "<td>" +
                             "<a class='addbtn' onclick='add_row(" + trIdNo + ")'><i class='fa fa-plus'></i></a>" +
@@ -545,13 +545,12 @@
                 "<option value='Repeatable'>Repeatable</option>" +
                 "<option value='Repeatable%'>Repeatable(%)</option>" +
                 "<option value='Repeatable++'>Repeatable(+/-)</option>" +
-                "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId1' name='unitId1' type='2'></select>" +
                 "</td>" +
                 "<td width='15%'>" +
-                "<input id='target1' name='target1' type='text' onkeypress='return validateQty(event);' readonly='true' placeholder='Target' class='form-control'>" +
+                "<input id='target1' name='target1' type='text' onkeypress='return validateQty(event);' readonly='true' placeholder='Achievement' class='form-control'>" +
                 "</td>" +
                 "<td>" +
                 "<a class='addbtn' onclick='add_row(1)'><i class='fa fa-plus'></i></a>" +
@@ -585,7 +584,7 @@
         var indicator = $(indic).val();
         var target = $(targ).val();
         if (indicator == '' || indicator == undefined || target == '' || target == undefined) {
-            showError('Please insert current indicator & target');
+            showError('Please insert current indicator & achievement');
             return false;
         }
         var trIdNo = indCount + 1;
@@ -607,7 +606,7 @@
                 "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
                 "</td>" +
                 "<td width='15%'>" +
-                "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Target' class='form-control' >" +
+                "<input  id='target" + trIdNo + "' name='target" + trIdNo + "' type='text' onkeypress='return validateQty(event);' placeholder='Achievement' class='form-control' >" +
                 "</td>" +
                 "<td>" +
                 "<a class='addbtn' onclick='add_row(" + trIdNo + ")'><i class='fa fa-plus'></i></a>" +

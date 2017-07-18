@@ -41,7 +41,6 @@ class EdDashboardService  extends BaseService{
         c.setTime(start);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
         Date month = DateUtility.getSqlDate(c.getTime())
-        long userServiceId = currentUserObject().serviceId
         String queryForList = """
         SELECT ed.id ,ed.version,edi.issue_name as issueName ,ed.description,ed.remarks,ed.ed_advice as edAdvice
         FROM  ed_dashboard_issues edi RIGHT JOIN ed_dashboard ed ON ed.issue_id=edi.id
@@ -101,26 +100,26 @@ class EdDashboardService  extends BaseService{
         SELECT DATE_FORMAT(month_for,'%M %Y') initiated_on,DATE_FORMAT(status_change_date,'%M %Y') resolved_on,resolve_note,
             GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
             FROM (SELECT resolve_note,month_for,remarks,ed_advice,description,status_change_date FROM ed_dashboard
+            WHERE service_id=${serviceId} AND month_for=DATE('${month}') AND issue_id='${issuesId}' AND is_followup<>TRUE AND
+               month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1)
+             UNION
+             SELECT resolve_note,month_for,remarks,ed_advice,description,status_change_date FROM ed_dashboard
+            WHERE service_id=${serviceId} AND followup_month_for=DATE('${month}')AND issue_id='${issuesId}' AND is_followup=TRUE AND
+               month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
+            ORDER BY MONTH DESC,YEAR DESC LIMIT 1)
+                         ORDER BY month_for ASC  ) tbl GROUP BY description
+        """
+        /*String queryForList = """
+        SELECT DATE_FORMAT(month_for,'%M %Y') initiated_on,DATE_FORMAT(status_change_date,'%M %Y') resolved_on,resolve_note,
+            GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
+            FROM (SELECT resolve_note,month_for,remarks,ed_advice,description,status_change_date FROM ed_dashboard
             WHERE service_id=${serviceId} AND (month_for=DATE('${month}') OR followup_month_for=DATE('${month}')) AND issue_id='${issuesId}' AND
                month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
             ORDER BY MONTH DESC,YEAR DESC LIMIT 1)
              ORDER BY month_for ASC ) tbl GROUP BY description
-        """
-        /*SecUser user = currentUserObject()
+        """*/
 
-        if(isEdAssistantRole(user.id)){
-            queryForList = """
-        SELECT DATE_FORMAT(month_for,'%M %Y') initiated_on,DATE_FORMAT(status_change_date,'%M %Y') resolved_on,description,resolve_note,
-            GROUP_CONCAT(CONCAT('<FONT color="#0e65f2">',MONTHNAME(month_for),':</FONT>\\<br />\\<b> Remarks: \\</b>',remarks,'\\<br />\\<b>ED\\'s Advice: \\</b>',ed_advice)SEPARATOR'\\<br />') AS remarks
-            FROM (SELECT resolve_note,month_for,remarks,ed_advice,description,status_change_date FROM ed_dashboard
-           WHERE service_id=${serviceId}  AND issue_id=${issuesId} AND month_for<DATE('${month}') AND
-            (month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
-            ORDER BY MONTH DESC,YEAR DESC LIMIT 1)
-            OR followup_month_for<=(SELECT  DATE(CONCAT(YEAR,'-',MONTH,'-01')) FROM pm_mcrs_log WHERE service_id=${serviceId}  AND is_submitted_db=TRUE
-            ORDER BY MONTH DESC,YEAR DESC LIMIT 1))
-            ORDER BY month_for ASC ) tbl GROUP BY description
-        """
-        }*/
         boolean l=executeSql("SET SESSION group_concat_max_len = 1000000")
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)
         return lst

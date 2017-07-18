@@ -1,6 +1,7 @@
 package service
 
 import com.pms.MeetingLog
+import com.pms.PropertiesReader
 import com.pms.SecUser
 import com.pms.SystemEntity
 import grails.transaction.Transactional
@@ -10,7 +11,30 @@ import pms.utility.DateUtility
 
 @Transactional
 class MeetingLogService extends BaseService {
-
+    public boolean isAnyMeetingHeldForQuarterAnnual(Date startDate,Date endDate,long serviceId) {
+        String query = """
+SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId} AND
+ (held_on BETWEEN DATE('${startDate}') AND DATE('${endDate}') OR end_date BETWEEN DATE('${startDate}') AND DATE('${endDate}'))
+        """
+        List<GroovyRowResult> lst = executeSelectSql(query)
+        int count =(int) lst[0].c
+        if (count > 0) {
+            return Boolean.TRUE
+        }
+        return Boolean.FALSE
+    }
+    public boolean isAnyMeetingHeldForQuarterAnnualUpdate(Date startDate,Date endDate,long serviceId,long meetingId) {
+        String query = """
+SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${meetingId} AND
+ (held_on BETWEEN DATE('${startDate}') AND DATE('${endDate}') OR end_date BETWEEN DATE('${startDate}') AND DATE('${endDate}'))
+        """
+        List<GroovyRowResult> lst = executeSelectSql(query)
+        int count =(int) lst[0].c
+        if (count > 0) {
+            return Boolean.TRUE
+        }
+        return Boolean.FALSE
+    }
     public boolean isWeeklyMeetingHeld(Date date, long serviceId, long meetingTypeId) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -25,6 +49,19 @@ class MeetingLogService extends BaseService {
         return Boolean.FALSE
     }
 
+    public boolean isWeeklyMeetingHeldUpdate(Date date, long serviceId, long meetingId, long meetingTypeId) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        for(int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
+            cal.set(Calendar.DAY_OF_WEEK, i);
+            Date sqlDate = DateUtility.getSqlDate(cal.getTime())
+            int count = MeetingLog.countByMeetingTypeIdAndServiceIdAndHeldOnAndIdNotEqual(meetingTypeId,serviceId,sqlDate,meetingId)
+            if (count > 0) {
+                return Boolean.TRUE
+            }
+        }
+        return Boolean.FALSE
+    }
     public boolean isMonthlyMeetingHeld(Date date, long serviceId, long meetingTypeId, long catId) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -37,20 +74,6 @@ class MeetingLogService extends BaseService {
         int count = MeetingLog.countByMeetingTypeIdAndMeetingCatIdAndServiceIdAndHeldOnBetween(meetingTypeId,catId,serviceId,start,end)
         if (count > 0) {
             return Boolean.TRUE
-        }
-        return Boolean.FALSE
-    }
-
-    public boolean isWeeklyMeetingHeldUpdate(Date date, long serviceId, long meetingId, long meetingTypeId) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        for(int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
-            cal.set(Calendar.DAY_OF_WEEK, i);
-            Date sqlDate = DateUtility.getSqlDate(cal.getTime())
-            int count = MeetingLog.countByMeetingTypeIdAndServiceIdAndHeldOnAndIdNotEqual(meetingTypeId,serviceId,sqlDate,meetingId)
-            if (count > 0) {
-                return Boolean.TRUE
-            }
         }
         return Boolean.FALSE
     }
@@ -96,9 +119,19 @@ class MeetingLogService extends BaseService {
         if(!isSysAdmin && !isSpAdmin && !isTopMan&& !isEdAssistant){
             additionalParam = " AND ss.id = ${user.serviceId} "
         }
-
         int year = Integer.parseInt(yearStr)
-        String query = """
+        SystemEntity meetingType = SystemEntity.findById(meetingTypeId)
+        String query = """"""
+        if(meetingType.name.equals("Quarterly")||meetingType.name.equals("Annually")) {
+            query = """
+                SELECT l.id,0 version,se.name meetingType,l.held_on heldOn,l.end_date endDate,l.desc_str descStr,l.file_name fileName
+                                    FROM meeting_log l LEFT JOIN system_entity se ON se.id = l.meeting_type_id
+                 WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
+
+                                    ORDER BY l.held_on ASC
+                """
+        }else{
+            query = """
                 SELECT tmp.id SERVICE_ID,tmp.name SERVICE_NAME,tmp.short_name SERVICE_STR,tmp.MEETING_TYPE,
                 COALESCE(GROUP_CONCAT(tmp.January),'') JANUARY,COALESCE(GROUP_CONCAT(tmp.February),'') FEBRUARY,COALESCE(GROUP_CONCAT(tmp.March),'') MARCH,
                 COALESCE(GROUP_CONCAT(tmp.April),'')   APRIL,  COALESCE(GROUP_CONCAT(tmp.May),'')      MAY,     COALESCE(GROUP_CONCAT(tmp.June),'') JUNE,
@@ -119,14 +152,61 @@ class MeetingLogService extends BaseService {
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='November'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END November,
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='December'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END December
                     FROM pm_service_sector ss
-                    LEFT JOIN meeting_log l ON l.service_id = ss.id AND DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
+                    LEFT JOIN meeting_log l ON l.service_id = ss.id AND DATE_FORMAT(l.held_on,'%Y') = ${
+                year
+            }  AND l.meeting_type_id = ${meetingTypeId}
                     LEFT JOIN system_entity se ON se.id = ${meetingTypeId}
                     WHERE ss.is_in_sp = TRUE
                     ${additionalParam}
                     ORDER BY ss.short_name ASC) tmp
                 GROUP BY tmp.short_name;
         """
+        }
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
+    }
+    def fileUploader(def file,String prefix){
+
+        String meeting_dir = PropertiesReader.getProperty("meeting.log.location", PropertiesReader.CONFIG_FILE_DB)
+        File theDir = new File(meeting_dir);
+        if (!theDir.exists()) {
+            System.out.println("creating directory: " + theDir.getName());
+            boolean result = false;
+            try{
+                theDir.mkdir();
+                result = true;
+            }
+            catch(SecurityException se){
+                //handle it
+            }
+            if(result) {
+                System.out.println("DIR created");
+            }
+        }
+
+        Random randomGenerator = new Random()
+        //int randomInt = randomGenerator.nextInt(1000000)
+        def docName = prefix+"_"+file?.getOriginalFilename()
+        //log.debug"Random no: "+randomInt
+
+        InputStream is = file?.getInputStream()
+        OutputStream os = new FileOutputStream(meeting_dir+docName)   //file path
+        //log.debug"Image Size: "+file?.getSize()
+        byte[] buffer = new byte[file?.getSize()]
+        int bytesRead
+        while ((bytesRead = is.read(buffer)) != -1) {
+            os.write(buffer, 0, bytesRead)
+        }
+        is.close()
+        os.close()
+        return docName
+    }
+    public boolean fileDelete(String fileName){
+        String meeting_dir = PropertiesReader.getProperty("meeting.log.location", PropertiesReader.CONFIG_FILE_DB)
+
+        def file = new File(meeting_dir+fileName)
+        boolean fileSuccessfullyDeleted = file.delete()
+
+        return fileSuccessfullyDeleted
     }
 }

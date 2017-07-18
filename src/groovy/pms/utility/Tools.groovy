@@ -82,6 +82,7 @@ class Tools {
     public static final String REPORT_FILE_FORMAT = 'pdf'
     public static final String PDF_EXTENSION = ".pdf"
     public static final String FLASK = "ImtiazEnpt@456"
+    public static final String STRATEGIC_PLANNING = "STRATEGIC PLANNING"
 
 
 

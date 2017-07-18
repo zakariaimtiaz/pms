@@ -71,8 +71,13 @@ class ReportsController  extends BaseController  {
         boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
 
         SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),5L)
-        render(view: "/reports/statistical/showMeeting", model: [isSysAdmin: isSysAdmin,meetingTypeId:meetingType.id,
-                                                                 userServiceId: user.serviceId, meetingType: meetingType.name])
+        if(meetingType.name.equals("Quarterly")||meetingType.name.equals("Annually")){
+            render(view: "/reports/meetingLog/QuarterAnnual/showMeeting", model: [isSysAdmin   : isSysAdmin, meetingTypeId: meetingType.id,
+                                                                     meetingType: meetingType.name])
+        }else {
+            render(view: "/reports/meetingLog/showMeeting", model: [isSysAdmin   : isSysAdmin, meetingTypeId: meetingType.id,
+                                                                    userServiceId: user.serviceId, meetingType: meetingType.name])
+        }
     }
     def listMeetingStatus() {
         long meetingTypeId = Long.parseLong(params.meetingTypeId.toString())

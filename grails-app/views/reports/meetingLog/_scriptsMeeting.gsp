@@ -1,10 +1,11 @@
 <script language="javascript">
     var gridMeeting, dataSource;
-
-    $(document).ready(function () {
+    var $=jQuery;
+    $(document).ready(function() {
         onLoadMeetingPage();
         initMeetingGrid();
         populateMeetingGrid();
+
     });
 
     function onLoadMeetingPage() {

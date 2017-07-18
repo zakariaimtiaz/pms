@@ -18,8 +18,6 @@ import java.text.SimpleDateFormat
 class ListEdDashBoardActionService extends BaseService implements ActionServiceIntf {
 
     private Logger log = Logger.getLogger(getClass())
-    BaseService baseService
-    SpringSecurityService springSecurityService
 
     /**
      * No pre conditions required for searching project domains

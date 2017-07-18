@@ -4,13 +4,14 @@ import com.model.ListMeetingLogActionServiceModel
 import com.pms.MeetingCategory
 import com.pms.MeetingLog
 import com.pms.SystemEntity
-import com.pms.SystemEntityType
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
 import service.MeetingLogService
+
+import javax.servlet.ServletContext
 
 @Transactional
 class UpdateMeetingLogActionService extends BaseService implements ActionServiceIntf {
@@ -21,9 +22,11 @@ class UpdateMeetingLogActionService extends BaseService implements ActionService
     private static final String MEETING_LOG = "meetingLog"
     private static final String WEEKLY = "Weekly"
     private static final String MONTHLY = "Monthly"
+    private static final String FUNCTIONAL = "Functional"
     private static final String CATEGORY = "Meeting Category"
     private static final String INTERNAL = "Inter Department"
 
+    ServletContext servletContext
     private Logger log = Logger.getLogger(getClass())
 
     MeetingLogService meetingLogService
@@ -51,10 +54,43 @@ class UpdateMeetingLogActionService extends BaseService implements ActionService
                 if (isMonthlyMeetingHeld) {
                     return super.setError(params, ALREADY_EXIST_MONTH)
                 }
+            }else if(meetingType.name.equals(FUNCTIONAL)){
+                catId = MeetingCategory.findByMeetingTypeId(meetingTypeId).id
+                boolean isMonthlyMeetingHeld = meetingLogService.isMonthlyMeetingHeldUpdate(date, serviceId, id, meetingTypeId, catId)
+                if (isMonthlyMeetingHeld) {
+                    return super.setError(params, ALREADY_EXIST_MONTH)
+                }
+            }
+
+            else if(meetingType.name.equals("Quarterly")){
+                params.endDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(params.endDate.toString()))
+                boolean isAnyMeetingHeld = meetingLogService.isAnyMeetingHeldForQuarterAnnualUpdate(DateUtility.getSqlDate(date),params.endDate,serviceId,id)
+                if (isAnyMeetingHeld) {
+                    return super.setError(params, "Meeting already held on this time.")
+                }
+                String prefix=DateUtility.getSqlDate(date).toString().replace("-","")
+                params.fileName=meetingLogService.fileUploader(params.fileName,prefix)
+            }
+            else if(meetingType.name.equals("Annually")){
+                params.endDate = DateUtility.getSqlDate(DateUtility.parseMaskedDate(params.endDate.toString()))
+                boolean isAnyMeetingHeld = meetingLogService.isAnyMeetingHeldForQuarterAnnualUpdate(DateUtility.getSqlDate(date),params.endDate,serviceId,id)
+                if (isAnyMeetingHeld) {
+                    return super.setError(params, "Meeting already held on this time.")
+                }
+                String prefix=DateUtility.getSqlDate(date).toString().replace("-","")
+                params.fileName=meetingLogService.fileUploader(params.fileName,prefix)
             }
 
             MeetingLog oldObject = MeetingLog.read(id)
-            MeetingLog meetingLog = buildObject(params,oldObject,catId)
+            MeetingLog meetingLog
+            if(meetingType.name.equals("Quarterly")||meetingType.name.equals("Annually")){
+                boolean b= meetingLogService.fileDelete(oldObject.fileName)
+                if(b) {
+                    meetingLog = buildObjectQuarterAnnual(params, oldObject)
+                }else{ return super.setError(params, "Error in file deleting.")}
+            }else {
+                meetingLog = buildObject(params, oldObject, catId)
+            }
             params.put(MEETING_LOG, meetingLog)
             return params
         } catch (Exception ex) {
@@ -113,6 +149,15 @@ class UpdateMeetingLogActionService extends BaseService implements ActionService
         oldObject.issues = meetingLog.issues
         oldObject.logStr = meetingLog.logStr
         oldObject.descStr = meetingLog.descStr
+        return oldObject
+    }
+    private static MeetingLog buildObjectQuarterAnnual(Map parameterMap,MeetingLog oldObject) {
+        parameterMap.heldOn = DateUtility.getSqlDate(DateUtility.parseMaskedDate(parameterMap.heldOn.toString()))
+        MeetingLog meetingLog = new MeetingLog(parameterMap)
+        oldObject.heldOn = meetingLog.heldOn
+        oldObject.endDate=meetingLog.endDate
+        oldObject.descStr = meetingLog.descStr
+        oldObject.fileName=meetingLog.fileName
         return oldObject
     }
 }

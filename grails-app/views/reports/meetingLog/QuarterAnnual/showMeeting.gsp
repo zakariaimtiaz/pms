@@ -30,6 +30,6 @@
     </div>
 </div>
 
-<g:render template='/reports/statistical/scriptsMeeting'/>
+<g:render template='/reports/meetingLog/QuarterAnnual/scriptsMeeting'/>
 
 

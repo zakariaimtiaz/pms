@@ -100,6 +100,14 @@
                                                     <i class="fa fa-quora"></i>&nbsp;Quarterly
                                                 </a>
                                             </li>
+                                            <li>
+                                                <a href="#reports/showMeetingStatus?type=Annually"><i class="fa fa-meetup"></i>&nbsp;Annually
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="reports/showMeetingStatus?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
+                                                </a>
+                                            </li>
                                         </sec:access>
                                     </ul>
                                 </li>
@@ -142,6 +150,18 @@
                                 </li>
                                 <li>
                                     <a href="#meetingLog/show?type=Monthly"><i class="fa fa-maxcdn"></i>&nbsp;Monthly
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#meetingLog/showQuarterAnnual?type=Quarterly"><i class="fa fa-quora"></i>&nbsp;Quarterly
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#meetingLog/showQuarterAnnual?type=Annually"><i class="fa fa-meetup"></i>&nbsp;Annually
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#meetingLog/show?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
                                     </a>
                                 </li>
                             </sec:access>
