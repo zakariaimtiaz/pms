@@ -2,7 +2,6 @@
     var gridMeeting, dataSource;
 
     $(document).ready(function () {
-        alert('AQ ok');
         onLoadMeetingPage();
         initMeetingGrid();
         populateMeetingGrid();
