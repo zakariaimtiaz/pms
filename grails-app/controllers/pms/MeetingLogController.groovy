@@ -4,10 +4,7 @@ import actions.meetingLog.CreateMeetingLogActionService
 import actions.meetingLog.DeleteMeetingLogActionService
 import actions.meetingLog.ListMeetingLogActionService
 import actions.meetingLog.UpdateMeetingLogActionService
-import com.pms.PmServiceSector
-import com.pms.SecUser
-import com.pms.SystemEntity
-import com.pms.SystemEntityType
+import com.pms.*
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import groovy.sql.GroovyRowResult
@@ -39,6 +36,22 @@ class MeetingLogController extends BaseController {
         PmServiceSector service = PmServiceSector.read(user.serviceId)
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
         List<GroovyRowResult> lstEmployee = secUserService.currentDepartmentEmpList(user)
+        lstEmployee.remove(0)
+        SystemEntityType type = SystemEntityType.findByName(MEETING_TYPE)
+        SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),type.id)
+        render(view: "/meetingLog/show", model: [isAdmin:isAdmin,
+                                                 serviceId:user.serviceId,
+                                                 categoryId:service.categoryId,
+                                                 lstEmployee: lstEmployee as JSON,
+                                                 meetingTypeId:meetingType.id,
+                                                 meetingType: meetingType.name])
+    }
+    def showFunctional() {
+        def loggedUser = springSecurityService.principal
+        SecUser user = SecUser.read(loggedUser.id)
+        PmServiceSector service = PmServiceSector.read(user.serviceId)
+        boolean isAdmin = baseService.isUserSystemAdmin(user.id)
+        List<GroovyRowResult> lstEmployee = secUserService.empListForFunctionalMeeting()
         lstEmployee.remove(0)
         SystemEntityType type = SystemEntityType.findByName(MEETING_TYPE)
         SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),type.id)
@@ -81,6 +94,19 @@ class MeetingLogController extends BaseController {
                                                  serviceId:serviceId,
                                                  meetingTypeId:meetingType.id,
                                                  meetingType: meetingType.name])
+    }
+    def downloadFile() {
+        String meeting_dir = PropertiesReader.getProperty("meeting.log.location", PropertiesReader.CONFIG_FILE_DB)
+       long id = Long.parseLong(params.id)
+        MeetingLog meetingLog=MeetingLog.findById(id)
+        def file = new File("${meeting_dir}/${meetingLog.fileName}")
+        if (file.exists())
+        {
+            response.setContentType("application/octet-stream") // or or image/JPEG or text/xml or whatever type the file is
+            response.setHeader("Content-disposition", "attachment;filename=\"${file.name}\"")
+            response.outputStream << file.bytes
+        }
+        else render "Error!" // appropriate error handling
     }
 
 }

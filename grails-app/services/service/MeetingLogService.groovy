@@ -124,11 +124,38 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
         String query = """"""
         if(meetingType.name.equals("Quarterly")||meetingType.name.equals("Annually")) {
             query = """
-                SELECT l.id,0 version,se.name meetingType,l.held_on heldOn,l.end_date endDate,l.desc_str descStr,l.file_name fileName
+                SELECT l.id,0 version,se.name meetingType,l.held_on heldOn,l.end_date endDate,l.desc_str descStr,COALESCE(l.file_name,'') fileName
                                     FROM meeting_log l LEFT JOIN system_entity se ON se.id = l.meeting_type_id
                  WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
 
                                     ORDER BY l.held_on ASC
+                """
+        }else if(meetingType.name.equals("Functional")) {
+            query = """
+                SELECT tmp.id SERVICE_ID,'' SERVICE_NAME,'' SERVICE_STR,tmp.MEETING_TYPE,
+                COALESCE(GROUP_CONCAT(tmp.January),'') JANUARY,COALESCE(GROUP_CONCAT(tmp.February),'') FEBRUARY,COALESCE(GROUP_CONCAT(tmp.March),'') MARCH,
+                COALESCE(GROUP_CONCAT(tmp.April),'')   APRIL,  COALESCE(GROUP_CONCAT(tmp.May),'')      MAY,     COALESCE(GROUP_CONCAT(tmp.June),'') JUNE,
+                COALESCE(GROUP_CONCAT(tmp.July),'')    JULY,   COALESCE(GROUP_CONCAT(tmp.August),'')   AUGUST,  COALESCE(GROUP_CONCAT(tmp.September),'') SEPTEMBER,
+                COALESCE(GROUP_CONCAT(tmp.October),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December),'') DECEMBER
+                FROM (
+                    SELECT l.id,se.name MEETING_TYPE,l.held_on,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='January'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END January,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='February'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END February,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='March'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END March,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='April'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END April,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='May'       THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END May,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='June'      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END June,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='July'      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END July,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='August'    THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END August,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='September' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END September,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='October'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END October,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='November'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END November,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='December'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END December
+                    FROM meeting_log l LEFT JOIN system_entity se ON se.id = ${meetingTypeId}
+                    WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
+
+                    ORDER BY l.held_on ASC) tmp
+                GROUP BY DATE_FORMAT(tmp.held_on,'%M'),DATE_FORMAT(tmp.held_on,'%Y');
                 """
         }else{
             query = """

@@ -8,7 +8,7 @@ class ListMeetingLogActionServiceModel {
           SELECT ml.id, ml.version, mt.id meeting_type_id,mt.name meeting_type, cat.id meeting_cat_id,
           cat.name meeting_cat,s.id service_id,s.name service,ml.held_on,ml.log_str,ml.desc_str,ml.issues,ml.attendees,
               (SELECT GROUP_CONCAT(NAME SEPARATOR ', ') FROM mis.employee
-          WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',ml.attendees,', '))>0 ) attendees_str,ml.end_date,ml.file_name
+          WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',ml.attendees,', '))>0 ) attendees_str,ml.end_date,COALESCE(ml.file_name,'')file_name
           FROM meeting_log ml
           LEFT JOIN login_auth.sec_user u ON u.employee_id = ml.attendees
           LEFT JOIN system_entity mt ON mt.id = ml.meeting_type_id

@@ -1,6 +1,5 @@
 <script language="javascript">
     var gridMeeting, dataSource;
-    var $=jQuery;
     $(document).ready(function() {
         onLoadMeetingPage();
         initMeetingGrid();
@@ -18,6 +17,7 @@
             change: populateMeetingGrid
         }).data("kendoDatePicker");
         $('#year').val(str);
+
         defaultPageTile("${meetingType} meeting","reports/showMeetingStatus?type=${meetingType}");
     }
 
@@ -88,7 +88,9 @@
             reorderable: true,
             pageable: false,
             columns: [
+                    <g:if test="${meetingType!='Functional'}">
                 {field: "SERVICE_STR", title: "Sector/CSU", width: 150, sortable: false, filterable: false},
+                </g:if>
                 {field: "JANUARY", title: "January", width: 80, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JANUARY)#"
@@ -152,7 +154,7 @@
 
         var isSysAdmin = ${isSysAdmin},
             userServiceId = ${userServiceId};
-        if(!isSysAdmin && userServiceId!=serviceId && meetingType=='Weekly'){
+        if(!isSysAdmin && userServiceId!=serviceId && meetingType!='Monthly'){
             for (a in temp) {
                 if(temp[a]!= ''){
                     temp2 = temp[a].split("&");

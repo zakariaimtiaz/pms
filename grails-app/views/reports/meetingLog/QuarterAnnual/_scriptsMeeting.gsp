@@ -82,11 +82,11 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "heldOn", title: "Start Date", width: 90, sortable: false, filterable: false,
+                {field: "heldOn", title: "Start Date", width: 80, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(heldOn, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "endDate", title: "End Date", width: 90, sortable: false, filterable: false,
+                {field: "endDate", title: "End Date", width: 80, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
@@ -94,7 +94,7 @@
                     template: "#=trimTextForKendo(htmlDecode(descStr),800)#"
                 },
                 {field: "fileName", title: "Download Attachment",sortable: false, filterable: false, width: 150
-
+                    , template: "<a onclick=\"downloadMeetingFile('#= id #')\" href='\\#'>#= fileName #</a>"
                 }
             ],
             filterable: {
@@ -124,7 +124,14 @@
             return dataItem.descStr;
         }
     }).data("kendoTooltip");
-
+    function downloadMeetingFile(id) {
+        showLoadingSpinner(true);
+        var msg = 'Do you want to download the ED\'s Dashboard now?',
+                params = "?id=" +id,
+                url = "${createLink(controller: 'meetingLog', action:  'downloadFile')}" + params;
+        confirmDownload(msg, url);
+        return false;
+    }
 
 
 </script>

@@ -105,7 +105,7 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="reports/showMeetingStatus?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
+                                                <a href="#reports/showMeetingStatus?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
                                                 </a>
                                             </li>
                                         </sec:access>
@@ -161,7 +161,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#meetingLog/show?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
+                                    <a href="#meetingLog/showFunctional?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
                                     </a>
                                 </li>
                             </sec:access>

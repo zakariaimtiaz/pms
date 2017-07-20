@@ -91,4 +91,17 @@ class SecUserService extends BaseService {
         List<GroovyRowResult> lstUser = listForKendoDropdown(lstAppUser, null, null)
         return lstUser
     }
+    public List<GroovyRowResult> empListForFunctionalMeeting(){
+
+        String query = """
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,')') AS name
+            FROM employee e
+            LEFT JOIN service s ON s.id = e.service_id
+            WHERE e.employee_status_id = 1 AND e.location_type_id = 1
+            ORDER BY e.name
+            """
+        List<GroovyRowResult> lstAppUser = groovySql_mis.rows(query)
+        List<GroovyRowResult> lstUser = listForKendoDropdown(lstAppUser, null, null)
+        return lstUser
+    }
 }
