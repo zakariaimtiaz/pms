@@ -159,7 +159,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="398" y="0" width="38" height="20" uuid="fef2c3b5-b92b-44b7-8be2-f7905841ab6a"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
@@ -322,7 +322,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="583" y="0" width="29" height="20" uuid="2135c8b2-a92e-431b-8895-a36a0d56dfb6"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
@@ -335,7 +335,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="495" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>

@@ -290,7 +290,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="548" y="0" width="29" height="20" uuid="2135c8b2-a92e-431b-8895-a36a0d56dfb6"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
 					<rightPen lineWidth="0.25" lineColor="#939597"/>
@@ -302,7 +302,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="460" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
 					<rightPen lineWidth="0.25" lineColor="#939597"/>
@@ -338,7 +338,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textFieldExpression><![CDATA[$F{ind_remarks}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="ab04a3bd-d996-42fe-a8c4-70e5ed169acf"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="-20" width="832" height="20" uuid="ab04a3bd-d996-42fe-a8c4-70e5ed169acf"/>
 				<box>
 					<topPen lineWidth="0.25" lineColor="#939597"/>
 					<leftPen lineWidth="0.25" lineColor="#939597"/>

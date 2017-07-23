@@ -191,7 +191,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="394" y="0" width="29" height="20" uuid="8ba3160b-46ef-4fb4-820b-e107a6f51137"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -341,7 +341,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="511" y="0" width="29" height="20" uuid="2135c8b2-a92e-431b-8895-a36a0d56dfb6"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -353,7 +353,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="423" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+				<box topPadding="2" leftPadding="1" bottomPadding="2" rightPadding="1">
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>

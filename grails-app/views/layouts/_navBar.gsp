@@ -35,7 +35,7 @@
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
-                <sec:ifAnyUrls urls="/reports/showMcrs,reports/showYearlySP">
+                <sec:ifAnyUrls urls="/reports/showMcrs,/reports/showYearlySP">
                     <li>
                         <a href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;Reports<span
                                 class="fa arrow"></span></a>
@@ -79,7 +79,7 @@
                                     </a>
                                 </li>
                             </sec:access>
-                            <sec:ifAnyUrls urls="/reports/showMeetingStatus">
+                            <sec:ifAnyUrls urls="/reports/showMeetingStatus,/meetingLog/showFunctional">
                                 <li>
                                     <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
                                             class="fa arrow"></span></a>
@@ -104,11 +104,13 @@
                                                 <a href="#reports/showMeetingStatus?type=Annually"><i class="fa fa-meetup"></i>&nbsp;Annually
                                                 </a>
                                             </li>
+                                        </sec:access>
+                                <sec:access url="/meetingLog/showFunctional">
                                             <li>
                                                 <a href="#reports/showMeetingStatus?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
                                                 </a>
                                             </li>
-                                        </sec:access>
+                                </sec:access>
                                     </ul>
                                 </li>
                             </sec:ifAnyUrls>
@@ -160,6 +162,8 @@
                                     <a href="#meetingLog/showQuarterAnnual?type=Annually"><i class="fa fa-meetup"></i>&nbsp;Annually
                                     </a>
                                 </li>
+                                </sec:access>
+                                <sec:access url="/meetingLog/showFunctional">
                                 <li>
                                     <a href="#meetingLog/showFunctional?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
                                     </a>

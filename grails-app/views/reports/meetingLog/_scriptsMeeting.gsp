@@ -154,7 +154,7 @@
 
         var isSysAdmin = ${isSysAdmin},
             userServiceId = ${userServiceId};
-        if(!isSysAdmin && userServiceId!=serviceId && meetingType!='Monthly'){
+        if(!isSysAdmin && userServiceId!=serviceId && meetingType=='Weekly'){
             for (a in temp) {
                 if(temp[a]!= ''){
                     temp2 = temp[a].split("&");
