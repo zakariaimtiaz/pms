@@ -25,6 +25,7 @@
                                                 class="kendo-drop-down"
                                                 id="meetingCatId" name="meetingCatId" tabindex="1"
                                                 meeting_type = "${meetingType}"
+                                                onchange="dropDownCategoryChange()"
                                                 data-bind="value: meetingLog.meetingCatId"
                                                 data_model_name="dropDownCategory">
                                         </app:dropDownMeetingCategory>

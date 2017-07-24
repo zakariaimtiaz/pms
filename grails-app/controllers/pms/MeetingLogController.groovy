@@ -35,14 +35,24 @@ class MeetingLogController extends BaseController {
         SecUser user = SecUser.read(loggedUser.id)
         PmServiceSector service = PmServiceSector.read(user.serviceId)
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
-        List<GroovyRowResult> lstEmployee = secUserService.currentDepartmentEmpList(user)
-        lstEmployee.remove(0)
         SystemEntityType type = SystemEntityType.findByName(MEETING_TYPE)
         SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),type.id)
+        List<GroovyRowResult> lstEmployeeDO
+        List<GroovyRowResult> lstEmployee
+        if(meetingType.name.equals("Monthly")){
+            lstEmployeeDO = secUserService.currentDepartmentEmpListForMeeting(user,"MonthlyDO")
+            lstEmployeeDO.remove(0)
+            lstEmployee = secUserService.currentDepartmentEmpListForMeeting(user,"Monthly")
+        }
+        else{
+            lstEmployee = secUserService.currentDepartmentEmpList(user)
+        }
+        lstEmployee.remove(0)
         render(view: "/meetingLog/show", model: [isAdmin:isAdmin,
                                                  serviceId:user.serviceId,
                                                  categoryId:service.categoryId,
                                                  lstEmployee: lstEmployee as JSON,
+                                                 lstEmployeeDO: lstEmployeeDO as JSON,
                                                  meetingTypeId:meetingType.id,
                                                  meetingType: meetingType.name])
     }
@@ -53,12 +63,14 @@ class MeetingLogController extends BaseController {
         boolean isAdmin = baseService.isUserSystemAdmin(user.id)
         List<GroovyRowResult> lstEmployee = secUserService.empListForFunctionalMeeting()
         lstEmployee.remove(0)
+        List<GroovyRowResult> lstEmployeeDO
         SystemEntityType type = SystemEntityType.findByName(MEETING_TYPE)
         SystemEntity meetingType = SystemEntity.findByNameAndTypeId(params.type.toString(),type.id)
         render(view: "/meetingLog/show", model: [isAdmin:isAdmin,
                                                  serviceId:user.serviceId,
                                                  categoryId:service.categoryId,
                                                  lstEmployee: lstEmployee as JSON,
+                                                 lstEmployeeDO: lstEmployeeDO as JSON,
                                                  meetingTypeId:meetingType.id,
                                                  meetingType: meetingType.name])
     }

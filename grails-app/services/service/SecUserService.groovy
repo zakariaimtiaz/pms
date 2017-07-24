@@ -91,6 +91,65 @@ class SecUserService extends BaseService {
         List<GroovyRowResult> lstUser = listForKendoDropdown(lstAppUser, null, null)
         return lstUser
     }
+    public List<GroovyRowResult> currentDepartmentEmpListForMeeting(SecUser user,String meetingType){
+        boolean isSystemAdmin = isUserSystemAdmin(user.id)
+        String filterStr = EMPTY_SPACE
+        List<Long> lstDepts =(List<Long>) UserDepartment.findAllByUserId(user.id)*.serviceId
+        List<Long> deptId = []
+        for(int i=0;i<lstDepts.size();i++){
+            PmServiceSector service = PmServiceSector.read(lstDepts[i])
+            String query = """
+                       SELECT id FROM service WHERE name LIKE '${service.name}'
+                    """
+            List<GroovyRowResult> lst = groovySql_mis.rows(query)
+            deptId << lst[0].id
+        }
+        String strLst = buildCommaSeparatedStringOfIds(deptId)
+        if(!isSystemAdmin) {
+            filterStr = " AND s.id IN (${strLst}) "
+        }
+        String query
+        if(meetingType=="Monthly"){
+            query = """
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,')') AS name
+            FROM employee e
+            LEFT JOIN service s ON s.id = e.service_id
+            WHERE e.employee_status_id = 1 AND e.location_type_id = 1
+            ${filterStr}
+            UNION
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,')') AS NAME
+            FROM employee e WHERE e.id=1
+
+            ORDER BY id
+            """
+        }
+        else if(meetingType=="MonthlyDO"){
+            query = """
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,')') AS name
+            FROM employee e
+            LEFT JOIN service s ON s.id = e.service_id
+            WHERE e.employee_status_id = 1 AND e.location_type_id = 1
+            ${filterStr}
+            UNION
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,')') AS NAME
+            FROM employee e WHERE e.designation_id=57
+            ORDER BY name
+            """
+        }
+        else {
+            query = """
+            SELECT e.id, CONCAT(e.name,' (',e.employee_id,')') AS name
+            FROM employee e
+            LEFT JOIN service s ON s.id = e.service_id
+            WHERE e.employee_status_id = 1 AND e.location_type_id = 1
+            ${filterStr}
+            ORDER BY e.name
+            """
+        }
+        List<GroovyRowResult> lstAppUser = groovySql_mis.rows(query)
+        List<GroovyRowResult> lstUser = listForKendoDropdown(lstAppUser, null, null)
+        return lstUser
+    }
     public List<GroovyRowResult> empListForFunctionalMeeting(){
 
         String query = """
@@ -98,7 +157,8 @@ class SecUserService extends BaseService {
             FROM employee e
             LEFT JOIN service s ON s.id = e.service_id
             WHERE e.employee_status_id = 1 AND e.location_type_id = 1
-            ORDER BY e.name
+            AND e.designation_id IN('57','56','69')
+            ORDER BY e.id
             """
         List<GroovyRowResult> lstAppUser = groovySql_mis.rows(query)
         List<GroovyRowResult> lstUser = listForKendoDropdown(lstAppUser, null, null)

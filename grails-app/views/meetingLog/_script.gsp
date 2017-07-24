@@ -76,10 +76,19 @@
             dataSource: getBlankDataSource,
             value: [  ]
         });
+       // dropDownCategory.bind("change", dropDownCategoryChange);
+
         multiSelectAttendees = $("#attendees").data("kendoMultiSelect");
         multiSelectAttendees.setDataSource(${lstEmployee});
         initializeForm($("#meetingLogForm"), onSubmitLog);
         defaultPageTile("Create Log",null);
+    }
+    function dropDownCategoryChange(){
+       if( dropDownCategory.text()=="CSUs & DO"){
+           multiSelectAttendees.setDataSource(${lstEmployeeDO});
+       }else {
+           multiSelectAttendees.setDataSource(${lstEmployee});
+       }
     }
 
     function executePreCondition() {
