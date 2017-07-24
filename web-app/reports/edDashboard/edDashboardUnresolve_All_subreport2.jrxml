@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="edDashboardUnresolve_All_subreport2" language="groovy" pageWidth="802" pageHeight="555" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="141a2939-5dbc-46e9-badd-d99af7988a25">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="serviceId" class="java.lang.Long"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="ROOT_DIR" class="java.lang.String"/>
+	<parameter name="LOGO_DIR" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="month" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Workings\\pms\\web-app\\reports\\edDashboard\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT * FROM(
+SELECT 1 as sl,'Sector/CSU Submitted ED\'s Dashboard without any issue' AS issueName,GROUP_CONCAT( CONCAT(@X:=@X+1, '. ', ss.name) SEPARATOR ', ') SERVICE
+        FROM pm_service_sector ss,(SELECT @X := 0)r
+        WHERE ss.is_displayble = TRUE AND ss.is_in_sp = TRUE
+        AND ss.id NOT IN (
+           SELECT DISTINCT(service_id) FROM pm_mcrs_log
+                  WHERE is_submitted_db <> TRUE AND MONTH = MONTH($P{month}) AND YEAR=YEAR($P{month})
+            )
+        AND ss.id NOT IN (
+            SELECT DISTINCT(service_id)
+            FROM ed_dashboard
+            WHERE month_for = $P{month} OR followup_month_for = $P{month}
+            )
+     UNION
+
+     SELECT 2 as sl, 'Sector/CSU did not submit ED\'s Dashboard yet' AS issueName, GROUP_CONCAT( CONCAT(@Xx:=@Xx+1, '. ', ss.name) SEPARATOR ', ') SERVICE
+    FROM pm_mcrs_log l
+	LEFT JOIN pm_service_sector ss ON l.service_id = ss.id AND ss.is_in_sp = TRUE
+	,(SELECT @Xx := 0)r
+    WHERE l.is_submitted_db <> TRUE AND l.month = MONTH($P{month}) AND l.year=YEAR($P{month})
+    ) tmp WHERE service IS NOT NULL
+    UNION
+	SELECT 3 as sl,' ' AS issueName,CONCAT('N.B. Deadline for submission: ',DATE_FORMAT(dead_line, '%d-%b-%Y')) AS SERVICE FROM pm_mcrs_log
+                  WHERE MONTH = MONTH($P{month}) AND YEAR=YEAR($P{month})
+
+        ORDER BY sl ASC;]]>
+	</queryString>
+	<field name="sl" class="java.lang.Long"/>
+	<field name="issueName" class="java.lang.String"/>
+	<field name="SERVICE" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="issueName">
+		<groupExpression><![CDATA[$F{issueName}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="802" height="20" uuid="e46cf447-95c1-4d1e-872c-c4b82d295ea4"/>
+					<textElement>
+						<font isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{issueName}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="-1" width="802" height="20" uuid="7ffc8b6e-612b-4247-9faf-33363d11bf54"/>
+				<textFieldExpression><![CDATA[$F{SERVICE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
