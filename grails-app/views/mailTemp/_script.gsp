@@ -188,7 +188,7 @@
         clearForm($("#appMailForm"), $("#transactionCode"));
         initObservable();
         $("#rowMailTmpl").hide();
-        $("#create").html("<span class='k-icon k-i-plus'></span>Create");
+        $("#create").html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function addAppMail() {

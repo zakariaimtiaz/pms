@@ -46,7 +46,7 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 					<textElement verticalAlignment="Middle">
 						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{preIndx} +'.' + $F{issueName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{preIndx} +'. ' + $F{issueName}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -126,7 +126,7 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[Issue Date & Staus]]></text>
+				<text><![CDATA[Issue Date & Status]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

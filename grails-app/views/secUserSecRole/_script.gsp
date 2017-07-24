@@ -93,7 +93,7 @@
         $('#roleId').val(roleId);
         $('#userId').attr('default_value', '');
         $('#userId').reloadMe();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function initDataSource() {

@@ -128,7 +128,7 @@
     function resetForm() {
         clearForm($("#timeScheduleForm"));
         initObservable();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function initDataSource() {

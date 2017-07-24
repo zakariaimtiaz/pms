@@ -142,7 +142,7 @@
         dropDownGoals.value('');
         dropDownActions.value('');
         $("#rowSprint").hide();
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#create').html("<span class='k-icon k-i-plus'></span>Save");
     }
 
     function initDataSource() {

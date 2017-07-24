@@ -101,16 +101,18 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#reports/showMeetingStatus?type=Annually"><i class="fa fa-meetup"></i>&nbsp;Annually
+                                                <a href="#reports/showMeetingStatus?type=Annually"><i
+                                                        class="fa fa-meetup"></i>&nbsp;Annually
                                                 </a>
                                             </li>
                                         </sec:access>
-                                <sec:access url="/meetingLog/showFunctional">
+                                        <sec:access url="/meetingLog/showFunctional">
                                             <li>
-                                                <a href="#reports/showMeetingStatus?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
+                                                <a href="#reports/showMeetingStatus?type=Functional"><i
+                                                        class="fa fa-handshake-o"></i>&nbsp;Functional
                                                 </a>
                                             </li>
-                                </sec:access>
+                                        </sec:access>
                                     </ul>
                                 </li>
                             </sec:ifAnyUrls>
@@ -154,18 +156,23 @@
                                     <a href="#meetingLog/show?type=Monthly"><i class="fa fa-maxcdn"></i>&nbsp;Monthly
                                     </a>
                                 </li>
+                            </sec:access>
+                            <sec:access url="/meetingLog/showQuarterAnnual">
                                 <li>
-                                    <a href="#meetingLog/showQuarterAnnual?type=Quarterly"><i class="fa fa-quora"></i>&nbsp;Quarterly
+                                    <a href="#meetingLog/showQuarterAnnual?type=Quarterly"><i
+                                            class="fa fa-quora"></i>&nbsp;Quarterly
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#meetingLog/showQuarterAnnual?type=Annually"><i class="fa fa-meetup"></i>&nbsp;Annually
+                                    <a href="#meetingLog/showQuarterAnnual?type=Annually"><i
+                                            class="fa fa-meetup"></i>&nbsp;Annually
                                     </a>
                                 </li>
-                                </sec:access>
-                                <sec:access url="/meetingLog/showFunctional">
+                            </sec:access>
+                            <sec:access url="/meetingLog/showFunctional">
                                 <li>
-                                    <a href="#meetingLog/showFunctional?type=Functional"><i class="fa fa-handshake-o"></i>&nbsp;Functional
+                                    <a href="#meetingLog/showFunctional?type=Functional"><i
+                                            class="fa fa-handshake-o"></i>&nbsp;Functional
                                     </a>
                                 </li>
                             </sec:access>
