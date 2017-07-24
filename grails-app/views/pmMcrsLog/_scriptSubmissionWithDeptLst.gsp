@@ -19,6 +19,11 @@
         initializeForm($("#detailsForm"), loadGridData);
         defaultPageTile("Submission", 'pmMcrsLog/show');
     });
+    function dropDownServiceChange(){
+        if(dropDownService.value()>0){
+            loadGridData();
+        }
+    }
     function loadGridData(){
         var serviceId = $("#serviceId").val();
         var params = "?serviceId=" +serviceId;
