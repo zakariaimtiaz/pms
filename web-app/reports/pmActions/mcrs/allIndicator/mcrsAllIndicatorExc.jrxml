@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsAllIndicatorExc" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="10" bottomMargin="20" isSummaryNewPage="true" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsActionIndicatorExc" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="10" bottomMargin="20" isSummaryNewPage="true" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
 	<property name="ireport.zoom" value="1.000000000000004"/>
-	<property name="ireport.x" value="12"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REPORT_DIR" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
@@ -34,7 +34,7 @@ GROUP BY a.goal_id]]>
 	<pageHeader>
 		<band height="85">
 			<staticText>
-				<reportElement x="489" y="55" width="88" height="14" uuid="ef7ff1ac-9ecd-47d2-af64-97c3c76c8de3"/>
+				<reportElement x="524" y="55" width="88" height="14" uuid="ef7ff1ac-9ecd-47d2-af64-97c3c76c8de3"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -47,7 +47,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Monthly]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="401" y="55" width="88" height="14" uuid="a9711414-98c2-4f48-829a-78722da3a517"/>
+				<reportElement x="436" y="55" width="88" height="14" uuid="a9711414-98c2-4f48-829a-78722da3a517"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -60,7 +60,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Cumulative]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="431" y="69" width="29" height="16" uuid="71d9f920-286b-4d0c-bfb3-66bce2a67862"/>
+				<reportElement x="466" y="69" width="29" height="16" uuid="71d9f920-286b-4d0c-bfb3-66bce2a67862"/>
 				<box topPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -73,7 +73,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[A]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="548" y="69" width="29" height="16" uuid="2f17c734-87e9-4938-b937-957dc3b1f34b"/>
+				<reportElement x="583" y="69" width="29" height="16" uuid="2f17c734-87e9-4938-b937-957dc3b1f34b"/>
 				<box topPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -99,7 +99,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Actions]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="401" y="69" width="30" height="16" uuid="ad4e10c7-fd48-49d0-ac6e-dbabbd1f8833"/>
+				<reportElement x="436" y="69" width="30" height="16" uuid="ad4e10c7-fd48-49d0-ac6e-dbabbd1f8833"/>
 				<box topPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -112,7 +112,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[T]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="55" width="50" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
+				<reportElement x="180" y="55" width="45" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -122,10 +122,10 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Date]]></text>
+				<text><![CDATA[Start]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="460" y="69" width="29" height="16" uuid="60b01b6b-a780-4472-84c8-5eb8f6197858"/>
+				<reportElement x="495" y="69" width="29" height="16" uuid="60b01b6b-a780-4472-84c8-5eb8f6197858"/>
 				<box topPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -138,7 +138,20 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[V]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="489" y="69" width="30" height="16" uuid="ca28850f-a9c2-4f20-b415-02e5cfdd653e"/>
+				<reportElement x="225" y="55" width="46" height="30" uuid="32d11800-54e1-4fd5-9e12-41ad5b087e8c"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[End]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="524" y="69" width="30" height="16" uuid="ca28850f-a9c2-4f20-b415-02e5cfdd653e"/>
 				<box topPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -151,7 +164,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[T]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="363" y="55" width="38" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
+				<reportElement x="398" y="55" width="38" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -177,7 +190,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[ID#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="230" y="55" width="133" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
+				<reportElement x="271" y="55" width="127" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -190,7 +203,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Indicator]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="519" y="69" width="29" height="16" uuid="c317b734-7dd7-4f74-9b10-eaa18561dbb2"/>
+				<reportElement x="554" y="69" width="29" height="16" uuid="c317b734-7dd7-4f74-9b10-eaa18561dbb2"/>
 				<box topPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -249,7 +262,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[A. Monthly Reporting Pack (MRP)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="577" y="55" width="145" height="30" uuid="a298031a-2107-4c86-8c29-041beea5293d"/>
+				<reportElement x="612" y="55" width="110" height="30" uuid="a298031a-2107-4c86-8c29-041beea5293d"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -343,7 +356,7 @@ GROUP BY a.goal_id]]>
 		</band>
 		<band height="20">
 			<subreport>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="db9a0d10-27fb-4cee-880a-b5c1b9e281c9"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="23b2a1d8-6335-4e03-b3c4-ab2c22f39ab9"/>
 				<subreportParameter name="SUBREPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -361,9 +374,6 @@ GROUP BY a.goal_id]]>
 				</subreportParameter>
 				<subreportParameter name="reportTitle">
 					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="goalId">
-					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="REPORT_DIR">
 					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
@@ -389,19 +399,19 @@ GROUP BY a.goal_id]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{ROOT_DIR} + "commonFooterLandscape.jasper"]]></subreportExpression>
 			</subreport>
-			<textField evaluationTime="Report">
-				<reportElement x="416" y="0" width="40" height="19" uuid="1e75330c-0d66-427a-b97f-483b216a9a54"/>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
 			<textField>
-				<reportElement x="336" y="0" width="80" height="19" uuid="54ca790f-28d6-4659-8d70-20fd1383c08e"/>
+				<reportElement x="346" y="0" width="80" height="19" uuid="afda4d4a-4f49-49d8-a2ae-1cbff4fc2618"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="426" y="0" width="40" height="19" uuid="e769dd52-76bb-42f8-bec8-665316364279"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
