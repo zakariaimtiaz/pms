@@ -330,6 +330,7 @@
         descStr.value(htmlDecode(meetingLog.descStr));
         var logStr = $("#logStr").data("kendoEditor");
         logStr.value(htmlDecode(meetingLog.logStr));
+        dropDownCategoryChange();
         if (meetingLog.attendees) multiSelectAttendees.value(meetingLog.attendees.split(","));
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }

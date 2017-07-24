@@ -142,7 +142,7 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/meetingLog/show">
+                <sec:ifAnyUrls urls="/meetingLog/show,/meetingLog/showQuarterAnnual,/meetingLog/showFunctional">
                     <li>
                         <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
                                 class="fa arrow"></span></a>
