@@ -325,7 +325,7 @@
     }).data("kendoTooltip");
     function downloadMeetingFile(id) {
         showLoadingSpinner(true);
-        var msg = 'Do you want to download the ED\'s Dashboard now?',
+        var msg = 'Do you want to download the attachment now?',
                 params = "?id=" +id,
                 url = "${createLink(controller: 'meetingLog', action:  'downloadFile')}" + params;
         confirmDownload(msg, url);

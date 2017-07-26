@@ -91,7 +91,7 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "descStr", title: "Description",sortable: false, filterable: false,
-                    template: "#=trimTextForKendo(htmlDecode(descStr),800)#"
+                    template: "#=trimTextForKendo(htmlDecode(descStr),500)#"
                 },
                 {field: "fileName", title: "Download Attachment",sortable: false, filterable: false, width: 250
                     , template: "<a onclick=\"downloadMeetingFile('#= id #')\" href='\\#'>#= fileName #</a>"
@@ -126,7 +126,7 @@
     }).data("kendoTooltip");
     function downloadMeetingFile(id) {
         showLoadingSpinner(true);
-        var msg = 'Do you want to download the ED\'s Dashboard now?',
+        var msg = 'Do you want to download the attachment now?',
                 params = "?id=" +id,
                 url = "${createLink(controller: 'meetingLog', action:  'downloadFile')}" + params;
         confirmDownload(msg, url);
