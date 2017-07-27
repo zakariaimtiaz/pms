@@ -1,6 +1,7 @@
 package service
 
 import com.pms.PmActionsIndicatorDetails
+import com.pms.PmSapBackupLog
 import com.pms.PmServiceSector
 import com.pms.PropertiesReader
 import com.pms.SecUser
@@ -316,7 +317,7 @@ class PmActionsService extends BaseService {
         String titleStr = service.shortName + REPORT_TITLE + EMPTY_SPACE + year
         Date date = new Date() ;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
-        String outputFileName = dateFormat.format(date) + UNDERSCORE + service.shortName + UNDERSCORE + year + PDF_EXTENSION
+        String outputFileName = (DateUtility.getSqlDateWithSeconds(date).toString().replace("-","_")).replace(" ","_").replace(":","_") + UNDERSCORE + service.shortName + UNDERSCORE + year + PDF_EXTENSION
 
         Map reportParams = new LinkedHashMap()
         reportParams.put(ROOT_DIR, rootDir)
@@ -353,8 +354,16 @@ class PmActionsService extends BaseService {
             baos.close();
             fos.flush();
             fos.close();
-        } catch(IOException ioe) {
-            ioe.printStackTrace();
+
+            PmSapBackupLog pmSapBackupLog=new PmSapBackupLog()
+            pmSapBackupLog.fileName=outputFileName
+            pmSapBackupLog.createDate=DateUtility.getSqlDate(new Date())
+            pmSapBackupLog.serviceId=serviceId
+            pmSapBackupLog.year=year
+            pmSapBackupLog.save()
+
+        } catch(Exception e) {
+           // ioe.printStackTrace();
         }
     }
 

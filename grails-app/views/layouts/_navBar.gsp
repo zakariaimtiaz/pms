@@ -59,6 +59,13 @@
                                                 </a>
                                             </li>
                                         </sec:access>
+                                        <sec:access url="/reports/showSapBackupView">
+                                            <li>
+                                                <a href="#reports/showSapBackupView"><i
+                                                        class="fa fa-file-text-o"></i>&nbsp;SAP Backup Files
+                                                </a>
+                                            </li>
+                                        </sec:access>
                                     </ul>
                                 </li>
                             </sec:ifAnyUrls>

@@ -11,7 +11,10 @@ import actions.reports.spSummary.ListReportSpSummaryActionService
 import actions.reports.yearly.DownloadYearlySPActionService
 import actions.reports.yearly.DownloadYearlySPDetailsActionService
 import actions.reports.yearly.ListYearlySPActionService
+import com.pms.MeetingLog
 import com.pms.PmMcrsLog
+import com.pms.PmSapBackupLog
+import com.pms.PropertiesReader
 import com.pms.SecUser
 import com.pms.SystemEntity
 import grails.converters.JSON
@@ -20,6 +23,7 @@ import groovy.sql.GroovyRowResult
 import pms.utility.DateUtility
 import service.MeetingLogService
 import service.PmActionsService
+import service.PmSpLogService
 
 class ReportsController  extends BaseController  {
 
@@ -27,6 +31,7 @@ class ReportsController  extends BaseController  {
     SpringSecurityService springSecurityService
     PmActionsService pmActionsService
     MeetingLogService meetingLogService
+    PmSpLogService pmSpLogService
 
     ListMCRSActionService listMCRSActionService
     DownloadMCRSActionService downloadMCRSActionService
@@ -252,4 +257,43 @@ class ReportsController  extends BaseController  {
         renderOutputStream(result.report.toByteArray(), result.format, result.reportFileName)
     }
     //################## Dashboard End   ###########################
+    //################## SAP Backup files view #####################
+
+    def showSapBackupView() {
+        SecUser user = baseService.currentUserObject()
+        boolean isSysAdmin = baseService.isUserSystemAdmin(user.id)
+        boolean isTopMan = baseService.isUserTopManagement(user.id)
+        boolean isAssist = baseService.isEdAssistantRole(user.id)
+        boolean isSpAdmin = baseService.isEdAdminRole(user.id)
+        List<Long> lst = baseService.currentUserDepartmentList()
+        boolean isMultiDept = Boolean.FALSE
+        if(lst.size() > 1){
+            isMultiDept = Boolean.TRUE
+        }
+        render(view: "/reports/backupView/show", model: [isSysAdmin:isSysAdmin,
+                                                        isTopMan: isTopMan,
+                                                        isAssist: isAssist,
+                                                        isSpAdmin: isSpAdmin,
+                                                        isMultiDept:isMultiDept,
+                                                        serviceId:user.serviceId])
+
+    }
+    def listSapBackupFiles() {
+        long serviceId = Long.parseLong(params.serviceId.toString())
+        List<GroovyRowResult> lst = pmSpLogService.findAllByYearAndServiceId(Integer.parseInt(params.year.toString()), serviceId)
+        render lst as JSON
+    }
+    def downloadSapBackupFile() {
+        String meeting_dir = PropertiesReader.getProperty("sap.backup.location", PropertiesReader.CONFIG_FILE_DB)
+        long id = Long.parseLong(params.id)
+        PmSapBackupLog pmSapBackupLog=PmSapBackupLog.findById(id)
+        def file = new File("${meeting_dir}/${pmSapBackupLog.fileName}")
+        if (file.exists())
+        {
+            response.setContentType("application/octet-stream") // or or image/JPEG or text/xml or whatever type the file is
+            response.setHeader("Content-disposition", "attachment;filename=\"${file.name}\"")
+            response.outputStream << file.bytes
+        }
+        else render "Error!" // appropriate error handling
+    }
 }
