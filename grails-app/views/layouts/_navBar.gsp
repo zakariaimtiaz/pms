@@ -59,10 +59,18 @@
                                                 </a>
                                             </li>
                                         </sec:access>
+                                    </ul>
+                                </li>
+                            </sec:ifAnyUrls>
+                            <sec:ifAnyUrls urls="/reports/showSapBackupView">
+                                <li>
+                                    <a href="#"><i class="fa fa-cubes"></i>&nbsp;Backup Files<span
+                                            class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
                                         <sec:access url="/reports/showSapBackupView">
                                             <li>
                                                 <a href="#reports/showSapBackupView"><i
-                                                        class="fa fa-file-text-o"></i>&nbsp;SAP Backup Files
+                                                        class="fa fa-file-text-o"></i>&nbsp;SAP
                                                 </a>
                                             </li>
                                         </sec:access>
