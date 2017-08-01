@@ -90,7 +90,7 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "serviceName", title: "Sector/ CSU", width: 200, sortable: false, filterable: true
+                {field: "serviceName", title: "Sector/ CSU", width: 200, sortable: false, filterable: false
                 },
                 {field: "createDate", title: "Backup Date", width: 100, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
