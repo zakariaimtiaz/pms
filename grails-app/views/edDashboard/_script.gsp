@@ -19,6 +19,10 @@
         $('.nav-tabs a[href="#' + tab + '"]').tab('show');
     }
     function loadData() {
+        if(dropDownService.value()==0){
+            showError('Please select Sector/ CSU');
+            return false;
+        }
         initIssueGrid();
         loadUnresolveData();
         initResolvedIssueGrid();
@@ -28,6 +32,8 @@
         activaTab('menu1');
         serviceId = ${serviceId};
         subDate = '${subDate}';
+        if( subDate.isEmpty())
+        {subDate =new Date();}
         $('#hfSubmissionDate').val(subDate);
         var m = $('#month').kendoDatePicker({
             format: "MMMM yyyy",

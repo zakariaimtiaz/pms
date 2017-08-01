@@ -67,7 +67,7 @@ SELECT 1 as sl,'Sector/CSU Submitted ED\'s Dashboard without any issue' AS issue
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="-1" width="802" height="20" uuid="7ffc8b6e-612b-4247-9faf-33363d11bf54"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="-1" width="802" height="20" uuid="7ffc8b6e-612b-4247-9faf-33363d11bf54"/>
 				<textFieldExpression><![CDATA[$F{SERVICE}]]></textFieldExpression>
 			</textField>
 		</band>

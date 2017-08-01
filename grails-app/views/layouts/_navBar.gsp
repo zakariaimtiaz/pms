@@ -149,46 +149,7 @@
                         <!-- /.nav-second-level -->
                     </li>
                 </sec:ifAnyUrls>
-                <sec:ifAnyUrls urls="/meetingLog/show,/meetingLog/showQuarterAnnual,/meetingLog/showFunctional">
-                    <li>
-                        <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <sec:access url="/meetingLog/show">
-                                <li>
-                                    <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#meetingLog/show?type=Monthly"><i class="fa fa-maxcdn"></i>&nbsp;Monthly
-                                    </a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/meetingLog/showQuarterAnnual">
-                                <li>
-                                    <a href="#meetingLog/showQuarterAnnual?type=Quarterly"><i
-                                            class="fa fa-quora"></i>&nbsp;Quarterly
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#meetingLog/showQuarterAnnual?type=Annually"><i
-                                            class="fa fa-meetup"></i>&nbsp;Annually
-                                    </a>
-                                </li>
-                            </sec:access>
-                            <sec:access url="/meetingLog/showFunctional">
-                                <li>
-                                    <a href="#meetingLog/showFunctional?type=Functional"><i
-                                            class="fa fa-handshake-o"></i>&nbsp;Functional
-                                    </a>
-                                </li>
-                            </sec:access>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </sec:ifAnyUrls>
-                <sec:ifAnyUrls
-                        urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show">
+                <sec:ifAnyUrls urls="/pmMissions/show,/pmGoals/show,/pmActions/show,/pmSpSummary/show">
                     <li>
                         <a href="#"><i class="fa fa-book"></i>&nbsp;SAP Entry<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -244,6 +205,44 @@
                             <sec:access url="/pmMcrsLog/showSubmission">
                                 <li>
                                     <a href="#pmMcrsLog/showSubmission"><i class="fa fa-clock-o"></i>&nbsp;Submission
+                                    </a>
+                                </li>
+                            </sec:access>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+                </sec:ifAnyUrls>
+                <sec:ifAnyUrls urls="/meetingLog/show,/meetingLog/showQuarterAnnual,/meetingLog/showFunctional">
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap"></i>&nbsp;Meeting<span
+                                class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <sec:access url="/meetingLog/show">
+                                <li>
+                                    <a href="#meetingLog/show?type=Weekly"><i class="fa fa-wikipedia-w"></i>&nbsp;Weekly
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#meetingLog/show?type=Monthly"><i class="fa fa-maxcdn"></i>&nbsp;Monthly
+                                    </a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/meetingLog/showQuarterAnnual">
+                                <li>
+                                    <a href="#meetingLog/showQuarterAnnual?type=Quarterly"><i
+                                            class="fa fa-quora"></i>&nbsp;Quarterly
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#meetingLog/showQuarterAnnual?type=Annually"><i
+                                            class="fa fa-meetup"></i>&nbsp;Annually
+                                    </a>
+                                </li>
+                            </sec:access>
+                            <sec:access url="/meetingLog/showFunctional">
+                                <li>
+                                    <a href="#meetingLog/showFunctional?type=Functional"><i
+                                            class="fa fa-handshake-o"></i>&nbsp;Functional
                                     </a>
                                 </li>
                             </sec:access>

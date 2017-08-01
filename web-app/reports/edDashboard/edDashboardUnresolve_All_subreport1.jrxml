@@ -27,7 +27,7 @@ LEFT JOIN pm_service_sector pss ON ed.service_id=pss.id
 WHERE ed.month_for =DATE($P{month})
 AND edi.id IN($P!{issueStr})
 AND ed.service_id IN (SELECT DISTINCT(service_id) FROM pm_mcrs_log
-WHERE is_submitted_db = TRUE AND MONTH = MONTH($P{month}) AND YEAR=YEAR($P{month}))
+WHERE is_submitted_db = TRUE AND MONTH = MONTH($P{month}) AND YEAR=YEAR($P{month}) )
 ORDER BY pss.name;]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">

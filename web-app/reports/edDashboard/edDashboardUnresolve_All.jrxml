@@ -134,8 +134,23 @@ ORDER BY ed.issue_id,ed.month_for;]]>
 		<band height="20" splitType="Stretch">
 			<subreport>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="c0fac314-523f-49c3-bd85-4abe028bd5e6"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO_DIR">
+					<subreportParameterExpression><![CDATA[$P{LOGO_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ROOT_DIR">
+					<subreportParameterExpression><![CDATA[$P{ROOT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
 				<subreportParameter name="serviceId">
 					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportTitle">
+					<subreportParameterExpression><![CDATA[$P{reportTitle}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="issueStr">
 					<subreportParameterExpression><![CDATA[$F{issueStr}]]></subreportParameterExpression>

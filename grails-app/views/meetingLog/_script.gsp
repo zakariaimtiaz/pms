@@ -84,7 +84,7 @@
         defaultPageTile("Create Log",null);
     }
     function dropDownCategoryChange(){
-       if( dropDownCategory.text()=="CSUs & DO"){
+       if( dropDownCategory.value()=="4"){
            multiSelectAttendees.setDataSource(${lstEmployeeDO});
        }else {
            multiSelectAttendees.setDataSource(${lstEmployee});

@@ -1,6 +1,7 @@
 package actions.reports.dashboard
 
 import com.pms.PmServiceSector
+import com.pms.SecUser
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
 import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
@@ -8,6 +9,7 @@ import org.codehaus.groovy.grails.plugins.jasper.JasperService
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import pms.utility.Tools
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -26,9 +28,14 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
     private static final String JASPER_FILE_UNRESOLVE_ALL = 'edDashboardUnresolve_All'
     private static final String JASPER_FILE_UPCOMING_ALL = 'edDashboardUpcoming_All'
 
+    private static final String JASPER_FILE_RESOLVE_MULTD = 'edDashboardResolve_MultiDept'
+    private static final String JASPER_FILE_UNRESOLVE_MULTD = 'edDashboardUnresolve_MultiDept'
+    private static final String JASPER_FILE_UPCOMING_MULTD = 'edDashboardUpcoming_MultiDept'
+
     private static final String REPORT_TITLE_LBL = 'reportTitle'
     private static final String REPORT_TITLE = " ED\'s Dashboard of "
     private static final String SERVICE_ID = "serviceId"
+    private static final String SERVICE_ID_STR = "serviceIdStr"
     private static final String SERVICE_NAME = "serviceName"
     private static final String SERVICE_SHORT_NAME = "shortName"
     private static final String YEAR = "year"
@@ -65,6 +72,11 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
             PmServiceSector service = PmServiceSector.read(serviceId)
             params.put(SERVICE_NAME, service.name)
             params.put(SERVICE_SHORT_NAME, service.shortName)
+        }
+        else {
+            List<Long> lst = currentUserDepartmentList()
+            String serviceIdStr = Tools.buildCommaSeparatedStringOfIds(lst)
+            params.put(SERVICE_ID_STR, serviceIdStr)
         }
         params.put(SERVICE_ID, serviceId)
         params.put(YEAR, year)
@@ -118,21 +130,36 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
         return result
     }
     private Map getReport(Map result) {
+        Map reportParams = new LinkedHashMap()
+        SecUser user = currentUserObject()
         String s=result.get(MONTH_STR) + SINGLE_SPACE + result.get(YEAR);
         String reportFolder = REPORT_FOLDER
         String jesperFile = JASPER_FILE_UNRESOLVE_ALL
+        List<Long> lst = currentUserDepartmentList()
         if(result.get(SERVICE_ID)>0)
             jesperFile = JASPER_FILE_UNRESOLVE_ISSUE
+        else if(lst.size()>1 && !isUserSystemAdmin(user.id) && !isUserTopManagement(user.id) && !isEdAdminRole(user.id)){
+            jesperFile=JASPER_FILE_UNRESOLVE_MULTD
+            reportParams.put(SERVICE_ID_STR, result.get(SERVICE_ID_STR))
+        }
 
         if(result.statusType.equals("Resolved Issue")){
             jesperFile = JASPER_FILE_RESOLVE_ALL
         if(result.get(SERVICE_ID)>0)
             jesperFile = JASPER_FILE_RESOLVE_ISSUE
+        else if(lst.size()>1 && !isUserSystemAdmin(user.id) && !isUserTopManagement(user.id) && !isEdAdminRole(user.id)){
+            jesperFile=JASPER_FILE_RESOLVE_MULTD
+            reportParams.put(SERVICE_ID_STR, result.get(SERVICE_ID_STR))
+        }
             s="Resolved Issue"
         }else if(result.statusType.equals("Upcoming Issue")) {
             jesperFile = JASPER_FILE_UPCOMING_ALL
         if(result.get(SERVICE_ID)>0)
             jesperFile = JASPER_FILE_UPCOMING_ISSUE
+        else if(lst.size()>1 && !isUserSystemAdmin(user.id) && !isUserTopManagement(user.id) && !isEdAdminRole(user.id)){
+            jesperFile=JASPER_FILE_UPCOMING_MULTD
+            reportParams.put(SERVICE_ID_STR, result.get(SERVICE_ID_STR))
+        }
             s="Upcoming Issue"
         }
         String rootDir = result.reportDirectory + File.separator
@@ -149,7 +176,6 @@ class DownloadEdDashBoardActionService extends BaseService implements ActionServ
             titleStr = "ED's Dashboard of " + EMPTY_SPACE + s
         }
 
-        Map reportParams = new LinkedHashMap()
         reportParams.put(ROOT_DIR, rootDir)
         reportParams.put(LOGO_DIR, logoDir)
         reportParams.put(REPORT_DIR, reportDir)

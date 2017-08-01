@@ -625,7 +625,7 @@ class BaseService extends Tools {
     public List<Long> currentUserDepartmentList(){
         SecUser user = currentUserObject()
         if(isUserOnlyDepartmental()){
-            List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId
+            List<Long> lstIds = UserDepartment.findAllByUserId(user.id).serviceId.unique()
             return lstIds
         }
         List<Long> lstIds = PmServiceSector.list().id
