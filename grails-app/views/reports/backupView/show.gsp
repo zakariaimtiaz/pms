@@ -21,7 +21,7 @@
 
                     <div class="col-md-3">
                         <app:dropDownService
-                                class="kendo-drop-down" is_in_sp="true"
+                                class="kendo-drop-down" is_in_sp="true" hints_text="ALL CSU/Sector"
                                 id="serviceId" name="serviceId" tabindex="2"
                                 onchange="populateBackupGrid()"
                                 data_model_name="dropDownService">

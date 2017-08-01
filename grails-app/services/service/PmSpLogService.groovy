@@ -23,7 +23,7 @@ class PmSpLogService extends BaseService {
     public List<GroovyRowResult> findAllByYearAndServiceId(int year,long serviceId){
         String queryStr = """
             SELECT sbl.id,sbl.version,sbl.create_date createDate,sbl.file_name fileName,sbl.service_id serviceId
-            ,sbl.year,ss.short_name AS serviceName
+            ,sbl.year,ss.name AS serviceName,ss.short_name AS shortName
             FROM pm_sap_backup_log sbl LEFT JOIN pm_service_sector ss ON sbl.service_id=ss.id
             WHERE sbl.year=${year} AND sbl.service_id=${serviceId}
         """
