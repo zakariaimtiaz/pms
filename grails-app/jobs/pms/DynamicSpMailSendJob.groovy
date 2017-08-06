@@ -53,14 +53,12 @@ class DynamicSpMailSendJob {
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,BOTH_STR)
                 }
-            }
-            if (currentDay + reminder == deadlineDay && sc && !lstLog[i].isSubmitted && lstLog[i].isSubmittedDb) {
+            }else if (currentDay + reminder == deadlineDay && sc && !lstLog[i].isSubmitted && lstLog[i].isSubmittedDb) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,MRP_STR)
                 }
-            }
-            if (currentDay + reminder == deadlineDay && sc && lstLog[i].isSubmitted && !lstLog[i].isSubmittedDb) {
+            }else if (currentDay + reminder == deadlineDay && sc && lstLog[i].isSubmitted && !lstLog[i].isSubmittedDb) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_BEFORE_DEADLINE, true)
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,DASHBOARD_STR)
@@ -72,14 +70,12 @@ class DynamicSpMailSendJob {
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,BOTH_STR)
                 }
-            }
-            if (deadlineDay + warning == currentDay && sc && !lstLog[i].isSubmitted && lstLog[i].isSubmittedDb) {
+            }else if (deadlineDay + warning == currentDay && sc && !lstLog[i].isSubmitted && lstLog[i].isSubmittedDb) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(WARNING_MAIL_AFTER_DEADLINE, true)
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,MRP_STR)
                 }
-            }
-            if (deadlineDay + warning == currentDay && sc && lstLog[i].isSubmitted && !lstLog[i].isSubmittedDb) {
+            }else if (deadlineDay + warning == currentDay && sc && lstLog[i].isSubmitted && !lstLog[i].isSubmittedDb) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(WARNING_MAIL_AFTER_DEADLINE, true)
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,DASHBOARD_STR)
@@ -92,14 +88,12 @@ class DynamicSpMailSendJob {
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,BOTH_STR)
                 }
-            }
-            if (currentDay == deadlineDay && sc && !lstLog[i].isSubmitted && lstLog[i].isSubmittedDb) {
+            }else if (currentDay == deadlineDay && sc && !lstLog[i].isSubmitted && lstLog[i].isSubmittedDb) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_ON_DEADLINE, true)
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,MRP_STR)
                 }
-            }
-            if (currentDay == deadlineDay && sc && lstLog[i].isSubmitted && !lstLog[i].isSubmittedDb) {
+            }else if (currentDay == deadlineDay && sc && lstLog[i].isSubmitted && !lstLog[i].isSubmittedDb) {
                 AppMail appMail = AppMail.findByTransactionCodeAndIsActive(REMINDER_MAIL_ON_DEADLINE, true)
                 if (appMail) {
                     sendMail(appMail, sc.departmentHead, sc.contactEmail, deadline, sc.departmentHeadGender, lstLog[i].monthStr, lstLog[i].year,DASHBOARD_STR)
