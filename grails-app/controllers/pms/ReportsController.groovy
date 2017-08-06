@@ -279,7 +279,9 @@ class ReportsController  extends BaseController  {
 
     }
     def listSapBackupFiles() {
-        long serviceId = Long.parseLong(params.serviceId.toString())
+        long serviceId =0
+        if(params.serviceId)
+        serviceId = Long.parseLong(params.serviceId.toString())
         List<GroovyRowResult> lst = pmSpLogService.findAllByYearAndServiceId(Integer.parseInt(params.year.toString()), serviceId)
         render lst as JSON
     }

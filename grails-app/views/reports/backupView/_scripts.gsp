@@ -4,9 +4,8 @@
     $(document).ready(function () {
         onLoadBackupViewPage();
         initBackupGrid();
-        if(!${isSysAdmin} && !${isTopMan} && !${isSpAdmin} && !${isMultiDept}) {
-            populateBackupGrid();
-        }
+        populateBackupGrid();
+
     });
 
     function onLoadBackupViewPage() {
@@ -32,10 +31,6 @@
         var serviceId = dropDownService.value();
         if(year==''){
             showError('Please select year');
-            return false;
-        }
-        if(serviceId==''){
-            showError('Please select any service');
             return false;
         }
 
@@ -95,8 +90,7 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "serviceName", title: "Sector/ CSU", width: 200, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                {field: "serviceName", title: "Sector/ CSU", width: 200, sortable: false, filterable: false
                 },
                 {field: "createDate", title: "Backup Date", width: 100, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(createDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",

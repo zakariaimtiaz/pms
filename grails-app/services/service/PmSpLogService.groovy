@@ -21,11 +21,23 @@ class PmSpLogService extends BaseService {
         return lst
     }
     public List<GroovyRowResult> findAllByYearAndServiceId(int year,long serviceId){
+        String serviceStr=""
+        if(serviceId>0)
+        {
+            serviceStr=" AND sbl.service_id=${serviceId}"
+        }
+        else {
+            List<GroovyRowResult> lst = currentUserDepartmentList()
+            if (lst.size()>1){
+                String services=buildCommaSeparatedStringOfIds(lst)
+                serviceStr=" AND sbl.service_id IN (${services})"
+            }
+        }
         String queryStr = """
             SELECT sbl.id,sbl.version,sbl.create_date createDate,sbl.file_name fileName,sbl.service_id serviceId
-            ,sbl.year,ss.short_name AS serviceName
+            ,sbl.year,ss.name AS serviceName,ss.short_name AS shortName
             FROM pm_sap_backup_log sbl LEFT JOIN pm_service_sector ss ON sbl.service_id=ss.id
-            WHERE sbl.year=${year} AND sbl.service_id=${serviceId}
+            WHERE sbl.year=${year} ${serviceStr}
         """
         List<GroovyRowResult> lst = executeSelectSql(queryStr)
         return lst
