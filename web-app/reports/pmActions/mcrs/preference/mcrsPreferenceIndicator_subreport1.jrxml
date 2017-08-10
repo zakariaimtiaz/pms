@@ -12,7 +12,7 @@
 	<parameter name="goalId" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[SELECT @row_number:=CASE WHEN @actionid=tmp.action_id THEN @row_number+1 ELSE 1 END AS row_number,@actionid:=tmp.action_id AS action_id,t_mon_var,
-sequence,actions,start,end,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
+sequence,actions,start,CASE WHEN extendedEnd!='' THEN CONCAT('<strike>',DATE_FORMAT(END,'%b'),'</strike> ',DATE_FORMAT(extendedEnd,'%b')) ELSE DATE_FORMAT(END,'%b') END end,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_tar, '%') ELSE mon_tar END AS mon_tar,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_acv, '%') ELSE mon_acv END AS mon_acv,
 CONCAT(FLOOR((mon_acv/mon_tar * 100)-100), '%') AS mon_var,
@@ -21,7 +21,7 @@ CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(cum_acv, '%') ELSE cum_
 CONCAT(FLOOR((cum_acv/cum_tar * 100)-100), '%') AS cum_var,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
-a.actions,a.start,a.end, ai.indicator,ai.indicator_type,
+a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd, ai.indicator,ai.indicator_type,
 (SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
@@ -68,7 +68,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 	<field name="start" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="end" class="java.sql.Date">
+	<field name="end" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="indicator" class="java.lang.String">
@@ -104,7 +104,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -119,7 +119,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -134,7 +134,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -221,7 +221,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -236,7 +236,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -251,7 +251,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -266,7 +266,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -417,7 +417,13 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textFieldExpression><![CDATA[$F{cum_var}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="fdbfb076-5503-4c40-bf62-7437f7339012"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="fdbfb076-5503-4c40-bf62-7437f7339012"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
+				</box>
 			</frame>
 		</band>
 	</detail>

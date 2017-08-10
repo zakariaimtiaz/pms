@@ -78,7 +78,7 @@
                 },
                 {
                     field: "end", title: "End Date", width: 80, sortable: false, filterable: false
-                    ,template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
+                    ,template: "#=formatExtendedDateStrike(kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'),extendedEnd)#"
                 },
                 {
                     field: "remarks", title: "Action Remarks",

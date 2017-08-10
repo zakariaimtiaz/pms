@@ -74,7 +74,7 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
 
         String query = """
         SELECT a.id AS id,CONCAT(g.sequence,'. ',g.goal) goal,
-        a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+        a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd,
         a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
         (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
         (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
@@ -100,7 +100,7 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
 
         String query = """
         SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
-        a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+        a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd,
         ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
 
         CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END tot_tar,

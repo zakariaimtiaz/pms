@@ -104,7 +104,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         String query = """
                 SELECT * FROM
                 (SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
-                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
 
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,

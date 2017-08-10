@@ -111,6 +111,7 @@
                             actions: {editable: false,type: "string"},
                             start: {editable: false,type: "date"},
                             end: {editable: false,type: "date"},
+                            extendedEnd: {editable: false,type: "string"},
                             is_preference: {editable: true,type: "boolean"},
                             goal: {editable: false, type: "string"},
                             indicator: {editable: false, type: "string"},
@@ -148,7 +149,8 @@
                 {
                     field: "start", title: "Date<br/>Range", width: 80, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
-                    template: "#=omitRepeated3(sequence,formatDateRange(kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMM'),kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMM')))#"
+                    template: "#=omitRepeated3(sequence,formatDateRange(kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMM'),kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMM'),extendedEnd))#"
+
                 },
                 {
                     field: "is_preference",title: " ",width: 30,
@@ -245,7 +247,8 @@
             }
         });
     }
-    function formatDateRange(start,end){
+    function formatDateRange(start,end,extendedEnd){
+        end=formatExtendedDate(end,extendedEnd);
         return start + ' ~ ' + end;
     }
     function initGridAdditional() {
@@ -558,6 +561,14 @@
         return val;
     }
 
+    function formatExtendedDate(endDate,extendedEnd){
+
+        if(extendedEnd !=''){
+            return '<br>' + endDate.strike()+' ' + moment(extendedEnd).format("MMM");
+        }
+        return endDate;
+    }
+
     function downloadMcrsReport() {
         var checked = document.querySelector('input[name="downloadType"]:checked').value;
         var month = $('#month').val();
@@ -574,4 +585,5 @@
         confirmDownload(msg, url);
         return false;
     }
+
 </script>

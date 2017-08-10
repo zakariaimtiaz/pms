@@ -68,7 +68,7 @@ class Tools {
     public static final String FALSE = 'false'
     public static final String NO = "NO"
     public static final String ALL = "ALL"
-    public static final String INVALID_INPUT_MSG = "Error for invalid input"
+    public static final String INVALID_INPUT_MSG = "Red color field are mandatory."
 
     public static final String REPORT = "report"
     public static final String REPORT_NAME_FIELD = 'REPORT_NAME'

@@ -23,6 +23,7 @@ class PmActionsController extends BaseController {
     DeletePmActionsActionService deletePmActionsActionService
     ListPmActionsActionService listPmActionsActionService
     UpdateMRPActionService updateMRPActionService
+    UpdateMRPActionExtendedTimeService updateMRPActionExtendedTimeService
     UpdatePreferenceActionService updatePreferenceActionService
     ListMRPActionService listMRPActionService
     ListEditableActionsActionService listEditableActionsActionService
@@ -61,6 +62,9 @@ class PmActionsController extends BaseController {
     }
     def updateAchievement(){
         renderOutput(updateMRPActionService, params)
+    }
+    def updateExtendedTimeAchievement(){
+        renderOutput(updateMRPActionExtendedTimeService, params)
     }
     def updatePreference(){
         renderOutput(updatePreferenceActionService, params)

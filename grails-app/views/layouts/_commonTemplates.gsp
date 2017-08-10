@@ -52,7 +52,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideCreateIndicatorModal();"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="createIndicatorModalLabel">Split Indicator target into monthly basis</h4>
+                <h4 class="modal-title" id="createIndicatorModalLabel">Split indicator target into monthly basis</h4>
             </div>
 
             <div class="modal-body">
@@ -101,7 +101,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Select Year</h4>
+                <h4 class="modal-title">Select year</h4>
             </div>
 
             <div class="modal-body">
@@ -128,7 +128,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Set SP Dead Line</h4>
+                <h4 class="modal-title">Set SP deadline</h4>
             </div>
 
             <div class="modal-body">
@@ -141,7 +141,7 @@
                                    class="kendo-date-picker" id="modalSPYear" name="modalSPYear"
                                    placeholder="Year" validationMessage="Required"/>
                         </div>
-                        <label class="col-md-2 control-label label-optional" for="modalSPDeadLine">Dead Line:</label>
+                        <label class="col-md-2 control-label label-optional" for="modalSPDeadLine">Deadline:</label>
 
                         <div class="col-md-3">
                             <input type='text' tabindex="2" required="required" onkeydown="return false;"
@@ -166,7 +166,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Set MCRS Dead Line</h4>
+                <h4 class="modal-title">Set MCRS deadline</h4>
             </div>
 
             <div class="modal-body">
@@ -179,7 +179,7 @@
                                    class="kendo-date-picker" id="modalMCRSMonth" name="modalMCRSMonth"
                                    placeholder="Month" validationMessage="Required"/>
                         </div>
-                        <label class="col-md-2 control-label label-optional" for="modalMCRSMonth">Dead Line:</label>
+                        <label class="col-md-2 control-label label-optional" for="modalMCRSMonth">Deadline:</label>
 
                         <div class="col-md-3">
                             <input type='text' tabindex="2" required="required" onkeydown="return false;"
@@ -220,11 +220,11 @@
 
                     <div class="form-group">
                         <div class="col-md-3" style="padding-right: 0px;">
-                            <label class="control-label label-optional">  <strong class="label-optional">Initiated On:&nbsp;&nbsp;</strong>
+                            <label class="control-label label-optional">  <strong class="label-optional">Initiated on:&nbsp;&nbsp;</strong>
                             <strong class="label-optional" id="issuedMonth"></strong></label>
                             </div>
                         <div class="col-md-4" style="padding-right: 0px;">
-                            <strong class="label-required">Current Status:&nbsp;&nbsp;</strong>
+                            <strong class="label-required">Current status:&nbsp;&nbsp;</strong>
                         <input type="radio" name="selection" id="selectionResolve"
                                onchange="loadFollowupMonth();" value="Resolve"><label>&nbsp;Resolved</label>&nbsp;&nbsp;
                         <input type="radio" name="selection" id="selectionFollowup"
@@ -233,7 +233,7 @@
 
                         <div id="divfollowupMonth" style="display: none;" class="col-md-5">
                             <div class="col-md-4" style="padding-right: 0px;">
-                                <label class="control-label label-required"> <strong>Followup Month:</strong></label></div>
+                                <label class="control-label label-required"> <strong>Followup month:</strong></label></div>
                             <div class="col-md-6" style="padding-left: 0px;!important;">
                             <input type="text" id="followupMonth" name="followupMonth"
                                    placeholder="Select month"></div>
@@ -242,7 +242,7 @@
 
                     <div class="form-group">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and highlights:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <div id="descriptionDiv"class="form-control"  style="padding: 0 0 0 0 ! important;
@@ -253,7 +253,7 @@
                     </div>
                     <div class="form-group">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous Remarks and Recommendations:</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Previous remarks and recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <div id="oldRemarks" name="oldRemarks" class="form-control"  style="padding: 0 0 0 0 ! important;
@@ -265,7 +265,7 @@
                     </div>
                     <div class="form-group" id="divRemarks" style="display: none;">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Current Remarks and Recommendations:</strong></label>
+                            <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Current remarks and recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <textarea id="remarks" name="remarks" rows="5"
@@ -276,7 +276,7 @@
                     </div>
                     <div class="form-group" id="divResolveNote" style="display: none;">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolved Note(If any):</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Resolved note(if any):</strong></label>
                         </div>
                         <div class="col-md-12">
                             <textarea id="resolveNote" name="resolveNote" rows="5"
@@ -330,7 +330,7 @@
                         </div>
                     </div>
                     <div align="left">
-                        <label class="control-label label-required" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
+                        <label class="control-label label-required" style="padding-top: 0px;" for="description" ><strong>Crisis and highlights:</strong></label>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12" id="divDescriptionTextAreaNew">
@@ -340,7 +340,7 @@
                         </div>
                     </div>
                     <div align="left">
-                        <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
+                        <label class="control-label label-required" style="padding-top: 0px;" for="remarks" ><strong>Remarks and recommendations:</strong></label>
                     </div>
                     <div class="form-group">
 
@@ -388,14 +388,14 @@
                                 <strong class="label-optional" id="serviceName"></strong></label>
                         </div>
                         <div class="col-md-3" style="padding-right: 0px;">
-                            <label class="control-label label-optional">  <strong class="label-optional">Initiated On:&nbsp;&nbsp;</strong>
+                            <label class="control-label label-optional">  <strong class="label-optional">Initiated on:&nbsp;&nbsp;</strong>
                                 <strong class="label-optional" id="issuedInitiateMonth"></strong></label>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and Highlights:</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="description" ><strong>Crisis and highlights:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <div id="descriptionDetails" name="description" class="form-control"  style="padding: 0 0 0 0 ! important;
@@ -406,7 +406,7 @@
                     </div>
                     <div class="form-group">
                         <div align="left" style=" padding-left: 15px;">
-                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks and Recommendations:</strong></label>
+                            <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>Remarks and recommendations:</strong></label>
                         </div>
                         <div class="col-md-12">
                             <div id="allRemarksAdvice" name="allRemarksAdvice" class="form-control"  style="padding: 0 0 0 0 ! important;
@@ -418,7 +418,7 @@
                     </div>
                 <div class="form-group">
                     <div align="left" style=" padding-left: 15px;">
-                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>ED's Advice:</strong></label>
+                        <label class="control-label label-optional" style="padding-top: 0px;" for="remarks" ><strong>ED's advice:</strong></label>
                     </div>
                     <div class="col-md-12">
                         <textarea id="edAdvice" name="edAdvice" rows="5"
@@ -441,5 +441,82 @@
     </div>
 </div>
 
+<!-- Extend Action date for incomplete indicator -->
+<div class="modal fade" id="createIncompleteActionManage" role="dialog" tabindex="-1"
+     aria-labelledby="createIncompleteActionManageLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header "style=" background:#81ecef;border-top-left-radius: 5px;
+            border-top-right-radius: 5px; height: 30px; padding-top: 5px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onclick="hideModal();"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Incomplete action's indicator manage</h4>
+            </div>
 
+            <div class="modal-body" style="padding-top: 5px;padding-bottom: 5px;">
+                <form class="form-horizontal form-widgets" id="createIncompleteActionManageForm" name="createIncompleteActionManageForm">
+                    <input type="hidden" id="hfIndicatorDetailsId" name="hfIndicatorDetailsId" value=""/>
+                    <input type="hidden" id="hfIndicatorDetailsMonth" name="hfIndicatorDetailsMonth" value=""/>
+                    <input type="hidden" id="hfIndicatorDetailsAcv" name="hfIndicatorDetailsAcv" value=""/>
+                    <input type="hidden" id="hfIndicatorDetailsRemarks" name="hfIndicatorDetailsRemarks" value=""/>
+                    <input type="hidden" id="hfExtendDateCount" name="hfExtendDateCount" value=""/>
+                    <input type="hidden" id="hfIndicatorDetailsRemainsTarget" name="hfIndicatorDetailsRemainsTarget" value=""/>
+                    <input type="hidden" id="hfIsExtend" name="hfIsExtend" value=""/>
+
+                    <div class="form-group">
+
+                        <div class="col-md-12" style="padding-right: 0px;">
+                            <strong class="label-required">Status:&nbsp;&nbsp;</strong>
+                            <input type="radio" name="selection" id="selectionExtendMonth"
+                                   onchange="extendMonthSelect();" value="ExtendMonth"><label>&nbsp;Extend</label>
+                            <input type="radio" name="selection" id="selectionCloseWithRemain"
+                                   onchange="closeIndicatorSelect();" value="CloseWithRemain"><label>&nbsp;Close</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="control-label label-optional" style="padding-top: 0px;">Total target: <strong id="totalTargetExtend"></strong></label>&nbsp;&nbsp;
+                            <label class="control-label label-optional" style="padding-top: 0px;">Total achievement: <strong id="totalAcvExtend"></strong></label>&nbsp;&nbsp;
+                            <label class="control-label label-optional" style="padding-top: 0px;">Remaining target: <strong id="totalRemainingExtend"></strong></label>&nbsp;&nbsp;
+                        </div>
+                    </div>
+                    <div class="form-group" id="divExtendedEndMonth">
+                        <div>
+                            <div class="col-md-4" style="padding-right: 0px;">
+                                <label class="control-label label-required"> <strong>Action's extended end month:</strong></label></div>
+                            <div class="col-md-3" style="padding-left: 0px;!important;" align="left">
+                                <input type="text" id="extendedEndMonth" name="extendedEndMonth"
+                                       placeholder="Select month"></div>
+                        <label class="col-md-3 label-optional text-right" style="padding-right: 0px;"><b>Current target:</b></label>
+                        <span class="col-md-2 text-left" style="padding-left: 10px;" id="extendedModalTargetLbl"></span>
+                        </div><div>
+                            <div class="col-md-10">
+                                <table class="table table-bordered table-hover" id="i_logic_extend">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+
+                    </div>
+                    <div class="form-group" id="divIndicatorClosingNote" style="display: none;">
+                        <div align="left" style=" padding-left: 15px;">
+                            <label class="control-label label-required" style="padding-top: 0px;" for="IndicatorClosingNote" ><strong>Closing note:</strong></label>
+                        </div>
+                        <div class="col-md-12">
+                            <textarea id="IndicatorClosingNote" name="IndicatorClosingNote" rows="5"
+                                      style="font-size:12px;padding: 0 0 0 0 ! important;"
+                                      class="form-control" ></textarea>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="button" value="Save" onclick="onSubmitExtendedIndicator();"
+                       tabindex="2" id="btnIncompleteActionManageCreate">
+                <input class="btn btn-default" type="button" value="Close" onclick="hideModal();"
+                       data-dismiss="modal" tabindex="3">
+            </div>
+        </div>
+    </div>
+</div>
 

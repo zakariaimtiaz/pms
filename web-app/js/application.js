@@ -771,6 +771,12 @@ function getDefaultPageSize() {
 function getDefaultPageSizes() {
     return [20, 30, 40, 50];
 }
+function formatExtendedDateStrike(endDate,extendedEnd){
+    if(extendedEnd !=''){
+        return endDate.strike() + '\n' + moment(extendedEnd).format('MMMM');
+    }
+    return endDate;
+}
 
 
 

@@ -674,4 +674,17 @@ class PmActionsService extends BaseService {
         }
         return isSubmittable
     }
+    public List<GroovyRowResult> findTotalTargetAchievements(long actionsId, long indicatorId) {
+        String query = """
+        SELECT ai.target AS target, COALESCE(SUM(COALESCE(idd.achievement,0)),0) achievement
+        FROM pm_actions a
+        JOIN pm_actions_indicator ai ON ai.actions_id = a.id
+        JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
+        JOIN custom_month cm ON cm.name=idd.month_name
+        AND cm.sl_index <=(SELECT MONTH FROM pm_mcrs_log WHERE service_id=a.service_id AND is_submitted=TRUE ORDER BY MONTH DESC,YEAR DESC LIMIT 1 )
+        WHERE idd.actions_id=${actionsId} AND idd.indicator_id=${indicatorId} GROUP BY ai.id
+        """
+        List<GroovyRowResult> lst = executeSelectSql(query)
+        return lst
+    }
 }

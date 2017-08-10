@@ -20,6 +20,7 @@ class PmActions {
     Integer year
     Date start
     Date end
+    Date extendedEnd
     Boolean isEditable = Boolean.FALSE
 
     static mapping = {
@@ -31,6 +32,7 @@ class PmActions {
         indicator  sqlType: 'text'
         start      sqlType: 'date'
         end        sqlType: 'date'
+        extendedEnd        sqlType: 'date'
     }
 
     static constraints = {
@@ -46,5 +48,6 @@ class PmActions {
         indicator(nullable: true)
         year(nullable: true)
         isEditable(nullable: true)
+        extendedEnd(nullable: true)
     }
 }

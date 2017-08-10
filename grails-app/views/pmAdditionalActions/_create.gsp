@@ -100,7 +100,6 @@
                                         <option value="Dividable%">Dividable(%)</option>
                                         <option value="Repeatable">Repeatable</option>
                                         <option value="Repeatable%">Repeatable(%)</option>
-                                        <option value="Repeatable++">Repeatable(+/-)</option>
                                     </select>
                                     </td>
                                     <td width="20%">
