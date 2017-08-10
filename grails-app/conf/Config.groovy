@@ -144,3 +144,11 @@ grails.plugin.springsecurity.rejectIfNoRule = true
 grails.plugin.springsecurity.password.algorithm = 'SHA-256'
 grails.plugin.springsecurity.password.hash.iterations = 1
 grails.plugin.springsecurity.logout.postOnly = false
+
+
+// gdoc config
+grails.doc.title = "Strategic Action Plan (SAP)"
+grails.doc.subtitle = "User Guide"
+grails.doc.authors = "Zakaria Imtiaz"
+grails.doc.copyright = "Copyright © 2017 by Management Information System(MIS).<br/>"
+grails.doc.images = new File("src/docs/image")
