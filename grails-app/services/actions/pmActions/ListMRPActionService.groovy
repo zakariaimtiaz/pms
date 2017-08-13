@@ -129,7 +129,7 @@ class ListMRPActionService extends BaseService implements ActionServiceIntf {
                 LEFT JOIN pm_goals g ON g.id = a.goal_id
                 JOIN (SELECT * FROM pm_service_sector WHERE id = ${serviceId}) sc ON sc.id = a.service_id
                 WHERE a.service_id = ${serviceId}
-                AND ('${start}' <= a.end AND '${end}' >= a.start)
+                AND ('${start}' <= (CASE WHEN COALESCE(a.extended_end,'')!='' THEN a.extended_end ELSE a.end END) AND '${end}' >= a.start)
                 ORDER BY sc.id,EXTRACT(YEAR FROM a.start) , a.goal_id ,a.tmp_seq
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
@@ -139,7 +139,8 @@ class ListMRPActionService extends BaseService implements ActionServiceIntf {
         String query = """
                 SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,i.unit_id,i.unit_str,i.indicator_type,idd.month_name,
                 idd.target monthly_target,CASE WHEN idd.achievement>0 THEN idd.achievement ELSE NULL END achievement
-                ,idd.remarks,SUM(tmp.achievement) total_achievement
+                ,CASE WHEN COALESCE(i.closing_month,'')!='' THEN idd.remarks+'\\n Closing note:- '+i.closing_note ELSE idd.remarks END remarks,
+SUM(tmp.achievement) total_achievement
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id

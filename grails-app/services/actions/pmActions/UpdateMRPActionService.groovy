@@ -65,16 +65,18 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                 if (indicatorType.equals("Dividable") || indicatorType.equals("Dividable%")) {
                     Date date=pmActions.end
                     Calendar c = Calendar.getInstance();
+                    c.setTime(date);
+                    String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
                     if(pmActions.extendedEnd!=null){
-                        PmMcrsLog pmMcrsLog1 = PmMcrsLog.findByServiceIdAndYearAndMonthStrIlike(user.serviceId, pmActions.year,pmActions.end)
+                        PmMcrsLog pmMcrsLog1 = PmMcrsLog.findByServiceIdAndYearAndMonthStrIlike(user.serviceId, pmActions.year,monthName)
                         if(pmMcrsLog1) {
                             if (pmMcrsLog1.isSubmitted) {
                                 date = pmActions.extendedEnd
+                                c.setTime(date);
+                                monthName = new SimpleDateFormat("MMMM").format(c.getTime())
                             }
                         }
                     }
-                    c.setTime(date);
-                    String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
                     if (details.monthName == monthName) {
                         List<GroovyRowResult> lst = pmActionsService.findTotalTargetAchievements(details.actionsId, details.indicatorId)
                         if (lst[0].target > lst[0].achievement + details.achievement) {
@@ -84,14 +86,15 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                             params.put("id", details.id)
                             params.put("remarks", remarksStr)
                             params.put("achievement", achievementStr)
+                            params.put("prevExtendedEnd", pmActions.extendedEnd == null ? '' : pmActions.extendedEnd)
+
                             if(date== pmActions.extendedEnd){
-                                params.put("isExtend", false)
                                 params.put("extendedEnd", '')
                             }else {
-                                params.put("isExtend", pmActionsIndicator.isExtend == true ? pmActionsIndicator.isExtend : false)
                                 params.put("extendedEnd", pmActions.extendedEnd == null ? '' : pmActions.extendedEnd)
+
                                 if (pmActions.extendedEnd != null || pmActions.extendedEnd != '') {
-                                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(details.actionsId, details.indicatorId, true)
+                                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtendedAndIdNotLessThanEquals(details.actionsId, details.indicatorId, true, details.id)
                                     params.put("lstExtend", lstExtend)
                                 }
                             }

@@ -462,7 +462,7 @@
                     <input type="hidden" id="hfIndicatorDetailsRemarks" name="hfIndicatorDetailsRemarks" value=""/>
                     <input type="hidden" id="hfExtendDateCount" name="hfExtendDateCount" value=""/>
                     <input type="hidden" id="hfIndicatorDetailsRemainsTarget" name="hfIndicatorDetailsRemainsTarget" value=""/>
-                    <input type="hidden" id="hfIsExtend" name="hfIsExtend" value=""/>
+                    <input type="hidden" id="hfPrevExtendedEnd" name="hfPrevExtendedEnd" value=""/>
 
                     <div class="form-group">
 

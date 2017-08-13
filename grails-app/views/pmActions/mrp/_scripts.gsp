@@ -202,19 +202,7 @@
                 {field: "remarks", title: "Remarks", width: "280px",editor: textEditorInitialize }
                 <g:if test="${!isAdmin}">
                 ,{command: [{name:"edit",text:{edit: "Achievement",update:"Save",cancel: "Cancel"}}], title: "&nbsp;", width: "130px"}
-                /*,{ command: ["edit", "destroy"], title: "&nbsp;", width: "160px" }*/
-                    /*,{command: [{
-            name: "Save",
-            click: function(e) {
-                // prevent page scroll position change
-                e.preventDefault();
-                // e.target is the DOM element representing the button
-                var tr = $(e.target).closest("tr"); // get the current table row (tr)
-                // get the data bound to the current table row
-                var data = this.dataItem(tr);
-                console.log("Details for: " + data.achievement);
-            },text:{save: "Save",cancel:"Cancel"}
-        }]}*/
+
                 </g:if>
             ]
         });
@@ -252,6 +240,8 @@
         return false;
     }
     function showIncompleteIndicatorModal(response) {
+        $('#hfPrevExtendedEnd').val(response["prevExtendedEnd"]);
+
         var fMonth = $('#extendedEndMonth').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
@@ -260,7 +250,11 @@
             change:setExtendedTarget
         }).data("kendoDatePicker");
         if ($('#month').val() != '') {
-            var sDate = moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+            var sDate ;
+            if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==moment($('#hfPrevExtendedEnd').val(), 'YYYY-MM-DD'))
+                sDate= moment($('#hfPrevExtendedEnd').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+            else
+                sDate= moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
             fMonth.min(sDate);
             var calYear = moment(sDate).format('YYYY');
             var ed = new Date(moment(calYear).endOf('year'));
@@ -275,7 +269,6 @@
        var rowIdx=response["id"],totalTarget=response["totalTarget"],totalAcv=response["totalAchievement"],indType=response["indType"];
         $('#hfIndicatorDetailsId').val(rowIdx);
         $('#hfIndicatorDetailsMonth').val($('#month').val());
-        $('#hfIsExtend').val(response["isExtend"]);
         $('#hfIndicatorDetailsAcv').val(response["achievement"]);
         $('#hfIndicatorDetailsRemarks').val(response["remarks"]);
         $('#extendedModalTargetLbl').text('0');
@@ -343,7 +336,11 @@
     }
     function setExtendedTarget() {
         $("#i_logic_extend tr").remove();
-        var start = moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+        var start;
+        if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==moment($('#hfPrevExtendedEnd').val(), 'YYYY-MM-DD'))
+            start=moment($('#hfPrevExtendedEnd').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+           else
+            start=moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
         var end = $('#extendedEndMonth').val();
         var list = monthNamesFromRange(start, end);
         var count = monthDifference(start, end);

@@ -50,7 +50,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN pm_service_sector sc ON sc.id = a.service_id
- WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId} AND (DATE($P{currentMonth}) <= a.end AND DATE($P{currentMonth}) >= a.start)
+ WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId} AND (DATE($P{currentMonth}) <= (CASE WHEN COALESCE(a.extended_end,'')!='' THEN a.extended_end ELSE a.end END) AND DATE($P{currentMonth}) >= a.start)
                 GROUP BY ai.id
                 ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0,@curmon := MONTH(DATE($P{currentMonth}))) r

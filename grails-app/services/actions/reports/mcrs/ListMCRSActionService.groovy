@@ -143,7 +143,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 JOIN pm_service_sector sc ON sc.id = a.service_id,
                 (SELECT @rownum := 0, @curmon := MONTH(DATE('${currentMonth}'))) r
                 WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
-                AND (@curmon <= MONTH(a.end) AND @curmon >= MONTH(a.start))
+                AND (@curmon <= MONTH(CASE WHEN COALESCE(a.extended_end,'')!='' THEN a.extended_end ELSE a.end END) AND @curmon >= MONTH(a.start))
                 GROUP BY ai.id
                 HAVING mon_tar!=0 OR mon_acv !=0
                 ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq ) tmp ${indicatorLightStr};
