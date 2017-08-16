@@ -139,14 +139,16 @@ class ListMRPActionService extends BaseService implements ActionServiceIntf {
         String query = """
                 SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,i.unit_id,i.unit_str,i.indicator_type,idd.month_name,
                 idd.target monthly_target,CASE WHEN idd.achievement>0 THEN idd.achievement ELSE NULL END achievement
-                ,CASE WHEN COALESCE(i.closing_month,'')!='' THEN idd.remarks+'\\n Closing note:- '+i.closing_note ELSE idd.remarks END remarks,
-SUM(tmp.achievement) total_achievement
+                ,CASE WHEN COALESCE(i.closing_month,'')!='' THEN CONCAT(idd.remarks,' Closing note:- ',i.closing_note) ELSE idd.remarks END remarks,
+                SUM(tmp.achievement) total_achievement
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id
                 LEFT JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id
                 LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthStr}'
+                -- JOIN custom_month cm ON idd.month_name=cm.name
                  --   AND idd.target > 0
-                WHERE a.id = ${actionsId}
+                WHERE a.id = ${actionsId}   AND (i.is_extend=TRUE OR COALESCE(a.extended_end,'')='' OR MONTHNAME(a.end) ='${monthStr}')
+                 --  AND MONTH(COALESCE(i.closing_month,DATE_FORMAT(NOW(),'%Y-12-31')))>=cm.sl_index
                 GROUP BY i.id,idd.id
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)

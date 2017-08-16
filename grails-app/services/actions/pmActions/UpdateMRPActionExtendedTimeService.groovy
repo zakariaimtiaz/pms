@@ -3,10 +3,7 @@ package actions.pmActions
 import com.pms.PmActions
 import com.pms.PmActionsIndicator
 import com.pms.PmActionsIndicatorDetails
-import com.pms.PmMcrsLog
-import com.pms.SecUser
 import grails.transaction.Transactional
-import groovy.sql.GroovyRowResult
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
@@ -164,10 +161,10 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                             pmActionsIndicatorDetails.actionsId = details.actionsId
                             pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
                             pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
-                            pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0
+                            pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString().trim()!=''? Integer.parseInt(params.get("target" + (i + 1)).toString()):0 : 0
                             pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
                             pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
-                            pmActionsIndicatorDetails.isExtended = true
+                            pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicatorDetails.isExtended
 
                             pmActionsIndicatorDetails.save()
                         }
@@ -192,9 +189,10 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                         PmActionsIndicatorDetails pmActionsIndicatorDetails=PmActionsIndicatorDetails.findByActionsIdAndIndicatorIdAndMonthNameAndIsExtended(pmActionsIndicator.actionsId,pmActionsIndicator.id,params.get("month" + (i + 1)),true)
                                     if(pmActionsIndicatorDetails){
                                         if(details.indicatorId == pmActionsIndicator.id) {
-                                            pmActionsIndicatorDetails.target = Integer.parseInt(params.get("target" + (i + 1)).toString())
+                                            pmActionsIndicatorDetails.target = params.get("target" + (i + 1)).toString().trim()!=''?Integer.parseInt(params.get("target" + (i + 1)).toString()):0
                                             pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
                                             pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
+                                            pmActionsIndicatorDetails.isExtended = true
                                             pmActionsIndicatorDetails.save()
                                         }
                                     }else {
@@ -202,10 +200,10 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                                         pmActionsIndicatorDetails.actionsId = details.actionsId
                                         pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
                                         pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
-                                        pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0
+                                        pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString()!=''?Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0:0
                                         pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
                                         pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
-                                        pmActionsIndicatorDetails.isExtended = true
+                                        pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : false
                                         pmActionsIndicatorDetails.save()
                                     }
                         }
@@ -218,10 +216,10 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                                         pmActionsIndicatorDetails.actionsId = details.actionsId
                                         pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
                                         pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
-                                        pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : pmActionsIndicatorDetails.target
+                                        pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString().trim()!=''?Integer.parseInt(params.get("target" + (i + 1)).toString()):0 : pmActionsIndicatorDetails.target
                                         pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
                                         pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
-                                        pmActionsIndicatorDetails.isExtended = true
+                                        pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicatorDetails.isExtended
 
                                         pmActionsIndicatorDetails.save()
 

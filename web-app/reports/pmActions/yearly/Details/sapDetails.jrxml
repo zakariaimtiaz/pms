@@ -41,7 +41,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Support Department]]></text>
+				<text><![CDATA[Project]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="711" y="44" width="63" height="30" uuid="c7906e53-f968-466b-9448-3f374dad666b"/>
@@ -54,7 +54,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Project]]></text>
+				<text><![CDATA[Support Department]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="30" y="44" width="170" height="30" uuid="3219aba6-61c5-40ff-9a32-c5fa3ca2f5e8"/>
@@ -70,7 +70,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Actions]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="634" y="44" width="77" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
+				<reportElement x="637" y="44" width="74" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -80,10 +80,10 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Remarks]]></text>
+				<text><![CDATA[Responsible Person]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="559" y="44" width="75" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
+				<reportElement x="560" y="44" width="77" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -93,7 +93,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Indicator Remarks]]></text>
+				<text><![CDATA[Action Remarks]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="200" y="44" width="45" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>

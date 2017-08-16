@@ -59,7 +59,7 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                 else
                     details.achievement = 0
 
-                if (details.target != details.achievement && remarksStr.isEmpty()) {
+                if (details.target != details.achievement && remarksStr.trim().isEmpty()) {
                     return super.setError(params, "Remarks is mandatory when achievement is not equal target.")
                 }
                 if (indicatorType.equals("Dividable") || indicatorType.equals("Dividable%")) {
@@ -86,18 +86,18 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                             params.put("id", details.id)
                             params.put("remarks", remarksStr)
                             params.put("achievement", achievementStr)
-                            params.put("prevExtendedEnd", pmActions.extendedEnd == null ? '' : pmActions.extendedEnd)
-
                             if(date== pmActions.extendedEnd){
+                                params.put("prevExtendedEnd", pmActions.extendedEnd)
                                 params.put("extendedEnd", '')
                             }else {
+                                params.put("prevExtendedEnd", '')
                                 params.put("extendedEnd", pmActions.extendedEnd == null ? '' : pmActions.extendedEnd)
-
+                            }
                                 if (pmActions.extendedEnd != null || pmActions.extendedEnd != '') {
                                     List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtendedAndIdNotLessThanEquals(details.actionsId, details.indicatorId, true, details.id)
                                     params.put("lstExtend", lstExtend)
                                 }
-                            }
+
                             params.put("closingNote", pmActionsIndicator.closingNote == null ? '' : pmActionsIndicator.closingNote)
 
                             return super.setError(params, "OpenPopup")

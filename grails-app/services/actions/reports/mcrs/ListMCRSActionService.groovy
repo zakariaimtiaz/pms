@@ -36,7 +36,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
             c.setTime(date);
             int year = c.get(Calendar.YEAR)
             int month = c.get(Calendar.MONTH) + 1
-
+            c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
             Date currentMonth = DateUtility.getSqlDate(c.getTime());
             long serviceId = Long.parseLong(result.serviceId.toString())
             String indicatorType = result.indicatorType.toString()
@@ -131,7 +131,8 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
-                 (SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE('${currentMonth}'))) ind_remarks,
+                 (SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE('${currentMonth}') THEN CONCAT(remarks,' Closing note:- ',ai.closing_note) ELSE remarks END
+                 FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE('${currentMonth}'))) ind_remarks,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
 

@@ -22,7 +22,8 @@ CONCAT(FLOOR((cum_acv/cum_tar * 100)-100), '%') AS cum_var,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
 a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd, ai.indicator,ai.indicator_type,
-(SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
+(SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE($P{currentMonth}) THEN CONCAT(remarks,' Closing note:- ',ai.closing_note) ELSE remarks END
+                 FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,

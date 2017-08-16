@@ -451,7 +451,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="hideModal();"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Incomplete action's indicator manage</h4>
+                <h4 class="modal-title">Manage Incomplete Action</h4>
             </div>
 
             <div class="modal-body" style="padding-top: 5px;padding-bottom: 5px;">
@@ -465,18 +465,19 @@
                     <input type="hidden" id="hfPrevExtendedEnd" name="hfPrevExtendedEnd" value=""/>
 
                     <div class="form-group">
+                        <label class="control-label label-optional" style="padding-top: 0px;"><strong>Information: </strong></label>&nbsp;&nbsp;
+                        <label class="control-label label-optional" style="padding-top: 0px;">Total target: <strong id="totalTargetExtend"></strong></label>&nbsp;&nbsp;
+                        <label class="control-label label-optional" style="padding-top: 0px;">Total achievement: <strong id="totalAcvExtend"></strong></label>&nbsp;&nbsp;
+                        <label class="control-label label-optional" style="padding-top: 0px;">Remaining target: <strong id="totalRemainingExtend"></strong></label>&nbsp;&nbsp;
 
-                        <div class="col-md-12" style="padding-right: 0px;">
+                    </div>
+                    <div class="form-group">
                             <strong class="label-required">Status:&nbsp;&nbsp;</strong>
                             <input type="radio" name="selection" id="selectionExtendMonth"
                                    onchange="extendMonthSelect();" value="ExtendMonth"><label>&nbsp;Extend</label>
                             <input type="radio" name="selection" id="selectionCloseWithRemain"
                                    onchange="closeIndicatorSelect();" value="CloseWithRemain"><label>&nbsp;Close</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <label class="control-label label-optional" style="padding-top: 0px;">Total target: <strong id="totalTargetExtend"></strong></label>&nbsp;&nbsp;
-                            <label class="control-label label-optional" style="padding-top: 0px;">Total achievement: <strong id="totalAcvExtend"></strong></label>&nbsp;&nbsp;
-                            <label class="control-label label-optional" style="padding-top: 0px;">Remaining target: <strong id="totalRemainingExtend"></strong></label>&nbsp;&nbsp;
-                        </div>
-                    </div>
+                            </div>
                     <div class="form-group" id="divExtendedEndMonth">
                         <div>
                             <div class="col-md-4" style="padding-right: 0px;">

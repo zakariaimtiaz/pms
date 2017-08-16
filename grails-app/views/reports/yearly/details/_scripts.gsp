@@ -125,11 +125,11 @@
             pageable: false,
             detailInit: initDetails,
             columns: [
-                {field: "indicator", title: "Indicator",width: '30%'},
+                {field: "indicator", title: "Indicator",width: '35%'},
                 {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#",width: '10%'},
-                {field: "unitStr", title: "Unit",width: '10%'},
+                {field: "unitStr", title: "Unit",width: '15%'},
                 {field: "indicatorType", title: "Indicator Type",width: '10%'},
-                {field: "remarks", title: "Indicator Remarks",width: '40%'}
+                {field: "", title: "",width: '30%'}
             ]
         });
     }

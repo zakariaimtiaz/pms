@@ -251,8 +251,8 @@
         }).data("kendoDatePicker");
         if ($('#month').val() != '') {
             var sDate ;
-            if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==moment($('#hfPrevExtendedEnd').val(), 'YYYY-MM-DD'))
-                sDate= moment($('#hfPrevExtendedEnd').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+            if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==$('#hfPrevExtendedEnd').val())
+                sDate= moment($('#hfPrevExtendedEnd').val()).add(1, 'M').format('YYYY-MM-DD');
             else
                 sDate= moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
             fMonth.min(sDate);
@@ -306,6 +306,7 @@
         $('#hfIndicatorDetailsRemarks').val('');
         $('#hfExtendDateCount').val('');
         $('#hfIndicatorDetailsRemainsTarget').val('');
+        $('#hfPrevExtendedEnd').val('');
         $('#divIndicatorClosingNote').hide();
         $('#IndicatorClosingNote').val('');
         $('#extendedEndMonth').val('');
@@ -337,10 +338,11 @@
     function setExtendedTarget() {
         $("#i_logic_extend tr").remove();
         var start;
-        if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==moment($('#hfPrevExtendedEnd').val(), 'YYYY-MM-DD'))
-            start=moment($('#hfPrevExtendedEnd').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
-           else
+        if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==$('#hfPrevExtendedEnd').val())
+            start=moment($('#hfPrevExtendedEnd').val()).add(1, 'M').format('YYYY-MM-DD');
+        else
             start=moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+
         var end = $('#extendedEndMonth').val();
         var list = monthNamesFromRange(start, end);
         var count = monthDifference(start, end);
@@ -405,6 +407,11 @@
                     }
                 }
             });
+        if(sum>$('#hfIndicatorDetailsRemainsTarget').val()){
+            showError('Current target & remaining target is not equal.');
+            this.value = '';
+            return false;
+        }
             $('#extendedModalTargetLbl').text(sum);
     }
     function onSubmitExtendedIndicator() {
