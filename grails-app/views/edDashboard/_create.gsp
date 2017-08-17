@@ -18,7 +18,7 @@
                             <app:dropDownService
                                     class="kendo-drop-down" is_in_sp="true"
                                     id="serviceId" name="serviceId" tabindex="1"
-                                    data_model_name="dropDownService">
+                                    data_model_name="dropDownService" onchange="setMinMonth();">
                             </app:dropDownService>
                         </div>
                         <label class="col-md-1 control-label label-required" for="month">Month:</label>

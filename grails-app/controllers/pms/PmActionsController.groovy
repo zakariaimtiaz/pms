@@ -182,4 +182,11 @@ class PmActionsController extends BaseController {
     def listAchievement(){
         renderOutput(listMRPActionService, params)
     }
+    def lastSubDateByService() {
+        long sId = Long.parseLong(params.serviceId.toString())
+        String subDate = baseService.lastMRPSubmissionDate(sId)
+        Map map = new LinkedHashMap()
+        map.put('subDate', subDate)
+        render map as JSON
+    }
 }

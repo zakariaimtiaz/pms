@@ -6,7 +6,7 @@
 </script>
 
 <script language="javascript">
-    var month, serviceId, dropDownService,listViewGoal, gridAction, isApplicable = false;
+    var month, serviceId, dropDownService,listViewGoal, gridAction, isApplicable = false,monthKendo,extendMonth;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -21,7 +21,7 @@
         serviceId = ${serviceId};
         dropDownService.value(serviceId);
         var str = moment().format('MMMM YYYY');
-        var start = $('#month').kendoDatePicker({
+        monthKendo = $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
@@ -31,17 +31,52 @@
         var nextMonth = moment(submissionDate).add(1, 'months');
         if(submissionDate!='') {
             var st = new Date(moment(nextMonth));
-            start.min(submissionDate);
-            start.max(st);
-            $('#month').val(moment(submissionDate).format('MMMM YYYY'));
+            monthKendo.min(submissionDate);
+            monthKendo.max(st);
+            monthKendo.value(moment(submissionDate).format('MMMM YYYY'));
 
         } else{
-            start.min(new Date(moment(new Date()).startOf('year')));
-            start.max(new Date(moment(new Date()).endOf('year')));
-            $('#month').val(str);
+            monthKendo.min(new Date(moment(new Date()).startOf('year')));
+            monthKendo.max(new Date(moment(new Date()).endOf('year')));
+            monthKendo.value(str);
         }
         initializeForm($("#detailsForm"), onSubmitForm);
         defaultPageTile("Strategic Plan", 'pmActions/achievement');
+    }
+    function setMinMonth() {
+
+        var actionUrl = "${createLink(controller:'pmActions', action: 'lastSubDateByService')}";
+        serviceId = $('#serviceId').val();
+
+        jQuery.ajax({
+            type: 'post',
+            data: {serviceId: serviceId},
+            url: actionUrl,
+            success: function (data, textStatus) {
+                var submissionDate=data.subDate;
+                var nextMonth = moment(submissionDate).add(1, 'months');
+                if(submissionDate!='') {
+                    var st = new Date(moment(nextMonth));
+                    monthKendo.min(submissionDate);
+                    monthKendo.max(st);
+                    monthKendo.value(moment(submissionDate).format('MMMM YYYY'));
+
+                } else{
+                    monthKendo.min(new Date(moment(new Date()).startOf('year')));
+                    monthKendo.max(new Date(moment(new Date()).endOf('year')));
+                    monthKendo.value(str);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.info('error');
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                console.info('complete');
+            }
+
+        });
+
+
     }
     function initListView() {
         $("#lstGoal").kendoListView({
@@ -242,7 +277,7 @@
     function showIncompleteIndicatorModal(response) {
         $('#hfPrevExtendedEnd').val(response["prevExtendedEnd"]);
 
-        var fMonth = $('#extendedEndMonth').kendoDatePicker({
+         extendMonth = $('#extendedEndMonth').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
@@ -255,16 +290,16 @@
                 sDate= moment($('#hfPrevExtendedEnd').val()).add(1, 'M').format('YYYY-MM-DD');
             else
                 sDate= moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
-            fMonth.min(sDate);
+            extendMonth.min(sDate);
             var calYear = moment(sDate).format('YYYY');
             var ed = new Date(moment(calYear).endOf('year'));
-            fMonth.max(ed);
+            extendMonth.max(ed);
         } else {
             var sDate = new Date();
-            fMonth.min(moment(sDate).format('YYYY-MM-DD'));
+            extendMonth.min(moment(sDate).format('YYYY-MM-DD'));
             var calYear = moment(sDate).format('YYYY');
             var ed = new Date(moment(calYear).endOf('year'));
-            fMonth.max(ed);
+            extendMonth.max(ed);
         }
        var rowIdx=response["id"],totalTarget=response["totalTarget"],totalAcv=response["totalAchievement"],indType=response["indType"];
         $('#hfIndicatorDetailsId').val(rowIdx);
@@ -282,7 +317,7 @@
             $('#divExtendedEndMonth').hide();
         }else {
             if(response["extendedEnd"]!='') {
-                $('#extendedEndMonth').val(moment(response["extendedEnd"]).format('MMMM YYYY'));
+                extendMonth.value(moment(response["extendedEnd"]).format('MMMM YYYY'));
                 setExtendedTargetForEdit(response["lstExtend"]);
             }
             $('#selectionExtendMonth').prop('checked', true);
