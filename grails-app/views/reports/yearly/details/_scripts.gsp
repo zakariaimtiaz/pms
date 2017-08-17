@@ -164,7 +164,7 @@
                 {field: "month_name", title: "Month",width: '10%'},
                 {field: "target", title: "Target",template:"#=formatIndicator(indicator_type,target)#",width: '10%'},
                 {field: "achievement", title: "Achievement",template:"#=formatIndicatorAcv(month_name,indicator_type,achievement)#",width: '10%'},
-                {field: "remarks", title: "Indicator Remarks",width: '70%'}
+                {field: "remarks", title: "Indicator Remarks",width: '70%', encoded: false}
             ]
         });
     }

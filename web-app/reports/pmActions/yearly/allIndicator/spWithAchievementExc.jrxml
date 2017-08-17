@@ -164,7 +164,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Remarks]]></text>
+				<text><![CDATA[Action Remarks]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

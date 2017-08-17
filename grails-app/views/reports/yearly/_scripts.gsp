@@ -97,7 +97,7 @@
                     template: "#=calculateVariance(tot_tar,tot_acv)#"
                 },
                 {
-                    field: "remarks", title: "Remarks",
+                    field: "remarks", title: "Action Remarks",
                     template: "#=trimTextForKendo(omitRepeated8(sequence,remarks),70)#",
                     width: 200, sortable: false,filterable: false
                 },

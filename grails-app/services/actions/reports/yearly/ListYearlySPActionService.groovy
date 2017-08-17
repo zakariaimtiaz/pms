@@ -101,7 +101,7 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         String query = """
         SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
         a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd,
-        ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+        ai.id AS indicator_id,ai.indicator,ai.indicator_type,
 
         CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END tot_tar,
         CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END tot_acv,

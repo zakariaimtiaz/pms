@@ -288,13 +288,19 @@ class PmActionsService extends BaseService {
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }
-    public List<GroovyRowResult> findAllDetailsByActionsIdAndIndicatorId(long actionsId, long indicatorId) {
+    public List<GroovyRowResult> findAllDetailsByActionsIdAndIndicatorIdNotExtended(long actionsId, long indicatorId) {
         String query = """
             SELECT aid.id,aid.version,aid.actions_id,aid.create_by,aid.create_date,aid.indicator_id,aid.month_name,
-                COALESCE(aid.target,0) target,COALESCE(aid.achievement,0) achievement,aid.remarks,ai.indicator_type
-                FROM pm_actions_indicator_details aid
-                LEFT JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
-                WHERE aid.actions_id = ${actionsId} AND aid.indicator_id = ${indicatorId}
+            COALESCE(aid.target,0) target,COALESCE(aid.achievement,0) achievement,ai.indicator_type,
+            CASE WHEN  COALESCE(MONTHNAME(ai.closing_month),'')=aid.month_name THEN CONCAT(aid.remarks,'\\<b> Closing note:- \\</b>'
+            ,ai.closing_note) ELSE aid.remarks END remarks
+            FROM pm_actions_indicator_details aid
+            JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
+            JOIN pm_actions a ON ai.actions_id=a.id
+            JOIN custom_month cm ON cm.name=aid.month_name
+            WHERE aid.actions_id = ${actionsId} AND aid.indicator_id = ${indicatorId}
+            AND (( cm.sl_index <= MONTH(a.end) AND cm.sl_index >= MONTH(a.start))
+            OR COALESCE(ai.is_extend,FALSE)=TRUE)
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
