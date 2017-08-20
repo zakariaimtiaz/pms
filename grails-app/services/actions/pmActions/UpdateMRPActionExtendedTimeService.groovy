@@ -50,7 +50,7 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                 boolean canMinimize=true
                 if (extendDate < pmActions.extendedEnd) {
                     for (PmActionsIndicator pmActionsIndicator in lstIndicator) {
-                        if (pmActionsIndicator.isExtend && details.indicatorId != pmActionsIndicator.id) {
+                        if (pmActionsIndicator.isExtended && details.indicatorId != pmActionsIndicator.id) {
                             List<PmActionsIndicatorDetails> lstExtendDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(pmActionsIndicator.actionsId, pmActionsIndicator.id, true)
                             for (PmActionsIndicatorDetails pmActionsIndicatorDetails in lstExtendDetails) {
                                 int count = 0
@@ -94,10 +94,10 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                     if (details.indicatorId == pmActionsIndicator.id) {
                         pmActionsIndicator.closingNote = params.IndicatorClosingNote
                         pmActionsIndicator.closingMonth = date
-                        pmActionsIndicator.isExtend = date == DateUtility.getSqlDate(pmActions.end) ? false : pmActionsIndicator.isExtend
+                        pmActionsIndicator.isExtended = date == DateUtility.getSqlDate(pmActions.end) ? false : pmActionsIndicator.isExtended
                         pmActionsIndicator.save()
                     }
-                    if(pmActionsIndicator.isExtend){
+                    if(pmActionsIndicator.isExtended){
                         canDelete=false
                     }
                 }
@@ -134,7 +134,7 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                 else if(extendDate!=pmActions.extendedEnd) {
                     canDelete = true
                     for (PmActionsIndicator pmActionsIndicator in lstIndicator) {
-                        if (pmActionsIndicator.isExtend && details.indicatorId != pmActionsIndicator.id) {
+                        if (pmActionsIndicator.isExtended && details.indicatorId != pmActionsIndicator.id) {
                             canDelete = false
                             break
                         }
@@ -152,7 +152,7 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                     if (details.indicatorId == pmActionsIndicator.id) {
                         pmActionsIndicator.closingNote = null
                         pmActionsIndicator.closingMonth = null
-                        pmActionsIndicator.isExtend = true
+                        pmActionsIndicator.isExtended = true
                         pmActionsIndicator.save()
                     }
                     if (newEntry) {

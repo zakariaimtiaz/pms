@@ -109,10 +109,10 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                                 if (details.indicatorId == pmActionsIndicator.id) {
                                     pmActionsIndicator.closingNote = null
                                     pmActionsIndicator.closingMonth = null
-                                    pmActionsIndicator.isExtend =false
+                                    pmActionsIndicator.isExtended =false
                                     pmActionsIndicator.save()
                                 }
-                                if(pmActionsIndicator.isExtend){
+                                if(pmActionsIndicator.isExtended){
                                     canDelete=false
                                 }
                             }

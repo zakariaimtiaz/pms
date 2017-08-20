@@ -680,6 +680,22 @@ class PmActionsService extends BaseService {
         }
         return isSubmittable
     }
+    public boolean isDashboardSubmittable(long serviceId,int month,long year) {
+        String queryForList = """
+              SELECT count(ed.id) c FROM ed_dashboard ed
+  WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_resolve,FALSE) <> 1 AND COALESCE(ed.is_followup,FALSE)<>1
+  AND MONTH(month_for) <= ${month} AND YEAR(month_for)=${year} AND ed.month_for NOT IN (SELECT followup_month_for FROM ed_dashboard
+  WHERE DATE(followup_month_for)=DATE(ed.month_for) AND service_id=ed.service_id AND issue_id=ed.issue_id
+  AND MONTH(month_for) > ${month} AND YEAR(month_for)=${year})
+        """
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        int count =(int) lst[0].c
+        boolean isSubmittable=true
+        if(count>0){
+            isSubmittable=false
+        }
+        return isSubmittable
+    }
     public List<GroovyRowResult> findTotalTargetAchievements(long actionsId, long indicatorId) {
         String query = """
         SELECT ai.target AS target, COALESCE(SUM(COALESCE(idd.achievement,0)),0) achievement
