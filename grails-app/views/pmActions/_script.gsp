@@ -1009,12 +1009,5 @@
     }
     //////////////////////////// END GRID INIT ////////////////////////////////////////////////////////
 
-    function formatExtendedDateStrike(endDate,extendedEnd){
-        if(extendedEnd !=''){
-            return endDate.strike() + '\n' + moment(extendedEnd).format('MMM-YY');
-        }
-        return endDate;
-    }
-
 </script>
 

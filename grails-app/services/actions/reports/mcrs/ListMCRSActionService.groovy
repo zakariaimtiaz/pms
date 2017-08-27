@@ -104,7 +104,9 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         String query = """
                 SELECT * FROM
                 (SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
-                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd,
+                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(
+                (SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%M') AS CHAR CHARACTER SET utf8 ) ,'</strike>') SEPARATOR' ')
+                FROM pm_actions_extend_history WHERE actions_id=a.id),'')  extendedEnd,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
 
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
@@ -117,7 +119,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
                  ROUND((100*SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
-                 SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
+                 SUM(CASE WHEN cm.sl_index<=@curmon THEN CASE WHEN idd.is_extended=TRUE THEN 0 ELSE COALESCE(idd.target,0) END ELSE 0 END)  END cum_tar,
 
                  CASE
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
@@ -144,7 +146,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 JOIN pm_service_sector sc ON sc.id = a.service_id,
                 (SELECT @rownum := 0, @curmon := MONTH(DATE('${currentMonth}'))) r
                 WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
-                AND (@curmon <= MONTH(CASE WHEN COALESCE(a.extended_end,'')!='' THEN a.extended_end ELSE a.end END) AND @curmon >= MONTH(a.start))
+                AND (@curmon <= MONTH(a.end ) AND @curmon >= MONTH(a.start))
                 GROUP BY ai.id
                 HAVING mon_tar!=0 OR mon_acv !=0
                 ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq ) tmp ${indicatorLightStr};

@@ -563,8 +563,8 @@
 
     function formatExtendedDate(endDate,extendedEnd){
 
-        if(extendedEnd !=''){
-            return '<br>' + endDate.strike()+' ' + moment(extendedEnd).format("MMM");
+        if(extendedEnd !='') {
+            return '<br>' + extendedEnd + '\n' + endDate;
         }
         return endDate;
     }

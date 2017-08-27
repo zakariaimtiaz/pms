@@ -1,6 +1,7 @@
 package actions.pmActions
 
 import com.pms.PmActions
+import com.pms.PmActionsExtendHistory
 import com.pms.PmActionsIndicator
 import com.pms.PmActionsIndicatorDetails
 import com.pms.PmMcrsLog
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat
 class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
 
     PmActionsService pmActionsService
+    BaseService baseService
     private static final String COULD_NOT_BE_EMPTY = "Remarks is mandatory for Repeatable% indicator"
     private static final String UPDATE_SUCCESS_MESSAGE = "Achievement has been updated successfully"
     private static final String MRP_LOCKED_MSG = "MRP is locked for this month"
@@ -63,20 +65,16 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                     return super.setError(params, "Remarks is mandatory when achievement is not equal target.")
                 }
                 if (indicatorType.equals("Dividable") || indicatorType.equals("Dividable%")) {
-                    Date date=pmActions.end
+                    Date date= pmActions.end
+                    String lastMonth=  baseService.lastMRPSubmissionDate(user.serviceId)
+                    PmActionsExtendHistory pmActionsExtendHistory = PmActionsExtendHistory.findByActionsId(pmActions.id, [max: 1, sort: 'id', order: 'desc'])
+                    if(pmActionsExtendHistory) {
+                        if(DateUtility.parseDateForDB(lastMonth)<pmActionsExtendHistory.end )
+                            date=pmActionsExtendHistory.end
+                    }
                     Calendar c = Calendar.getInstance();
                     c.setTime(date);
                     String monthName = new SimpleDateFormat("MMMM").format(c.getTime())
-                    if(pmActions.extendedEnd!=null){
-                        PmMcrsLog pmMcrsLog1 = PmMcrsLog.findByServiceIdAndYearAndMonthStrIlike(user.serviceId, pmActions.year,monthName)
-                        if(pmMcrsLog1) {
-                            if (pmMcrsLog1.isSubmitted) {
-                                date = pmActions.extendedEnd
-                                c.setTime(date);
-                                monthName = new SimpleDateFormat("MMMM").format(c.getTime())
-                            }
-                        }
-                    }
                     if (details.monthName == monthName) {
                         List<GroovyRowResult> lst = pmActionsService.findTotalTargetAchievements(details.actionsId, details.indicatorId)
                         if (lst[0].target > lst[0].achievement + details.achievement) {
@@ -86,17 +84,24 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                             params.put("id", details.id)
                             params.put("remarks", remarksStr)
                             params.put("achievement", achievementStr)
-                            if(date== pmActions.extendedEnd){
-                                params.put("prevExtendedEnd", pmActions.extendedEnd)
-                                params.put("extendedEnd", '')
+                            params.put("isExtend", pmActionsIndicator.isExtended==null?false:pmActionsIndicator.isExtended)
+                            if(pmActionsIndicator.isExtended) {
+                                    if (DateUtility.parseDateForDB(lastMonth) > pmActionsExtendHistory.end) {
+                                        params.put("prevExtendedEnd", pmActions.end)
+                                        params.put("extendedEnd", '')
+                                    } else {
+                                        params.put("prevExtendedEnd", pmActionsExtendHistory.end == null ? '' : pmActionsExtendHistory.end)
+                                        params.put("extendedEnd", pmActions.end)
+                                        if (pmActionsExtendHistory.end != null && pmActionsExtendHistory.end != '') {
+                                            List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIdNotLessThanEquals(details.actionsId, details.indicatorId, details.id)
+                                            params.put("lstExtend", lstExtend)
+                                        }
+                                    }
+
                             }else {
                                 params.put("prevExtendedEnd", '')
-                                params.put("extendedEnd", pmActions.extendedEnd == null ? '' : pmActions.extendedEnd)
+                                params.put("extendedEnd", '')
                             }
-                                if (pmActions.extendedEnd != null || pmActions.extendedEnd != '') {
-                                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtendedAndIdNotLessThanEquals(details.actionsId, details.indicatorId, true, details.id)
-                                    params.put("lstExtend", lstExtend)
-                                }
 
                             params.put("closingNote", pmActionsIndicator.closingNote == null ? '' : pmActionsIndicator.closingNote)
 
@@ -106,30 +111,33 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                             Boolean canDelete=true
                             List<PmActionsIndicator> lstIndicator=PmActionsIndicator.findAllByActionsId(details.actionsId)
                             for(PmActionsIndicator pmActionsIndicator1 in lstIndicator) {
-                                if (details.indicatorId == pmActionsIndicator.id) {
-                                    pmActionsIndicator.closingNote = null
-                                    pmActionsIndicator.closingMonth = null
-                                    pmActionsIndicator.isExtended =false
-                                    pmActionsIndicator.save()
+                                if (details.indicatorId == pmActionsIndicator1.id) {
+                                    pmActionsIndicator1.closingNote = null
+                                    pmActionsIndicator1.closingMonth = null
+                                    pmActionsIndicator1.isExtended =false
+                                    pmActionsIndicator1.save()
                                 }
-                                if(pmActionsIndicator.isExtended){
+                                if(pmActionsIndicator1.isExtended){
                                     canDelete=false
                                 }
                             }
-                            if(canDelete) {
-                                pmActions.extendedEnd = null
-                                pmActions.save()
-                                List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIsExtended(details.actionsId, true)
-                                for (PmActionsIndicatorDetails etDetails in lstExtend) {
-                                    if ((etDetails.achievement==0||etDetails.achievement==null)&&(etDetails.remarks==''||etDetails.remarks==null))
-                                        etDetails.delete()
-                                }
-                            }
-                            else{
-                                List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(details.actionsId,details.indicatorId, true)
-                                for (PmActionsIndicatorDetails etDetails in lstExtend) {
-                                    etDetails.target=0
-                                    etDetails.save()
+                            if (pmActionsExtendHistory.end) {
+                                if (canDelete) {
+                                    pmActions.end = pmActionsExtendHistory.end
+                                    pmActions.save()
+                                    pmActionsExtendHistory.delete()
+
+                                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIdNotLessThanEquals(details.actionsId, details.id)
+                                    for (PmActionsIndicatorDetails etDetails in lstExtend) {
+                                        if ((etDetails.achievement == 0 || etDetails.achievement == null) && (etDetails.remarks == '' || etDetails.remarks == null))
+                                            etDetails.delete()
+                                    }
+                                } else {
+                                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtendedAndIdNotLessThanEquals(details.actionsId, details.indicatorId, true, details.id)
+                                    for (PmActionsIndicatorDetails etDetails in lstExtend) {
+                                        etDetails.target = 0
+                                        etDetails.save()
+                                    }
                                 }
                             }
                         }

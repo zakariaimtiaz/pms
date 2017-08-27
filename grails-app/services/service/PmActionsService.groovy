@@ -210,7 +210,6 @@ class PmActionsService extends BaseService {
                 ) t GROUP BY t.goal_id
             ) tmp2;
         """
-        println(query)
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }
@@ -246,7 +245,6 @@ class PmActionsService extends BaseService {
                     ) t GROUP BY t.goal_id ,t.actions_id
                 ) t GROUP BY t.goal_id
         """
-        println(query)
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }
@@ -284,7 +282,6 @@ class PmActionsService extends BaseService {
                 ) t GROUP BY t.goal_id
             ) tmp GROUP BY service_id;
         """
-        println(query)
         List<GroovyRowResult> lst = groovySql.rows(query)
         return lst
     }
@@ -298,9 +295,10 @@ class PmActionsService extends BaseService {
             JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
             JOIN pm_actions a ON ai.actions_id=a.id
             JOIN custom_month cm ON cm.name=aid.month_name
+            LEFT JOIN (SELECT END,actions_id FROM pm_actions_extend_history WHERE actions_id=${actionsId} ORDER BY id ASC LIMIT 1)ah
+            ON ah.actions_id=a.id
             WHERE aid.actions_id = ${actionsId} AND aid.indicator_id = ${indicatorId}
-            AND (( cm.sl_index <= MONTH(a.end) AND cm.sl_index >= MONTH(a.start))
-            OR COALESCE(ai.is_extend,FALSE)=TRUE)
+            AND (COALESCE(ai.is_extended,FALSE)=TRUE OR cm.sl_index <= MONTH(COALESCE(ah.end,a.end)))
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
@@ -709,4 +707,5 @@ class PmActionsService extends BaseService {
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
+
 }

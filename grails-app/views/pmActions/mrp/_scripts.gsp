@@ -204,7 +204,8 @@
                             total_achievement: {editable: false, type: "string"},
                             monthly_target: {editable: false, type: "number"},
                             achievement: {type: "number"},
-                            remarks: {type: "string"}
+                            remarks: {type: "string"},
+                            closing_note: {type: "string"}
                         }
                     }
                 },
@@ -234,7 +235,8 @@
                     template: "#=formatIndicator(indicator_type,achievement)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "remarks", title: "Remarks", width: "280px",editor: textEditorInitialize }
+                {field: "remarks", title: "Remarks", width: "280px",template: "#=formatRemarks(remarks,closing_note)#",
+                    editor: textEditorInitialize }
                 <g:if test="${!isAdmin}">
                 ,{command: [{name:"edit",text:{edit: "Achievement",update:"Save",cancel: "Cancel"}}], title: "&nbsp;", width: "130px"}
 
@@ -248,6 +250,13 @@
                 .appendTo(container);
     };
 
+    function formatRemarks(remarks, closingNote) {
+        if (closingNote!='') {
+            return remarks+' <b>Closing note:- </b>'+closingNote;
+        }
+
+        return remarks
+    }
     function formatIndicator(indicatorType, target) {
         if (!target && indicatorType.match('%')) {
             return ' 0% ';
@@ -309,7 +318,7 @@
         $('#extendedModalTargetLbl').text('0');
         $('#extendedEndMonth').val('');
 
-        if(response["isExtend"]!=true && response["closingNote"]!=''){
+        if(response["isExtend"]!='true' && response["closingNote"]!=''){
             $('#selectionExtendMonth').prop('checked', false);
             $('#selectionCloseWithRemain').prop('checked', true);
             $('#IndicatorClosingNote').val(response["closingNote"]);
@@ -373,12 +382,13 @@
     function setExtendedTarget() {
         $("#i_logic_extend tr").remove();
         var start;
-        if(moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD')==$('#hfPrevExtendedEnd').val())
-            start=moment($('#hfPrevExtendedEnd').val()).add(1, 'M').format('YYYY-MM-DD');
-        else
-            start=moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
+        if($('#hfPrevExtendedEnd').val()!='')
+            start = moment($('#hfPrevExtendedEnd').val()).add(1, 'M').format('MMMM YYYY');
 
-        var end = $('#extendedEndMonth').val();
+        else
+            start = moment($('#month').val(), 'MMMM').add(1, 'M').format('MMMM YYYY');
+
+        var end = moment($('#extendedEndMonth').val(), 'MMMM').format('MMMM YYYY');
         var list = monthNamesFromRange(start, end);
         var count = monthDifference(start, end);
         $('#hfExtendDateCount').val(count);
@@ -403,8 +413,11 @@
     }
     function setExtendedTargetForEdit(listTarget) {
         $("#i_logic_extend tr").remove();
-        var start = moment($('#month').val(), 'MMMM').add(1, 'M').format('YYYY-MM-DD');
-        var end = $('#extendedEndMonth').val();
+        if($('#hfPrevExtendedEnd').val()!='')
+            start=moment($('#hfPrevExtendedEnd').val()).add(1, 'M').format('MMMM YYYY');
+        else
+            start=moment($('#month').val(), 'MMMM').add(1, 'M').format('MMMM YYYY');
+        var end = moment($('#extendedEndMonth').val(), 'MMMM').format('MMMM YYYY');
         var count = monthDifference(start, end);
         $('#hfExtendDateCount').val(count);
         var t = 0,totalTarget=0;

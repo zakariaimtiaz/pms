@@ -25,7 +25,7 @@ LEFT JOIN pm_actions a ON a.id = ai.actions_id AND a.year = $P{year}
 JOIN custom_month cm ON cm.name=aid.month_name
 WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
  AND (( cm.sl_index <= MONTH(a.end) AND cm.sl_index >= MONTH(a.start))
- OR COALESCE(ai.is_extend,FALSE)=TRUE)
+ OR COALESCE(ai.is_extended,FALSE)=TRUE)
  ORDER BY a.year, a.goal_id ,a.tmp_seq,aid.indicator_id]]>
 	</queryString>
 	<field name="sequence" class="java.lang.String">

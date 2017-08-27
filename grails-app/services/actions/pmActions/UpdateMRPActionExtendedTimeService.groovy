@@ -1,8 +1,10 @@
 package actions.pmActions
 
 import com.pms.PmActions
+import com.pms.PmActionsExtendHistory
 import com.pms.PmActionsIndicator
 import com.pms.PmActionsIndicatorDetails
+import com.pms.PmMcrsLog
 import grails.transaction.Transactional
 import org.apache.log4j.Logger
 import pms.ActionServiceIntf
@@ -48,7 +50,7 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                 c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
                 Date extendDate = DateUtility.getSqlDate(c.getTime())
                 boolean canMinimize=true
-                if (extendDate < pmActions.extendedEnd) {
+                if (extendDate < pmActions.end) {
                     for (PmActionsIndicator pmActionsIndicator in lstIndicator) {
                         if (pmActionsIndicator.isExtended && details.indicatorId != pmActionsIndicator.id) {
                             List<PmActionsIndicatorDetails> lstExtendDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(pmActionsIndicator.actionsId, pmActionsIndicator.id, true)
@@ -81,57 +83,61 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
 
             details.save()
 
-            if (params.selection == "CloseWithRemain") {
-                canDelete=true
-                DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+            DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+            Date end = originalFormat.parse(params.hfIndicatorDetailsMonth.toString());
+            Calendar c = Calendar.getInstance();
+            c.setTime(end);
+            c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+            Date mrpEntryMonth = DateUtility.getSqlDate(c.getTime())
 
-                Date end = originalFormat.parse(params.hfIndicatorDetailsMonth.toString());
-                Calendar c = Calendar.getInstance();
-                c.setTime(end);
-                c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-                Date date = DateUtility.getSqlDate(c.getTime())
-                for(PmActionsIndicator pmActionsIndicator in lstIndicator) {
+            if (params.selection == "CloseWithRemain") {
+                canDelete = true
+
+                for (PmActionsIndicator pmActionsIndicator in lstIndicator) {
                     if (details.indicatorId == pmActionsIndicator.id) {
                         pmActionsIndicator.closingNote = params.IndicatorClosingNote
-                        pmActionsIndicator.closingMonth = date
-                        pmActionsIndicator.isExtended = date == DateUtility.getSqlDate(pmActions.end) ? false : pmActionsIndicator.isExtended
+                        pmActionsIndicator.closingMonth = mrpEntryMonth
+                        pmActionsIndicator.isExtended = mrpEntryMonth == DateUtility.getSqlDate(pmActions.end) ? false : pmActionsIndicator.isExtended
                         pmActionsIndicator.save()
                     }
-                    if(pmActionsIndicator.isExtended){
-                        canDelete=false
+                    if (pmActionsIndicator.isExtended) {
+                        canDelete = false
                     }
                 }
-                if(canDelete) {
-                    pmActions.extendedEnd = null
-                    pmActions.save()
-                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIsExtended(details.actionsId, true)
-                    for (PmActionsIndicatorDetails etDetails in lstExtend) {
-                        if ((etDetails.achievement==0||etDetails.achievement==null)&&(etDetails.remarks==''||etDetails.remarks==null))
-                            etDetails.delete()
-                    }
-                }
-                else{
-                    List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(details.actionsId,details.indicatorId, true)
-                    for (PmActionsIndicatorDetails etDetails in lstExtend) {
-                        etDetails.target=0
-                        etDetails.save()
+                PmActionsExtendHistory pmActionsExtendHistory = PmActionsExtendHistory.findByActionsId(pmActions.id, [max: 1, sort: 'id', order: 'desc'])
+                if (pmActionsExtendHistory) {
+                    if (canDelete) {
+                        pmActions.end = pmActionsExtendHistory.end
+                        pmActions.save()
+                        pmActionsExtendHistory.delete()
+
+                        List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIdNotLessThanEquals(details.actionsId,  id)
+                        for (PmActionsIndicatorDetails etDetails in lstExtend) {
+                            if ((etDetails.achievement == 0 || etDetails.achievement == null) && (etDetails.remarks == '' || etDetails.remarks == null))
+                                etDetails.delete()
+                        }
+                    } else {
+                        List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(details.actionsId, details.indicatorId, true)
+                        for (PmActionsIndicatorDetails etDetails in lstExtend) {
+                            etDetails.target = 0
+                            etDetails.save()
+                        }
                     }
                 }
             }
             else {
-                DateFormat originalFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
-
                 Date start = originalFormat.parse(params.extendedEndMonth.toString());
-                Calendar c = Calendar.getInstance();
+                c = Calendar.getInstance();
                 c.setTime(start);
-                c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+                c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
                 Date extendDate = DateUtility.getSqlDate(c.getTime())
                 Boolean newEntry=false
 
-                if (pmActions.extendedEnd == null || pmActions.extendedEnd == '') {
+                PmActionsExtendHistory pmActionsExtendHistory = PmActionsExtendHistory.findByActionsId(pmActions.id, [max: 1, sort: 'id', order: 'desc'])
+                if (pmActionsExtendHistory==null) {
                     newEntry=true
                 }
-                else if(extendDate!=pmActions.extendedEnd) {
+                /*else if(extendDate.month!=pmActions.end.month) {
                     canDelete = true
                     for (PmActionsIndicator pmActionsIndicator in lstIndicator) {
                         if (pmActionsIndicator.isExtended && details.indicatorId != pmActionsIndicator.id) {
@@ -141,13 +147,13 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                     }
                     if (canDelete) {
                         newEntry=true
-                        List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIsExtended(details.actionsId, true)
+                        List<PmActionsIndicatorDetails> lstExtend = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIdNotLessThanEquals(pmActionsIndicator.actionsId, pmActionsIndicator.id, id)
                         for (PmActionsIndicatorDetails etDetails in lstExtend) {
                             if ((etDetails.achievement==0||etDetails.achievement==null)&&(etDetails.remarks==''||etDetails.remarks==null))
                                 etDetails.delete()
                         }
                     }
-                }
+                }*/
                 for (PmActionsIndicator pmActionsIndicator in lstIndicator) {
                     if (details.indicatorId == pmActionsIndicator.id) {
                         pmActionsIndicator.closingNote = null
@@ -156,60 +162,17 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                         pmActionsIndicator.save()
                     }
                     if (newEntry) {
-                        for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
-                            PmActionsIndicatorDetails pmActionsIndicatorDetails = new PmActionsIndicatorDetails()
-                            pmActionsIndicatorDetails.actionsId = details.actionsId
-                            pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
-                            pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
-                            pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString().trim()!=''? Integer.parseInt(params.get("target" + (i + 1)).toString()):0 : 0
-                            pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
-                            pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
-                            pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicatorDetails.isExtended
-
-                            pmActionsIndicatorDetails.save()
-                        }
+                        EntryForNewEntry( params, details, pmActionsIndicator)
                     }
-                    else if (extendDate < pmActions.extendedEnd) {
-                        List<PmActionsIndicatorDetails> lstExtendDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(pmActionsIndicator.actionsId, pmActionsIndicator.id, true)
-                        for (PmActionsIndicatorDetails pmActionsIndicatorDetails in lstExtendDetails) {
-                            int count = 0
-                            for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
-                                if (pmActionsIndicatorDetails.monthName == params.get("month" + (i + 1))) {
-                                    count++
-                                    break
-                                }
-                            }
-                            if (count == 0)
-                                pmActionsIndicatorDetails.delete()
-                        }
+                    else if (extendDate < pmActions.end) {
+                        entryForMinimizeExtendDate(pmActionsIndicator, id, params, details)
 
                     }
-                    else if (extendDate > pmActions.extendedEnd) {
-                        for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
-                        PmActionsIndicatorDetails pmActionsIndicatorDetails=PmActionsIndicatorDetails.findByActionsIdAndIndicatorIdAndMonthNameAndIsExtended(pmActionsIndicator.actionsId,pmActionsIndicator.id,params.get("month" + (i + 1)),true)
-                                    if(pmActionsIndicatorDetails){
-                                        if(details.indicatorId == pmActionsIndicator.id) {
-                                            pmActionsIndicatorDetails.target = params.get("target" + (i + 1)).toString().trim()!=''?Integer.parseInt(params.get("target" + (i + 1)).toString()):0
-                                            pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
-                                            pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
-                                            pmActionsIndicatorDetails.isExtended = true
-                                            pmActionsIndicatorDetails.save()
-                                        }
-                                    }else {
-                                        pmActionsIndicatorDetails=new PmActionsIndicatorDetails()
-                                        pmActionsIndicatorDetails.actionsId = details.actionsId
-                                        pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
-                                        pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
-                                        pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString()!=''?Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0:0
-                                        pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
-                                        pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
-                                        pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : false
-                                        pmActionsIndicatorDetails.save()
-                                    }
-                        }
+                    else if (extendDate > pmActions.end) {
+                        entryForGreaterExtendedDate(params, pmActionsIndicator, details)
                     } else {
                         if (pmActionsIndicator.id == details.indicatorId ) {
-                            List<PmActionsIndicatorDetails> lstExtendDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIsExtended(pmActionsIndicator.actionsId, pmActionsIndicator.id, true)
+                            List<PmActionsIndicatorDetails> lstExtendDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIdNotLessThanEquals(pmActionsIndicator.actionsId, pmActionsIndicator.id, id)
                             for (PmActionsIndicatorDetails pmActionsIndicatorDetails in lstExtendDetails) {
                                 for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
                                     if (pmActionsIndicatorDetails.monthName == params.get("month" + (i + 1))) {
@@ -222,7 +185,6 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                                         pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicatorDetails.isExtended
 
                                         pmActionsIndicatorDetails.save()
-
                                     }
                                 }
                             }
@@ -230,7 +192,20 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
                         }
                     }
                 }
-                pmActions.extendedEnd = extendDate
+                if(pmActionsExtendHistory) {
+                    PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndYearAndMonth(pmActions.serviceId, pmActions.year, pmActionsExtendHistory.end.month+1)
+                if(!pmMcrsLog.isSubmitted)
+                    newEntry = false
+                }
+                if(newEntry){
+
+                    pmActionsExtendHistory = new PmActionsExtendHistory()
+                    pmActionsExtendHistory.end = pmActions.end
+                    pmActionsExtendHistory.actionsId = pmActions.id
+                    pmActionsExtendHistory.save()
+                }
+
+                pmActions.end = extendDate
                 pmActions.save()
             }
 
@@ -241,6 +216,67 @@ class UpdateMRPActionExtendedTimeService extends BaseService implements ActionSe
         }
     }
 
+    private void EntryForNewEntry( Map params, PmActionsIndicatorDetails details, PmActionsIndicator pmActionsIndicator) {
+
+        for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
+            PmActionsIndicatorDetails pmActionsIndicatorDetails = new PmActionsIndicatorDetails()
+            pmActionsIndicatorDetails.actionsId = details.actionsId
+            pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
+            pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
+            pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString().trim() != '' ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0 : 0
+            pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
+            pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
+            pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicatorDetails.isExtended
+
+            pmActionsIndicatorDetails.save()
+        }
+    }
+
+    private void entryForGreaterExtendedDate(Map params, PmActionsIndicator pmActionsIndicator, PmActionsIndicatorDetails details) {
+        for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
+            PmActionsIndicatorDetails pmActionsIndicatorDetails = PmActionsIndicatorDetails.findByActionsIdAndIndicatorIdAndMonthName(pmActionsIndicator.actionsId, pmActionsIndicator.id, params.get("month" + (i + 1)))
+            if (pmActionsIndicatorDetails) {
+                if (details.indicatorId == pmActionsIndicator.id) {
+                    pmActionsIndicatorDetails.target = params.get("target" + (i + 1)).toString().trim() != '' ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0
+                    pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
+                    pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
+                    pmActionsIndicatorDetails.isExtended = true
+                    pmActionsIndicatorDetails.save()
+                }
+            } else {
+                pmActionsIndicatorDetails = new PmActionsIndicatorDetails()
+                pmActionsIndicatorDetails.actionsId = details.actionsId
+                pmActionsIndicatorDetails.indicatorId = pmActionsIndicator.id
+                pmActionsIndicatorDetails.monthName = params.get("month" + (i + 1))
+                pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString() != '' ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0 : 0
+                pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
+                pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
+                pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicator.isExtended
+                pmActionsIndicatorDetails.save()
+            }
+        }
+    }
+
+    private void entryForMinimizeExtendDate(PmActionsIndicator pmActionsIndicator, long id, Map params, PmActionsIndicatorDetails details) {
+        List<PmActionsIndicatorDetails> lstExtendDetails = PmActionsIndicatorDetails.findAllByActionsIdAndIndicatorIdAndIdNotLessThanEquals(pmActionsIndicator.actionsId, pmActionsIndicator.id, id)
+        for (PmActionsIndicatorDetails pmActionsIndicatorDetails in lstExtendDetails) {
+            int count = 0
+            for (int i = 0; i < Integer.parseInt(params.hfExtendDateCount); i++) {
+                if (pmActionsIndicatorDetails.monthName == params.get("month" + (i + 1))) {
+                    pmActionsIndicatorDetails.target = details.indicatorId == pmActionsIndicator.id ? params.get("target" + (i + 1)).toString().trim() != '' ? Integer.parseInt(params.get("target" + (i + 1)).toString()) : 0 : pmActionsIndicatorDetails.target
+                    pmActionsIndicatorDetails.createBy = springSecurityService.principal.id
+                    pmActionsIndicatorDetails.createDate = DateUtility.getSqlDate(new Date())
+                    pmActionsIndicatorDetails.isExtended = details.indicatorId == pmActionsIndicator.id ? true : pmActionsIndicatorDetails.isExtended
+
+                    pmActionsIndicatorDetails.save()
+                    count++
+                    break
+                }
+            }
+            if (count == 0)
+                pmActionsIndicatorDetails.delete()
+        }
+    }
     public Map execute(Map result) {
         return result
     }
