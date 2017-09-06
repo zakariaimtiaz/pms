@@ -7,7 +7,7 @@
                 </div>
             </div>
 
-            <g:form name='defaultForm' id='defaultForm' class="form-horizontal form-widgets" role="form">
+            <g:form name='cryptoUtilFrom' id='cryptoUtilFrom' class="form-horizontal form-widgets" role="form">
                 <div class="panel-body">
                     <div class="form-group">
                         <label class="col-md-1 control-label label-optional" for="input1">Input 1:</label>
@@ -45,44 +45,3 @@
         </div>
     </div>
 </div>
-<script language="javascript">
-
-    $(document).ready(function () {
-        initializeForm($("#defaultForm"), onSubmitForm);
-    });
-
-    function onSubmitForm() {
-        var btnName = $(document.activeElement).val();
-        var txt1 = $("#input1").val();
-        var txt2 = $("#input2").val();
-        if (txt1 == '' && txt2 == '') {
-            showError('No data found');
-            return false;
-        }
-        showLoadingSpinner(true);
-        var actionUrl = null;
-        if (btnName=='encrypt') {
-            actionUrl = "${createLink(controller:'login', action: 'encryptTxt')}";
-        } else {
-            actionUrl = "${createLink(controller:'login', action: 'decryptTxt')}";
-        }
-
-        jQuery.ajax({
-            type: 'post',
-            data: jQuery("#defaultForm").serialize(),
-            url: actionUrl,
-            success: function (data, textStatus) {
-                $("#output1").val(data.output1);
-                $("#output2").val(data.output2);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            },
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json'
-        });
-        return false;
-    }
-
-</script>

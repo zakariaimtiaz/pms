@@ -45,7 +45,10 @@
                 "justifyRight",
                 "justifyFull",
                 "insertUnorderedList",
-                "insertOrderedList"
+                "insertOrderedList",
+                "createTable",
+                "deleteRow",
+                "deleteColumn"
             ]
         });
         $("#descStr").kendoEditor({
@@ -65,7 +68,10 @@
                 "justifyRight",
                 "justifyFull",
                 "insertUnorderedList",
-                "insertOrderedList"
+                "insertOrderedList",
+                "createTable",
+                "deleteRow",
+                "deleteColumn"
             ]
         });
 
@@ -259,17 +265,17 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "attendeesStr", title: "Attendees", width: 100, sortable: false, filterable: false,
-                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                    template: "#=trimTextForKendo(attendeesStr,200)#"
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                    ,template: "#=trimTextForKendo(attendeesStr,200)#"
                 },
-                {field: "issues", title: "Agenda",width: 150, sortable: false, filterable: false,
-                    template: "#=trimTextForKendo(issues,200)#"
+                {field: "issues", title: "Agenda",width: 150, sortable: false, filterable: false
+                    ,template: "#=trimTextForKendo(issues,200)#"
                 },
-                {field: "logStr", title: "Action Log",width: 200, sortable: false, filterable: false,
-                    template: "#=trimTextForKendo(htmlDecode(logStr),300)#"
+                {field: "logStr", title: "Action Log",width: 200, sortable: false, filterable: false
+                    ,template: "#=htmlDecode(logStr)#"
                 },
-                {field: "descStr", title: "Description",width: 300, sortable: false, filterable: false,
-                    template: "#=trimTextForKendo(htmlDecode(descStr),300)#"
+                {field: "descStr", title: "Description",width: 300, sortable: false, filterable: false
+                    ,template: "#=htmlDecode(descStr)#"
                 }
             ],
             filterable: {
@@ -330,11 +336,13 @@
         descStr.value(htmlDecode(meetingLog.descStr));
         var logStr = $("#logStr").data("kendoEditor");
         logStr.value(htmlDecode(meetingLog.logStr));
+        <g:if test="${meetingType=='Monthly'}">
         dropDownCategoryChange();
+        </g:if>
         if (meetingLog.attendees) multiSelectAttendees.value(meetingLog.attendees.split(","));
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
-    $("#gridMeetingLog").kendoTooltip({
+/*    $("#gridMeetingLog").kendoTooltip({
         show: function(e){
             if(this.content.text().length > 200){
                 this.content.parent().css("visibility", "visible");
@@ -401,5 +409,5 @@
             var dataItem = $("#gridMeetingLog").data("kendoGrid").dataItem(e.target.closest("tr"));
             return dataItem.descStr;
         }
-    }).data("kendoTooltip");
+    }).data("kendoTooltip");*/
 </script>

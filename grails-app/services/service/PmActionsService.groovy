@@ -258,6 +258,13 @@ class PmActionsService extends BaseService {
         int month = c.get(Calendar.MONTH)+1
         int year = c.get(Calendar.YEAR)
 
+        String additionalParam = EMPTY_SPACE
+        boolean isDepartmental = isUserOnlyDepartmental()
+        if(isDepartmental){
+            String lstDeptStr = currentUserDepartmentListStr()
+            additionalParam = " AND sc.id IN (${lstDeptStr}) "
+        }
+
         String query = """
             SELECT tmp.service_id,tmp.service,tmp.short_name,
             ROUND(SUM(tmp.avgr)/COUNT(tmp.goal_id)) a_pert,'#069302' a_color,
@@ -279,6 +286,7 @@ class PmActionsService extends BaseService {
                         JOIN custom_month cm ON cm.name=aid.month_name,
                         (SELECT @curmon := ${month}) r
                         WHERE a.year = ${year} AND cm.sl_index=@curmon AND aid.target > 0
+                        ${additionalParam}
                         ORDER BY sc.sequence,g.id,a.id,ai.id,aid.id
                     ) t GROUP BY t.goal_id ,t.actions_id
                 ) t GROUP BY t.goal_id

@@ -19,17 +19,6 @@ class ListMeetingLogActionService extends BaseService implements ActionServiceIn
     public Map execute(Map result) {
         try {
             long meetingTypeId = Long.parseLong(result.meetingTypeId.toString())
-            try{
-                long serviceId = Long.parseLong(result.serviceId.toString())
-                Closure additionalParam = {
-                    'eq'('meetingTypeId', meetingTypeId)
-                    'eq'('serviceId', serviceId)
-                }
-                Map resultMap = super.getSearchResult(result, ListMeetingLogActionServiceModel.class,additionalParam)
-                result.put(LIST, resultMap.list)
-                result.put(COUNT, resultMap.count)
-                return result
-            } catch (Exception ex) {}
             List<Long> lst = currentUserDepartmentList()
             Closure additionalParam = {
                 'eq'('meetingTypeId', meetingTypeId)

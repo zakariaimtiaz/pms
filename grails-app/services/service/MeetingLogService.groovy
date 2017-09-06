@@ -96,8 +96,16 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
 
         String query = """
         SELECT ml.id, ml.version, mt.id meeting_type_id,mt.name meeting_type,cat.id meeting_cat_id, cat.name meeting_cat,
-              s.id service_id,s.name service,DATE_FORMAT(ml.held_on, '%d-%b-%Y') held_on,ml.log_str,ml.issues,ml.attendees,
-              ml.desc_str,(SELECT GROUP_CONCAT(NAME SEPARATOR ', ') FROM mis.employee
+            s.id service_id,s.name service,DATE_FORMAT(ml.held_on, '%d-%b-%Y') held_on,
+            CASE
+            WHEN LOCATE('<table>',ml.log_str)> 0
+            THEN REPLACE(ml.log_str, '<table>','<table class="table table-bordered">')
+            ELSE ml.log_str END log_str,
+            CASE
+            WHEN LOCATE('<table>',ml.desc_str)> 0
+            THEN REPLACE(ml.desc_str, '<table>','<table class="table table-bordered">')
+            ELSE ml.desc_str END desc_str,
+            ml.issues,ml.attendees,(SELECT GROUP_CONCAT(NAME SEPARATOR ', ') FROM mis.employee
               WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',ml.attendees,', '))>0 ) attendees_str
         FROM meeting_log ml
         LEFT JOIN login_auth.sec_user u ON u.employee_id = ml.attendees
@@ -117,7 +125,8 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
         boolean isSpAdmin = isEdAdminRole(user.id)
         boolean isEdAssistant = isEdAssistantRole(user.id)
         if(!isSysAdmin && !isSpAdmin && !isTopMan&& !isEdAssistant){
-            additionalParam = " AND ss.id = ${user.serviceId} "
+            String userDepartmentLst = currentUserDepartmentListStr()
+            additionalParam = " AND ss.id IN (${userDepartmentLst}) "
         }
         int year = Integer.parseInt(yearStr)
         SystemEntity meetingType = SystemEntity.findById(meetingTypeId)
@@ -125,18 +134,19 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
         if(meetingType.name.equals("Quarterly")||meetingType.name.equals("Annually")) {
             query = """
                 SELECT l.id,0 version,se.name meetingType,l.held_on heldOn,l.end_date endDate,l.desc_str descStr,COALESCE(l.file_name,'') fileName
-                                    FROM meeting_log l LEFT JOIN system_entity se ON se.id = l.meeting_type_id
-                 WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
-
-                                    ORDER BY l.held_on ASC
+                    FROM meeting_log l
+                    LEFT JOIN system_entity se ON se.id = l.meeting_type_id
+                    WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}
+                AND l.meeting_type_id = ${meetingTypeId}
+                ORDER BY l.held_on ASC
                 """
         }else if(meetingType.name.equals("Functional")) {
             query = """
                 SELECT tmp.id SERVICE_ID,'' SERVICE_NAME,'' SERVICE_STR,tmp.MEETING_TYPE,
-                COALESCE(GROUP_CONCAT(tmp.January),'') JANUARY,COALESCE(GROUP_CONCAT(tmp.February),'') FEBRUARY,COALESCE(GROUP_CONCAT(tmp.March),'') MARCH,
-                COALESCE(GROUP_CONCAT(tmp.April),'')   APRIL,  COALESCE(GROUP_CONCAT(tmp.May),'')      MAY,     COALESCE(GROUP_CONCAT(tmp.June),'') JUNE,
-                COALESCE(GROUP_CONCAT(tmp.July),'')    JULY,   COALESCE(GROUP_CONCAT(tmp.August),'')   AUGUST,  COALESCE(GROUP_CONCAT(tmp.September),'') SEPTEMBER,
-                COALESCE(GROUP_CONCAT(tmp.October),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December),'') DECEMBER
+                COALESCE(GROUP_CONCAT(tmp.January ORDER BY tmp.held_on),'') JANUARY,COALESCE(GROUP_CONCAT(tmp.February ORDER BY tmp.held_on),'') FEBRUARY,COALESCE(GROUP_CONCAT(tmp.March ORDER BY tmp.held_on),'') MARCH,
+                COALESCE(GROUP_CONCAT(tmp.April ORDER BY tmp.held_on),'')   APRIL,  COALESCE(GROUP_CONCAT(tmp.May ORDER BY tmp.held_on),'')      MAY,     COALESCE(GROUP_CONCAT(tmp.June ORDER BY tmp.held_on),'') JUNE,
+                COALESCE(GROUP_CONCAT(tmp.July ORDER BY tmp.held_on),'')    JULY,   COALESCE(GROUP_CONCAT(tmp.August ORDER BY tmp.held_on),'')   AUGUST,  COALESCE(GROUP_CONCAT(tmp.September ORDER BY tmp.held_on),'') SEPTEMBER,
+                COALESCE(GROUP_CONCAT(tmp.October ORDER BY tmp.held_on),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November ORDER BY tmp.held_on),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December ORDER BY tmp.held_on),'') DECEMBER
                 FROM (
                     SELECT l.id,se.name MEETING_TYPE,l.held_on,
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='January'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END January,
@@ -160,12 +170,12 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
         }else{
             query = """
                 SELECT tmp.id SERVICE_ID,tmp.name SERVICE_NAME,tmp.short_name SERVICE_STR,tmp.MEETING_TYPE,
-                COALESCE(GROUP_CONCAT(tmp.January),'') JANUARY,COALESCE(GROUP_CONCAT(tmp.February),'') FEBRUARY,COALESCE(GROUP_CONCAT(tmp.March),'') MARCH,
-                COALESCE(GROUP_CONCAT(tmp.April),'')   APRIL,  COALESCE(GROUP_CONCAT(tmp.May),'')      MAY,     COALESCE(GROUP_CONCAT(tmp.June),'') JUNE,
-                COALESCE(GROUP_CONCAT(tmp.July),'')    JULY,   COALESCE(GROUP_CONCAT(tmp.August),'')   AUGUST,  COALESCE(GROUP_CONCAT(tmp.September),'') SEPTEMBER,
-                COALESCE(GROUP_CONCAT(tmp.October),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December),'') DECEMBER
+                COALESCE(GROUP_CONCAT(tmp.January ORDER BY tmp.held_on),'') JANUARY,COALESCE(GROUP_CONCAT(tmp.February ORDER BY tmp.held_on),'') FEBRUARY,COALESCE(GROUP_CONCAT(tmp.March ORDER BY tmp.held_on),'') MARCH,
+                COALESCE(GROUP_CONCAT(tmp.April ORDER BY tmp.held_on),'')   APRIL,  COALESCE(GROUP_CONCAT(tmp.May ORDER BY tmp.held_on),'')      MAY,     COALESCE(GROUP_CONCAT(tmp.June ORDER BY tmp.held_on),'') JUNE,
+                COALESCE(GROUP_CONCAT(tmp.July ORDER BY tmp.held_on),'')    JULY,   COALESCE(GROUP_CONCAT(tmp.August ORDER BY tmp.held_on),'')   AUGUST,  COALESCE(GROUP_CONCAT(tmp.September ORDER BY tmp.held_on),'') SEPTEMBER,
+                COALESCE(GROUP_CONCAT(tmp.October ORDER BY tmp.held_on),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November ORDER BY tmp.held_on),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December  ORDER BY tmp.held_on),'') DECEMBER
                 FROM (
-                    SELECT ss.id,ss.name,ss.short_name,se.name MEETING_TYPE,
+                    SELECT ss.id,ss.name,ss.short_name,se.name MEETING_TYPE,l.held_on,
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='January'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END January,
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='February'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END February,
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='March'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END March,
@@ -179,13 +189,11 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='November'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END November,
                     CASE WHEN DATE_FORMAT(l.held_on,'%M')='December'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END December
                     FROM pm_service_sector ss
-                    LEFT JOIN meeting_log l ON l.service_id = ss.id AND DATE_FORMAT(l.held_on,'%Y') = ${
-                year
-            }  AND l.meeting_type_id = ${meetingTypeId}
+                    LEFT JOIN meeting_log l ON l.service_id = ss.id AND DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
                     LEFT JOIN system_entity se ON se.id = ${meetingTypeId}
                     WHERE ss.is_in_sp = TRUE
                     ${additionalParam}
-                    ORDER BY ss.short_name ASC) tmp
+                    ORDER BY ss.short_name,l.held_on ASC) tmp
                 GROUP BY tmp.short_name;
         """
         }
