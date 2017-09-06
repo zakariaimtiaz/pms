@@ -59,6 +59,7 @@ class DownloadMCRSActionService extends BaseService implements ActionServiceIntf
         c.setTime(date);
         int year = c.get(Calendar.YEAR)
         int monthInt = c.get(Calendar.MONTH)+ 1
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date currentMonth = DateUtility.getSqlDate(c.getTime());
 
         String monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());

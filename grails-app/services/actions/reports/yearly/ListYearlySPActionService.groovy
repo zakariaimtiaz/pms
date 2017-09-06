@@ -73,8 +73,9 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
     private List<GroovyRowResult> buildResultList(long serviceId,int year) {
 
         String query = """
-        SELECT a.id AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+        SELECT a.id AS id,CAST(CONCAT(g.sequence,'. ',g.goal)AS CHAR CHARACTER SET utf8) goal,
         a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+        COALESCE(GROUP_CONCAT(CONCAT('<strike>',DATE_FORMAT(aeh.end,'%M'),'</strike>') SEPARATOR' '),'') extendedEnd,
         a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
         (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
         (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
@@ -82,7 +83,8 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         FROM pm_actions a
         JOIN pm_goals g ON g.id = a.goal_id
         JOIN pm_service_sector sc ON sc.id = a.service_id
-        WHERE a.year = ${year} AND sc.id = ${serviceId}
+        LEFT JOIN pm_actions_extend_history aeh ON aeh.actions_id=a.id
+        WHERE a.year = ${year} AND sc.id = ${serviceId} GROUP BY a.id
         ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)
@@ -99,11 +101,13 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         }
 
         String query = """
-        SELECT @rownum := @rownum + 1 AS id,CONCAT(g.sequence,'. ',g.goal) goal,
+        SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal)AS CHAR CHARACTER SET utf8) goal,
         a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
-        ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+        COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%M') AS CHAR(50)),'</strike>') SEPARATOR' ')
+        FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd,
+        ai.id AS indicator_id,ai.indicator,ai.indicator_type,
 
-        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END tot_tar,
+        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE COALESCE(ai.target,0) END tot_tar,
         CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END tot_acv,
 
         a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
@@ -118,7 +122,7 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         JOIN pm_service_sector sc ON sc.id = a.service_id,
         (SELECT @rownum := 0) r
         WHERE a.year=${year} AND ai.year = ${year} AND sc.id = ${serviceId}
-        GROUP BY ai.id
+        GROUP BY a.id,ai.id
         ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq;
         """
         List<GroovyRowResult> lstValue = executeSelectSql(query)

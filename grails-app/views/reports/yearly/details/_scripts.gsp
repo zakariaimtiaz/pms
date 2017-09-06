@@ -78,7 +78,7 @@
                 },
                 {
                     field: "end", title: "End Date", width: 80, sortable: false, filterable: false
-                    ,template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM')#"
+                    ,template: "#=formatExtendedDateStrike(kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'),extendedEnd)#"
                 },
                 {
                     field: "remarks", title: "Action Remarks",
@@ -125,11 +125,11 @@
             pageable: false,
             detailInit: initDetails,
             columns: [
-                {field: "indicator", title: "Indicator",width: '30%'},
+                {field: "indicator", title: "Indicator",width: '35%'},
                 {field: "target", title: "Target",template:"#=formatIndicator(indicatorType,target)#",width: '10%'},
-                {field: "unitStr", title: "Unit",width: '10%'},
+                {field: "unitStr", title: "Unit",width: '15%'},
                 {field: "indicatorType", title: "Indicator Type",width: '10%'},
-                {field: "remarks", title: "Indicator Remarks",width: '40%'}
+                {field: "", title: "",width: '30%'}
             ]
         });
     }
@@ -164,24 +164,24 @@
                 {field: "month_name", title: "Month",width: '10%'},
                 {field: "target", title: "Target",template:"#=formatIndicator(indicator_type,target)#",width: '10%'},
                 {field: "achievement", title: "Achievement",template:"#=formatIndicatorAcv(month_name,indicator_type,achievement)#",width: '10%'},
-                {field: "remarks", title: "Indicator Remarks",width: '70%'}
+                {field: "remarks", title: "Indicator Remarks",width: '70%', encoded: false}
             ]
         });
     }
-    function formatIndicatorAcv(month,indicatorType,target){
+    function formatIndicatorAcv(month,indicatorType,acv){
         var monthNo = moment().month(month).format("M");
-        if(monthNo > moment().month()){
+        if(monthNo > moment().month()+1){
             return ''
         }
-        if (!target && (indicatorType.match('%'))){
+        if (!acv && (indicatorType.match('%'))){
             return '0 %'
-        }else if(!target && (indicatorType.match('%'))){
+        }else if(!acv && (indicatorType.match('%'))){
             return '0'
         }
         if (indicatorType.match('%')) {
-            return target + ' % ';
+            return acv + ' % ';
         }
-        return target
+        return acv
     }
     function calculateVariance(tar,ach){
         var perc="";

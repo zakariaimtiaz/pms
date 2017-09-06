@@ -23,6 +23,7 @@ class PmActionsController extends BaseController {
     DeletePmActionsActionService deletePmActionsActionService
     ListPmActionsActionService listPmActionsActionService
     UpdateMRPActionService updateMRPActionService
+    UpdateMRPActionExtendedTimeService updateMRPActionExtendedTimeService
     UpdatePreferenceActionService updatePreferenceActionService
     ListMRPActionService listMRPActionService
     ListEditableActionsActionService listEditableActionsActionService
@@ -61,6 +62,9 @@ class PmActionsController extends BaseController {
     }
     def updateAchievement(){
         renderOutput(updateMRPActionService, params)
+    }
+    def updateExtendedTimeAchievement(){
+        renderOutput(updateMRPActionExtendedTimeService, params)
     }
     def updatePreference(){
         renderOutput(updatePreferenceActionService, params)
@@ -110,13 +114,14 @@ class PmActionsController extends BaseController {
     def listDetailsByIndicator() {
         if(params.containsKey("indicatorId")){
             long indicatorId = Long.parseLong(params.indicatorId.toString())
-            List<PmActionsIndicatorDetails> lst = PmActionsIndicatorDetails.findAllByIndicatorId(indicatorId)
+            long actionsId=PmActionsIndicator.findById(indicatorId).actionsId
+            List<GroovyRowResult> lst = pmActionsService.findAllDetailsByActionsIdAndIndicatorIdNotExtended(actionsId, indicatorId)
             Map result = [list: lst, count:lst.size()]
             render result as JSON
         }else{
             long actionsId = Long.parseLong(params.actionsId.toString())
             long indicatorId = Long.parseLong(params."filter[filters][0][value]".toString())
-            List<GroovyRowResult> lst = pmActionsService.findAllDetailsByActionsIdAndIndicatorId(actionsId, indicatorId)
+            List<GroovyRowResult> lst = pmActionsService.findAllDetailsByActionsIdAndIndicatorIdNotExtended(actionsId, indicatorId)
             Map result = [list: lst, count:lst.size()]
             render result as JSON
         }
@@ -176,5 +181,12 @@ class PmActionsController extends BaseController {
     }
     def listAchievement(){
         renderOutput(listMRPActionService, params)
+    }
+    def lastSubDateByService() {
+        long sId = Long.parseLong(params.serviceId.toString())
+        String subDate = baseService.lastMRPSubmissionDate(sId)
+        Map map = new LinkedHashMap()
+        map.put('subDate', subDate)
+        render map as JSON
     }
 }

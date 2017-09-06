@@ -35,7 +35,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                 if (!params.hfId && !params.description && !params.remarks) {
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
-                else if(params.hfId=='' || params.description=='' || params.remarks==''){
+                else if(params.hfId=='' || params.description.trim()=='' || params.remarks.trim()==''){
                     return super.setError(params, INVALID_INPUT_MSG)
                 }
             }
@@ -50,7 +50,7 @@ class UpdateEdDashboardActionService extends BaseService implements ActionServic
                         return super.setError(params, INVALID_INPUT_MSG)
                     } else if (params.selection != 'Resolve' && !params.remarks && !params.followupMonth) {
                         return super.setError(params, INVALID_INPUT_MSG)
-                    } else if (params.selection != 'Resolve' && (params.remarks == '' || params.description == '')) {
+                    } else if (params.selection != 'Resolve' && (params.remarks.trim() == '' || params.description.trim() == '')) {
                         return super.setError(params, 'Invalid current remarks and recommendations.')
                     }
                 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mcrsActionIndicator_subreport1Exc" language="groovy" pageWidth="832" pageHeight="572" orientation="Landscape" columnWidth="832" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6fdbea04-6465-4ee7-8c30-265e7b8be426">
 	<property name="ireport.zoom" value="1.0000000000000029"/>
-	<property name="ireport.x" value="74"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="serviceId" class="java.lang.Long"/>
 	<parameter name="year" class="java.lang.Integer"/>
@@ -12,7 +12,7 @@
 	<parameter name="goalId" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[SELECT @row_number:=CASE WHEN @actionid=tmp.action_id THEN @row_number+1 ELSE 1 END AS row_number,@actionid:=tmp.action_id AS action_id,t_mon_var,
-sequence,actions,DATE_FORMAT(start,'%b') start,DATE_FORMAT(end,'%b') end, indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
+sequence,actions,DATE_FORMAT(START,'%b') start,CASE WHEN extendedEnd!='' THEN CONCAT(extendedEnd,' ',DATE_FORMAT(END,'%b')) ELSE DATE_FORMAT(END,'%b') END end,indicator,indicator_type,ind_remarks,remarks,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_tar, '%') ELSE mon_tar END AS mon_tar,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_acv, '%') ELSE mon_acv END AS mon_acv,
 CONCAT(FLOOR((mon_acv/mon_tar * 100)-100), '%') AS mon_var,
@@ -22,8 +22,10 @@ CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(cum_acv, '%') ELSE cum_
 CONCAT(FLOOR((cum_acv/cum_tar * 100)-100), '%') AS cum_var,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
-a.actions,a.start,a.end, ai.indicator,ai.indicator_type,
-(SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
+a.actions,a.start,a.end,COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%b') AS CHAR CHARACTER SET utf8)
+,'</strike>') SEPARATOR' ') FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd, ai.indicator,ai.indicator_type,
+(SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE($P{currentMonth}) THEN CONCAT(remarks,'<style isBold="true" pdfFontName="Helvetica-Bold">\r\nClosing note: </style>',ai.closing_note) ELSE remarks END
+                 FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth})))ind_remarks,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
@@ -39,9 +41,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 	SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)
 	ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
-                 a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS res_person,
-                 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
-                 (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) support_depart
+                 a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS res_person
 
                 FROM pm_actions a
                 JOIN pm_goals g ON g.id = $P{goalId}
@@ -49,11 +49,11 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = ai.id
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN pm_service_sector sc ON sc.id = a.service_id
- WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId} AND (DATE($P{currentMonth}) <= a.end AND DATE($P{currentMonth}) >= a.start)
+ WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId} AND @curmon <= MONTH( a.end) AND @curmon >= MONTH(a.start)
                 GROUP BY ai.id
                 ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0,@curmon := MONTH(DATE($P{currentMonth}))) r
- WHERE tmp.t_mon_var!=0;]]>
+ WHERE tmp.t_mon_var!=0 OR tmp.mon_acv!=0;]]>
 	</queryString>
 	<field name="row_number" class="java.lang.Double"/>
 	<field name="action_id" class="java.lang.Long"/>
@@ -78,11 +78,6 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 	</field>
 	<field name="ind_remarks" class="java.lang.String"/>
 	<field name="remarks" class="java.lang.String"/>
-	<field name="res_person" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="project" class="java.lang.String"/>
-	<field name="support_depart" class="java.lang.String"/>
 	<field name="mon_tar" class="java.lang.String"/>
 	<field name="mon_acv" class="java.lang.String"/>
 	<field name="mon_var" class="java.lang.String"/>
@@ -139,7 +134,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="html">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{end}]]></textFieldExpression>
@@ -232,7 +227,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="styled">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
@@ -358,16 +353,14 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="612" y="0" width="110" height="20" uuid="82b003ca-957c-470b-ab00-2fdabadef000">
-					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
-				</reportElement>
+				<reportElement stretchType="RelativeToTallestObject" x="612" y="0" width="110" height="20" uuid="82b003ca-957c-470b-ab00-2fdabadef000"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.25" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="styled">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ind_remarks}]]></textFieldExpression>

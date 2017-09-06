@@ -9,6 +9,7 @@ import org.apache.log4j.Logger
 import pms.ActionServiceIntf
 import pms.BaseService
 import pms.utility.DateUtility
+import service.PmActionsService
 
 @Transactional
 class SubmitDashBoardActionService extends BaseService implements ActionServiceIntf {
@@ -22,12 +23,17 @@ class SubmitDashBoardActionService extends BaseService implements ActionServiceI
     private static final String THANK_YOU_MAIL_AFTER_DEADLINE = "THANK_YOU_MAIL_AFTER_DEADLINE"
 
     private Logger log = Logger.getLogger(getClass())
+    PmActionsService pmActionsService
 
     @Transactional(readOnly = true)
     public Map executePreCondition(Map params) {
         try {
             long id = Long.parseLong(params.id.toString())
             PmMcrsLog pmMcrsLog = PmMcrsLog.read(id)
+            boolean isSubmittable=pmActionsService.isDashboardSubmittable(pmMcrsLog.serviceId,pmMcrsLog.month,pmMcrsLog.year)
+            if(!isSubmittable){
+                return super.setError(params, "Must resolve or follow-up for issues from previous months.")
+            }
             params.put(PM_MCRS_LOG, pmMcrsLog)
             return params
         } catch (Exception ex) {

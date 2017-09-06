@@ -29,6 +29,7 @@ class EdDashboardController extends BaseController {
 
     def show() {
         SecUser user = baseService.currentUserObject()
+        boolean is=baseService.isUserOnlyDepartmental()
         String subDate = baseService.lastDashboardSubmissionDate(user.serviceId)
         render(view: "/edDashboard/show", model: [subDate: subDate, serviceId: user.serviceId])
     }
@@ -125,5 +126,11 @@ class EdDashboardController extends BaseController {
         List<GroovyRowResult> detailsVal = edDashboardService.lstEdDashboardDescriptionAndRemarks(dashboard.serviceId, dashboard.monthFor, dashboard.issueId)
         render detailsVal[0] as JSON
     }
-
+    def lastSubDateByService() {
+        long sId = Long.parseLong(params.serviceId.toString())
+        String subDate = baseService.lastDashboardSubmissionDate(sId)
+        Map map = new LinkedHashMap()
+        map.put('subDate', subDate)
+        render map as JSON
+    }
 }

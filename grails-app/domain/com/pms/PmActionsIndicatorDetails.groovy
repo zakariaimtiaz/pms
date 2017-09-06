@@ -11,6 +11,7 @@ class PmActionsIndicatorDetails {
     Integer achievement
     Date createDate
     long createBy
+    boolean isExtended
 
     static mapping = {
         remarks        size: 2..15000
@@ -19,5 +20,6 @@ class PmActionsIndicatorDetails {
     static constraints = {
         remarks nullable: true
         achievement nullable: true
+        isExtended nullable: true
     }
 }

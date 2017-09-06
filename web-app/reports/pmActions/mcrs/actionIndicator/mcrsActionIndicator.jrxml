@@ -148,7 +148,7 @@ GROUP BY a.goal_id]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[Remarks]]></text>
+				<text><![CDATA[Action Remarks]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="405" y="69" width="30" height="16" uuid="ad4e10c7-fd48-49d0-ac6e-dbabbd1f8833"/>

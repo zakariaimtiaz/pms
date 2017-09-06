@@ -29,7 +29,7 @@ class SubmitMRPActionService extends BaseService implements ActionServiceIntf {
         try {
             long id = Long.parseLong(params.id.toString())
             PmMcrsLog pmMcrsLog = PmMcrsLog.read(id)
-            boolean isSubmittable=pmActionsService.isMRPSubmittable(pmMcrsLog.serviceId,pmMcrsLog.monthStr,pmMcrsLog.year)
+            boolean isSubmittable=pmActionsService.isMRPSubmittable(pmMcrsLog.serviceId,pmMcrsLog.monthStr,pmMcrsLog.year,pmMcrsLog.month)
             if(!isSubmittable){
                 return super.setError(params, "Sorry! MRP achievement claim is not fully completed.")
             }

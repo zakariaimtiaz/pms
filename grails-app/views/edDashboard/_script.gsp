@@ -7,7 +7,7 @@
 </script>
 
 <script language="javascript">
-    var serviceId, subDate, gridIssues, dataSource;
+    var serviceId, subDate, gridIssues, dataSource, monthKendo;
 
     $(document).ready(function () {
         onLoadEdDashboardPage();
@@ -35,18 +35,46 @@
         if( subDate.isEmpty())
         {subDate =new Date();}
         $('#hfSubmissionDate').val(subDate);
-        var m = $('#month').kendoDatePicker({
+        monthKendo = $('#month').kendoDatePicker({
             format: "MMMM yyyy",
             parseFormats: ["yyyy-MM-dd"],
             start: "year",
             depth: "year",
             change: loadData
         }).data("kendoDatePicker");
-        m.min(moment(subDate).format('YYYY-MM-DD'));
+        monthKendo.min(moment(subDate).format('YYYY-MM-DD'));
         $('#month').val(moment(subDate).format('MMMM YYYY'));
         initializeForm($("#edDashboardForm"), onSubmitEdDashboard);
         dropDownService.value(serviceId);
         defaultPageTile("Create Ed Dashboard", "edDashboard/show");
+    }
+    function setMinMonth() {
+
+        var actionUrl = "${createLink(controller:'edDashboard', action: 'lastSubDateByService')}";
+        serviceId = $('#serviceId').val();
+
+        jQuery.ajax({
+            type: 'post',
+            data: {serviceId: serviceId},
+            url: actionUrl,
+            success: function (data, textStatus) {
+                subDate=data.subDate;
+                if( subDate.isEmpty())
+                {subDate =new Date();}
+                $('#hfSubmissionDate').val(subDate);
+                monthKendo.min(moment(subDate).format('YYYY-MM-DD'));
+                monthKendo.value(moment(subDate).format('MMMM YYYY'));
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.info('error');
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                console.info('complete');
+            }
+
+        });
+
+
     }
     function initDataSource() {
         serviceId = $('#serviceId').val();

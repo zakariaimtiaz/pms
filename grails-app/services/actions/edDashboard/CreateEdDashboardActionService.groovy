@@ -33,7 +33,7 @@ class CreateEdDashboardActionService extends BaseService implements ActionServic
             if (!params.hfServiceIdModal && !params.hfMonthModal && !params.description && !params.issueIdDDL && !params.remarks) {
                 return super.setError(params, INVALID_INPUT_MSG)
             }
-            else if(params.hfServiceIdModal=='' || params.hfMonthModal=='' || params.description=='' || params.issueIdDDL=='' || params.remarks==''){
+            else if(params.hfServiceIdModal=='' || params.hfMonthModal=='' || params.description.trim()=='' || params.issueIdDDL=='' || params.remarks.trim()==''){
                 return super.setError(params, INVALID_INPUT_MSG)
             }
             return params

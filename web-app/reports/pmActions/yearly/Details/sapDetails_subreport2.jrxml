@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sapDetails_subreport2" language="groovy" pageWidth="832" pageHeight="572" orientation="Landscape" columnWidth="832" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6fdbea04-6465-4ee7-8c30-265e7b8be426">
-	<property name="ireport.zoom" value="1.0000000000000029"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="REPORT_DIR" class="java.lang.String"/>
@@ -15,11 +15,18 @@ WHEN POSITION("%" IN ai.indicator_type)!=0 THEN CONCAT(aid.target, '%')
 ELSE aid.target END AS target,
 CASE
 WHEN POSITION("%" IN ai.indicator_type)!=0 THEN CONCAT(aid.achievement, '%')
-ELSE aid.achievement END AS achievement,aid.remarks
+ELSE aid.achievement END AS achievement,
+CASE WHEN  COALESCE(MONTHNAME(ai.closing_month),'')=aid.month_name THEN CONCAT(aid.remarks, '<style isBold="true" pdfFontName="Helvetica-Bold">\r\nClosing note:</style>'
+,ai.closing_note) ELSE aid.remarks END
+remarks
 FROM pm_actions_indicator_details aid
 LEFT JOIN pm_actions_indicator ai ON ai.id = aid.indicator_id AND ai.year = $P{year}
 LEFT JOIN pm_actions a ON a.id = ai.actions_id AND a.year = $P{year}
-WHERE a.service_id = $P{serviceId} AND a.year = $P{year}]]>
+JOIN custom_month cm ON cm.name=aid.month_name
+WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
+ AND (COALESCE(ai.is_extended,FALSE)=TRUE OR
+  cm.sl_index <= MONTH(COALESCE((SELECT END FROM pm_actions_extend_history WHERE actions_id=a.id ORDER BY id ASC LIMIT 1),a.end)))
+ ORDER BY a.year, a.goal_id ,a.tmp_seq,aid.indicator_id]]>
 	</queryString>
 	<field name="sequence" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -136,9 +143,9 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="324" y="0" width="105" height="20" uuid="1f859397-173e-4545-a40f-5753b52dd914"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement>
@@ -149,9 +156,9 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="232" y="0" width="92" height="20" uuid="54efc0c6-d26d-4484-a6c4-ee983e982629"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement>
@@ -162,22 +169,22 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="542" y="0" width="290" height="20" uuid="0686b979-922c-46fa-ade6-93f0fa8310f8"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement>
-					<font size="8"/>
+				<textElement markup="styled">
+					<font size="8" isBold="false" isPdfEmbedded="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="429" y="0" width="113" height="20" uuid="9bb7c746-f7bf-4503-abd0-f2b4827cad75"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement>
@@ -186,11 +193,11 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}]]>
 				<textFieldExpression><![CDATA[$F{achievement}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="68" y="0" width="164" height="20" uuid="f7855f72-a46a-45eb-b7c5-6cf6fc6e6084"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="68" y="0" width="164" height="20" isRemoveLineWhenBlank="true" uuid="f7855f72-a46a-45eb-b7c5-6cf6fc6e6084"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
+					<leftPen lineWidth="0.0" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement>
@@ -199,18 +206,33 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}]]>
 				<textFieldExpression><![CDATA[$F{indicator}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="68" height="20" uuid="3a5babd1-8a76-445e-bc8b-22ab8aa556b9"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="67" height="20" isPrintWhenDetailOverflows="true" uuid="3a5babd1-8a76-445e-bc8b-22ab8aa556b9"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sequence}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="44b8fedb-5966-4f95-8ee7-20ba142745be"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
+				</box>
+			</frame>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="67" y="0" width="1" height="20" uuid="6ae08aae-ae24-487c-8e23-e9ce6730fe5b"/>
+				<graphicElement>
+					<pen lineColor="#999999"/>
+				</graphicElement>
+			</line>
 		</band>
 	</detail>
 </jasperReport>

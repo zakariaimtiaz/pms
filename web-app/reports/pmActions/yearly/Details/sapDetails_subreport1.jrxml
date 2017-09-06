@@ -11,12 +11,13 @@
 	<parameter name="goalId" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[SELECT @row_number:=CASE WHEN @actionid=tmp.action_id THEN @row_number+1 ELSE 1 END AS row_number,@actionid:=tmp.action_id AS action_id,
-sequence,actions,start,end,indicator_id,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
+sequence,actions,start,CASE WHEN extendedEnd!='' THEN CONCAT(extendedEnd,' ',DATE_FORMAT(END,'%M')) ELSE DATE_FORMAT(END,'%M') END end,indicator_id,indicator,indicator_type,remarks,res_person,project,support_depart,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_acv, '%') ELSE tot_acv END AS tot_acv,
 concat(floor((tot_acv/tot_tar*100)-100),' %') as variance
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
-a.actions,a.start,a.end, ai.id indicator_id, ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+a.actions,a.start,a.end,COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%M') AS CHAR CHARACTER SET utf8)
+,'</strike>') SEPARATOR' ') FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd, ai.id indicator_id, ai.indicator,ai.indicator_type,
 CASE WHEN ai.indicator_type LIKE 'Repeatable%' THEN
 COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 CASE WHEN ai.indicator_type LIKE 'Repeatable%' THEN
@@ -47,7 +48,7 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 	<field name="start" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="end" class="java.sql.Date">
+	<field name="end" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="indicator_id" class="java.lang.Long"/>
@@ -57,7 +58,6 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 	<field name="indicator_type" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="ind_remarks" class="java.lang.String"/>
 	<field name="remarks" class="java.lang.String"/>
 	<field name="res_person" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -80,7 +80,7 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -95,7 +95,7 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -110,12 +110,12 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="html">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{end}]]></textFieldExpression>
@@ -123,9 +123,9 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="291" y="0" width="121" height="20" uuid="99c06809-6f82-4a42-b424-6c66542634cb"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement>
@@ -136,9 +136,9 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="412" y="0" width="56" height="20" uuid="fef2c3b5-b92b-44b7-8be2-f7905841ab6a"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -147,11 +147,11 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 				<textFieldExpression><![CDATA[$F{tot_tar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="635" y="0" width="77" height="20" uuid="39ffef12-0f8f-4cf1-9123-7fe654a19b62">
+				<reportElement stretchType="RelativeToTallestObject" x="560" y="0" width="77" height="20" uuid="39ffef12-0f8f-4cf1-9123-7fe654a19b62">
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -162,14 +162,13 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="774" y="0" width="58" height="20" uuid="735ce9c9-d465-4787-9188-52482c3bc528">
-					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
-				</reportElement>
-				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.0" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<reportElement stretchType="RelativeToTallestObject" x="711" y="0" width="63" height="20" uuid="735ce9c9-d465-4787-9188-52482c3bc528"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineColor="#999999"/>
+					<topPen lineWidth="0.0" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.0" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<textElement textAlignment="Center">
 					<font size="6"/>
@@ -177,14 +176,13 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 				<textFieldExpression><![CDATA[$F{support_depart}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="712" y="0" width="62" height="20" uuid="f845b812-b8d9-41b5-a559-c1ecb88c1811">
-					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
-				</reportElement>
-				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.0" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<reportElement stretchType="RelativeToTallestObject" x="774" y="0" width="58" height="20" uuid="f845b812-b8d9-41b5-a559-c1ecb88c1811"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<pen lineColor="#999999"/>
+					<topPen lineWidth="0.0" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.0" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<textElement textAlignment="Center">
 					<font size="6"/>
@@ -196,7 +194,7 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -253,35 +251,12 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="635" y="0" width="77" height="20" uuid="856aab38-d0ac-4b96-b0d1-5fb6ad0a5b61">
+				<reportElement stretchType="RelativeToTallestObject" x="560" y="0" width="77" height="20" uuid="856aab38-d0ac-4b96-b0d1-5fb6ad0a5b61">
 					<printWhenExpression><![CDATA[$F{row_number}!=1]]></printWhenExpression>
 				</reportElement>
-				<box>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="712" y="0" width="62" height="20" uuid="3e88bb4b-dc04-4845-b21f-eac969beeec4">
-					<printWhenExpression><![CDATA[$F{row_number}!=1]]></printWhenExpression>
-				</reportElement>
-				<box>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="774" y="0" width="58" height="20" uuid="38c66ab2-c832-40ec-947b-d20717366b61">
-					<printWhenExpression><![CDATA[$F{row_number}!=1]]></printWhenExpression>
-				</reportElement>
-				<box>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -311,18 +286,25 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tot_acv}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="560" y="0" width="75" height="20" uuid="76af47f5-d612-44c3-8cb0-6e6879d374e7"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="d68306ee-c9d9-451e-b6dd-9d2a39a4dbf8"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+			</frame>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="637" y="0" width="74" height="20" uuid="ec99c54a-8da6-45a5-929d-a1c46af9d782"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
+				</box>
+				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{ind_remarks}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{res_person}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -491,8 +491,6 @@
                             "<option value='Dividable%'>Dividable(%)</option>" +
                             "<option value='Repeatable'>Repeatable</option>" +
                             "<option value='Repeatable%'>Repeatable(%)</option>" +
-                            "<option value='Repeatable++'>Repeatable(+/-)</option>" +
-                            "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
                             "</select> " +
                             "<td width='20%'>" +
                             "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
@@ -544,7 +542,6 @@
                 "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
                 "<option value='Repeatable%'>Repeatable(%)</option>" +
-                "<option value='Repeatable++'>Repeatable(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId1' name='unitId1' type='2'></select>" +
@@ -599,8 +596,6 @@
                 "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
                 "<option value='Repeatable%'>Repeatable(%)</option>" +
-                "<option value='Repeatable++'>Repeatable(+/-)</option>" +
-                "<option value='Repeatable%++'>Repeatable(%)(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +

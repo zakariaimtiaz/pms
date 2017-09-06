@@ -368,7 +368,6 @@
                             "<option value='Dividable%'>Dividable(%)</option>" +
                             "<option value='Repeatable'>Repeatable</option>" +
                             "<option value='Repeatable%'>Repeatable(%)</option>" +
-                            "<option value='Repeatable++'>Repeatable(+/-)</option>" +
                             "</select> " +
                             "<td width='20%'>" +
                             "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
@@ -424,7 +423,6 @@
                 "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
                 "<option value='Repeatable%'>Repeatable(%)</option>" +
-                "<option value='Repeatable++'>Repeatable(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId1' name='unitId1' type='2'></select>" +
@@ -523,7 +521,6 @@
                 "<option value='Dividable%'>Dividable(%)</option>" +
                 "<option value='Repeatable'>Repeatable</option>" +
                 "<option value='Repeatable%'>Repeatable(%)</option>" +
-                "<option value='Repeatable++'>Repeatable(+/-)</option>" +
                 "</select> " +
                 "<td width='20%'>" +
                 "<select class='form-control' id='unitId" + trIdNo + "' name='unitId" + trIdNo + "' type='2'></select>" +
@@ -727,7 +724,6 @@
             newIndCount+=1;
             $("#newIndCount").val(newIndCount);
             $("#indicator").val(JSON.stringify(resultArray));
-            console.log($("#indicator").val());
         }
         if(!$("#indIdModal").val().isEmpty()){
             jQuery.ajax({
@@ -795,7 +791,8 @@
                         note: {type: "string"},
                         indicator: {type: "string"},
                         start: {type: "date"},
-                        end: {type: "date"}
+                        end: {type: "date"},
+                        extendedEnd: {type: "string"}
                     }
                 },
                 parse: function (data) {
@@ -852,11 +849,11 @@
                 {field: "actions", title: "Action", width: 200, sortable: false, filterable: false},
                 {
                     field: "start", title: "Start Date", width: 60, sortable: false, filterable: false,
-                    template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMMM-yy')#"
+                    template: "#=kendo.toString(kendo.parseDate(start, 'yyyy-MM-dd'), 'MMM-yy')#"
                 },
                 {
                     field: "end", title: "End Date", width: 60, sortable: false, filterable: false,
-                    template: "#=kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM-yy')#"
+                    template: "#=formatExtendedDateStrike(kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMM-yy'),extendedEnd)#"
                 },
                 {field: "resPerson", title: "Responsible Person", width: 90, sortable: false, filterable: false},
                 {
@@ -967,7 +964,7 @@
                 {field: "month_name", title: "Month",width: '10%'},
                 {field: "target", title: "Monthly Target",template:"#=formatIndicator(indicator_type,target)#",width: '15%'},
                 {field: "achievement", title: "Monthly Achievement",template:"#=formatIndicatorAcv(month_name,indicator_type,achievement)#",width: '15%'},
-                {field: "remarks", title: "Monthly Indicator Remarks",width: '60%'}
+                {field: "remarks", title: "Monthly Indicator Remarks",width: '60%', encoded: false}
             ]
         });
     }
@@ -1011,4 +1008,6 @@
         kendo.bind($("#application_top_panel"), actionsModel);
     }
     //////////////////////////// END GRID INIT ////////////////////////////////////////////////////////
+
 </script>
+

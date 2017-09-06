@@ -11,10 +11,13 @@
 	<parameter name="goalId" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[SELECT @row_number:=CASE WHEN @actionid=tmp.action_id THEN @row_number+1 ELSE 1 END AS row_number,@actionid:=tmp.action_id AS action_id,
-sequence,actions,start,end,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
+sequence,actions,start,CASE WHEN extendedEnd!='' THEN CONCAT(extendedEnd,' ',DATE_FORMAT(END,'%M')) ELSE DATE_FORMAT(END,'%M') END end,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
-a.actions,a.start,a.end, ai.indicator,ai.indicator_type,ai.remarks ind_remarks,
+a.actions,a.start,a.end,COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%M') AS CHAR CHARACTER SET utf8)
+,'</strike>') SEPARATOR' ') FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd, ai.indicator,ai.indicator_type,CASE WHEN  COALESCE(MONTHNAME(ai.closing_month),'')=idd.month_name
+THEN CONCAT(idd.remarks, '<style isBold="true" pdfFontName="Helvetica-Bold">\r\nClosing note: </style>',ai.closing_note)
+ ELSE idd.remarks END ind_remarks,
 CASE WHEN ai.indicator_type LIKE 'Repeatable%' THEN
 COALESCE(idd.target,0) ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS res_person,
@@ -44,7 +47,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 	<field name="start" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="end" class="java.sql.Date">
+	<field name="end" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="indicator" class="java.lang.String">
@@ -74,7 +77,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -89,7 +92,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -104,12 +107,12 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="html">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{end}]]></textFieldExpression>
@@ -117,9 +120,9 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="308" y="0" width="121" height="20" uuid="99c06809-6f82-4a42-b424-6c66542634cb"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement>
@@ -130,9 +133,9 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="429" y="0" width="58" height="20" uuid="fef2c3b5-b92b-44b7-8be2-f7905841ab6a"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -145,7 +148,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -160,7 +163,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -175,7 +178,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -190,7 +193,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -205,7 +208,7 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 					<printWhenExpression><![CDATA[$F{row_number}==1]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="1" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
@@ -305,6 +308,15 @@ AND ai.year =$P{year} AND sc.id = $P{serviceId}
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="8a864981-b81f-4020-b1a4-72a5187f13ea"/>
+				<box>
+					<topPen lineWidth="0.5" lineColor="#999999"/>
+					<leftPen lineWidth="0.5" lineColor="#999999"/>
+					<bottomPen lineWidth="0.5" lineColor="#999999"/>
+					<rightPen lineWidth="0.5" lineColor="#999999"/>
+				</box>
+			</frame>
 		</band>
 	</detail>
 </jasperReport>

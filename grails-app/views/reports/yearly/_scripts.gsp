@@ -74,7 +74,8 @@
                 },
                 {
                     field: "end", title: "End Date", width: 80, sortable: false, filterable: false,
-                    template: "#=omitRepeated4(sequence,kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'))#"
+                    template: "#=omitRepeated4(sequence,formatExtendedDateStrike(kendo.toString(kendo.parseDate(end, 'yyyy-MM-dd'), 'MMMM'),extendedEnd))#"
+
                 },
                 {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
                 {field: "tot_tar", title: "Target", width: 80, sortable: false, filterable: false,
@@ -96,7 +97,7 @@
                     template: "#=calculateVariance(tot_tar,tot_acv)#"
                 },
                 {
-                    field: "remarks", title: "Remarks",
+                    field: "remarks", title: "Action Remarks",
                     template: "#=trimTextForKendo(omitRepeated8(sequence,remarks),70)#",
                     width: 200, sortable: false,filterable: false
                 },

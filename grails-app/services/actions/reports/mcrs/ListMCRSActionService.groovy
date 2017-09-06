@@ -36,7 +36,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
             c.setTime(date);
             int year = c.get(Calendar.YEAR)
             int month = c.get(Calendar.MONTH) + 1
-
+            c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
             Date currentMonth = DateUtility.getSqlDate(c.getTime());
             long serviceId = Long.parseLong(result.serviceId.toString())
             String indicatorType = result.indicatorType.toString()
@@ -104,7 +104,9 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
         String query = """
                 SELECT * FROM
                 (SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
-                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,
+                 a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(
+                (SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%M') AS CHAR CHARACTER SET utf8 ) ,'</strike>') SEPARATOR' ')
+                FROM pm_actions_extend_history WHERE actions_id=a.id),'')  extendedEnd,
                  ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
 
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
@@ -117,7 +119,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
                  ROUND((100*SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
-                 SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
+                 SUM(CASE WHEN cm.sl_index<=@curmon THEN CASE WHEN idd.is_extended=TRUE THEN 0 ELSE COALESCE(idd.target,0) END ELSE 0 END)  END cum_tar,
 
                  CASE
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
@@ -131,7 +133,8 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                  ELSE SUM(COALESCE(idd.target,0)) END  tot_tar,
 
                  a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
-                 (SELECT remarks FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE('${currentMonth}'))) ind_remarks,
+                 (SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE('${currentMonth}') THEN CONCAT(remarks,'</br><b>Closing note: </b>',ai.closing_note) ELSE remarks END
+                 FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE('${currentMonth}'))) ind_remarks,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,
                  (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_service_sector WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.support_department,','))>0 ) supportDepartment
 
@@ -143,7 +146,7 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 JOIN pm_service_sector sc ON sc.id = a.service_id,
                 (SELECT @rownum := 0, @curmon := MONTH(DATE('${currentMonth}'))) r
                 WHERE a.year = ${year} AND ai.year = ${year} AND sc.id = ${serviceId}
-                AND (@curmon <= MONTH(a.end) AND @curmon >= MONTH(a.start))
+                AND (@curmon <= MONTH(a.end ) AND @curmon >= MONTH(a.start))
                 GROUP BY ai.id
                 HAVING mon_tar!=0 OR mon_acv !=0
                 ORDER BY sc.id,a.year, a.goal_id, a.tmp_seq ) tmp ${indicatorLightStr};
