@@ -463,6 +463,7 @@
                     <input type="hidden" id="hfExtendDateCount" name="hfExtendDateCount" value=""/>
                     <input type="hidden" id="hfIndicatorDetailsRemainsTarget" name="hfIndicatorDetailsRemainsTarget" value=""/>
                     <input type="hidden" id="hfPrevExtendedEnd" name="hfPrevExtendedEnd" value=""/>
+                    <div class="form-group">&nbsp;</div>
 
                     <div class="form-group">
                         <div class="col-md-12">
@@ -476,7 +477,7 @@
                             <div class="col-md-12">
                             <strong class="label-required">Status:&nbsp;&nbsp;</strong>
                             <input type="radio" name="selection" id="selectionExtendMonth"
-                                   onchange="extendMonthSelect();" value="ExtendMonth"><label>&nbsp;Extend</label>
+                                   onchange="extendMonthSelect();" value="ExtendMonth"><label>&nbsp;Extend</label>&nbsp;&nbsp;&nbsp;
                             <input type="radio" name="selection" id="selectionCloseWithRemain"
                                    onchange="closeIndicatorSelect();" value="CloseWithRemain"><label>&nbsp;Close</label>&nbsp;&nbsp;&nbsp;&nbsp;
                             </div>
@@ -517,7 +518,7 @@
             <div class="modal-footer">
                 <input class="btn btn-primary" type="button" value="Save" onclick="onSubmitExtendedIndicator();"
                        tabindex="2" id="btnIncompleteActionManageCreate">
-                <input class="btn btn-default" type="button" value="Close" onclick="hideModal();"
+                <input class="btn btn-default" type="button" value="Cancel" onclick="hideModal();"
                        data-dismiss="modal" tabindex="3">
             </div>
         </div>

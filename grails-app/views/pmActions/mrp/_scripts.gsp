@@ -252,7 +252,7 @@
 
     function formatRemarks(remarks, closingNote) {
         if (closingNote!='') {
-            return remarks+' <b>Closing note:- </b>'+closingNote;
+            return remarks+'</br><b>Closing note: </b>'+closingNote;
         }
 
         return remarks
@@ -310,6 +310,7 @@
             var ed = new Date(moment(calYear).endOf('year'));
             extendMonth.max(ed);
         }
+
        var rowIdx=response["id"],totalTarget=response["totalTarget"],totalAcv=response["totalAchievement"],indType=response["indType"];
         $('#hfIndicatorDetailsId').val(rowIdx);
         $('#hfIndicatorDetailsMonth').val($('#month').val());
@@ -329,8 +330,16 @@
                 extendMonth.value(moment(response["extendedEnd"]).format('MMMM YYYY'));
                 setExtendedTargetForEdit(response["lstExtend"]);
             }
-            $('#selectionExtendMonth').prop('checked', true);
-            $('#selectionCloseWithRemain').prop('checked', false);
+            if(moment($('#month').val(), 'MMMM').format('M')==12){
+                $('#selectionExtendMonth').prop('checked', false);
+                $('#selectionCloseWithRemain').prop('checked', true);
+                $('#divIndicatorClosingNote').show();
+                $('#divExtendedEndMonth').hide();
+            }
+            else {
+                $('#selectionExtendMonth').prop('checked', true);
+                $('#selectionCloseWithRemain').prop('checked', false);
+            }
         }
         $('#totalTargetExtend').text(formatIndicator(indType,totalTarget));
         $('#totalAcvExtend').text(formatIndicator(indType,totalAcv));
@@ -365,6 +374,11 @@
         data.read();
     }
     function extendMonthSelect() {
+        if(moment($('#month').val(), 'MMMM').format('M')==12) {
+            $('#selectionExtendMonth').prop('checked', false);
+            $('#selectionCloseWithRemain').prop('checked', true);
+            return false;
+        }
         $('#IndicatorClosingNote').val('');
         $('#divIndicatorClosingNote').hide();
         $('#extendedEndMonth').val('');

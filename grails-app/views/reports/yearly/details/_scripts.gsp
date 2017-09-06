@@ -168,20 +168,20 @@
             ]
         });
     }
-    function formatIndicatorAcv(month,indicatorType,target){
+    function formatIndicatorAcv(month,indicatorType,acv){
         var monthNo = moment().month(month).format("M");
-        if(monthNo > moment().month()){
+        if(monthNo > moment().month()+1){
             return ''
         }
-        if (!target && (indicatorType.match('%'))){
+        if (!acv && (indicatorType.match('%'))){
             return '0 %'
-        }else if(!target && (indicatorType.match('%'))){
+        }else if(!acv && (indicatorType.match('%'))){
             return '0'
         }
         if (indicatorType.match('%')) {
-            return target + ' % ';
+            return acv + ' % ';
         }
-        return target
+        return acv
     }
     function calculateVariance(tar,ach){
         var perc="";

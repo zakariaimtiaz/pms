@@ -12,7 +12,7 @@
 	<parameter name="goalId" class="java.lang.Long"/>
 	<queryString>
 		<![CDATA[SELECT @row_number:=CASE WHEN @actionid=tmp.action_id THEN @row_number+1 ELSE 1 END AS row_number,@actionid:=tmp.action_id AS action_id,t_mon_var,
-sequence,actions,start,CASE WHEN extendedEnd!='' THEN CONCAT('<strike>',DATE_FORMAT(END,'%b'),'</strike> ',DATE_FORMAT(extendedEnd,'%b')) ELSE DATE_FORMAT(END,'%b') END end,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
+sequence,actions,DATE_FORMAT(START,'%b') start,CASE WHEN extendedEnd!='' THEN CONCAT(extendedEnd,' ',DATE_FORMAT(END,'%b')) ELSE DATE_FORMAT(END,'%b') END end,indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_tar, '%') ELSE mon_tar END AS mon_tar,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_acv, '%') ELSE mon_acv END AS mon_acv,
 CONCAT(FLOOR((mon_acv/mon_tar * 100)-100), '%') AS mon_var,
@@ -21,8 +21,9 @@ CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(cum_acv, '%') ELSE cum_
 CONCAT(FLOOR((cum_acv/cum_tar * 100)-100), '%') AS cum_var,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(tot_tar, '%') ELSE tot_tar END AS tot_tar
 FROM (SELECT a.id AS action_id,@sequence:=a.sequence AS sequence,
-a.actions,a.start,a.end,COALESCE(a.extended_end,'') extendedEnd, ai.indicator,ai.indicator_type,
-(SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE($P{currentMonth}) THEN CONCAT(remarks,' Closing note:- ',ai.closing_note) ELSE remarks END
+a.actions,a.start,a.end,COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%b') AS CHAR CHARACTER SET utf8)
+,'</strike>') SEPARATOR' ') FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd, ai.indicator,ai.indicator_type,
+(SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE($P{currentMonth}) THEN CONCAT(remarks,'<style isBold="true" pdfFontName="Helvetica-Bold">\r\nClosing note: </style>',ai.closing_note) ELSE remarks END
                  FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
@@ -51,7 +52,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
                 JOIN custom_month cm ON cm.name=idd.month_name
                 JOIN pm_service_sector sc ON sc.id = a.service_id
  WHERE a.goal_id = $P{goalId} AND a.year = $P{year} AND ai.year = $P{year} AND sc.id = $P{serviceId}
- AND (@curmon <= MONTH(CASE WHEN COALESCE(a.extended_end,'')!='' THEN a.extended_end ELSE a.end END) AND @curmon >= MONTH(a.start))
+ AND @curmon <= MONTH(a.end) AND @curmon >= MONTH(a.start)
                 GROUP BY ai.id
                 ORDER BY sc.id,a.year, a.goal_id ,a.tmp_seq) tmp,
 (SELECT @rownum := 0,@actionid:=0,@curmon := MONTH(DATE($P{currentMonth}))) r
@@ -66,7 +67,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 	<field name="actions" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="start" class="java.sql.Date">
+	<field name="start" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="end" class="java.lang.String">
@@ -227,7 +228,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" markup="styled">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>

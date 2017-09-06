@@ -289,16 +289,15 @@ class PmActionsService extends BaseService {
         String query = """
             SELECT aid.id,aid.version,aid.actions_id,aid.create_by,aid.create_date,aid.indicator_id,aid.month_name,
             COALESCE(aid.target,0) target,COALESCE(aid.achievement,0) achievement,ai.indicator_type,
-            CASE WHEN  COALESCE(MONTHNAME(ai.closing_month),'')=aid.month_name THEN CONCAT(aid.remarks,'\\<b> Closing note:- \\</b>'
+            CASE WHEN  COALESCE(MONTHNAME(ai.closing_month),'')=aid.month_name THEN CONCAT(aid.remarks,'\\</br><b>Closing note: \\</b>'
             ,ai.closing_note) ELSE aid.remarks END remarks
             FROM pm_actions_indicator_details aid
             JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
             JOIN pm_actions a ON ai.actions_id=a.id
             JOIN custom_month cm ON cm.name=aid.month_name
-            LEFT JOIN (SELECT END,actions_id FROM pm_actions_extend_history WHERE actions_id=${actionsId} ORDER BY id ASC LIMIT 1)ah
-            ON ah.actions_id=a.id
             WHERE aid.actions_id = ${actionsId} AND aid.indicator_id = ${indicatorId}
-            AND (COALESCE(ai.is_extended,FALSE)=TRUE OR cm.sl_index <= MONTH(COALESCE(ah.end,a.end)))
+           AND (COALESCE(ai.is_extended,FALSE)=TRUE OR cm.sl_index <= MONTH(COALESCE((SELECT END FROM
+            pm_actions_extend_history WHERE actions_id=a.id ORDER BY id ASC LIMIT 1),a.end)))
         """
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
@@ -319,9 +318,11 @@ class PmActionsService extends BaseService {
         String logoDir = SCH.servletContext.getRealPath('/images') + File.separator
         String reportDir = rootDir + REPORT_FOLDER
         String titleStr = service.shortName + REPORT_TITLE + EMPTY_SPACE + year
+
         Date date = new Date() ;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
-        String outputFileName = (DateUtility.getSqlDateWithSeconds(date).toString().replace("-","_")).replace(" ","_").replace(":","_") + UNDERSCORE + service.shortName + UNDERSCORE + year + PDF_EXTENSION
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        String outputFileName =  service.shortName + UNDERSCORE+DateUtility.getSqlDate(date).toString().replace("-","_")+UNDERSCORE+String.format("%02d",c.getInstance().get(c.HOUR_OF_DAY))+UNDERSCORE+ String.format("%02d",c.getInstance().get(c.MINUTE)) + PDF_EXTENSION
 
         Map reportParams = new LinkedHashMap()
         reportParams.put(ROOT_DIR, rootDir)
@@ -662,13 +663,23 @@ class PmActionsService extends BaseService {
             dec?.delete()
         }
     }
-    public boolean isMRPSubmittable(long serviceId,String monthName,long year) {
+    public boolean isMRPSubmittable(long serviceId,String monthName,long year,int month) {
         String queryForList = """
-            SELECT COUNT(a.id) c
+           SELECT COUNT(*)c FROM(
+                SELECT a.id
                 FROM pm_actions a
                 LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id AND a.service_id=${serviceId} AND a.year=${year}
                 LEFT JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthName}'
                 WHERE  idd.target > 0 AND COALESCE(idd.achievement,0)=0 AND (idd.remarks IS NULL OR idd.remarks='')
+                UNION
+                SELECT a.id
+                FROM pm_actions a
+                LEFT JOIN pm_actions_indicator i ON i.actions_id = a.id AND a.service_id=${serviceId} AND a.year=${year}
+                WHERE (MONTHNAME(a.end)='${monthName}' AND i.closing_month IS NULL AND i.target>(SELECT SUM(achievement) FROM pm_actions_indicator_details
+                WHERE actions_id=a.id AND indicator_id=i.id))
+                UNION
+                SELECT COUNT(*)id FROM pm_mcrs_log ml WHERE  ml.service_id=${serviceId} AND ml.year=${year} AND ml.month<${month} AND is_submitted<>TRUE
+                )tbl
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
         int count =(int) lst[0].c
@@ -680,11 +691,15 @@ class PmActionsService extends BaseService {
     }
     public boolean isDashboardSubmittable(long serviceId,int month,long year) {
         String queryForList = """
-              SELECT count(ed.id) c FROM ed_dashboard ed
-  WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_resolve,FALSE) <> 1 AND COALESCE(ed.is_followup,FALSE)<>1
-  AND MONTH(month_for) <= ${month} AND YEAR(month_for)=${year} AND ed.month_for NOT IN (SELECT followup_month_for FROM ed_dashboard
-  WHERE DATE(followup_month_for)=DATE(ed.month_for) AND service_id=ed.service_id AND issue_id=ed.issue_id
-  AND MONTH(month_for) > ${month} AND YEAR(month_for)=${year})
+            SELECT COUNT(*) c FROM(
+              SELECT ed.id FROM ed_dashboard ed
+              WHERE ed.service_id = ${serviceId} AND COALESCE(ed.is_resolve,FALSE) <> 1 AND COALESCE(ed.is_followup,FALSE)<>1
+              AND MONTH(month_for) <= ${month} AND YEAR(month_for)=${year} AND ed.month_for NOT IN (SELECT followup_month_for FROM ed_dashboard
+              WHERE DATE(followup_month_for)=DATE(ed.month_for) AND service_id=ed.service_id AND issue_id=ed.issue_id
+              AND MONTH(month_for) > ${month} AND YEAR(month_for)=${year})
+            UNION
+                SELECT COUNT(*)id FROM pm_mcrs_log ml WHERE  ml.service_id=9 AND ml.year=2017 AND ml.month<8 AND is_submitted_db<>TRUE
+                )tbl
         """
         List<GroovyRowResult> lst = executeSelectSql(queryForList)
         int count =(int) lst[0].c
@@ -707,5 +722,17 @@ class PmActionsService extends BaseService {
         List<GroovyRowResult> lst = executeSelectSql(query)
         return lst
     }
-
+    public boolean canDeleteActionDetails(Long actionsId,Long indId,Long id,Date subDate) {
+        String queryForList = """
+            SELECT COUNT(*) c FROM pm_actions_indicator_details aid JOIN custom_month cm ON aid.month_name=cm.name
+            WHERE aid.actions_id=${actionsId} AND aid.indicator_id!=${indId} AND aid.id>${id} AND cm.sl_index>MONTH('${subDate}') AND aid.is_extended=TRUE
+        """
+        List<GroovyRowResult> lst = executeSelectSql(queryForList)
+        int count =(int) lst[0].c
+        boolean canDelete=true
+        if(count>0){
+            canDelete=false
+        }
+        return canDelete
+    }
 }
