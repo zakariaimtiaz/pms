@@ -22,6 +22,7 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
 
     PmActionsService pmActionsService
     BaseService baseService
+    private static final String ONLY_APPLICABLE_NA = "N/A only applicable for Repeatable% indicator type"
     private static final String COULD_NOT_BE_EMPTY = "Remarks is mandatory for Repeatable% indicator"
     private static final String UPDATE_SUCCESS_MESSAGE = "Achievement has been updated successfully"
     private static final String MRP_LOCKED_MSG = "MRP is locked for this month"
@@ -35,7 +36,13 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
             String detailsIdStr = params.get("models[0][ind_details_id]")
             String achievementStr = params.get("models[0][achievement]")
             String remarksStr = params.get("models[0][remarks]")
-
+            boolean is_excluded = Boolean.parseBoolean(params.get("models[0][is_excluded]"))
+            if (!indicatorType.equals("Repeatable%") && is_excluded) {
+                return super.setError(params, ONLY_APPLICABLE_NA)
+            }
+            if (!indicatorType.equals("Repeatable%")) {
+                is_excluded = Boolean.FALSE
+            }
             if ((indicatorType.equals("Repeatable%") || indicatorType.equals("Repeatable%++")) && remarksStr == '') {
                 return super.setError(params, COULD_NOT_BE_EMPTY)
             }
@@ -49,6 +56,7 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                 PmActions pmActions = PmActions.findById(details.actionsId)
                 SecUser user = currentUserObject()
                 PmMcrsLog pmMcrsLog = PmMcrsLog.findByServiceIdAndYearAndMonthStrIlike(user.serviceId, pmActions.year, details.monthName)
+                details.isExcluded = is_excluded
                 if (!pmMcrsLog.isEditable) {
                     return super.setError(params, MRP_LOCKED_MSG)
                 }
@@ -60,6 +68,10 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                     details.achievement = Integer.parseInt(achievementStr)
                 else
                     details.achievement = 0
+
+                if(details.isExcluded){
+                    details.achievement = 0
+                }
 
                 if (details.target != details.achievement && remarksStr.trim().isEmpty()) {
                     return super.setError(params, "Remarks is mandatory when achievement is not equal target.")

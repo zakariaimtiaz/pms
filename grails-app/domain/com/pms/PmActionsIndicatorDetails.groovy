@@ -12,14 +12,16 @@ class PmActionsIndicatorDetails {
     Date createDate
     long createBy
     boolean isExtended
+    boolean isExcluded = Boolean.FALSE
 
     static mapping = {
-        remarks        size: 2..15000
+        remarks    size: 2..15000
         remarks    sqlType: 'text'
     }
     static constraints = {
         remarks nullable: true
         achievement nullable: true
         isExtended nullable: true
+        isExcluded nullable: true
     }
 }

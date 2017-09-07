@@ -143,13 +143,14 @@ class ListMRPActionService extends BaseService implements ActionServiceIntf {
                 SELECT a.id,idd.id AS ind_details_id,i.indicator,i.target,i.unit_id,i.unit_str,i.indicator_type,idd.month_name,
                 idd.target monthly_target,CASE WHEN idd.achievement>0 THEN idd.achievement ELSE NULL END achievement
                 ,COALESCE(i.closing_note,'') closing_note,COALESCE(idd.remarks,'') remarks,
-                SUM(tmp.achievement) total_achievement
+                SUM(tmp.achievement) total_achievement,idd.is_excluded
                 FROM pm_actions a
                 JOIN pm_actions_indicator i ON i.actions_id = a.id
                 JOIN pm_actions_indicator_details tmp ON tmp.indicator_id = i.id AND tmp.actions_id=a.id
                 JOIN pm_actions_indicator_details idd ON idd.indicator_id = i.id AND idd.month_name = '${monthStr}'
                 JOIN custom_month cm ON idd.month_name=cm.name
-                LEFT JOIN (SELECT END,actions_id FROM pm_actions_extend_history WHERE actions_id=${actionsId} ORDER BY id ASC LIMIT 1)ah
+                LEFT JOIN (SELECT END,actions_id FROM pm_actions_extend_history WHERE actions_id=${actionsId}
+                ORDER BY id ASC LIMIT 1)ah
                 ON ah.actions_id=a.id
                 WHERE a.id = ${actionsId}
                      AND (COALESCE(i.is_extended,FALSE)=TRUE OR cm.sl_index <= MONTH(COALESCE(ah.end,a.end)))

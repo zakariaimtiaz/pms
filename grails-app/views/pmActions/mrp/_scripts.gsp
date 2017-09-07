@@ -6,7 +6,7 @@
 </script>
 
 <script language="javascript">
-    var month, serviceId, dropDownService,listViewGoal, gridAction, isApplicable = false,monthKendo,extendMonth;
+    var month, serviceId, dropDownService,listViewGoal, gridAction, isApplicable = false,hidden=false,monthKendo,extendMonth;
 
     $(document).ready(function () {
         onLoadInfoPage();
@@ -166,12 +166,11 @@
                         dataType: "json",
                         type: "post"
                     }
-
                 },
                 requestEnd: function (e) {
                     var response = e.response;
-                    if (e.type == 'update') {
 
+                    if (e.type == 'update') {
                         var isError = response["isError"];
                         var message = response["message"];
                         if (isError) {
@@ -179,13 +178,12 @@
                                 showIncompleteIndicatorModal(response);
                             }else
                             showError(message);
-                        }else{
-                            showSuccess(message);
                             var grid = $("#grid").data("kendoGrid");
                             var data = grid.dataSource;
                             data.read();
+                        }else{
+                            showSuccess(message);
                         }
-
                     }
                 },
                 schema: {
@@ -203,6 +201,7 @@
                             target: {editable: false, type: "string"},
                             total_achievement: {editable: false, type: "string"},
                             monthly_target: {editable: false, type: "number"},
+                            is_excluded: {editable: true,type: "boolean"},
                             achievement: {type: "number"},
                             remarks: {type: "string"},
                             closing_note: {type: "string"}
@@ -222,9 +221,28 @@
             reorderable: false,
             filterable: false,
             pageable: false,
+/*            cancel: function(e){
+                $("#grid").data("kendoGrid").cancelRow();
+                $("#grid").data("kendoGrid").refresh();
+            },
+            edit:  onRowBound,
+            dataBound: function onRowBound(e){
+                var data = this.dataSource.data();
+                $.each(data, function (i, row) {
+                    if (row.get("indicator_type") != 'Repeatable%') {
+                        var currenRow = $('tr[data-uid="' + row.uid + '"] ');
+                        var chkbx = $(currenRow).find(".chkbx");
+                        chkbx.hide();
+                    }
+                });
+            },*/
             editable:"inline",
             columns: [
-                {field: "indicator", title: "Indicator", width: "220px"},
+                {field: "indicator", title: "Indicator", width: "220px",template: "#=indicator#(#=indicator_type#)"},
+                {
+                    field: "indicator_type", title: "Type", width: "80px",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },
                 {
                     field: "monthly_target", title: "Target", width: "80px",
                     template: "#=formatIndicator(indicator_type,monthly_target)#",
@@ -235,10 +253,20 @@
                     template: "#=formatIndicator(indicator_type,achievement)#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
+                {
+                    field: "is_excluded",title: "N/A",width: 30,
+                    template: '<input type="checkbox" class="chkbx" #= is_excluded ? "checked=checked" : "" #></input>'
+                },
                 {field: "remarks", title: "Remarks", width: "280px",template: "#=formatRemarks(remarks,closing_note)#",
                     editor: textEditorInitialize }
                 <g:if test="${!isAdmin}">
-                ,{command: [{name:"edit",text:{edit: "Achievement",update:"Save",cancel: "Cancel"}}], title: "&nbsp;", width: "130px"}
+                ,{command: [
+                    {name:"edit",
+                    click: function(e) {
+                        // prevent page scroll position change
+                        e.preventDefault();
+                    },
+                    text:{edit: "Achievement",update:"Save",cancel: "Cancel"}}], title: "&nbsp;", width: "130px"}
 
                 </g:if>
             ]
