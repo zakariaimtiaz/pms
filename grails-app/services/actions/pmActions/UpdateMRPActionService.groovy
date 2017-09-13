@@ -73,9 +73,10 @@ class UpdateMRPActionService extends BaseService implements ActionServiceIntf {
                     details.achievement = 0
                 }
 
-                if (details.target != details.achievement && remarksStr.trim().isEmpty()) {
+                /*if (details.target != details.achievement && remarksStr.trim().isEmpty()) {
                     return super.setError(params, "Remarks is mandatory when achievement is not equal target.")
-                } else if ((indicatorType.equals("Repeatable%") || indicatorType.equals("Dividable%")) && remarksStr.trim().isEmpty())
+                } else*/
+                if ((indicatorType.equals("Repeatable%") || indicatorType.equals("Dividable%")) && remarksStr.trim().isEmpty())
                     return super.setError(params, "Remarks is mandatory when indicator type is %.")
 
                 if (indicatorType.equals("Dividable") || indicatorType.equals("Dividable%")) {

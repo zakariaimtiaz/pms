@@ -31,7 +31,7 @@ GROUP BY a.goal_id]]>
 	<pageHeader>
 		<band height="74">
 			<staticText>
-				<reportElement x="747" y="44" width="85" height="30" uuid="bd6c9983-86c6-461b-b877-c8593b57977b"/>
+				<reportElement x="686" y="44" width="74" height="30" uuid="bd6c9983-86c6-461b-b877-c8593b57977b"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -44,7 +44,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Support Department]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="675" y="44" width="72" height="30" uuid="c7906e53-f968-466b-9448-3f374dad666b"/>
+				<reportElement x="760" y="44" width="72" height="30" uuid="c7906e53-f968-466b-9448-3f374dad666b"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -70,8 +70,8 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Actions]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="576" y="44" width="99" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
-				<box topPadding="1">
+				<reportElement x="612" y="44" width="74" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
+				<box topPadding="1" leftPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -83,7 +83,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Responsible Person]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="487" y="44" width="89" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
+				<reportElement x="525" y="44" width="87" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -96,7 +96,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Action Remarks]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="217" y="44" width="45" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
+				<reportElement x="217" y="44" width="41" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -109,7 +109,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[Start]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="262" y="44" width="46" height="30" uuid="32d11800-54e1-4fd5-9e12-41ad5b087e8c"/>
+				<reportElement x="258" y="44" width="42" height="30" uuid="32d11800-54e1-4fd5-9e12-41ad5b087e8c"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -122,14 +122,14 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[End]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="429" y="44" width="58" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
+				<reportElement x="481" y="44" width="44" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
 				<box topPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
 					<rightPen lineWidth="0.5" lineColor="#939597"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Total Target]]></text>
@@ -148,7 +148,7 @@ GROUP BY a.goal_id]]>
 				<text><![CDATA[ID#]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="308" y="44" width="121" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
+				<reportElement x="300" y="44" width="121" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
@@ -178,6 +178,19 @@ GROUP BY a.goal_id]]>
 					<bottomPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="421" y="44" width="60" height="30" uuid="c9f5e6d4-8223-4cac-8e7e-bfc14a3ab26c"/>
+				<box topPadding="1">
+					<topPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<bottomPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.5" lineColor="#939597"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Indicator Type]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

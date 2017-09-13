@@ -94,7 +94,7 @@
                     width: 90, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
-                    template: "#=calculateVariance(tot_tar,tot_acv)#"
+                    template: "#=calculateVariance(tot_tar_Sum,tot_acv_sum)#"
                 },
                 {
                     field: "remarks", title: "Action Remarks",

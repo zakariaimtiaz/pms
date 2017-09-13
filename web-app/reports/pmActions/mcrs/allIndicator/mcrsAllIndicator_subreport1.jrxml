@@ -15,6 +15,7 @@
 sequence,actions,start,end,
 CASE WHEN extendedEnd!='' THEN CONCAT(DATE_FORMAT(START,'%b'),' ~ <br /> ',extendedEnd,' ',
 DATE_FORMAT(END,'%b')) ELSE CONCAT(DATE_FORMAT(START,'%b'),' ~ ',DATE_FORMAT(END,'%b')) END dateRange,  indicator,indicator_type,ind_remarks,remarks,res_person,project,support_depart,
+is_excluded,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_tar, '%') ELSE mon_tar END AS mon_tar,
 CASE WHEN POSITION("%" IN indicator_type)!=0 THEN CONCAT(mon_acv, '%') ELSE mon_acv END AS mon_acv,
 CONCAT(FLOOR((mon_acv/mon_tar * 100)-100), '%') AS mon_var,
@@ -28,15 +29,17 @@ a.actions,a.start,a.end,COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DAT
 ,'</strike>') SEPARATOR' ') FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd, ai.indicator,ai.indicator_type,
 (SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE($P{currentMonth}) THEN CONCAT(remarks,'<style isBold="true" pdfFontName="Helvetica-Bold">\r\nClosing note: </style>',ai.closing_note) ELSE remarks END
                  FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
+(SELECT is_excluded FROM pm_actions_indicator_details
+                WHERE actions_id=a.id AND indicator_id=ai.id AND month_name=MONTHNAME($P{currentMonth})) is_excluded,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
 	CASE WHEN ai.indicator_type LIKE 'Repeatable%'  THEN
-	ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
+	ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon AND idd.is_excluded<>TRUE THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
 	ELSE
 	SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END)  END cum_tar,
 	CASE WHEN  ai.indicator_type LIKE 'Repeatable%'  THEN
-        ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
+        ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon AND idd.is_excluded<>TRUE THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
 	ELSE
 	SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
 	CASE WHEN ai.indicator_type LIKE 'Repeatable%' THEN
@@ -88,6 +91,9 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 	</field>
 	<field name="project" class="java.lang.String"/>
 	<field name="support_depart" class="java.lang.String"/>
+	<field name="is_excluded" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="mon_tar" class="java.lang.String"/>
 	<field name="mon_acv" class="java.lang.String"/>
 	<field name="mon_var" class="java.lang.String"/>
@@ -180,7 +186,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{mon_acv}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[ $F{is_excluded}.toString().EQUALS("true") ? "N/A":$F{mon_acv}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="364" y="0" width="30" height="20" uuid="19736e2b-092f-4bf2-a59a-9978fc0fdf2a"/>
@@ -354,7 +360,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{mon_var}==null ? "N/A":$F{mon_var}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{mon_var}==null ? "N/A": $F{is_excluded}.toString().EQUALS("true") ? "0 %":$F{mon_var}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="423" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>

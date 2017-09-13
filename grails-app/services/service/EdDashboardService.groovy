@@ -89,7 +89,7 @@ class EdDashboardService  extends BaseService{
     public List<GroovyRowResult> lstEdDashboardSectorOrCSUIssue(long serviceId,Date month) {
         String queryForList = """
         SELECT id,issue_name AS name FROM ed_dashboard_issues WHERE is_additional<>TRUE AND id NOT IN
-            (SELECT issue_id FROM ed_dashboard WHERE service_id=${serviceId} AND MONTH(month_for)=MONTH('${month}') AND YEAR(month_for)=YEAR('${month}'))
+            (SELECT issue_id FROM ed_dashboard WHERE service_id=${serviceId} AND MONTH(month_for)=MONTH('${month}') AND YEAR(month_for)=YEAR('${month}')  AND is_followup<>TRUE AND is_resolve<>TRUE)
         ORDER BY id ASC
         """
         List<GroovyRowResult>  lst = executeSelectSql(queryForList)

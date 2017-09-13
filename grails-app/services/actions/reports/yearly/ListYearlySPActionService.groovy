@@ -107,8 +107,12 @@ class ListYearlySPActionService extends BaseService implements ActionServiceIntf
         FROM pm_actions_extend_history WHERE actions_id=a.id),'') extendedEnd,
         ai.id AS indicator_id,ai.indicator,ai.indicator_type,
 
-        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.target,0) ELSE COALESCE(ai.target,0) END tot_tar,
-        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END tot_acv,
+         CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN SUM(CASE WHEN idd.is_excluded<>TRUE THEN COALESCE(idd.target,0)ELSE 0 END) ELSE COALESCE(ai.target,0) END tot_tar_Sum,
+        SUM(COALESCE(idd.achievement,0)) tot_acv_sum,
+        COALESCE(ai.target,0) tot_tar,
+        CASE WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
+                 ROUND((100*SUM(COALESCE(idd.achievement,0)))/SUM(CASE WHEN idd.is_excluded<>TRUE THEN COALESCE(idd.target,0)ELSE 0 END))
+                 ELSE SUM(COALESCE(idd.achievement,0))  END tot_acv,
 
         a.note remarks,SUBSTRING_INDEX(a.res_person,'(',1) AS responsiblePerson,
         (SELECT GROUP_CONCAT(short_name SEPARATOR ', ') FROM pm_projects WHERE LOCATE(CONCAT(',',id,',') ,CONCAT(',',a.source_of_fund,', '))>0 ) project,

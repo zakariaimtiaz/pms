@@ -106,8 +106,9 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
                 (SELECT @rownum := @rownum + 1 AS id,CAST(CONCAT(g.sequence,'. ',g.goal) AS CHAR CHARACTER SET utf8) AS goal,
                  a.service_id AS serviceId,a.goal_id,a.id action_id,a.sequence,a.actions,a.start,a.end,COALESCE(
                 (SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DATE_FORMAT(END,'%M') AS CHAR CHARACTER SET utf8 ) ,'</strike>') SEPARATOR' ')
-                FROM pm_actions_extend_history WHERE actions_id=a.id),'')  extendedEnd,
-                 ai.id AS indicator_id,ai.indicator,ai.indicator_type,ai.is_preference,
+                FROM pm_actions_extend_history WHERE actions_id=a.id),'')  extendedEnd, ai.id AS indicator_id,ai.indicator,
+                ai.indicator_type,ai.is_preference,(SELECT is_excluded FROM pm_actions_indicator_details
+                WHERE actions_id=a.id AND indicator_id=ai.id AND month_name=MONTHNAME('${currentMonth}')) is_excluded,
 
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
                  SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
@@ -117,13 +118,13 @@ class ListMCRSActionService extends BaseService implements ActionServiceIntf {
 
                  CASE
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 ROUND((100*SUM(CASE WHEN cm.sl_index<=@curmon THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
+                 ROUND((100*SUM(CASE WHEN cm.sl_index<=@curmon AND idd.is_excluded<>TRUE THEN COALESCE(idd.target,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
                  SUM(CASE WHEN cm.sl_index<=@curmon THEN CASE WHEN idd.is_extended=TRUE THEN 0 ELSE COALESCE(idd.target,0) END ELSE 0 END)  END cum_tar,
 
                  CASE
                  WHEN  ai.indicator_type LIKE 'Repeatable%' THEN
-                 ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
+                 ROUND((100*SUM(CASE WHEN  cm.sl_index<=@curmon AND idd.is_excluded<>TRUE THEN COALESCE(idd.achievement,0) ELSE 0 END))/SUM(COALESCE(idd.target,0)))
                  ELSE
                  SUM(CASE WHEN  cm.sl_index<=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END)  END cum_acv,
 

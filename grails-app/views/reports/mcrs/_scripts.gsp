@@ -115,6 +115,7 @@
                             is_preference: {editable: true,type: "boolean"},
                             goal: {editable: false, type: "string"},
                             indicator: {editable: false, type: "string"},
+                            is_excluded: {editable: true,type: "boolean"},
                             tot_tar: {editable: false, type: "number"},
                             mon_tar: {editable: false, type: "string"},
                             mon_acv: {editable: false, type: "string"},
@@ -202,14 +203,14 @@
                             width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
                             attributes: {style: setAlignCenter()},
-                            template: "#=formatIndicator(indicator_type,mon_acv)#"
+                            template: "#=formatIndicatorAcv(indicator_type,mon_acv,is_excluded)#"
                         },
                         {
                             field: "mon_var", title: "Var",
                             width: 60, sortable: false, filterable: false,
                             headerAttributes: {style: setAlignCenter()},
                             attributes: {style: setAlignCenter()},
-                            template: "#=calculateVariance(mon_tar,mon_acv)#"
+                            template: "#=calculateMonthlyVariance(mon_tar,mon_acv,is_excluded)#"
                         }
                     ]
                 },
@@ -342,6 +343,24 @@
         return false;
     });
 
+    function calculateMonthlyVariance(tar,ach,is_excluded){
+        if(is_excluded)
+            return '<span style="font-weight :bold;color: #069302" >0 % </span>';
+        var perc="";
+        if(isNaN(tar) || isNaN(ach) || tar == 0 || tar=='N/A'|| ach=='N/A'){
+            perc="N/A";
+        }else{
+            perc = Math.round(((ach/tar) * 100).toFixed(1)-100);
+            if (perc >= -100 && perc <= -50) {
+                return '<span style="font-weight :bold;color: #ff0000" >'+ perc + ' %' + '</span>';
+            }else if(perc >= -49 && perc <= -1){
+                return '<span style="font-weight :bold;color: #ff8a00" >'+ perc + ' %' + '</span>';
+            }else{
+                return '<span style="font-weight :bold;color: #069302" >'+ perc + ' %' + '</span>';
+            }
+        }
+        return perc;
+    }
     function calculateVariance(tar,ach){
         var perc="";
         if(isNaN(tar) || isNaN(ach) || tar == 0 || tar=='N/A'|| ach=='N/A'){
@@ -368,6 +387,15 @@
         return target
     }
     function formatIndicator(indicatorType,target){
+        if(indicatorType.match('%')){
+            return target + ' % ';
+        }
+        return target
+    }
+
+    function formatIndicatorAcv(indicatorType,target,is_excluded){
+        if(is_excluded)
+            return'N/A';
         if(indicatorType.match('%')){
             return target + ' % ';
         }

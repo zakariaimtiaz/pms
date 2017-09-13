@@ -298,7 +298,7 @@ class PmActionsService extends BaseService {
             SELECT aid.id,aid.version,aid.actions_id,aid.create_by,aid.create_date,aid.indicator_id,aid.month_name,
             COALESCE(aid.target,0) target,COALESCE(aid.achievement,0) achievement,ai.indicator_type,
             CASE WHEN  COALESCE(MONTHNAME(ai.closing_month),'')=aid.month_name THEN CONCAT(aid.remarks,'\\</br><b>Closing note: \\</b>'
-            ,ai.closing_note) ELSE aid.remarks END remarks
+            ,ai.closing_note) ELSE aid.remarks END remarks,aid.is_excluded
             FROM pm_actions_indicator_details aid
             JOIN pm_actions_indicator ai ON ai.id=aid.indicator_id
             JOIN pm_actions a ON ai.actions_id=a.id
