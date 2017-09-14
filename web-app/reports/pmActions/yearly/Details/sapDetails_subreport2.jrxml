@@ -145,7 +145,7 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 			</staticText>
 			<staticText>
 				<reportElement x="259" y="24" width="71" height="20" uuid="a51d59db-1a81-41a9-a60c-b5cbbfc001af"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
 					<topPen lineWidth="0.5" lineColor="#999999"/>
 					<leftPen lineWidth="0.5" lineColor="#999999"/>
 					<bottomPen lineWidth="0.5" lineColor="#999999"/>

@@ -66,13 +66,13 @@ class PmMcrsLogController extends BaseController {
         long logId = Long.parseLong(params.logId.toString())
         def result = pmMcrsLogService.mcrsLogDetailsByLogId(logId, typeId)
         String typeStr = 'MRP'
-        if(typeId==2){
+        if (typeId == 2) {
             typeStr = 'ED\'s Dashboard'
         }
-
         render(view: '/reports/statistical/showMcrsDetails',
-                model:[result:result,service:result[0]?.service,
-                       logStart: result[0]?.log_start,
-                       month:result[0]?.month_str,typeStr:typeStr])
+                model: [result  : result, service: result[0]?.service,
+                        logStart: result[0]?.log_start,
+                        month   : result[0]?.month_str, typeStr: typeStr])
+
     }
 }

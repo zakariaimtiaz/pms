@@ -73,7 +73,7 @@ class PmActionsService extends BaseService {
     public List<GroovyRowResult> lstDepartmentMcrsStatus(String yearStr) {
         int year = Integer.parseInt(yearStr)
         String query = """
-                SELECT tmp.short_name service,
+               SELECT tmp.short_name service,
                 MAX(tmp.JanuaryID) JanuaryID     ,MAX(tmp.January) January     ,MAX(tmp.JanuaryDsb) JanuaryDsb     ,MAX(tmp.JanuaryD) JanuaryD ,
                 MAX(tmp.FebruaryID) FebruaryID   ,MAX(tmp.February) February   ,MAX(tmp.FebruaryDsb) FebruaryDsb   ,MAX(tmp.FebruaryD) FebruaryD ,
                 MAX(tmp.MarchID) MarchID         ,MAX(tmp.March) March         ,MAX(tmp.MarchDsb) MarchDsb         ,MAX(tmp.MarchD) MarchD ,
@@ -85,70 +85,121 @@ class PmActionsService extends BaseService {
                 MAX(tmp.SeptemberID) SeptemberID ,MAX(tmp.September) September ,MAX(tmp.SeptemberDsb) SeptemberDsb ,MAX(tmp.SeptemberD) SeptemberD ,
                 MAX(tmp.OctoberID) OctoberID     ,MAX(tmp.October) October     ,MAX(tmp.OctoberDsb) OctoberDsb     ,MAX(tmp.OctoberD) OctoberD,
                 MAX(tmp.NovemberID) NovemberID   ,MAX(tmp.November) November   ,MAX(tmp.NovemberDsb) NovemberDsb   ,MAX(tmp.NovemberD) NovemberD  ,
-                MAX(tmp.DecemberID) DecemberID   ,MAX(tmp.December) December   ,MAX(tmp.DecemberDsb) DecemberDsb   ,MAX(tmp.DecemberD) DecemberD
+                MAX(tmp.DecemberID) DecemberID   ,MAX(tmp.December) December   ,MAX(tmp.DecemberDsb) DecemberDsb   ,MAX(tmp.DecemberD) DecemberD,
+                CASE WHEN COALESCE(MAX(tmp.JanCount),0)>0 THEN TRUE ELSE FALSE END editedMRPJan,
+                CASE WHEN COALESCE(MAX(tmp.JanCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbJan,
+                CASE WHEN COALESCE(MAX(tmp.FebCount),0)>0 THEN TRUE ELSE FALSE END editedMRPFeb,
+                CASE WHEN COALESCE(MAX(tmp.FebCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbFeb,
+                CASE WHEN COALESCE(MAX(tmp.MarCount),0)>0 THEN TRUE ELSE FALSE END editedMRPMar,
+                CASE WHEN COALESCE(MAX(tmp.MarCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbMar,
+                CASE WHEN COALESCE(MAX(tmp.AprCount),0)>0 THEN TRUE ELSE FALSE END editedMRPApr,
+                CASE WHEN COALESCE(MAX(tmp.AprCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbApr,
+                CASE WHEN COALESCE(MAX(tmp.MayCount),0)>0 THEN TRUE ELSE FALSE END editedMRPMay,
+                CASE WHEN COALESCE(MAX(tmp.MayCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbMay,
+                CASE WHEN COALESCE(MAX(tmp.JunCount),0)>0 THEN TRUE ELSE FALSE END editedMRPJune,
+                CASE WHEN COALESCE(MAX(tmp.JunCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbJune,
+                CASE WHEN COALESCE(MAX(tmp.JulCount),0)>0 THEN TRUE ELSE FALSE END editedMRPJuly,
+                CASE WHEN COALESCE(MAX(tmp.JulCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbJuly,
+                CASE WHEN COALESCE(MAX(tmp.AugCount),0)>0 THEN TRUE ELSE FALSE END editedMRPAug,
+                CASE WHEN COALESCE(MAX(tmp.AugCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbAug,
+                CASE WHEN COALESCE(MAX(tmp.SepCount),0)>0 THEN TRUE ELSE FALSE END editedMRPSep,
+                CASE WHEN COALESCE(MAX(tmp.SepCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbSep,
+                CASE WHEN COALESCE(MAX(tmp.OctCount),0)>0 THEN TRUE ELSE FALSE END editedMRPOct,
+                CASE WHEN COALESCE(MAX(tmp.OctCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbOct,
+                CASE WHEN COALESCE(MAX(tmp.NovCount),0)>0 THEN TRUE ELSE FALSE END editedMRPNov,
+                CASE WHEN COALESCE(MAX(tmp.NovCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbNov,
+                CASE WHEN COALESCE(MAX(tmp.DecCount),0)>0 THEN TRUE ELSE FALSE END editedMRPDec,
+                CASE WHEN COALESCE(MAX(tmp.DecCountDb),0)>0 THEN TRUE ELSE FALSE END editedDsbDec
+
+
                 FROM (SELECT ss.short_name,
                 CASE WHEN l.month_str='January' THEN l.id ELSE NULL END JanuaryID,
                 CASE WHEN l.month_str='January' THEN l.submission_date ELSE NULL END January,
                 CASE WHEN l.month_str='January' THEN l.submission_date_db ELSE NULL END JanuaryDsb,
                 CASE WHEN l.month_str='January' THEN l.dead_line ELSE NULL END JanuaryD,
+                CASE WHEN l.month_str='January' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END JanCount,
+                CASE WHEN l.month_str='January' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END JanCountDb,
 
                 CASE WHEN l.month_str='February' THEN l.id ELSE NULL END FebruaryID,
                 CASE WHEN l.month_str='February' THEN l.submission_date ELSE NULL END February,
                 CASE WHEN l.month_str='February' THEN l.submission_date_db ELSE NULL END FebruaryDsb,
                 CASE WHEN l.month_str='February' THEN l.dead_line ELSE NULL END FebruaryD,
+                CASE WHEN l.month_str='February' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END FebCount,
+                CASE WHEN l.month_str='February' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END FebCountDb,
 
                 CASE WHEN l.month_str='March' THEN l.id ELSE NULL END MarchID,
                 CASE WHEN l.month_str='March' THEN l.submission_date ELSE NULL END March,
                 CASE WHEN l.month_str='March' THEN l.submission_date_db ELSE NULL END MarchDsb,
                 CASE WHEN l.month_str='March' THEN l.dead_line ELSE NULL END MarchD,
+                CASE WHEN l.month_str='March' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END MarCount,
+                CASE WHEN l.month_str='March' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END MarCountDb,
 
                 CASE WHEN l.month_str='April' THEN l.id ELSE NULL END AprilID,
                 CASE WHEN l.month_str='April' THEN l.submission_date ELSE NULL END April,
                 CASE WHEN l.month_str='April' THEN l.submission_date_db ELSE NULL END AprilDsb,
                 CASE WHEN l.month_str='April' THEN l.dead_line ELSE NULL END AprilD,
+                CASE WHEN l.month_str='April' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END AprCount,
+                CASE WHEN l.month_str='April' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END AprCountDb,
 
                 CASE WHEN l.month_str='May' THEN l.id ELSE NULL END MayID,
                 CASE WHEN l.month_str='May' THEN l.submission_date ELSE NULL END May,
                 CASE WHEN l.month_str='May' THEN l.submission_date_db ELSE NULL END MayDsb,
                 CASE WHEN l.month_str='May' THEN l.dead_line ELSE NULL END MayD,
+                CASE WHEN l.month_str='May' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END MayCount,
+                CASE WHEN l.month_str='May' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END MayCountDb,
 
                 CASE WHEN l.month_str='June' THEN l.id ELSE NULL END JuneID,
                 CASE WHEN l.month_str='June' THEN l.submission_date ELSE NULL END June,
                 CASE WHEN l.month_str='June' THEN l.submission_date_db ELSE NULL END JuneDsb,
                 CASE WHEN l.month_str='June' THEN l.dead_line ELSE NULL END JuneD,
+                CASE WHEN l.month_str='June' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END JunCount,
+                CASE WHEN l.month_str='June' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END JunCountDb,
 
                 CASE WHEN l.month_str='July' THEN l.id ELSE NULL END JulyID,
                 CASE WHEN l.month_str='July' THEN l.submission_date ELSE NULL END July,
                 CASE WHEN l.month_str='July' THEN l.submission_date_db ELSE NULL END JulyDsb,
                 CASE WHEN l.month_str='July' THEN l.dead_line ELSE NULL END JulyD,
+                CASE WHEN l.month_str='July' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END JulCount,
+                CASE WHEN l.month_str='July' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END JulCountDb,
 
                 CASE WHEN l.month_str='August' THEN l.id ELSE NULL END AugustID,
                 CASE WHEN l.month_str='August' THEN l.submission_date ELSE NULL END August,
                 CASE WHEN l.month_str='August' THEN l.submission_date_db ELSE NULL END AugustDsb,
                 CASE WHEN l.month_str='August' THEN l.dead_line ELSE NULL END AugustD,
+                CASE WHEN l.month_str='August' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END AugCount,
+                CASE WHEN l.month_str='August' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END AugCountDb,
 
                 CASE WHEN l.month_str='September' THEN l.id ELSE NULL END SeptemberID,
                 CASE WHEN l.month_str='September' THEN l.submission_date ELSE NULL END September,
                 CASE WHEN l.month_str='September' THEN l.submission_date_db ELSE NULL END SeptemberDsb,
                 CASE WHEN l.month_str='September' THEN l.dead_line ELSE NULL END SeptemberD,
+                CASE WHEN l.month_str='September' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END SepCount,
+                CASE WHEN l.month_str='September' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END SepCountDb,
 
                 CASE WHEN l.month_str='October' THEN l.id ELSE NULL END OctoberID,
                 CASE WHEN l.month_str='October' THEN l.submission_date ELSE NULL END October,
                 CASE WHEN l.month_str='October' THEN l.submission_date_db ELSE NULL END OctoberDsb,
                 CASE WHEN l.month_str='October' THEN l.dead_line ELSE NULL END OctoberD,
+                CASE WHEN l.month_str='October' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END OctCount,
+                CASE WHEN l.month_str='October' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END OctCountDb,
 
                 CASE WHEN l.month_str='November' THEN l.id ELSE NULL END NovemberID,
                 CASE WHEN l.month_str='November' THEN l.submission_date ELSE NULL END November,
                 CASE WHEN l.month_str='November' THEN l.submission_date_db ELSE NULL END NovemberDsb,
                 CASE WHEN l.month_str='November' THEN l.dead_line ELSE NULL END NovemberD,
+                CASE WHEN l.month_str='November' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END NovCount,
+                CASE WHEN l.month_str='November' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END NovCountDb,
 
                 CASE WHEN l.month_str='December' THEN l.id ELSE NULL END DecemberID,
                 CASE WHEN l.month_str='December' THEN l.submission_date ELSE NULL END December,
                 CASE WHEN l.month_str='December' THEN l.submission_date_db ELSE NULL END DecemberDsb,
-                CASE WHEN l.month_str='December' THEN l.dead_line ELSE NULL END DecemberD
+                CASE WHEN l.month_str='December' THEN l.dead_line ELSE NULL END DecemberD,
+                CASE WHEN l.month_str='December' AND MIN(ld.log_type_id)=1 THEN COUNT(l.id) ELSE 0 END DecCount,
+                CASE WHEN l.month_str='December' AND MAX(ld.log_type_id)=2 THEN COUNT(l.id) ELSE 0 END DecCountDb
                 FROM pm_service_sector ss
                 LEFT JOIN pm_mcrs_log l ON l.service_id = ss.id AND l.year = ${year}
-                WHERE ss.is_in_sp = TRUE
+                LEFT JOIN pm_mcrs_log_details ld ON l.id=ld.log_id
+                WHERE ss.is_in_sp = TRUE  GROUP BY ss.short_name,l.id
                 ORDER BY ss.name,l.month) tmp GROUP BY tmp.short_name;
         """
         List<GroovyRowResult> lst = executeSelectSql(query)

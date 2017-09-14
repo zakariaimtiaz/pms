@@ -48,18 +48,18 @@
                 model: {
                     fields: {
                         service: { type: "string" },
-                        JanuaryID: { type: "number" },     January: { type: "date" },     JanuaryDsb: { type: "date" },      JanuaryD: { type: "date" },
-                        FebruaryID: { type: "number" },    February: { type: "date" },    FebruaryDsb: { type: "date" },     FebruaryD: { type: "date" },
-                        MarchID: { type: "number" },       March: { type: "date" },       MarchDsb: { type: "date" },        MarchD: { type: "date" },
-                        AprilID: { type: "number" },       April: { type: "date" },       AprilDsb: { type: "date" },        AprilD: { type: "date" },
-                        MayID: { type: "number" },         May: { type: "date" },         MayDsb: { type: "date" },          MayD: { type: "date" },
-                        JuneID: { type: "number" },        June: { type: "date" },        JuneDsb: { type: "date" },         JuneD: { type: "date" },
-                        JulyID: { type: "number" },        July: { type: "date" },        JulyDsb: { type: "date" },         JulyD: { type: "date" },
-                        AugustID: { type: "number" },      August: { type: "date" },      AugustDsb: { type: "date" },       AugustD: { type: "date" },
-                        SeptemberID: { type: "number" },   September: { type: "date" },   SeptemberDsb: { type: "date" },    SeptemberD: { type: "date" },
-                        OctoberID: { type: "number" },     October: { type: "date" },     OctoberDsb: { type: "date" },      OctoberD: { type: "date" },
-                        NovemberID: { type: "number" },    November: { type: "date" },    NovemberDsb: { type: "date" },     NovemberD: { type: "date" },
-                        DecemberID: { type: "number" },    December: { type: "date" },    DecemberDsb: { type: "date" },     DecemberD: { type: "date" }
+                        JanuaryID: { type: "number" },     January: { type: "date" },     JanuaryDsb: { type: "date" },      JanuaryD: { type: "date" },editedMRPJan:{type:"boolean"},editedDsbJan:{type:"boolean"},
+                        FebruaryID: { type: "number" },    February: { type: "date" },    FebruaryDsb: { type: "date" },     FebruaryD: { type: "date" },editedMRPFeb:{type:"boolean"},editedDsbFeb:{type:"boolean"},
+                        MarchID: { type: "number" },       March: { type: "date" },       MarchDsb: { type: "date" },        MarchD: { type: "date" },editedMRPMar:{type:"boolean"},editedDsbMar:{type:"boolean"},
+                        AprilID: { type: "number" },       April: { type: "date" },       AprilDsb: { type: "date" },        AprilD: { type: "date" },editedMRPApr:{type:"boolean"},editedDsbApr:{type:"boolean"},
+                        MayID: { type: "number" },         May: { type: "date" },         MayDsb: { type: "date" },          MayD: { type: "date" },editedMRPMay:{type:"boolean"},editedDsbMay:{type:"boolean"},
+                        JuneID: { type: "number" },        June: { type: "date" },        JuneDsb: { type: "date" },         JuneD: { type: "date" },editedMRPJune:{type:"boolean"},editedDsbJune:{type:"boolean"},
+                        JulyID: { type: "number" },        July: { type: "date" },        JulyDsb: { type: "date" },         JulyD: { type: "date" },editedMRPJuly:{type:"boolean"},editedDsbJuly:{type:"boolean"},
+                        AugustID: { type: "number" },      August: { type: "date" },      AugustDsb: { type: "date" },       AugustD: { type: "date" },editedMRPAug:{type:"boolean"},editedDsbAug:{type:"boolean"},
+                        SeptemberID: { type: "number" },   September: { type: "date" },   SeptemberDsb: { type: "date" },    SeptemberD: { type: "date" },editedMRPSep:{type:"boolean"},editedDsbSep:{type:"boolean"},
+                        OctoberID: { type: "number" },     October: { type: "date" },     OctoberDsb: { type: "date" },      OctoberD: { type: "date" },editedMRPOct:{type:"boolean"},editedDsbOct:{type:"boolean"},
+                        NovemberID: { type: "number" },    November: { type: "date" },    NovemberDsb: { type: "date" },     NovemberD: { type: "date" },editedMRPNov:{type:"boolean"},editedDsbNov:{type:"boolean"},
+                        DecemberID: { type: "number" },    December: { type: "date" },    DecemberDsb: { type: "date" },     DecemberD: { type: "date" },editedMRPDec:{type:"boolean"},editedDsbDec:{type:"boolean"}
                     }
                 },
                 parse: function (data) {
@@ -92,11 +92,11 @@
                     columns: [
                         {field: "January", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(JanuaryID,1,January,JanuaryD)#"
+                            template:"#=checkDeadLine(JanuaryID,1,January,JanuaryD,editedMRPJan)#"
                         },
                         {field: "JanuaryDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(JanuaryID,2,JanuaryDsb,JanuaryD)#"
+                            template:"#=checkDeadLine(JanuaryID,2,JanuaryDsb,JanuaryD,editedDsbJan)#"
                         }
                     ]
                 },
@@ -105,11 +105,11 @@
                     columns: [
                         {field: "February", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(FebruaryID,1,February,FebruaryD)#"
+                            template:"#=checkDeadLine(FebruaryID,1,February,FebruaryD,editedMRPFeb)#"
                         },
                         {field: "FebruaryDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(FebruaryID,2,FebruaryDsb,FebruaryD)#"
+                            template:"#=checkDeadLine(FebruaryID,2,FebruaryDsb,FebruaryD,editedDsbFeb)#"
                         }
                     ]
                 },
@@ -118,11 +118,11 @@
                     columns: [
                         {field: "March", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(MarchID,1,March,MarchD)#"
+                            template:"#=checkDeadLine(MarchID,1,March,MarchD,editedMRPMar)#"
                         },
                         {field: "MarchDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(MarchID,2,MarchDsb,MarchD)#"
+                            template:"#=checkDeadLine(MarchID,2,MarchDsb,MarchD,editedDsbMar)#"
                         }
                     ]
                 },
@@ -131,11 +131,11 @@
                     columns: [
                         {field: "April", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(AprilID,1,April,AprilD)#"
+                            template:"#=checkDeadLine(AprilID,1,April,AprilD,editedMRPApr)#"
                         },
                         {field: "AprilDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(AprilID,2,AprilDsb,AprilD)#"
+                            template:"#=checkDeadLine(AprilID,2,AprilDsb,AprilD,editedDsbApr)#"
                         }
                     ]
                 },
@@ -144,11 +144,11 @@
                     columns: [
                         {field: "May", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(MayID,1,May,MayD)#"
+                            template:"#=checkDeadLine(MayID,1,May,MayD,editedMRPMay)#"
                         },
                         {field: "MayDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(MayID,2,MayDsb,MayD)#"
+                            template:"#=checkDeadLine(MayID,2,MayDsb,MayD,editedDsbMay)#"
                         }
                     ]
                 },
@@ -157,11 +157,11 @@
                     columns: [
                         {field: "June", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(JuneID,1,June,JuneD)#"
+                            template:"#=checkDeadLine(JuneID,1,June,JuneD,editedMRPJune)#"
                         },
                         {field: "JuneDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(JuneID,2,JuneDsb,JuneD)#"
+                            template:"#=checkDeadLine(JuneID,2,JuneDsb,JuneD,editedDsbJune)#"
                         }
                     ]
                 },
@@ -170,11 +170,11 @@
                     columns: [
                         {field: "July", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(JulyID,1,July,JulyD)#"
+                            template:"#=checkDeadLine(JulyID,1,July,JulyD,editedMRPJuly)#"
                         },
                         {field: "JulyDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(JulyID,2,JulyDsb,JulyD)#"
+                            template:"#=checkDeadLine(JulyID,2,JulyDsb,JulyD,editedDsbJuly)#"
                         }
                     ]
                 },
@@ -183,11 +183,11 @@
                     columns: [
                         {field: "August", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(AugustID,1,August,AugustD)#"
+                            template:"#=checkDeadLine(AugustID,1,August,AugustD,editedMRPAug)#"
                         },
                         {field: "AugustDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(AugustID,2,AugustDsb,AugustD)#"
+                            template:"#=checkDeadLine(AugustID,2,AugustDsb,AugustD,editedDsbAug)#"
                         }
                     ]
                 },
@@ -196,11 +196,11 @@
                     columns: [
                         {field: "September", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(SeptemberID,1,September,SeptemberD)#"
+                            template:"#=checkDeadLine(SeptemberID,1,September,SeptemberD,editedMRPSep)#"
                         },
                         {field: "SeptemberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(SeptemberID,2,SeptemberDsb,SeptemberD)#"
+                            template:"#=checkDeadLine(SeptemberID,2,SeptemberDsb,SeptemberD,editedDsbSep)#"
                         }
                     ]
                 },
@@ -209,11 +209,11 @@
                     columns: [
                         {field: "October", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(OctoberID,1,October,OctoberD)#"
+                            template:"#=checkDeadLine(OctoberID,1,October,OctoberD,editedMRPOct)#"
                         },
                         {field: "OctoberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(OctoberID,2,OctoberDsb,OctoberD)#"
+                            template:"#=checkDeadLine(OctoberID,2,OctoberDsb,OctoberD,editedDsbOct)#"
                         }
                     ]
                 },
@@ -222,11 +222,11 @@
                     columns: [
                         {field: "November", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(NovemberID,1,November,NovemberD)#"
+                            template:"#=checkDeadLine(NovemberID,1,November,NovemberD,editedMRPNov)#"
                         },
                         {field: "NovemberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(NovemberID,2,NovemberDsb,NovemberD)#"
+                            template:"#=checkDeadLine(NovemberID,2,NovemberDsb,NovemberD,editedDsbNov)#"
                         }
                     ]
                 },
@@ -235,11 +235,11 @@
                     columns: [
                         {field: "December", title: "MRP", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(DecemberID,1,December,DecemberD)#"
+                            template:"#=checkDeadLine(DecemberID,1,December,DecemberD,editedMRPDec)#"
                         },
                         {field: "DecemberDsb", title: "Dashboard", width: 80, sortable: false, filterable: false,
                             attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
-                            template:"#=checkDeadLine(DecemberID,2,DecemberDsb,DecemberD)#"
+                            template:"#=checkDeadLine(DecemberID,2,DecemberDsb,DecemberD,editedDsbDec)#"
                         }
                     ]
                 }
@@ -252,16 +252,25 @@
         $("#menuGrid").kendoMenu();
     }
 
-    function checkDeadLine(logId,typeId,submitOn, deadLine){
+    function checkDeadLine(logId,typeId,submitOn, deadLine,isEdited) {
+
         var d1 = new Date(submitOn);
         var d2 = new Date(deadLine);
-        if(d1.getTime()== 0){
+        if (d1.getTime() == 0) {
             return "";
         }
-        if(d1.getTime() > d2.getTime()){
-            return "<a style='cursor: pointer' onclick='showMcrsLogDetails("+logId+","+typeId+");'><b style='color: orange'>"+convertDate(submitOn)+"</b></a>";
+        if (isEdited) {
+            if (d1.getTime() > d2.getTime()) {
+                return "<a style='cursor: pointer' onclick='showMcrsLogDetails(" + logId + "," + typeId + ");'><b style='color: orange'>" + convertDate(submitOn) + "</b></a>";
+            }
+            return "<a style='cursor: pointer' onclick='javascript:showMcrsLogDetails(" + logId + "," + typeId + ");'><b>" + convertDate(submitOn) + '</b></a>';
         }
-        return  "<a style='cursor: pointer' onclick='javascript:showMcrsLogDetails("+logId+","+typeId+");'>"+convertDate(submitOn)+'</a>';
+        else{
+            if (d1.getTime() > d2.getTime()) {
+                return "<span style='color: orange'>" + convertDate(submitOn) + "</span>";
+            }
+            return  convertDate(submitOn);
+        }
     }
 
     function showMcrsLogDetails(logId,typeId){
