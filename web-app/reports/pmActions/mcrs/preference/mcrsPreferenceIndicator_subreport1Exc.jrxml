@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="serviceId" class="java.lang.Long"/>
 	<parameter name="year" class="java.lang.Integer"/>
-	<parameter name="currentMonth" class="java.util.Date"/>
+	<parameter name="currentMonth" class="java.lang.String"/>
 	<parameter name="REPORT_DIR" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="ROOT_DIR" class="java.lang.String"/>
@@ -198,7 +198,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[ $F{is_excluded}.toString().EQUALS("true") ? "N/A":$F{mon_acv}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{is_excluded} ? "N/A":$F{mon_acv}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="436" y="0" width="30" height="20" uuid="19736e2b-092f-4bf2-a59a-9978fc0fdf2a"/>
@@ -332,7 +332,7 @@ AND ai.id = (SELECT MIN(id) id  FROM pm_actions_indicator WHERE actions_id = a.i
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[ $F{is_excluded}.toString().EQUALS("true") ? "0 %":$F{mon_var}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{is_excluded} ? "0 %":$F{mon_var}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="495" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>

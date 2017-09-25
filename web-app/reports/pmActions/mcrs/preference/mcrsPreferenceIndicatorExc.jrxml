@@ -10,7 +10,7 @@
 	<parameter name="LOGO_DIR" class="java.lang.String"/>
 	<parameter name="serviceId" class="java.lang.Long"/>
 	<parameter name="year" class="java.lang.Integer"/>
-	<parameter name="currentMonth" class="java.util.Date"/>
+	<parameter name="currentMonth" class="java.lang.String"/>
 	<parameter name="monthStr" class="java.lang.String"/>
 	<parameter name="specificIssueCount" class="java.lang.String"/>
 	<queryString>

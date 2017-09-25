@@ -14,6 +14,9 @@ class MeetingLog {
     Date heldOn
     Date endDate
     String fileName
+    Date uploadDate
+    long uploadBy
+    boolean isUploaded=false
 
     static mapping = {
         meetingTypeId index: 'meeting_type_id_idx'
@@ -23,6 +26,8 @@ class MeetingLog {
         endDate        sqlType: 'date'
         descStr       sqlType: 'text'
         logStr        sqlType: 'text'
+        uploadDate    sqlType: 'date'
+        isUploaded    defaultValue : false
     }
 
     static constraints = {
@@ -31,5 +36,7 @@ class MeetingLog {
         issues(nullable: true)
         endDate(nullable: true)
         fileName(nullable: true)
+        uploadDate(nullable: true)
+        uploadBy(nullable: true)
     }
 }

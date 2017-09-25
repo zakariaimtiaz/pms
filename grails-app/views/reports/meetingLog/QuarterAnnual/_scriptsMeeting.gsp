@@ -49,6 +49,7 @@
                         meetingType: { type: "string" },
                         heldOn: { type: "date" },
                         endDate: { type: "date" },
+                        uploadDate: { type: "date" },
                         descStr: { type: "string" },
                         fileName: { type: "string" }
                     }
@@ -82,16 +83,19 @@
                 buttonCount: 4
             },
             columns: [
-                {field: "heldOn", title: "Start Date", width: 100, sortable: false, filterable: false,
+                {field: "heldOn", title: "Start Date", width: 90, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(heldOn, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
-                {field: "endDate", title: "End Date", width: 100, sortable: false, filterable: false,
+                {field: "endDate", title: "End Date", width: 90, sortable: false, filterable: false,
                     template: "#=kendo.toString(kendo.parseDate(endDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
+                    attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
+                },{field: "uploadDate", title: "Upload Date", width: 90, sortable: false, filterable: false,
+                    template: "#=kendo.toString(kendo.parseDate(uploadDate, 'yyyy-MM-dd'), 'dd-MM-yyyy')#",
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()}
                 },
                 {field: "descStr", title: "Description",sortable: false, filterable: false,
-                    template: "#=trimTextForKendo(htmlDecode(descStr),500)#"
+                    template: "#=trimTextForKendo(htmlDecode(descStr),430)#"
                 },
                 {field: "fileName", title: "Download Attachment",sortable: false, filterable: false, width: 250
                     , template: "<a onclick=\"downloadMeetingFile('#= id #')\" href='\\#'>#= fileName #</a>"

@@ -28,138 +28,199 @@ GROUP BY a.goal_id]]>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="total_count" class="java.lang.Long"/>
+	<group name="DetailsGroup">
+		<groupExpression><![CDATA[$P{year}]]></groupExpression>
+		<groupHeader>
+			<band height="31">
+				<staticText>
+					<reportElement x="774" y="0" width="58" height="30" uuid="bd6c9983-86c6-461b-b877-c8593b57977b"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Project]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="711" y="0" width="63" height="30" uuid="c7906e53-f968-466b-9448-3f374dad666b"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Support Department]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="30" y="0" width="146" height="30" uuid="3219aba6-61c5-40ff-9a32-c5fa3ca2f5e8"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Actions]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="650" y="0" width="61" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Responsible Person]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="573" y="0" width="77" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Action Remarks]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="176" y="0" width="45" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Start]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="221" y="0" width="46" height="30" uuid="32d11800-54e1-4fd5-9e12-41ad5b087e8c"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[End]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="436" y="0" width="52" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Target]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="267" y="0" width="107" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Indicator]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="538" y="0" width="35" height="30" uuid="47a5963f-21e1-4255-831a-665d8b8b452c"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Variance]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="488" y="0" width="50" height="30" uuid="3d97f1e5-6ba4-45ae-861d-ae87a24f54f2"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Achievement]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="374" y="0" width="62" height="30" uuid="b2e84787-6d8b-44af-ab70-9c6520b4e1cf"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Indicator Type]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="0" width="30" height="30" uuid="c98b6557-43eb-4d6b-863a-952a6a4d5979"/>
+					<box topPadding="1">
+						<topPen lineWidth="0.5" lineColor="#939597"/>
+						<leftPen lineWidth="0.5" lineColor="#939597"/>
+						<bottomPen lineWidth="0.5" lineColor="#939597"/>
+						<rightPen lineWidth="0.5" lineColor="#939597"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ID#]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<subreport>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="40316269-7e32-4861-bb06-09bf4b3c9c71"/>
+					<subreportParameter name="serviceId">
+						<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="year">
+						<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "sapDetails_subreport2.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
 	<pageHeader>
-		<band height="74">
-			<staticText>
-				<reportElement x="774" y="44" width="58" height="30" uuid="bd6c9983-86c6-461b-b877-c8593b57977b"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Project]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="711" y="44" width="63" height="30" uuid="c7906e53-f968-466b-9448-3f374dad666b"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Support Department]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="30" y="44" width="146" height="30" uuid="3219aba6-61c5-40ff-9a32-c5fa3ca2f5e8"/>
-				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Actions]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="650" y="44" width="61" height="30" uuid="2145aa3c-8e58-4285-9d4d-df078c4398c0"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Responsible Person]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="573" y="44" width="77" height="30" uuid="5a461219-9e4d-4e8b-8ad5-c6259d3edf8e"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Action Remarks]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="176" y="44" width="45" height="30" uuid="d7d3bfb8-ba29-404a-b8f8-3ba9f3334822"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Start]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="221" y="44" width="46" height="30" uuid="32d11800-54e1-4fd5-9e12-41ad5b087e8c"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[End]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="436" y="44" width="52" height="30" uuid="1ac6c8e2-63b2-4fa9-9b01-aa5bea355ee9"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Target]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="44" width="30" height="30" uuid="c98b6557-43eb-4d6b-863a-952a6a4d5979"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[ID#]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="267" y="44" width="107" height="30" uuid="35e1f68f-0435-4726-9f1f-73d3e7b8863f"/>
-				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Indicator]]></text>
-			</staticText>
+		<band height="44">
 			<image>
 				<reportElement x="714" y="0" width="101" height="32" uuid="fa09bae0-1cb6-4fd9-982b-c66eb4c4a6a9"/>
 				<imageExpression><![CDATA[$P{LOGO_DIR}+"logo.png"]]></imageExpression>
@@ -178,45 +239,6 @@ GROUP BY a.goal_id]]>
 					<bottomPen lineWidth="0.1" lineColor="#939597"/>
 				</box>
 				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="538" y="44" width="35" height="30" uuid="47a5963f-21e1-4255-831a-665d8b8b452c"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Variance]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="488" y="44" width="50" height="30" uuid="3d97f1e5-6ba4-45ae-861d-ae87a24f54f2"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Achievement]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="374" y="44" width="62" height="30" uuid="b2e84787-6d8b-44af-ab70-9c6520b4e1cf"/>
-				<box topPadding="1">
-					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
-					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[Indicator Type]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -290,21 +312,20 @@ GROUP BY a.goal_id]]>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression><![CDATA[$P{ROOT_DIR} + "commonFooterLandscape.jasper"]]></subreportExpression>
 			</subreport>
+			<textField>
+				<reportElement x="343" y="0" width="80" height="19" uuid="4fd99e28-dcb3-498a-9542-fd765844b8cd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="423" y="0" width="40" height="19" uuid="ba2909ea-8ca7-440f-ab05-41e2b678a2d5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="20">
-			<subreport>
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="40316269-7e32-4861-bb06-09bf4b3c9c71"/>
-				<subreportParameter name="serviceId">
-					<subreportParameterExpression><![CDATA[$P{serviceId}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="year">
-					<subreportParameterExpression><![CDATA[$P{year}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "sapDetails_subreport2.jasper"]]></subreportExpression>
-			</subreport>
-		</band>
-	</summary>
 </jasperReport>

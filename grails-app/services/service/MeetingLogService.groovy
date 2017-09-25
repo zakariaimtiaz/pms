@@ -133,12 +133,12 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
         String query = """"""
         if(meetingType.name.equals("Quarterly")||meetingType.name.equals("Annually")) {
             query = """
-                SELECT l.id,0 version,se.name meetingType,l.held_on heldOn,l.end_date endDate,l.desc_str descStr,COALESCE(l.file_name,'') fileName
+                SELECT l.id,0 version,se.name meetingType,l.held_on heldOn,l.end_date endDate,l.upload_date uploadDate,l.desc_str descStr,COALESCE(l.file_name,'') fileName
                     FROM meeting_log l
                     LEFT JOIN system_entity se ON se.id = l.meeting_type_id
                     WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}
-                AND l.meeting_type_id = ${meetingTypeId}
-                ORDER BY l.held_on ASC
+                AND l.meeting_type_id = ${meetingTypeId} AND l.is_uploaded=TRUE
+                ORDER BY l.held_on DESC
                 """
         }else if(meetingType.name.equals("Functional")) {
             query = """
@@ -149,20 +149,32 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
                 COALESCE(GROUP_CONCAT(tmp.October ORDER BY tmp.held_on),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November ORDER BY tmp.held_on),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December ORDER BY tmp.held_on),'') DECEMBER
                 FROM (
                     SELECT l.id,se.name MEETING_TYPE,l.held_on,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='January'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END January,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='February'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END February,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='March'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END March,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='April'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END April,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='May'       THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END May,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='June'      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END June,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='July'      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END July,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='August'    THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END August,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='September' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END September,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='October'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END October,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='November'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END November,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='December'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END December
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='January' AND l.upload_date IS NOT NULL   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='January' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END January,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='February' AND l.upload_date IS NOT NULL  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='February'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))  ELSE NULL END February,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='March' AND l.upload_date IS NOT NULL     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='March' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END March,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='April' AND l.upload_date IS NOT NULL     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='April'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END April,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='May' AND l.upload_date IS NOT NULL       THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='May' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END May,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='June' AND l.upload_date IS NOT NULL      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='June' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END June,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='July' AND l.upload_date IS NOT NULL      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='July' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))  ELSE NULL END July,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='August' AND l.upload_date IS NOT NULL    THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='August' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END August,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='September' AND l.upload_date IS NOT NULL THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='September' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END September,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='October' AND l.upload_date IS NOT NULL   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='October' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END October,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='November' AND l.upload_date IS NOT NULL  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='November' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END November,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='December' AND l.upload_date IS NOT NULL  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='December' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END December
                     FROM meeting_log l LEFT JOIN system_entity se ON se.id = ${meetingTypeId}
-                    WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
+                    WHERE DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId} AND l.is_uploaded=TRUE
 
                     ORDER BY l.held_on ASC) tmp
                 GROUP BY DATE_FORMAT(tmp.held_on,'%M'),DATE_FORMAT(tmp.held_on,'%Y');
@@ -175,21 +187,33 @@ SELECT COUNT(id) c FROM meeting_log WHERE service_id=${serviceId}  AND id<> ${me
                 COALESCE(GROUP_CONCAT(tmp.July ORDER BY tmp.held_on),'')    JULY,   COALESCE(GROUP_CONCAT(tmp.August ORDER BY tmp.held_on),'')   AUGUST,  COALESCE(GROUP_CONCAT(tmp.September ORDER BY tmp.held_on),'') SEPTEMBER,
                 COALESCE(GROUP_CONCAT(tmp.October ORDER BY tmp.held_on),'') OCTOBER,COALESCE(GROUP_CONCAT(tmp.November ORDER BY tmp.held_on),'') NOVEMBER,COALESCE(GROUP_CONCAT(tmp.December  ORDER BY tmp.held_on),'') DECEMBER
                 FROM (
-                    SELECT ss.id,ss.name,ss.short_name,se.name MEETING_TYPE,l.held_on,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='January'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END January,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='February'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END February,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='March'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END March,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='April'     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END April,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='May'       THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END May,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='June'      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END June,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='July'      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END July,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='August'    THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END August,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='September' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END September,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='October'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END October,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='November'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END November,
-                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='December'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%b-%y')) ELSE NULL END December
+                     SELECT ss.id,ss.name,ss.short_name,se.name MEETING_TYPE,l.held_on,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='January' AND l.upload_date IS NOT NULL   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='January' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END January,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='February' AND l.upload_date IS NOT NULL  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='February'  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))  ELSE NULL END February,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='March' AND l.upload_date IS NOT NULL     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='March' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END March,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='April' AND l.upload_date IS NOT NULL     THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='April'   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END April,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='May' AND l.upload_date IS NOT NULL       THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='May' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y')) ELSE NULL END May,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='June' AND l.upload_date IS NOT NULL      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='June' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END June,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='July' AND l.upload_date IS NOT NULL      THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='July' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))  ELSE NULL END July,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='August' AND l.upload_date IS NOT NULL    THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='August' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END August,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='September' AND l.upload_date IS NOT NULL THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='September' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END September,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='October' AND l.upload_date IS NOT NULL   THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='October' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END October,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='November' AND l.upload_date IS NOT NULL  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='November' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END November,
+                    CASE WHEN DATE_FORMAT(l.held_on,'%M')='December' AND l.upload_date IS NOT NULL  THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'),'&',DATE_FORMAT(l.upload_date,'%d-%m-%y'))
+                    WHEN DATE_FORMAT(l.held_on,'%M')='December' THEN CONCAT(l.id,'&',DATE_FORMAT(l.held_on,'%d-%m-%y'))ELSE NULL END December
                     FROM pm_service_sector ss
-                    LEFT JOIN meeting_log l ON l.service_id = ss.id AND DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
+                    LEFT JOIN meeting_log l ON l.service_id = ss.id AND l.is_uploaded=TRUE AND DATE_FORMAT(l.held_on,'%Y') = ${year}  AND l.meeting_type_id = ${meetingTypeId}
                     LEFT JOIN system_entity se ON se.id = ${meetingTypeId}
                     WHERE ss.is_in_sp = TRUE
                     ${additionalParam}

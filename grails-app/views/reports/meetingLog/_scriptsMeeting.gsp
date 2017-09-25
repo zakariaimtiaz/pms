@@ -89,53 +89,54 @@
             pageable: false,
             columns: [
                     <g:if test="${meetingType!='Functional'}">
-                {field: "SERVICE_STR", title: "Sector/CSU", width: 150, sortable: false, filterable: false},
+                {field: "SERVICE_STR", title: "Sector/CSU", width: 130, sortable: false, locked: true,
+                    lockable: false, filterable: false},
                 </g:if>
-                {field: "JANUARY", title: "January", width: 80, sortable: false, filterable: false,
+                {field: "JANUARY", title: "January", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JANUARY)#"
                 },
-                {field: "FEBRUARY", title: "February", width: 80, sortable: false, filterable: false,
+                {field: "FEBRUARY", title: "February", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,FEBRUARY)#"
                 },
-                {field: "MARCH", title: "March", width: 80, sortable: false, filterable: false,
+                {field: "MARCH", title: "March", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,MARCH)#"
                 },
-                {field: "APRIL", title: "April", width: 80, sortable: false, filterable: false,
+                {field: "APRIL", title: "April", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,APRIL)#"
                 },
-                {field: "MAY", title: "May", width: 80, sortable: false, filterable: false,
+                {field: "MAY", title: "May", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,MAY)#"
                 },
-                {field: "JUNE", title: "June", width: 80, sortable: false, filterable: false,
+                {field: "JUNE", title: "June", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JUNE)#"
                 },
-                {field: "JULY", title: "July", width: 80, sortable: false, filterable: false,
+                {field: "JULY", title: "July", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,JULY)#"
                 },
-                {field: "AUGUST", title: "August", width: 80, sortable: false, filterable: false,
+                {field: "AUGUST", title: "August", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,AUGUST)#"
                 },
-                {field: "SEPTEMBER", title: "September", width: 80, sortable: false, filterable: false,
+                {field: "SEPTEMBER", title: "September", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,SEPTEMBER)#"
                 },
-                {field: "OCTOBER", title: "October", width: 80, sortable: false, filterable: false,
+                {field: "OCTOBER", title: "October", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,OCTOBER)#"
                 },
-                {field: "NOVEMBER", title: "November", width: 80, sortable: false, filterable: false,
+                {field: "NOVEMBER", title: "November", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,NOVEMBER)#"
                 },
-                {field: "DECEMBER", title: "December", width: 80, sortable: false, filterable: false,
+                {field: "DECEMBER", title: "December", width: 130, sortable: false, filterable: false,
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template: "#=formatDate(MEETING_TYPE,SERVICE_ID,DECEMBER)#"
                 }
@@ -158,14 +159,14 @@
             for (a in temp) {
                 if(temp[a]!= ''){
                     temp2 = temp[a].split("&");
-                    result += '<span style="cursor:pointer;">'+ temp2[1]+ '</span><br/>';
+                    result += '<span style="cursor:pointer;"> Held On:'+ temp2[1]+ '</span><br/>Uploaded:'+temp2[2]+'<br/>';
                 }
             }
         }else{
             for (a in temp) {
                 if(temp[a]!= ''){
                     temp2 = temp[a].split("&");
-                    result += '<a><span style="cursor:pointer;" onclick="loadPage(' + temp2[0] + ',' + ${meetingTypeId} +');">' + temp2[1] + '</span></a><br/>';
+                    result += '<a><span style="cursor:pointer;" onclick="loadPage(' + temp2[0] + ',' + ${meetingTypeId} +');">' + temp2[1] + '</span></a><br/>Uploaded:'+temp2[2]+'<br/>';
                 }
             }
         }

@@ -4,6 +4,7 @@ import actions.meetingLog.CreateMeetingLogActionService
 import actions.meetingLog.DeleteMeetingLogActionService
 import actions.meetingLog.ListMeetingLogActionService
 import actions.meetingLog.UpdateMeetingLogActionService
+import actions.meetingLog.UploadMeetingLogActionService
 import com.pms.*
 import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
@@ -27,7 +28,7 @@ class MeetingLogController extends BaseController {
     UpdateMeetingLogActionService updateMeetingLogActionService
     DeleteMeetingLogActionService deleteMeetingLogActionService
     ListMeetingLogActionService listMeetingLogActionService
-
+    UploadMeetingLogActionService uploadMeetingLogActionService
 
 
     def show() {
@@ -84,6 +85,9 @@ class MeetingLogController extends BaseController {
     def delete() {
         renderOutput(deleteMeetingLogActionService, params)
 
+    }
+    def uploadMeetingLog() {
+        renderOutput(uploadMeetingLogActionService, params)
     }
     def list() {
         renderOutput(listMeetingLogActionService, params)

@@ -65,7 +65,7 @@
                     attributes: {style: setAlignCenter()}, headerAttributes: {style: setAlignCenter()},
                     template:"#=omitRepeated1(sequence,sequence)#"
                 },
-                {field: "actions", title: "Action", width: 250, sortable: false, filterable: false,
+                {field: "actions", title: "Action", width: 220, sortable: false, filterable: false,
                     template:"#=omitRepeated2(sequence,actions)#"
                 },
                 {
@@ -78,20 +78,21 @@
 
                 },
                 {field: "indicator", title: "Indicator", width: 150, sortable: false, filterable: false},
-                {field: "tot_tar", title: "Target", width: 80, sortable: false, filterable: false,
+                {field: "indicator_type", title: "Indicator Type", width: 100, sortable: false, filterable: false},
+                {field: "tot_tar", title: "Target", width: 70, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignCenter()},attributes: {style: setAlignCenter()},
                     template:"#=formatIndicator(indicator_type,tot_tar)#"
                 },
                 {
                     field: "tot_acv", title: "Achievement",
-                    width: 90, sortable: false, filterable: false,
+                    width: 70, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=formatIndicator(indicator_type,tot_acv)#"
                 },
                 {
                     field: "total_acv", title: "Variance",
-                    width: 90, sortable: false, filterable: false,
+                    width: 70, sortable: false, filterable: false,
                     headerAttributes: {style: setAlignRight()},
                     attributes: {style: setAlignRight()},
                     template: "#=calculateVariance(tot_tar_Sum,tot_acv_sum)#"

@@ -287,7 +287,7 @@ COALESCE(idd.achievement,0) ELSE SUM(COALESCE(idd.achievement,0)) END  tot_acv,
 					<leftPen lineWidth="0.5" lineColor="#999999"/>
 					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{indicator_type}]]></textFieldExpression>

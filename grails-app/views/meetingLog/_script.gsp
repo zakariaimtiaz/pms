@@ -9,6 +9,9 @@
     <sec:access url="/meetingLog/delete">
         <li onclick="deleteMeetingLog();"><i class="fa fa-trash-o"></i>Delete</li>
     </sec:access>
+    <sec:access url="/meetingLog/uploadMeetingLog">
+        <li onclick="uploadMeetingLog();"><i class="fa fa-upload"></i>Upload</li>
+    </sec:access>
 </ul>
 </script>
 
@@ -308,7 +311,14 @@
         );
         kendo.bind($("#application_top_panel"), logModel);
     }
-
+    function uploadMeetingLog() {
+        if (executeCommonPreConditionForSelectKendo(gridMeetingLog, 'log') == false) {
+            return;
+        }
+        var msg = 'Are you sure you want to upload the selected meeting minutes?',
+                url = "${createLink(controller: 'meetingLog', action:  'uploadMeetingLog')}";
+        confirmDelete(msg, url, gridMeetingLog);
+    }
     function deleteMeetingLog() {
         if (executeCommonPreConditionForSelectKendo(gridMeetingLog, 'log') == false) {
             return;

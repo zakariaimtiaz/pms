@@ -22,6 +22,7 @@ class ListMeetingLogActionService extends BaseService implements ActionServiceIn
             List<Long> lst = currentUserDepartmentList()
             Closure additionalParam = {
                 'eq'('meetingTypeId', meetingTypeId)
+                'eq'('isUploaded', false)
                 'in'('serviceId', lst)
             }
             Map resultMap = super.getSearchResult(result, ListMeetingLogActionServiceModel.class,additionalParam)

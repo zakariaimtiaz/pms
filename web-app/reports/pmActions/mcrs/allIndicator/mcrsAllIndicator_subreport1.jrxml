@@ -5,7 +5,7 @@
 	<property name="ireport.y" value="0"/>
 	<parameter name="serviceId" class="java.lang.Long"/>
 	<parameter name="year" class="java.lang.Integer"/>
-	<parameter name="currentMonth" class="java.util.Date"/>
+	<parameter name="currentMonth" class="java.lang.String"/>
 	<parameter name="REPORT_DIR" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
 	<parameter name="ROOT_DIR" class="java.lang.String"/>
@@ -30,7 +30,7 @@ a.actions,a.start,a.end,COALESCE((SELECT GROUP_CONCAT(CONCAT('<strike>',CAST(DAT
 (SELECT CASE WHEN COALESCE(ai.closing_month,'')=DATE($P{currentMonth}) THEN CONCAT(remarks,'<style isBold="true" pdfFontName="Helvetica-Bold">\r\nClosing note: </style>',ai.closing_note) ELSE remarks END
                  FROM pm_actions_indicator_details WHERE indicator_id = ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) ind_remarks,
 (SELECT is_excluded FROM pm_actions_indicator_details
-                WHERE actions_id=a.id AND indicator_id=ai.id AND month_name=MONTHNAME($P{currentMonth})) is_excluded,
+                WHERE actions_id=a.id AND indicator_id=ai.id AND month_name=MONTHNAME(DATE($P{currentMonth}))) is_excluded,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) t_mon_var,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.target,0) ELSE 0 END) mon_tar,
 SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) mon_acv,
@@ -186,7 +186,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[ $F{is_excluded}.toString().EQUALS("true") ? "N/A":$F{mon_acv}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{is_excluded} ? "N/A":$F{mon_acv}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="364" y="0" width="30" height="20" uuid="19736e2b-092f-4bf2-a59a-9978fc0fdf2a"/>
@@ -346,7 +346,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<leftPen lineWidth="0.25" lineColor="#939597"/>
 					<bottomPen lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -360,7 +360,7 @@ SUM(CASE WHEN  cm.sl_index=@curmon THEN COALESCE(idd.achievement,0) ELSE 0 END) 
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{mon_var}==null ? "N/A": $F{is_excluded}.toString().EQUALS("true") ? "0 %":$F{mon_var}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{mon_var}==null ? "N/A": $F{is_excluded} ? "0 %":$F{mon_var}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="423" y="0" width="29" height="20" uuid="774b3340-ec82-43f9-a7a4-0e491386a934"/>

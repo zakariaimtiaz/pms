@@ -86,7 +86,7 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="523" y="24" width="309" height="20" uuid="67613919-c14c-49b7-b916-53565e52e386"/>
-				<box topPadding="2" leftPadding="2">
+				<box topPadding="0" leftPadding="2">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
@@ -114,9 +114,9 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="53" y="24" width="206" height="20" uuid="8edb271e-a323-44a6-98b8-d7f8fec951ae"/>
 				<box topPadding="2" leftPadding="2">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.0" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
@@ -125,11 +125,11 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="24" width="53" height="20" uuid="fbf4b225-fd82-44d5-867d-1075d2bc2b4c"/>
-				<box topPadding="2" leftPadding="2">
+				<box topPadding="0" leftPadding="0">
 					<topPen lineWidth="0.5" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.5" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
@@ -151,7 +151,7 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 					<bottomPen lineWidth="0.5" lineColor="#999999"/>
 					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[Indicator Type]]></text>
@@ -192,7 +192,7 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.5" lineColor="#939597"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
-					<rightPen lineWidth="0.5" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#939597"/>
 				</box>
 				<textElement markup="styled">
 					<font size="8" isBold="false" isPdfEmbedded="false"/>
@@ -216,9 +216,9 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="-1" y="0" width="54" height="20" isPrintWhenDetailOverflows="true" uuid="3a5babd1-8a76-445e-bc8b-22ab8aa556b9"/>
 				<box topPadding="2" leftPadding="2">
 					<topPen lineWidth="0.0" lineColor="#939597"/>
-					<leftPen lineWidth="0.5" lineColor="#939597"/>
+					<leftPen lineWidth="0.0" lineColor="#999999"/>
 					<bottomPen lineWidth="0.0" lineColor="#939597"/>
-					<rightPen lineWidth="0.0" lineColor="#939597"/>
+					<rightPen lineWidth="0.0" lineColor="#999999"/>
 				</box>
 				<textElement textAlignment="Center">
 					<font size="8"/>
@@ -226,7 +226,7 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 				<textFieldExpression><![CDATA[$F{sequence}]]></textFieldExpression>
 			</textField>
 			<frame>
-				<reportElement stretchType="RelativeToTallestObject" x="-1" y="0" width="832" height="20" uuid="44b8fedb-5966-4f95-8ee7-20ba142745be"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="832" height="20" uuid="44b8fedb-5966-4f95-8ee7-20ba142745be"/>
 				<box>
 					<topPen lineWidth="0.5" lineColor="#999999"/>
 					<leftPen lineWidth="0.5" lineColor="#999999"/>
@@ -235,13 +235,13 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 				</box>
 			</frame>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="53" y="0" width="1" height="20" uuid="6ae08aae-ae24-487c-8e23-e9ce6730fe5b"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="53" y="-20" width="1" height="40" uuid="6ae08aae-ae24-487c-8e23-e9ce6730fe5b"/>
 				<graphicElement>
 					<pen lineColor="#999999"/>
 				</graphicElement>
 			</line>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="53" y="0" width="206" height="20" isRemoveLineWhenBlank="true" uuid="f7855f72-a46a-45eb-b7c5-6cf6fc6e6084"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="54" y="0" width="205" height="20" isRemoveLineWhenBlank="true" uuid="f7855f72-a46a-45eb-b7c5-6cf6fc6e6084"/>
 				<box topPadding="2" leftPadding="2">
 					<topPen lineWidth="0.0" lineColor="#939597"/>
 					<leftPen lineWidth="0.0" lineColor="#939597"/>
@@ -259,7 +259,7 @@ WHERE a.service_id = $P{serviceId} AND a.year = $P{year}
 					<leftPen lineWidth="0.5" lineColor="#999999"/>
 					<rightPen lineWidth="0.5" lineColor="#999999"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{indicator_type}]]></textFieldExpression>
